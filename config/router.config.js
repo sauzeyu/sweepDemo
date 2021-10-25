@@ -65,6 +65,27 @@ export default [
           },
         ],
       },
+      {
+        path: '/statistics',
+        component: './Statistics',
+        title: '数据统计',
+      },
+      {
+        path: '/keys',
+        title: '钥匙管理',
+        routes: [
+          {
+            path: '/keys/info',
+            title: '钥匙信息',
+            component: './Keys/Info',
+          },
+          {
+            path: '/keys/logs',
+            title: '钥匙使用日志',
+            component: './Keys/Logs',
+          },
+        ],
+      },
     ],
   },
   { component: '404' },

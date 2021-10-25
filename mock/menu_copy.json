@@ -10,16 +10,6 @@
     "dna": "7-0-0"
   },
   {
-    "id": 99,
-    "title": "删除",
-    "icon": null,
-    "href": "del",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-7-1"
-  },
-  {
     "id": 139,
     "title": "地域信息",
     "icon": null,
@@ -39,36 +29,7 @@
     "type": 0,
     "dna": "4-0"
   },
-  {
-    "id": 90,
-    "title": "编辑",
-    "icon": null,
-    "href": "update",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-1-0"
-  },
-  {
-    "id": 76,
-    "title": "零件信息管理",
-    "icon": null,
-    "href": "info",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-1"
-  },
-  {
-    "id": 31,
-    "title": "车辆统计",
-    "icon": null,
-    "href": "cars",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "6-0"
-  },
+
   {
     "id": 75,
     "title": "安全测试用例",
@@ -90,14 +51,14 @@
     "dna": "4-2-0"
   },
   {
-    "id": 158,
-    "title": "供应商查询",
-    "icon": null,
-    "href": "uri",
+    "id": 1,
+    "title": "数据统计",
+    "icon": "dot-chart",
+    "href": "statistics",
     "target": null,
     "isShow": null,
-    "type": 1,
-    "dna": "0-1-4"
+    "type": 0,
+    "dna": "0"
   },
   {
     "id": 148,
@@ -138,16 +99,6 @@
     "isShow": null,
     "type": 1,
     "dna": "7-2-0"
-  },
-  {
-    "id": 97,
-    "title": "修改",
-    "icon": null,
-    "href": "update",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-3-2"
   },
   {
     "id": 118,
@@ -200,20 +151,10 @@
     "dna": "3-5"
   },
   {
-    "id": 9,
-    "title": "升级包管理",
-    "icon": null,
-    "href": "upPkg",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-7"
-  },
-  {
     "id": 11,
-    "title": "车型管理",
+    "title": "钥匙信息",
     "icon": null,
-    "href": "type",
+    "href": "info",
     "target": null,
     "isShow": null,
     "type": 0,
@@ -280,16 +221,6 @@
     "dna": "3-3-3"
   },
   {
-    "id": 30,
-    "title": "统计分析",
-    "icon": "dot-chart",
-    "href": "statistics",
-    "target": null,
-    "isShow": null,
-    "type": 2,
-    "dna": "6"
-  },
-  {
     "id": 175,
     "title": "查询",
     "icon": null,
@@ -308,36 +239,6 @@
     "isShow": null,
     "type": 1,
     "dna": "2-1-1"
-  },
-  {
-    "id": 6,
-    "title": "生成差分版本",
-    "icon": null,
-    "href": "genDiffVer",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-4"
-  },
-  {
-    "id": 98,
-    "title": "修改",
-    "icon": null,
-    "href": "update",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-7-0"
-  },
-  {
-    "id": 4,
-    "title": "上传新版本",
-    "icon": null,
-    "href": "upNewVer",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-2"
   },
   {
     "id": 117,
@@ -390,36 +291,6 @@
     "dna": "3-3-0-0-0-1"
   },
   {
-    "id": 33,
-    "title": "任务统计",
-    "icon": null,
-    "href": "tasks",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "6-2"
-  },
-  {
-    "id": 192,
-    "title": "故障分析",
-    "icon": null,
-    "href": "fault",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "6-3"
-  },
-  {
-    "id": 170,
-    "title": "查询",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-3-3"
-  },
-  {
     "id": 174,
     "title": "查询",
     "icon": null,
@@ -440,26 +311,6 @@
     "dna": "7-2-2"
   },
   {
-    "id": 94,
-    "title": "新增",
-    "icon": null,
-    "href": "insert",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-3-0"
-  },
-  {
-    "id": 5,
-    "title": "版本管理",
-    "icon": null,
-    "href": "version",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-3"
-  },
-  {
     "id": 119,
     "title": "修改",
     "icon": null,
@@ -468,16 +319,6 @@
     "isShow": null,
     "type": 1,
     "dna": "5-3"
-  },
-  {
-    "id": 89,
-    "title": "修改",
-    "icon": null,
-    "href": "update",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-0-2"
   },
   {
     "id": 100,
@@ -508,16 +349,6 @@
     "isShow": null,
     "type": 1,
     "dna": "3-0-0"
-  },
-  {
-    "id": 95,
-    "title": "删除",
-    "icon": null,
-    "href": "del",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-3-1"
   },
   {
     "id": 47,
@@ -599,26 +430,7 @@
     "type": 1,
     "dna": "2-4-0"
   },
-  {
-    "id": 32,
-    "title": "版本统计",
-    "icon": null,
-    "href": "versions",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "6-1"
-  },
-  {
-    "id": 149,
-    "title": "查询",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-7-2"
-  },
+
   {
     "id": 17,
     "title": "任务管理",
@@ -690,16 +502,6 @@
     "dna": "3-4"
   },
   {
-    "id": 88,
-    "title": "删除",
-    "icon": null,
-    "href": "del",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-0-1"
-  },
-  {
     "id": 145,
     "title": "查询",
     "icon": null,
@@ -708,16 +510,6 @@
     "isShow": null,
     "type": 1,
     "dna": "2-0-2"
-  },
-  {
-    "id": 140,
-    "title": "查询",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-0-3"
   },
   {
     "id": 41,
@@ -760,36 +552,6 @@
     "dna": "3-3-0-0-1"
   },
   {
-    "id": 143,
-    "title": "查询",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-5-0"
-  },
-  {
-    "id": 130,
-    "title": "新建测试用例",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-8-1"
-  },
-  {
-    "id": 87,
-    "title": "新增",
-    "icon": null,
-    "href": "insert",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-0-0"
-  },
-  {
     "id": 185,
     "title": "归档",
     "icon": null,
@@ -821,9 +583,9 @@
   },
   {
     "id": 12,
-    "title": "车型配置零件",
+    "title": "钥匙使用日志",
     "icon": null,
-    "href": "parts",
+    "href": "logs",
     "target": null,
     "isShow": null,
     "type": 0,
@@ -831,43 +593,13 @@
   },
   {
     "id": 15,
-    "title": "诊断管理",
+    "title": "车型车辆管理",
     "icon": "cloud-upload",
     "href": "task",
     "target": null,
     "isShow": null,
     "type": 2,
     "dna": "3"
-  },
-  {
-    "id": 2,
-    "title": "零件类型管理",
-    "icon": "",
-    "href": "type",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-0"
-  },
-  {
-    "id": 1,
-    "title": "零件管理",
-    "icon": "gold",
-    "href": "parts",
-    "target": null,
-    "isShow": null,
-    "type": 2,
-    "dna": "0"
-  },
-  {
-    "id": 128,
-    "title": "新建子模块",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-8-0"
   },
   {
     "id": 43,
@@ -888,46 +620,6 @@
     "isShow": null,
     "type": 1,
     "dna": "3-0-1"
-  },
-  {
-    "id": 8,
-    "title": "生成升级包",
-    "icon": null,
-    "href": "genUpPkg",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-6"
-  },
-  {
-    "id": 93,
-    "title": "删除",
-    "icon": null,
-    "href": "del",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-1-2"
-  },
-  {
-    "id": 194,
-    "title": "诊断通道配置",
-    "icon": null,
-    "href": "channel",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-1-6"
-  },
-  {
-    "id": 195,
-    "title": "诊断黑名单配置",
-    "icon": null,
-    "href": "blacklist",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-1-7"
   },
   {
     "id": 180,
@@ -1000,16 +692,6 @@
     "dna": "7-0-3"
   },
   {
-    "id": 151,
-    "title": "升级包文件",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-7-3"
-  },
-  {
     "id": 46,
     "title": "权限资源管理",
     "icon": "",
@@ -1041,9 +723,9 @@
   },
   {
     "id": 10,
-    "title": "汽车管理",
-    "icon": "car",
-    "href": "cars",
+    "title": "钥匙管理",
+    "icon": "key",
+    "href": "keys",
     "target": null,
     "isShow": null,
     "type": 2,
@@ -1120,26 +802,6 @@
     "dna": "2-2-4-0"
   },
   {
-    "id": 142,
-    "title": "查询",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-1-3"
-  },
-  {
-    "id": 91,
-    "title": "新增",
-    "icon": null,
-    "href": "insert",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "0-1-1"
-  },
-  {
     "id": 28,
     "title": "车内总线数据",
     "icon": null,
@@ -1148,16 +810,6 @@
     "isShow": null,
     "type": 0,
     "dna": "4-2"
-  },
-  {
-    "id": 7,
-    "title": "差分版本管理",
-    "icon": null,
-    "href": "diffVer",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "0-5"
   },
   {
     "id": 105,
