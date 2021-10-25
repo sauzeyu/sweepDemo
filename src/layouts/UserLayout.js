@@ -21,7 +21,7 @@ export default class UserLayout extends BaseLayout {
                     className={styles.logo}
                     src={getPublicPath('img/app-title_logo.png')}
                   />
-                  <div className={styles.sysName}>远程诊断系统</div>
+                  <div className={styles.sysName}>数字钥匙管理平台</div>
                 </div>
               </div>
               {children}

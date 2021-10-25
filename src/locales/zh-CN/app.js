@@ -1,5 +1,5 @@
 export default {
-  'App.appName': '远程诊断系统',
+  'App.appName': '数字钥匙管理平台',
   'App.version': '版本',
   'App.copyright': 'Vecentek',
   'App.envTestMark': '(测)',

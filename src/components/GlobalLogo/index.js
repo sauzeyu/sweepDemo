@@ -32,7 +32,7 @@ export default class extends React.PureComponent {
             className={styles.logoIcon}
           />
           {/*<img className={styles.logoName} src={getPublicPath('img/app-logo_name_light.png')}/>*/}
-          <div className={styles.logoText}>远程诊断系统</div>
+          <div className={styles.logoText}>数字钥匙管理平台</div>
         </Link>
       </div>
     );

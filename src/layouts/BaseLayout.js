@@ -12,7 +12,7 @@ export default class BaseLayout extends React.PureComponent {
       currentUser,
     } = this.props;
     const { pathname } = location;
-    const appName = '远程诊断系统';
+    const appName = '数字钥匙管理平台';
     let title = appName;
     let before = '';
     switch (window.appMeta.env) {

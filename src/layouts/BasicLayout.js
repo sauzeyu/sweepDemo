@@ -58,7 +58,7 @@ export default class BasicLayout extends BaseLayout {
     isMobile,
     currentSys: '',
     redirectData: [],
-    title: '远程诊断系统',
+    title: '数字钥匙管理平台',
   };
 
   getChildContext() {
