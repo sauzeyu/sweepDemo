@@ -1,0 +1,1212 @@
+[
+  {
+    "id": 36,
+    "title": "新建用户",
+    "icon": "",
+    "href": "add",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-0-0"
+  },
+  {
+    "id": 99,
+    "title": "删除",
+    "icon": null,
+    "href": "del",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-7-1"
+  },
+  {
+    "id": 139,
+    "title": "地域信息",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-4"
+  },
+  {
+    "id": 26,
+    "title": "车辆系统日志",
+    "icon": null,
+    "href": "carSysLogs",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "4-0"
+  },
+  {
+    "id": 90,
+    "title": "编辑",
+    "icon": null,
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-1-0"
+  },
+  {
+    "id": 76,
+    "title": "零件信息管理",
+    "icon": null,
+    "href": "info",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-1"
+  },
+  {
+    "id": 31,
+    "title": "车辆统计",
+    "icon": null,
+    "href": "cars",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "6-0"
+  },
+  {
+    "id": 75,
+    "title": "安全测试用例",
+    "icon": "safety-certificate",
+    "href": "securityTestCase",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "5"
+  },
+  {
+    "id": 77,
+    "title": "查询",
+    "icon": null,
+    "href": "fota.vehicleCanLog",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "4-2-0"
+  },
+  {
+    "id": 158,
+    "title": "供应商查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-1-4"
+  },
+  {
+    "id": 148,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-1-2"
+  },
+  {
+    "id": 133,
+    "title": "详情",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-1"
+  },
+  {
+    "id": 38,
+    "title": "重置密码",
+    "icon": "",
+    "href": "resetPwd",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-0-2"
+  },
+  {
+    "id": 177,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-2-0"
+  },
+  {
+    "id": 97,
+    "title": "修改",
+    "icon": null,
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-3-2"
+  },
+  {
+    "id": 118,
+    "title": "新增",
+    "icon": null,
+    "href": "add",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "5-2"
+  },
+  {
+    "id": 156,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-0-0-2"
+  },
+  {
+    "id": 49,
+    "title": "添加零件",
+    "icon": null,
+    "href": "add",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-1-0"
+  },
+  {
+    "id": 131,
+    "title": "详情",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-0-2"
+  },
+  {
+    "id": 24,
+    "title": "升级日志",
+    "icon": null,
+    "href": "upLogs",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "3-5"
+  },
+  {
+    "id": 9,
+    "title": "升级包管理",
+    "icon": null,
+    "href": "upPkg",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-7"
+  },
+  {
+    "id": 11,
+    "title": "车型管理",
+    "icon": null,
+    "href": "type",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "2-0"
+  },
+  {
+    "id": 34,
+    "title": "系统管理",
+    "icon": "setting",
+    "href": "sys",
+    "target": null,
+    "isShow": null,
+    "type": 2,
+    "dna": "7"
+  },
+  {
+    "id": 187,
+    "title": "修改密码",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-0-6"
+  },
+  {
+    "id": 44,
+    "title": "删除",
+    "icon": "",
+    "href": "delete",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-1-2"
+  },
+  {
+    "id": 104,
+    "title": "新增",
+    "icon": null,
+    "href": "add",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-2-0"
+  },
+  {
+    "id": 135,
+    "title": "编辑",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-2"
+  },
+  {
+    "id": 154,
+    "title": "试验任务",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-3"
+  },
+  {
+    "id": 30,
+    "title": "统计分析",
+    "icon": "dot-chart",
+    "href": "statistics",
+    "target": null,
+    "isShow": null,
+    "type": 2,
+    "dna": "6"
+  },
+  {
+    "id": 175,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-1-4"
+  },
+  {
+    "id": 103,
+    "title": "移除",
+    "icon": null,
+    "href": "del",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-1-1"
+  },
+  {
+    "id": 6,
+    "title": "生成差分版本",
+    "icon": null,
+    "href": "genDiffVer",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-4"
+  },
+  {
+    "id": 98,
+    "title": "修改",
+    "icon": null,
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-7-0"
+  },
+  {
+    "id": 4,
+    "title": "上传新版本",
+    "icon": null,
+    "href": "upNewVer",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-2"
+  },
+  {
+    "id": 117,
+    "title": "下载",
+    "icon": null,
+    "href": "download",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "5-1"
+  },
+  {
+    "id": 161,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-3-0"
+  },
+  {
+    "id": 20,
+    "title": "升级任务详情",
+    "icon": null,
+    "href": ":id",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-0"
+  },
+  {
+    "id": 182,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "5-4"
+  },
+  {
+    "id": 184,
+    "title": "任务项下载日志-查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-0-0-0-1"
+  },
+  {
+    "id": 33,
+    "title": "任务统计",
+    "icon": null,
+    "href": "tasks",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "6-2"
+  },
+  {
+    "id": 192,
+    "title": "故障分析",
+    "icon": null,
+    "href": "fault",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "6-3"
+  },
+  {
+    "id": 170,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-3-3"
+  },
+  {
+    "id": 174,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-0-5"
+  },
+  {
+    "id": 179,
+    "title": "删除",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-2-2"
+  },
+  {
+    "id": 94,
+    "title": "新增",
+    "icon": null,
+    "href": "insert",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-3-0"
+  },
+  {
+    "id": 5,
+    "title": "版本管理",
+    "icon": null,
+    "href": "version",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-3"
+  },
+  {
+    "id": 119,
+    "title": "修改",
+    "icon": null,
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "5-3"
+  },
+  {
+    "id": 89,
+    "title": "修改",
+    "icon": null,
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-0-2"
+  },
+  {
+    "id": 100,
+    "title": "新增",
+    "icon": null,
+    "href": "add",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-0-0"
+  },
+  {
+    "id": 18,
+    "title": "创建升级任务",
+    "icon": null,
+    "href": "createUpTask",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "3-2"
+  },
+  {
+    "id": 106,
+    "title": "删除",
+    "icon": null,
+    "href": "del",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-0-0"
+  },
+  {
+    "id": 95,
+    "title": "删除",
+    "icon": null,
+    "href": "del",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-3-1"
+  },
+  {
+    "id": 47,
+    "title": "操作日志",
+    "icon": "",
+    "href": "logs",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "7-3"
+  },
+  {
+    "id": 138,
+    "title": "详情",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-2-2"
+  },
+  {
+    "id": 14,
+    "title": "汽车零件版本",
+    "icon": null,
+    "href": "partVer",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "2-3"
+  },
+  {
+    "id": 37,
+    "title": "编辑",
+    "icon": "",
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-0-1"
+  },
+  {
+    "id": 21,
+    "title": "子任务",
+    "icon": null,
+    "href": "subTask",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-0-0"
+  },
+  {
+    "id": 113,
+    "title": "撤销",
+    "icon": null,
+    "href": "cancel",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-0-0-0-0"
+  },
+  {
+    "id": 116,
+    "title": "删除",
+    "icon": null,
+    "href": "del",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "5-0"
+  },
+  {
+    "id": 183,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-4-0"
+  },
+  {
+    "id": 32,
+    "title": "版本统计",
+    "icon": null,
+    "href": "versions",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "6-1"
+  },
+  {
+    "id": 149,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-7-2"
+  },
+  {
+    "id": 17,
+    "title": "任务管理",
+    "icon": null,
+    "href": "TaskManage",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "3-1"
+  },
+  {
+    "id": 190,
+    "title": "详情",
+    "icon": null,
+    "href": "details",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-1-1"
+  },
+  {
+    "id": 101,
+    "title": "编辑",
+    "icon": null,
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-0-1"
+  },
+  {
+    "id": 45,
+    "title": "新建角色",
+    "icon": "",
+    "href": "add",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-1-3"
+  },
+  {
+    "id": 109,
+    "title": "审核操作",
+    "icon": null,
+    "href": "review",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-1-0"
+  },
+  {
+    "id": 186,
+    "title": "审计",
+    "icon": null,
+    "href": "audit",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-3-2"
+  },
+  {
+    "id": 23,
+    "title": "升级任务审核",
+    "icon": null,
+    "href": "upTasksReview",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "3-4"
+  },
+  {
+    "id": 88,
+    "title": "删除",
+    "icon": null,
+    "href": "del",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-0-1"
+  },
+  {
+    "id": 145,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-0-2"
+  },
+  {
+    "id": 140,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-0-3"
+  },
+  {
+    "id": 41,
+    "title": "角色权限管理",
+    "icon": "",
+    "href": "userRoles",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "7-1"
+  },
+  {
+    "id": 115,
+    "title": "审核操作",
+    "icon": null,
+    "href": "review",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-4-0"
+  },
+  {
+    "id": 172,
+    "title": "统计",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-5"
+  },
+  {
+    "id": 110,
+    "title": "子任务撤销",
+    "icon": null,
+    "href": "cancel",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-0-0-1"
+  },
+  {
+    "id": 143,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-5-0"
+  },
+  {
+    "id": 130,
+    "title": "新建测试用例",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-8-1"
+  },
+  {
+    "id": 87,
+    "title": "新增",
+    "icon": null,
+    "href": "insert",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-0-0"
+  },
+  {
+    "id": 185,
+    "title": "归档",
+    "icon": null,
+    "href": "file",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-3-1"
+  },
+  {
+    "id": 27,
+    "title": "安全事件",
+    "icon": null,
+    "href": "incident",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "4-1"
+  },
+  {
+    "id": 22,
+    "title": "子任务详情",
+    "icon": null,
+    "href": ":subTaskId",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-0-0-0"
+  },
+  {
+    "id": 12,
+    "title": "车型配置零件",
+    "icon": null,
+    "href": "parts",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "2-1"
+  },
+  {
+    "id": 15,
+    "title": "诊断管理",
+    "icon": "cloud-upload",
+    "href": "task",
+    "target": null,
+    "isShow": null,
+    "type": 2,
+    "dna": "3"
+  },
+  {
+    "id": 2,
+    "title": "零件类型管理",
+    "icon": "",
+    "href": "type",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-0"
+  },
+  {
+    "id": 1,
+    "title": "零件管理",
+    "icon": "gold",
+    "href": "parts",
+    "target": null,
+    "isShow": null,
+    "type": 2,
+    "dna": "0"
+  },
+  {
+    "id": 128,
+    "title": "新建子模块",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-8-0"
+  },
+  {
+    "id": 43,
+    "title": "指定用户",
+    "icon": "",
+    "href": "distribution",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-1-1"
+  },
+  {
+    "id": 107,
+    "title": "新增",
+    "icon": null,
+    "href": "add",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-0-1"
+  },
+  {
+    "id": 8,
+    "title": "生成升级包",
+    "icon": null,
+    "href": "genUpPkg",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-6"
+  },
+  {
+    "id": 93,
+    "title": "删除",
+    "icon": null,
+    "href": "del",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-1-2"
+  },
+  {
+    "id": 194,
+    "title": "诊断通道配置",
+    "icon": null,
+    "href": "channel",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-1-6"
+  },
+  {
+    "id": 195,
+    "title": "诊断黑名单配置",
+    "icon": null,
+    "href": "blacklist",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-1-7"
+  },
+  {
+    "id": 180,
+    "title": "编辑",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-2-3"
+  },
+  {
+    "id": 54,
+    "title": "零件运行日志",
+    "icon": null,
+    "href": "runLog",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "2-4"
+  },
+  {
+    "id": 16,
+    "title": "新增任务",
+    "icon": null,
+    "href": "createTask",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "3-0"
+  },
+  {
+    "id": 155,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-0-3"
+  },
+  {
+    "id": 40,
+    "title": "删除用户",
+    "icon": "",
+    "href": "delete",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-0-4"
+  },
+  {
+    "id": 29,
+    "title": "网络采集数据",
+    "icon": null,
+    "href": "network",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "4-3"
+  },
+  {
+    "id": 39,
+    "title": "启用/停用",
+    "icon": "",
+    "href": "status",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-0-3"
+  },
+  {
+    "id": 151,
+    "title": "升级包文件",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-7-3"
+  },
+  {
+    "id": 46,
+    "title": "权限资源管理",
+    "icon": "",
+    "href": "userResource",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "7-2"
+  },
+  {
+    "id": 168,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-5-0"
+  },
+  {
+    "id": 178,
+    "title": "添加",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-2-1"
+  },
+  {
+    "id": 10,
+    "title": "汽车管理",
+    "icon": "car",
+    "href": "cars",
+    "target": null,
+    "isShow": null,
+    "type": 2,
+    "dna": "2"
+  },
+  {
+    "id": 19,
+    "title": "升级任务管理",
+    "icon": null,
+    "href": "upTasks",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "3-3"
+  },
+  {
+    "id": 42,
+    "title": "编辑",
+    "icon": "",
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "7-1-0"
+  },
+  {
+    "id": 165,
+    "title": "车型未配置零件查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-1-3"
+  },
+  {
+    "id": 13,
+    "title": "汽车信息",
+    "icon": null,
+    "href": "vehicle",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "2-2"
+  },
+  {
+    "id": 188,
+    "title": "汽车信息详情",
+    "icon": null,
+    "href": "details",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-2-4"
+  },
+  {
+    "id": 189,
+    "title": "在线诊断",
+    "icon": null,
+    "href": "diagnosis",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-2-5"
+  },
+  {
+    "id": 191,
+    "title": "诊断详情",
+    "icon": null,
+    "href": "subTask",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-2-4-0"
+  },
+  {
+    "id": 142,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-1-3"
+  },
+  {
+    "id": 91,
+    "title": "新增",
+    "icon": null,
+    "href": "insert",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "0-1-1"
+  },
+  {
+    "id": 28,
+    "title": "车内总线数据",
+    "icon": null,
+    "href": "highway",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "4-2"
+  },
+  {
+    "id": 7,
+    "title": "差分版本管理",
+    "icon": null,
+    "href": "diffVer",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "0-5"
+  },
+  {
+    "id": 105,
+    "title": "修改",
+    "icon": null,
+    "href": "update",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-2-1"
+  },
+  {
+    "id": 167,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "2-2-3"
+  },
+  {
+    "id": 25,
+    "title": "试验数据查询",
+    "icon": "block",
+    "href": "tests",
+    "target": null,
+    "isShow": null,
+    "type": 2,
+    "dna": "4"
+  },
+  {
+    "id": 35,
+    "title": "系统用户",
+    "icon": "",
+    "href": "userManage",
+    "target": null,
+    "isShow": null,
+    "type": 0,
+    "dna": "7-0"
+  },
+  {
+    "id": 163,
+    "title": "查询",
+    "icon": null,
+    "href": "uri",
+    "target": null,
+    "isShow": null,
+    "type": 1,
+    "dna": "3-3-4"
+  }
+]

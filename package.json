@@ -1,0 +1,63 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "umi dev",
+    "dev": "cross-env APP_TYPE=site MOCK=none BROWSER=none umi dev",
+    "dev:mock": "cross-env APP_TYPE=site BROWSER=none umi dev",
+    "build": "umi build",
+    "postinstall": "umi generate tmp",
+    "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
+    "test": "umi-test",
+    "test:coverage": "umi-test --coverage"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,jsx,less,md,json}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "prettier --parser=typescript --write"
+    ]
+  },
+  "dependencies": {
+    "@ant-design/icons": "^4.6.3",
+    "@ant-design/pro-layout": "^6.5.0",
+    "antd-pro-merge-less": "^3.0.11",
+    "antd-pro-theme-webpack-plugin": "^1.1.8",
+    "axios": "^0.21.1",
+    "classnames": "^2.3.1",
+    "deep-diff": "^1.0.2",
+    "echarts": "^5.2.0",
+    "echarts-for-react": "^3.0.1",
+    "enquire-js": "^0.2.1",
+    "immutability-helper": "^3.1.1",
+    "join-path": "^1.1.1",
+    "js-cookie": "^3.0.0",
+    "lodash-decorators": "^6.0.1",
+    "react": "17.x",
+    "react-container-query": "^0.12.0",
+    "react-dnd": "^14.0.3",
+    "react-dnd-html5-backend": "^14.0.1",
+    "react-document-title": "^2.0.3",
+    "react-dom": "17.x",
+    "react-json-view": "^1.21.3",
+    "react-router-config": "^5.1.1",
+    "react-viewer": "^3.2.2",
+    "safe-clone-deep": "^1.1.5",
+    "umi": "^3.5.17"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@umijs/preset-react": "1.x",
+    "@umijs/test": "^3.5.17",
+    "cross-env": "^7.0.3",
+    "lint-staged": "^10.0.7",
+    "mockjs": "^1.1.0",
+    "prettier": "^2.2.0",
+    "typescript": "^4.1.2",
+    "yorkie": "^2.0.0"
+  }
+}
