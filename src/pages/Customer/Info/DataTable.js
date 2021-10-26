@@ -3,15 +3,16 @@ import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
-import { getKeysList } from '@/services/keys';
+import { getCustomerList } from '@/services/customer';
 import { Link } from 'umi';
-
-@connect(({ keysManage, loading }) => ({
-  keysManage,
-  // upserting: loading.effects['keysManage/upsert'],
+@connect(({ customer, loading }) => ({
+  customer,
+  upserting: loading.effects['customer/upsert'],
 }))
 class DataTable extends Component {
-  state = {};
+  state = {
+    selectedRowKeys: [],
+  };
   columns = [
     {
       title: '联系电话',
@@ -24,14 +25,11 @@ class DataTable extends Component {
       render: (col) => {
         return (
           <div className={'link-group'}>
-            <a onClick={() => this.userInfo(col)}>查看用户</a>
             <a onClick={() => this.del(col)}>查看车辆</a>
+            <a onClick={() => this.userInfo(col)}>查看钥匙</a>
             <a onClick={() => this.del(col)}>启用</a>
             <a className={'text-danger'} onClick={() => this.del(col)}>
               停用
-            </a>
-            <a className={'text-danger'} onClick={() => this.del(col)}>
-              吊销
             </a>
           </div>
         );
@@ -45,7 +43,7 @@ class DataTable extends Component {
       onOk: () => {
         return this.props
           .dispatch({
-            type: 'keysManage/del',
+            type: 'customer/del',
             payload: model.id,
           })
           .then(
@@ -60,18 +58,43 @@ class DataTable extends Component {
       },
     });
   };
+  handleRowSelectChange = (selectedRowKeys) => {
+    this.setState({ selectedRowKeys });
+  };
+  handleTableChange = () => {
+    this.setState({ selectedRowKeys: [] });
+  };
   userInfo = () => {};
   render() {
+    const { selectedRowKeys } = this.state;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.handleRowSelectChange,
+    };
     return (
       <div>
         <EasyTable
           autoFetch
-          source={getKeysList}
+          source={getCustomerList}
           dataProp={'data'}
-          name={'keysDataTable'}
+          name={'customerDataTable'}
           rowKey={'id'}
           columns={this.columns}
+          rowSelection={rowSelection}
+          onChange={this.handleTableChange}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
+          extra={
+            <div className={'btn-group'}>
+              {selectedRowKeys.length > 0 && (
+                <Button
+                  type={'danger'}
+                  onClick={() => this.del(selectedRowKeys)}
+                >
+                  删除用户
+                </Button>
+              )}
+            </div>
+          }
         />
       </div>
     );

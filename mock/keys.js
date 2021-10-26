@@ -3,6 +3,8 @@ export default {
   'GET /api/DKLinkkey/api/keyList': {
     code: 0,
     total: 20,
+    pageSize: 20,
+    pageIndex: 1,
     data: [
       {
         id: '1002298',
@@ -469,7 +471,9 @@ export default {
   },
   'GET /api/DKLinkkey/api/keyLogList': {
     code: 0,
-    count: 10047,
+    total: 20,
+    pageSize: 20,
+    pageIndex: 1,
     data: [
       {
         id: '11669',
@@ -716,7 +720,9 @@ export default {
   },
   'GET /api/DKLinkvehicle/api/vehicleModelList': {
     code: 0,
-    count: 16,
+    total: 16,
+    pageSize: 20,
+    pageIndex: 1,
     data: [
       {
         id: '38',
@@ -851,7 +857,9 @@ export default {
   },
   'GET /api/DKLinkvehicle/api/vehicleList': {
     code: 0,
-    count: 20,
+    total: 20,
+    pageSize: 20,
+    pageIndex: 1,
     data: [
       {
         id: '969',

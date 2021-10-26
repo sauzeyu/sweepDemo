@@ -5,7 +5,6 @@ import {
   deleteVehicle,
   getVehicleDetail,
 } from '@/services/cars';
-
 export default {
   namespace: 'carsVehicle',
   state: {

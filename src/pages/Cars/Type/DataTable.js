@@ -27,6 +27,7 @@ class DataTable extends Component {
     {
       title: '车型名称',
       dataIndex: 'name',
+      ellipsis: true,
       render: (name, col) => {
         return (
           <Badge
@@ -39,6 +40,7 @@ class DataTable extends Component {
     {
       title: '代码',
       dataIndex: 'code',
+      ellipsis: true,
     },
     {
       title: 'VIN号匹配规则',

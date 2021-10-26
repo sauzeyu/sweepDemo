@@ -255,8 +255,8 @@ function* loadData(
   params,
   fixedParams,
   pageProps = {
-    current: 'page',
-    pageSize: 'limit',
+    current: 'pageIndex',
+    pageSize: 'pageSize',
     total: 'total',
   },
   dataProp = 'data',
@@ -283,7 +283,7 @@ function* loadData(
     }
     const result = yield call(fetch, {
       [pageProps.current]: page.current,
-      [pageProps.pageSize]: page.limit,
+      [pageProps.pageSize]: page.pageSize,
       ...fixedParams,
       ...params,
     });
