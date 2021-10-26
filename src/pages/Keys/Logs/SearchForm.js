@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Button, Col, Form, Row, Select, Input } from 'antd';
 import EasyTable from '@/components/EasyTable';
 
-@EasyTable.connect(({ keysDataTable }) => ({
-  keysDataTable,
+@EasyTable.connect(({ keysLogsDataTable }) => ({
+  keysLogsDataTable,
 }))
 class SearchForm extends Component {
   form = React.createRef();
@@ -11,7 +11,7 @@ class SearchForm extends Component {
     this.form.current
       .validateFields()
       .then((values) => {
-        this.props.keysDataTable.fetch(values);
+        this.props.keysLogsDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
@@ -37,7 +37,7 @@ class SearchForm extends Component {
         <Row type={'flex'}>
           <Col {...colSpan}>
             <Form.Item label={'关键词'} name="s_key">
-              <Input placeholder="请输入手机号码" />
+              <Input placeholder="请输入VIN号" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
