@@ -86,6 +86,33 @@ export default [
           },
         ],
       },
+      {
+        path: '/cars',
+        title: '汽车管理',
+        routes: [
+          {
+            path: '/cars/type',
+            title: '车型管理',
+            component: './Cars/Type',
+          },
+          {
+            path: '/cars/vehicle',
+            title: '汽车信息',
+            component: './Cars/Vehicle',
+          },
+        ],
+      },
+      {
+        path: '/customer',
+        title: '用户管理',
+        routes: [
+          {
+            path: '/customer/info',
+            title: '用户信息',
+            component: './Customer/Info',
+          },
+        ],
+      },
     ],
   },
   { component: '404' },

@@ -21,24 +21,13 @@
   },
   {
     "id": 26,
-    "title": "车辆系统日志",
+    "title": "用户信息",
     "icon": null,
-    "href": "carSysLogs",
+    "href": "info",
     "target": null,
     "isShow": null,
     "type": 0,
     "dna": "4-0"
-  },
-
-  {
-    "id": 75,
-    "title": "安全测试用例",
-    "icon": "safety-certificate",
-    "href": "securityTestCase",
-    "target": null,
-    "isShow": null,
-    "type": 0,
-    "dna": "5"
   },
   {
     "id": 77,
@@ -99,16 +88,6 @@
     "isShow": null,
     "type": 1,
     "dna": "7-2-0"
-  },
-  {
-    "id": 118,
-    "title": "新增",
-    "icon": null,
-    "href": "add",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "5-2"
   },
   {
     "id": 156,
@@ -241,16 +220,6 @@
     "dna": "2-1-1"
   },
   {
-    "id": 117,
-    "title": "下载",
-    "icon": null,
-    "href": "download",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "5-1"
-  },
-  {
     "id": 161,
     "title": "查询",
     "icon": null,
@@ -269,16 +238,6 @@
     "isShow": null,
     "type": 1,
     "dna": "3-3-0"
-  },
-  {
-    "id": 182,
-    "title": "查询",
-    "icon": null,
-    "href": "uri",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "5-4"
   },
   {
     "id": 184,
@@ -309,16 +268,6 @@
     "isShow": null,
     "type": 1,
     "dna": "7-2-2"
-  },
-  {
-    "id": 119,
-    "title": "修改",
-    "icon": null,
-    "href": "update",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "5-3"
   },
   {
     "id": 100,
@@ -411,16 +360,6 @@
     "dna": "3-3-0-0-0-0"
   },
   {
-    "id": 116,
-    "title": "删除",
-    "icon": null,
-    "href": "del",
-    "target": null,
-    "isShow": null,
-    "type": 1,
-    "dna": "5-0"
-  },
-  {
     "id": 183,
     "title": "查询",
     "icon": null,
@@ -433,9 +372,9 @@
 
   {
     "id": 17,
-    "title": "任务管理",
+    "title": "车辆信息",
     "icon": null,
-    "href": "TaskManage",
+    "href": "vehicle",
     "target": null,
     "isShow": null,
     "type": 0,
@@ -594,8 +533,8 @@
   {
     "id": 15,
     "title": "车型车辆管理",
-    "icon": "cloud-upload",
-    "href": "task",
+    "icon": "car",
+    "href": "cars",
     "target": null,
     "isShow": null,
     "type": 2,
@@ -643,9 +582,9 @@
   },
   {
     "id": 16,
-    "title": "新增任务",
+    "title": "车型信息",
     "icon": null,
-    "href": "createTask",
+    "href": "type",
     "target": null,
     "isShow": null,
     "type": 0,
@@ -833,9 +772,9 @@
   },
   {
     "id": 25,
-    "title": "试验数据查询",
-    "icon": "block",
-    "href": "tests",
+    "title": "用户管理",
+    "icon": "user",
+    "href": "customer",
     "target": null,
     "isShow": null,
     "type": 2,
