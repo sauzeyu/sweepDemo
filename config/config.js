@@ -13,7 +13,7 @@ export default defineConfig({
       // target: 'https://cd.vecentek.com:20611',
       target: 'http://172.16.5.120:631',
       changeOrigin: true,
-      // pathRewrite: { '^/api': '' },
+      pathRewrite: { '^/api': '' },
       logLevel: 'debug',
       secure: false,
     },

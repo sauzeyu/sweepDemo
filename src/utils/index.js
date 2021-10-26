@@ -201,8 +201,8 @@ export function createPagination(props = {}) {
     showSizeChanger = true,
     showQuickJumper = true,
     size = 'small',
-    pageSizeOptions = ['10', '20', '30', '40'],
-    pageSize = 20,
+    limitOptions = ['10', '20', '30', '40'],
+    limit = 20,
     current = 1,
     total = 0,
     data = [],
@@ -211,8 +211,8 @@ export function createPagination(props = {}) {
     showSizeChanger,
     showQuickJumper,
     size,
-    pageSizeOptions,
-    pageSize,
+    limitOptions,
+    limit,
     current,
     total,
     data,
@@ -221,14 +221,14 @@ export function createPagination(props = {}) {
 // 分页加载
 export function* fetchPageEffect({ payload }, { call }, page, action) {
   const params = {
-    pageIndex: page.current,
-    pageSize: page.pageSize,
+    page: page.current,
+    limit: page.limit,
     ...payload,
   };
   const result = yield call(action, params);
   page.total = result.total;
-  page.current = params.pageIndex;
-  page.pageSize = params.pageSize;
+  page.current = params.page;
+  page.limit = params.limit;
   page.data = result.data;
   return page;
 }
