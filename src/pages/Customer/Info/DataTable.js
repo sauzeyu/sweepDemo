@@ -62,7 +62,8 @@ class DataTable extends Component {
     this.setState({ selectedRowKeys });
   };
   handleTableChange = () => {
-    this.setState({ selectedRowKeys: [] });
+    // 切换分页会置空
+    // this.setState({ selectedRowKeys: [] });
   };
   userInfo = () => {};
   render() {
