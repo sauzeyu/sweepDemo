@@ -1,14 +1,14 @@
-import { addCarModes, delCarModes, updateCarModes } from '@/services/keys';
+import { enableKey, revokeKey } from '@/services/keys';
 
 export default {
   namespace: 'keysManage',
   state: {},
   effects: {
-    *upsert({ payload }, { call }) {
-      return yield call(payload.id ? updateCarModes : addCarModes, payload);
+    *enableKey({ payload }, { call }) {
+      return yield call(enableKey, { id: payload });
     },
-    *del({ payload }, { call }) {
-      return yield call(delCarModes, payload);
+    *revokeKey({ payload }, { call }) {
+      return yield call(revokeKey, { id: payload });
     },
   },
   reducers: {

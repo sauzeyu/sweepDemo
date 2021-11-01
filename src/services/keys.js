@@ -8,3 +8,11 @@ export async function getKeysList(params) {
 export async function getKeysLogsList(params) {
   return request.get('DKLinkkey/api/keyLogList', { params });
 }
+// 启用停用钥匙
+export async function enableKey(params) {
+  return request.get('DKLinkkey/api/enableKey', { params });
+}
+// 启用停用钥匙
+export async function revokeKey(params) {
+  return request.get('DKLinkkey/api/revokeKey', { params });
+}

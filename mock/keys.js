@@ -16,7 +16,7 @@ export default {
         keyId: 1,
         vin: 'QRY5UYO4P8M04LWSN',
         phone: '15903382047',
-        dkState: 5,
+        dkState: 1,
         valFrom: 1634888393000,
         valTo: 1950421193000,
         permit: 0,
@@ -1143,5 +1143,13 @@ export default {
       },
     ],
     msg: '完成',
+  },
+  'GET /dkserver-back/DKLinkkey/api/enableKey': {
+    success: true,
+    message: '成功',
+  },
+  'GET /dkserver-back/DKLinkkey/api/revokeKey': {
+    success: true,
+    message: '成功',
   },
 };
