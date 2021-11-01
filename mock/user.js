@@ -97,7 +97,7 @@ export const mockRoleList = [
 ];
 
 export default {
-  'POST /api/login': (req, res) => {
+  'POST /dkserver-back/login': (req, res) => {
     const body = req.body;
     // if(body.username === 'admin' && body.password==="645c9d6e956246fd1d9f217ef7c55f95"){
     res.send(mockUser);
@@ -109,10 +109,10 @@ export default {
     //     })
     // }
   },
-  'POST /api/signOut': {
+  'POST /dkserver-back/signOut': {
     success: true,
   },
-  'POST /api/modifyPwd': (req, res) => {
+  'POST /dkserver-back/modifyPwd': (req, res) => {
     const body = req.body;
     if (body.oldPwd !== '645c9d6e956246fd1d9f217ef7c55f95') {
       res.status(500).send({
@@ -124,7 +124,7 @@ export default {
       res.end();
     }
   },
-  'GET /api/users': (req, res) => {
+  'GET /dkserver-back/users': (req, res) => {
     let users = mockUserList.users;
     if ('keywords' in req.query) {
       users = users.filter(
@@ -139,7 +139,7 @@ export default {
       users,
     });
   },
-  'GET /api/user/:id': (req, res) => {
+  'GET /dkserver-back/user/:id': (req, res) => {
     let user = mockUserList.users;
     user = user.filter((item) => {
       return req.params.id == item.id;
@@ -148,14 +148,14 @@ export default {
       user: user[0],
     });
   },
-  'GET /api/roles': (req, res) => {
+  'GET /dkserver-back/roles': (req, res) => {
     res.send({ roles: mockRoleList });
   },
-  'GET /api/role/:id': (req, res) => {
+  'GET /dkserver-back/role/:id': (req, res) => {
     res.send(mockRoleList.find((item) => item.id == req.params.id));
   },
-  'GET /api/menus': { menus: Menus },
-  'POST /api/resource/addOrUpdate': (req, res) => {
+  'GET /dkserver-back/menus': { menus: Menus },
+  'POST /dkserver-back/resource/addOrUpdate': (req, res) => {
     const list = req.body.list;
     list.map((item) => {
       if (!item.id) {

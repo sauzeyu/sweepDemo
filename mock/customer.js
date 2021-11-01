@@ -1,5 +1,5 @@
 export default {
-  'GET /api/DKLinkuser/api/userList': {
+  'GET /dkserver-back/DKLinkuser/api/userList': {
     code: 0,
     total: 20,
     data: [

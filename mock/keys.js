@@ -1,6 +1,6 @@
 // 钥匙管理
 export default {
-  'GET /api/DKLinkkey/api/keyList': {
+  'GET /dkserver-back/DKLinkkey/api/keyList': {
     code: 0,
     total: 20,
     pageSize: 20,
@@ -469,7 +469,7 @@ export default {
     ],
     msg: '完成',
   },
-  'GET /api/DKLinkkey/api/keyLogList': {
+  'GET /dkserver-back/DKLinkkey/api/keyLogList': {
     code: 0,
     total: 20,
     pageSize: 20,
@@ -718,7 +718,7 @@ export default {
     ],
     msg: '完成',
   },
-  'GET /api/DKLinkvehicle/api/vehicleModelList': {
+  'GET /dkserver-back/DKLinkvehicle/api/vehicleModelList': {
     code: 0,
     total: 16,
     pageSize: 20,
@@ -855,7 +855,7 @@ export default {
     ],
     msg: '完成',
   },
-  'GET /api/DKLinkvehicle/api/vehicleList': {
+  'GET /dkserver-back/DKLinkvehicle/api/vehicleList': {
     code: 0,
     total: 20,
     pageSize: 20,

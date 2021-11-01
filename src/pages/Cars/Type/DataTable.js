@@ -6,14 +6,6 @@ import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
 import { getCarModes } from '@/services/cars';
-import { Link } from 'umi';
-import Authorized from '@/components/Authorized';
-import {
-  CAR_PART_ADD,
-  CAR_PART_DEL,
-  CAR_TYPE_ADD,
-  CAR_TYPE_UPDATE,
-} from '@/components/Authorized/AuthMap';
 
 @connect(({ carsType, loading }) => ({
   carsType,
@@ -134,15 +126,13 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <Authorized route={CAR_TYPE_ADD}>
-              <Button
-                type={'primary'}
-                icon={<PlusCircleOutlined />}
-                onClick={() => this.upsert()}
-              >
-                新增车型
-              </Button>
-            </Authorized>
+            <Button
+              type={'primary'}
+              icon={<PlusCircleOutlined />}
+              onClick={() => this.upsert()}
+            >
+              新增车型
+            </Button>
           }
         />
         <DrawerConfirm

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { joinPath } from '@/utils/index';
 import { getDvaApp } from 'umi';
-const baseURL = '/api';
+const baseURL = '/dkserver-back';
 
 function createDefaultRequest() {
   const instance = axios.create({
