@@ -14,8 +14,32 @@ class DataTable extends Component {
   state = {};
   columns = [
     {
-      title: 'VIN',
+      title: '车型名称',
+      dataIndex: 'modelName',
+    },
+    {
+      title: '车辆VIN',
       dataIndex: 'vin',
+    },
+    {
+      title: '用户名称',
+      dataIndex: 'userName',
+    },
+    {
+      title: '类型',
+      dataIndex: 'type',
+    },
+    {
+      title: '结果',
+      dataIndex: 'result',
+    },
+    {
+      title: '失败原因',
+      dataIndex: 'reason',
+    },
+    {
+      title: '日期',
+      dataIndex: 'date',
     },
   ];
 
