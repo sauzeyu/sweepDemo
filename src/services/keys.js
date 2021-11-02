@@ -16,3 +16,13 @@ export async function enableKey(params) {
 export async function revokeKey(params) {
   return request.get('DKLinkkey/api/revokeKey', { params });
 }
+
+//
+
+export async function userListByKeyId(id) {
+  return request.get(`DKLinkkey/api/${id}/userListByKeyId`);
+}
+
+export async function vehicleListById(id) {
+  return request.get(`DKLinkkey/api/${id}/vehicleListById`);
+}

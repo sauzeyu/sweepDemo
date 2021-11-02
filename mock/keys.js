@@ -1152,4 +1152,44 @@ export default {
     success: true,
     message: '成功',
   },
+  'GET /dkserver-back/DKLinkkey/api/:id/userListByKeyId': {
+    code: 0,
+    total: 0,
+    data: [
+      {
+        id: '1003073',
+        phone: '15608841733',
+        password: '12345678',
+        name: '水仁朗',
+        isvalid: 1,
+        devFp: '6SRVQUQ4',
+        status: 0, //状态： 0 已注册 1. 已实名认证
+        registTime: null,
+        idnum: '542225198101173544',
+      },
+    ],
+    msg: '完成',
+  },
+  'GET /dkserver-back/DKLinkkey/api/:id/vehicleListById': {
+    code: 0,
+    count: 0,
+    data: [
+      {
+        id: '32',
+        modelId: 1,
+        vin: 'OAJTEZH0N4137XLQ9',
+        cert: '-----BEGIN CERTIFICATE-----\nMIIDmTCCAoOgAwIBAgIGAXfHh9eKMAsGCSqGSIb3DQEBCzBUMQswCQYDVQQGEwJDTjELMAkGA1UECAwCU0MxCzAJBgNVBAcMAkNEMQwwCgYDVQQKDANVQVYxDDAKBgNVBAsMA1VBVjEPMA0GA1UEAwwGVUFWX0NBMB4XDTIxMDIyMjAyMTgyNFoXDTIzMDIyMjAyMTgxMVowdTELMAkGA1UEBhMCQ04xCzAJBgNVBAgMAnNjMQswCQYDVQQHDAJjZDEMMAoGA1UECgwDQUFBMQ0wCwYDVQQLDAR0ZXN0MQ0wCwYDVQQDDARwZXBzMSAwHgYJKoZIhvcNAQkBFhEzMjU2MzI2ODYyQHFxLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALuTD1R2DloJTSl0CPDGq+jfISUMuayzbDpc58L81Z1Dy6Dg41GGQEzi+M6SGn2t+CtRykvDQl7F1Ca3mhr7NmsORacrpMmuXe/9lLLttdq2/jOVdtMtcdxT69JxD8WRGwhGbyis+qA1YMmkANz76xSPmkRYagVRwSVNhUof1I7x2ZaCpzkfAYa7AFg03DRLCX3rS+3lbxSdRRgtdUqOKm6c0GUwKRKBHQUU7XGhm5u2Y5wPlgbN8+Es3QNRidZ8uHMLwBUxYdQmXdcdDgv63zXCNobpnTQ9ncW624c/MhacseoMO/bqTpJ7HJkoGolx7hJ4+YFvNNJp3PBSP5jZkCsCAwEAAaNUMFIwDAYDVR0TBAUwAwEB/zA1BgNVHR8ELjAsMCqgKKAmhiRodHRwOi8vMTcyLjE2LjUuMTE5OjM1MC94ZmlsZS9jYS5jcmwwCwYDVR0PBAQDAgbAMAsGCSqGSIb3DQEBCwOCAQEAjXh+NrX/Q+E/x/fQ10NE1z/9ANxrry70/TOEJxFEzWrD9r/LsUDMtJcEJ46A+VCISeG6L1aL3KTuMwdE7d8msbYnX6FS5Lq7zg44VehXCjvd7M8ro2H4tFQ1wBsvK2CgOqRIdGL2OMUheu9j7qd5CP1+Kwf1idvM2xQbgcW6krmKiaStxUnGoviMP+qXl+pxcFwoISR78a/aixvk5ApCwRmJ+z4+c357Qiv49Vp+amZYywXo1gv9UAuBJnwGo4Ho0fCTAFXQJIV46PiUMj46sAnUIxaC91ghjkai92Z0MeHnDq6a3CK4DbEDRjziqanHEw/bC1VX+7XlymnSfQG6Xw==\n-----END CERTIFICATE-----',
+        //签名
+        createTime: '2021-03-02 00:54:01',
+        license: '0940H', //车牌号
+        ownerID: '542225198101173544', //车主身份证号
+        phone: '15608841733',
+        isvalid: 1, //是否可用 1 可用
+        colour: '黑色',
+        bluetooth: 'P3HURHH', //车辆蓝牙连接标识
+        code: 'CX211', //车辆代码
+      },
+    ],
+    msg: '完成',
+  },
 };
