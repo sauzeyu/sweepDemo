@@ -237,7 +237,7 @@ class DataTable extends Component {
         >
           <DescriptionList col={1}>
             <Description term={'电话'}>{userInfo.phone}</Description>
-            <Description term={'姓名'}>{userInfo.phone}</Description>
+            <Description term={'姓名'}>{userInfo.name}</Description>
             <Description term={'身份证'}>{userInfo.idnum}</Description>
             <Description term={'是否有效'}>
               {userInfo.isvalid === 0 ? (
