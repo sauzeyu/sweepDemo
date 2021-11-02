@@ -46,13 +46,13 @@ class EditForm extends Component {
         >
           <RestrictiveInput trim maxLength={40} disabled={isEdit} />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label={'VIN规则'}
           name="vinMatch"
           rules={[{ required: true, message: 'VIN规则不能为空' }]}
         >
           <RestrictiveInput trim maxLength={17} disabled={this.isEdit} />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label={'备注'} name="remark">
           <Input.TextArea maxLength={200} />
         </Form.Item>
