@@ -21,3 +21,7 @@ export async function delCarModes(id) {
 export async function getVehicles(params) {
   return request.get('DKLinkvehicle/api/vehicleList', { params });
 }
+// 删除汽车列表
+export async function deleteVehicle(params) {
+  return request.get('DKLinkvehicle/api/deleteModel', { params });
+}

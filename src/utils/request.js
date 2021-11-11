@@ -11,7 +11,8 @@ function createDefaultRequest() {
   instance.interceptors.request.use((config) => {
     const state = getDvaApp()._store.getState();
     if (state.user && state.user.currentUser && state.user.currentUser.token) {
-      config.headers['token'] = state.user.currentUser.token;
+      config.headers['dkserver-user'] = state.user.currentUser.token;
+      config.headers['token'] = 'vecentek';
     }
     return config;
   });

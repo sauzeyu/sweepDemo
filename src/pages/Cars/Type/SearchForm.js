@@ -37,7 +37,7 @@ class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'车型名称'} name="name">
+            <Form.Item label={'车型名称'} name="s_key">
               <Input placeholder="请输入车型名称" />
             </Form.Item>
           </Col>

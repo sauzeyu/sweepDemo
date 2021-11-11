@@ -81,7 +81,7 @@ class DataTable extends Component {
     this.props
       .dispatch({
         type: 'keysManage/userListByKeyId',
-        payload: col.id,
+        payload: { id: col.id },
       })
       .then(
         (res) => {

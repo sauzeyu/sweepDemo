@@ -38,17 +38,16 @@ class DataTable extends Component {
   ];
   del = (model) => {
     Modal.confirm({
-      title: '删除车型',
-      content: `确定删除“${model.name}”？`,
+      title: '确定删除？',
       onOk: () => {
         return this.props
           .dispatch({
-            type: 'customer/del',
-            payload: model.id,
+            type: 'customer/delete',
+            payload: items,
           })
           .then(
             () => {
-              message.success('操作成功');
+              this.setState({ selectedRowKeys: [] });
               this.dataTable.refresh();
             },
             (err) => {

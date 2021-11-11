@@ -16,10 +16,10 @@ export default {
       return yield call(revokeKey, { id: payload });
     },
     *userListByKeyId({ payload }, { call }) {
-      return yield call(userListByKeyId, { payload });
+      return yield call(userListByKeyId, payload);
     },
     *vehicleListById({ payload }, { call }) {
-      return yield call(vehicleListById, { payload });
+      return yield call(vehicleListById, { id: payload });
     },
   },
   reducers: {

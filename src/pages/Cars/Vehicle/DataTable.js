@@ -24,8 +24,6 @@ class DataTable extends Component {
   state = {
     // 新增/修改
     editFormVisible: false,
-    // 导入
-    importDataVisible: false,
     selectedRowKeys: [],
   };
   columns = [
@@ -69,34 +67,20 @@ class DataTable extends Component {
       }
     });
   };
-  importVehicle = () => {
-    this.setState({ importDataVisible: true });
-    // 发送获取模板的链接请求
-    this.props
-      .dispatch({ type: 'carsVehicle/downloadTemplate' })
-      .then((res) => {
-        this.setState({
-          fileUrl: res.data,
-          templateFlag: res.success,
-        });
-      })
-      .catch((error) => {
-        message.error(`${error.message}`);
-      });
-  };
-  del = (model) => {
+
+  del = (items) => {
     Modal.confirm({
       title: '删除汽车信息',
-      content: `确定删除“${model.name}”？`,
+      content: `确定删除车辆？`,
       onOk: () => {
         this.props
           .dispatch({
             type: 'carsVehicle/del',
-            payload: model.id,
+            payload: items,
           })
           .then(
             () => {
-              message.success('操作成功');
+              this.setState({ selectedRowKeys: [] });
               this.dataList.refresh();
             },
             (err) => {
@@ -126,29 +110,18 @@ class DataTable extends Component {
     this.editForm.resetFields();
     this.setState({ editFormVisible: false });
   };
-  // 取消导入
-  onImportCancel = (flag) => {
-    return () => {
-      if (flag) {
-        this.dataList.refresh();
-      }
-      this.setState({ importDataVisible: false });
-    };
-  };
   handleRowSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
   handleTableChange = () => {
-    this.setState({ selectedRowKeys: [] });
+    // this.setState({ selectedRowKeys: [] });
   };
   render() {
-    const {
-      editFormVisible,
+    const { editFormVisible, selectedRowKeys } = this.state;
+    const rowSelection = {
       selectedRowKeys,
-      importDataVisible,
-      templateFlag,
-      fileUrl,
-    } = this.state;
+      onChange: this.handleRowSelectChange,
+    };
     return (
       <div>
         <EasyTable
@@ -159,21 +132,22 @@ class DataTable extends Component {
           rowKey={'id'}
           columns={this.columns}
           scroll={{ x: 1300 }}
-          // rowSelection={rowSelection}
+          rowSelection={rowSelection}
           onChange={this.handleTableChange}
           wrappedComponentRef={(ref) => (this.dataList = ref)}
           extra={
             <div className={'btn-group'}>
-              <Authorized route={CAR_VEHICLE_ADD}>
-                <Button onClick={() => this.upsert()} type={'primary'}>
-                  新增
+              {selectedRowKeys.length > 0 && (
+                <Button
+                  type={'danger'}
+                  onClick={() => this.del(selectedRowKeys)}
+                >
+                  删除
                 </Button>
-              </Authorized>
-              <Authorized route={CAR_VEHICLE_IMPORT}>
-                <Button onClick={() => this.importVehicle()} type={'primary'}>
-                  导入
-                </Button>
-              </Authorized>
+              )}
+              <Button onClick={() => this.upsert()} type={'primary'}>
+                新增
+              </Button>
             </div>
           }
         />
@@ -191,31 +165,6 @@ class DataTable extends Component {
             wrappedComponentRef={(ref) => (this.editFormWrapper = ref)}
           />
         </DrawerConfirm>
-        <Modal
-          footer={null}
-          title={'导入车辆信息'}
-          visible={importDataVisible}
-          onCancel={this.onImportCancel()}
-          destroyOnClose={true}
-        >
-          {templateFlag && (
-            <a href={fileUrl} download>
-              下载导入模板
-            </a>
-          )}
-
-          <FileUploader
-            callBack={this.onImportCancel(true)}
-            action="vehicle/import"
-            name={'file'}
-            maxFileCount={1}
-            allowFileExt={['xlsx']}
-          >
-            <Button className={'gutter-left_lg'} type={'primary'}>
-              上传
-            </Button>
-          </FileUploader>
-        </Modal>
       </div>
     );
   }

@@ -63,12 +63,12 @@ export default class LoginPage extends Component {
             setLocale(user.language);
           }
           // 如果是初始密码则修改密码
-          if (!user.changedPWD) {
-            message.info('请修改您的密码');
-            history.replace('/user/changePassword');
-          } else {
-            this.goHome();
-          }
+          // if (!user.changedPWD) {
+          //   message.info('请修改您的密码');
+          //   history.replace('/user/changePassword');
+          // } else {
+          this.goHome();
+          // }
         },
         (e) => {
           // 登陆失败
@@ -77,7 +77,7 @@ export default class LoginPage extends Component {
             this.captcha.refresh();
           }
           message.error(e.message);
-          this.setState({ needCaptcha: data.validateCode != -1 });
+          // this.setState({ needCaptcha: data.validateCode != -1 });
         },
       );
   };
