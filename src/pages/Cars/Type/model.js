@@ -1,4 +1,9 @@
-import { addCarModes, delCarModes, updateCarModes } from '@/services/cars';
+import {
+  addCarModes,
+  delCarModes,
+  updateCarModes,
+  delModeBatch,
+} from '@/services/cars';
 
 export default {
   namespace: 'carsType',
@@ -9,6 +14,9 @@ export default {
     },
     *del({ payload }, { call }) {
       return yield call(delCarModes, payload);
+    },
+    *delModeBatch({ payload }, { call }) {
+      return yield call(delModeBatch, payload);
     },
   },
   reducers: {

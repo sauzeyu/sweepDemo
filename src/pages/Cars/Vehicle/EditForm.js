@@ -58,9 +58,9 @@ class EditForm extends Component {
   };
   handleCarTypeChange = (value, type, c) => {
     console.log(type.vinMatch);
-    this.form.current.setFieldsValue({
-      vin: type.vinMatch,
-    });
+    // this.form.current.setFieldsValue({
+    //   vin: type.vinMatch,
+    // });
     this.setState({
       vinMatch: type.vinMatch,
     });
@@ -123,18 +123,6 @@ class EditForm extends Component {
                 min: 17,
                 max: 17,
                 message: '请输入17位长度的VIN',
-              },
-              {
-                validator: (rule, value) => {
-                  if (!value || !this.state.vinMatch || value.length !== 17)
-                    return Promise.resolve(true);
-                  if (value.startsWith(this.state.vinMatch)) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject();
-                  // return Promise.resolve(value.startsWith(this.state.vinMatch));
-                },
-                message: '输入的VIN与车型不匹配',
               },
             ]}
           >

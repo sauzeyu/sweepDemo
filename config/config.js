@@ -101,7 +101,7 @@ function getGlobalParams() {
   [
       'D:\\nodejs\\node.exe',
       'E:\\job\\01\\webclient\\node_modules\\umi\\lib\\scripts\\realDev.js',
-      'dev'   
+      'dev'
   ]
   */
   const startParams = process.argv

@@ -30,13 +30,46 @@ class DataTable extends Component {
     {
       title: 'VIN号',
       dataIndex: 'vin',
-      render: (vin, col) => {
-        return (
-          <Authorized route={CAR_VEHICLE_UPDATE} noMatch={vin}>
-            <a onClick={() => this.upsert(col)}>{vin}</a>
-          </Authorized>
-        );
-      },
+      width: 200,
+    },
+    {
+      title: '车型ID',
+      dataIndex: 'model_id',
+      width: 100,
+    },
+    // {
+    //   title: '证书',
+    //   dataIndex: 'cert',
+    // },
+    {
+      title: '车牌号',
+      dataIndex: 'license',
+      width: 130,
+    },
+    {
+      title: '车主身份证号',
+      dataIndex: 'ownerID',
+      width: 180,
+    },
+    {
+      title: '车主手机号',
+      dataIndex: 'phone',
+      width: 150,
+    },
+    {
+      title: '是否有效',
+      dataIndex: 'isvalid',
+      width: 70,
+    },
+    {
+      title: '颜色',
+      dataIndex: 'colour',
+      width: 80,
+    },
+    {
+      title: '车辆蓝牙连接标识',
+      dataIndex: 'bluetooth',
+      width: 200,
     },
     {
       title: '操作',
@@ -69,6 +102,11 @@ class DataTable extends Component {
   };
 
   del = (items) => {
+    const idList = [];
+    items.map((item) => {
+      const json = JSON.parse(JSON.stringify({ id: item }));
+      idList.push(json);
+    });
     Modal.confirm({
       title: '删除汽车信息',
       content: `确定删除车辆？`,
@@ -76,7 +114,7 @@ class DataTable extends Component {
         this.props
           .dispatch({
             type: 'carsVehicle/del',
-            payload: items,
+            payload: idList,
           })
           .then(
             () => {

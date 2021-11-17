@@ -5,7 +5,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
-import { getCarModes } from '@/services/cars';
+import { getCarModes, delCarModesPost } from '@/services/cars';
 
 @connect(({ carsType, loading }) => ({
   carsType,
@@ -14,20 +14,21 @@ import { getCarModes } from '@/services/cars';
 class DataTable extends Component {
   state = {
     editFormVisible: false,
+    idList: [],
   };
   columns = [
     {
       title: '车型名称',
       dataIndex: 'name',
       ellipsis: true,
-      render: (name, col) => {
-        return (
-          <Badge
-            status={col.isValid == 1 ? 'success' : 'error'}
-            text={<a onClick={() => this.upsert(col)}>{name}</a>}
-          />
-        );
-      },
+      // render: (name, col) => {
+      //   return (
+      //     <Badge
+      //       status={col.isValid == 1 ? 'success' : 'error'}
+      //       text={<a onClick={() => this.upsert(col)}>{name}</a>}
+      //     />
+      //   );
+      // },
     },
     {
       title: '代码',
@@ -49,20 +50,24 @@ class DataTable extends Component {
         return (
           <div className={'link-group'}>
             <a onClick={() => this.del(col)}>删除</a>
+            <a onClick={() => this.upsert(col)}>编辑</a>
           </div>
         );
       },
     },
   ];
   del = (model) => {
+    const json = JSON.parse(JSON.stringify({ id: model.id }));
+    const { idList } = this.state;
+    idList.push(json);
     Modal.confirm({
       title: '删除车型',
       content: `确定删除“${model.name}”？`,
       onOk: () => {
         return this.props
           .dispatch({
-            type: 'carsType/del',
-            payload: model.id,
+            type: 'carsType/delModeBatch',
+            payload: idList,
           })
           .then(
             () => {
