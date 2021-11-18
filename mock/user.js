@@ -109,9 +109,9 @@ export default {
     //     })
     // }
   },
-  'POST /dkserver-back/signOut': {
-    success: true,
-  },
+  // 'POST /dkserver-back/signOut': {
+  //   success: true,
+  // },
   'POST /dkserver-back/modifyPwd': (req, res) => {
     const body = req.body;
     if (body.oldPwd !== '645c9d6e956246fd1d9f217ef7c55f95') {

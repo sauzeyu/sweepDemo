@@ -145,12 +145,12 @@ function extUserAuthMap(user) {
     dnaMap = {};
   const menus = user.menus || [];
   // 处理菜单 将嵌套格式的router扁平化
-  /* 例如: 
+  /* 例如:
     { route: /parts,
-      children:[ 
+      children:[
           {route:/parts/1,children:[{route:/parts/1/1.1}]},
       ]
-    } 
+    }
     ==>
     /parts: { children:[  {route:/parts/1,children:[{route:/parts/1/1.1}]}] },
     /parts/1: { children:[{route:/parts/1/1.1}] },

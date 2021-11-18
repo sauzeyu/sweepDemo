@@ -7,6 +7,7 @@ import styles from './index.less';
 import { history } from 'umi';
 
 export default class GlobalHeaderRight extends PureComponent {
+  debugger;
   handleUserMenuClick = ({ key }) => {
     switch (key) {
       case 'logout':
