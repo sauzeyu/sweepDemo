@@ -33,3 +33,10 @@ export async function deleteVehicle(params) {
 export async function addVehicle(params) {
   return request.post('DKLinkvehicle/api/add', params);
 }
+//根据用户ID查询车辆
+export async function vehicleListById(params) {
+  return request.get(
+    '/DKLinkuser/api/' + params.id + '/vehicleListById',
+    params,
+  );
+}

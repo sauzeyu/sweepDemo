@@ -3,15 +3,15 @@ import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
-import { getCarModes } from '@/services/cars';
+import { vehicleListById } from '@/services/cars';
+import DataTable from './DataTable';
 
-@connect(({ carsType, loading }) => ({
-  carsType,
-  upserting: loading.effects['carsType/upsert'],
-}))
 class VehicleTable extends Component {
+  constructor(props) {
+    super(props);
+  }
   state = {
-    idList: [],
+    id: this.props.userId,
   };
   columns = [
     {
@@ -33,26 +33,17 @@ class VehicleTable extends Component {
       dataIndex: 'remark',
       ellipsis: true,
     },
-    {
-      title: '操作',
-      render: (col) => {
-        return (
-          <div className={'link-group'}>
-            <a onClick={() => this.del(col)}>删除</a>
-            <a onClick={() => this.upsert(col)}>编辑</a>
-          </div>
-        );
-      },
-    },
   ];
   render() {
+    console.log(this.props);
     return (
       <div>
         <EasyTable
           autoFetch
-          source={getCarModes}
+          source={vehicleListById}
           dataProp={'data'}
           name={'carsTypeDataTable'}
+          fixedParams={{ id: this.state.id }}
           rowKey={'id'}
           columns={this.columns}
         />

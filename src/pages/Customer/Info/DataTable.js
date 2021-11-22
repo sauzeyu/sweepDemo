@@ -21,6 +21,7 @@ class DataTable extends Component {
     selectedRowKeys: [],
     showCarInfo: false,
     carInfo: {},
+    userId: {},
   };
   columns = [
     {
@@ -85,6 +86,7 @@ class DataTable extends Component {
   carInfo = (col) => {
     this.setState({
       editFormVisible: true,
+      userId: col.id,
     });
   };
   del = (model) => {
@@ -108,6 +110,9 @@ class DataTable extends Component {
       },
     });
   };
+  onCancel = () => {
+    this.setState({ editFormVisible: false });
+  };
   handleRowSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
@@ -120,6 +125,7 @@ class DataTable extends Component {
     const { showCarInfo, carInfo = {} } = this.state;
     const { selectedRowKeys } = this.state;
     const { editFormVisible } = this.state;
+    const { userId } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
@@ -151,14 +157,15 @@ class DataTable extends Component {
         />
 
         <DrawerConfirm
-          title={'汽车'}
-          width={650}
+          title={'车辆信息'}
+          width={1000}
           visible={editFormVisible}
-          onOk={this.onOk}
           onCancel={this.onCancel}
+          onOk={this.onCancel}
           destroyOnClose
         >
           <VehicleTable
+            userId={userId}
             editFormRef={(ref) => (this.editForm = ref.form.current)}
             wrappedComponentRef={(ref) => (this.editFormWrapper = ref)}
           />
