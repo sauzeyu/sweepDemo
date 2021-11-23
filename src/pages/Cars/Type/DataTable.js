@@ -117,6 +117,7 @@ class DataTable extends Component {
     this.editForm.resetFields();
     this.setState({ editFormVisible: false });
   };
+
   render() {
     const { editFormVisible } = this.state;
     const { upserting } = this.props;

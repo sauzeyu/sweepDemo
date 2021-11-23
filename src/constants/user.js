@@ -5,7 +5,8 @@ export const Sex = {
 
 export const status = {
   1: '有效',
-  0: '无效',
+  2: '无效',
+  3: '报废',
 };
 
 export const isVaild = {

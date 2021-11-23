@@ -30,9 +30,10 @@ export default class extends React.Component {
   };
   hasFoundItems = false;
   lastData = [];
+  //AssociativeSearch
   constructor(props) {
     super(props);
-    //异步节流时序控制
+    //异步节流
     this.lastFetchId = 0;
     const { debounceWait } = this.props;
     this.handleSearch = debounce(this.handleSearch, debounceWait);

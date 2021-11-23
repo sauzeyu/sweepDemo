@@ -4,7 +4,10 @@ import {
   updateVehicle,
   deleteVehicle,
   getVehicleDetail,
+  userListByVehicleId,
 } from '@/services/cars';
+import { vehicleListById } from '@/services/keys';
+
 export default {
   namespace: 'carsVehicle',
   state: {
@@ -22,6 +25,9 @@ export default {
     },
     *downloadTemplate({ payload }, { call }) {
       return yield call(downloadTemplate);
+    },
+    *userListByVehicleId({ payload }, { call }) {
+      return yield call(userListByVehicleId, payload);
     },
   },
   reducers: {

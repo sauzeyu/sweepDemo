@@ -2,6 +2,7 @@ import request from '../utils/request';
 import { PermissionsUtil, joinPath } from '../utils';
 import { getPublicPath } from '@/utils';
 import menu from '@/models/menu.js';
+
 export async function login(params) {
   return request.post('/dkserver/login', params).then(decorateUserInfo);
 }
