@@ -7,7 +7,7 @@ export class CarTypesSelect extends React.Component {
   render() {
     return (
       <BaseDataSelect
-        labelKey={'name'}
+        labelKey={'modelName'}
         valueKey={'id'}
         dataPropName={'data'}
         {...this.props}

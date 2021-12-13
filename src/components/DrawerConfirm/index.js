@@ -20,9 +20,11 @@ export default class DrawerConfirm extends React.Component {
     okButtonProps: PropTypes.object,
     cancelButtonProps: PropTypes.object,
     footer: PropTypes.any,
+    hiddenOk: PropTypes.bool,
     extraFooter: PropTypes.any,
     ...Drawer.propTypes,
   };
+
   render() {
     const {
       children,
@@ -35,6 +37,7 @@ export default class DrawerConfirm extends React.Component {
       okType = 'primary',
       okButtonProps,
       cancelButtonProps,
+      hiddenOk = false,
       footer,
       extraFooter,
       ...restProps
@@ -60,6 +63,7 @@ export default class DrawerConfirm extends React.Component {
                   type={okType}
                   loading={confirmLoading}
                   {...okButtonProps}
+                  hidden={hiddenOk}
                   onClick={onOk}
                 >
                   {okText}

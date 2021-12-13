@@ -41,6 +41,7 @@ export default class LoginPage extends Component {
      * err      错误
      * values   字段:值
      */
+
     let values = await this.form.current.validateFields();
     // 发送请求
     this.props
@@ -88,7 +89,6 @@ export default class LoginPage extends Component {
       query: { r: redirect },
     } = this.props.location;
     // if(isUrl(redirect)){
-    //     console.log('redirect to',redirect);
     //     window.location.replace(redirect);
     // }else {
     history.replace('/');

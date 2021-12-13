@@ -111,7 +111,6 @@ const model = {
         put,
         call,
       );
-      // console.log("pagination",pagination.current);
       if (res.data.length == 0 && pagination.current >= 1) {
         return yield put({
           type: 'refresh',

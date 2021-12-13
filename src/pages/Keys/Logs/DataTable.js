@@ -3,9 +3,16 @@ import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal, Tag } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
-import { getKeysLogsList } from '@/services/keys';
+
+import {
+  getKeysLogsList,
+  selectUserById,
+  selectVehicleById,
+} from '@/services/keys';
 import DescriptionList from '@/components/DescriptionList';
+
 const { Description } = DescriptionList;
+
 @connect(({ keysLogs, keysManage, loading }) => ({
   keysLogs,
   keysManage,
@@ -32,7 +39,7 @@ class DataTable extends Component {
     },
     {
       title: '用户名称',
-      dataIndex: 'userName',
+      dataIndex: 'username',
       render: (text, col) => {
         return <a onClick={() => this.userInfo(col)}>{text}</a>;
       },
@@ -59,38 +66,29 @@ class DataTable extends Component {
       showCarInfo: true,
       carInfo: {},
     });
-    this.props
-      .dispatch({
-        type: 'keysManage/vehicleListById',
-        payload: col.id,
-      })
-      .then(
-        (res) => {
-          this.setState({ carInfo: (res.data && res.data[0]) || [] });
-        },
-        (err) => {
-          message.error(err.message);
-        },
-      );
+
+    selectVehicleById(col.vehicleId).then(
+      (res) => {
+        this.setState({ carInfo: res.data });
+      },
+      (err) => {
+        message.error(err.message);
+      },
+    );
   };
   userInfo = (col) => {
     this.setState({
       showUserInfo: true,
       userInfo: {},
     });
-    this.props
-      .dispatch({
-        type: 'keysManage/userListByKeyId',
-        payload: { id: col.id },
-      })
-      .then(
-        (res) => {
-          this.setState({ userInfo: (res.data && res.data[0]) || [] });
-        },
-        (err) => {
-          message.error(err.message);
-        },
-      );
+    selectUserById(col.userId).then(
+      (res) => {
+        this.setState({ userInfo: res.data });
+      },
+      (err) => {
+        message.error(err.message);
+      },
+    );
   };
   onCancel = () => {
     this.setState({
@@ -98,6 +96,7 @@ class DataTable extends Component {
       showCarInfo: false,
     });
   };
+
   render() {
     const {
       showUserInfo,
@@ -125,16 +124,16 @@ class DataTable extends Component {
         >
           <DescriptionList col={1}>
             <Description term={'电话'}>{userInfo.phone}</Description>
-            <Description term={'姓名'}>{userInfo.name}</Description>
-            <Description term={'身份证'}>{userInfo.idnum}</Description>
+            <Description term={'姓名'}>{userInfo.username}</Description>
+            <Description term={'身份证'}>{userInfo.idCard}</Description>
             <Description term={'是否有效'}>
-              {userInfo.isvalid === 0 ? (
+              {userInfo.isValid === 0 ? (
                 <Tag color="#f50">无效</Tag>
               ) : (
                 <Tag color="#87d068">有效</Tag>
               )}
             </Description>
-            <Description term={'指纹'}>{userInfo.devFp}</Description>
+            <Description term={'指纹'}>{userInfo.phoneFingerprint}</Description>
             <Description term={'状态'}>
               {userInfo.status === 0 ? '已注册' : '已实名认证'}
             </Description>
@@ -148,10 +147,12 @@ class DataTable extends Component {
           destroyOnClose={true}
         >
           <DescriptionList col={1}>
-            <Description term={'车型代码'}>{carInfo.code}</Description>
+            <Description term={'车型代码'}>{carInfo.modelCode}</Description>
             <Description term={'车牌号'}>{carInfo.license}</Description>
             <Description term={'创建时间'}>{carInfo.createTime}</Description>
-            <Description term={'车主身份证号'}>{carInfo.ownerID}</Description>
+            <Description term={'车主身份证号'}>
+              {carInfo.ownerIdCard}
+            </Description>
             <Description term={'车主手机号'}>{carInfo.phone}</Description>
             <Description term={'是否有效'}>
               {carInfo.isvalid === 0 ? (
@@ -160,7 +161,7 @@ class DataTable extends Component {
                 <Tag color="#87d068">正常</Tag>
               )}
             </Description>
-            <Description term={'车辆颜色'}>{carInfo.colour}</Description>
+            <Description term={'车辆颜色'}>{carInfo.color}</Description>
             <Description term={'车辆蓝牙链接标识'}>
               {carInfo.bluetooth}
             </Description>

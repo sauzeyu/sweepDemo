@@ -19,6 +19,9 @@ function createDefaultRequest() {
   instance.interceptors.response.use(
     (response) => {
       const data = response.data;
+      if (response.status === 401) {
+        // window.location.href = '/user/login';
+      }
       if (data.success === false || data.success === 0) {
         return Promise.reject({
           message: data.message || '未知错误',

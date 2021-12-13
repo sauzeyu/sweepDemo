@@ -17,7 +17,6 @@
 export const dva = {
   config: {
     onError(err) {
-      console.log(err);
       if (
         !('onunhandledrejection' in window) &&
         err &&

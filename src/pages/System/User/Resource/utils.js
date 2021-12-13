@@ -90,12 +90,10 @@ export const insertPermission = (permissions, permission, level) => {
       arr.push(addItem);
     } else if (level === 1) {
       //创建同级
-      console.log(permission, level);
       addItem.type = permission.type;
       arr.splice(index + 1, 0, addItem);
     } else {
       //创建二级菜单
-      console.log(permission.type);
       addItem.type =
         { 2: '0', 0: '1', 1: '1' }[permission.type] || addItem.type;
       if (!item.children) item.children = [];

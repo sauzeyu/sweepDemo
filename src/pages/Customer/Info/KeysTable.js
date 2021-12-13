@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import { Badge, Button, message, Modal } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
-import { connect } from 'dva';
-import { keyListById } from '@/services/cars';
+import { keyListByUserId } from '@/services/customer';
+import { status } from '@/constants/user';
 import {
   analyzePermissions,
   DKState,
@@ -11,24 +9,17 @@ import {
   Permit,
 } from '@/constants/keys';
 
-@connect(({ carsType, loading }) => ({
-  carsType,
-  upserting: loading.effects['carsType/upsert'],
-}))
 class VehicleTable extends Component {
-  state = {
-    idList: [],
-  };
   columns = [
     {
       title: '手机设备指纹',
       dataIndex: 'phoneFingerprint',
-      width: 260,
+      width: 250,
     },
     {
-      title: '电话',
-      dataIndex: 'phone',
-      width: 130,
+      title: '数字钥匙ID',
+      dataIndex: 'keyOwnerId',
+      width: 220,
     },
     {
       title: '具体状态',
@@ -39,12 +30,17 @@ class VehicleTable extends Component {
       },
     },
     {
-      title: '失效时间',
-      dataIndex: 'valTo',
-      width: 400,
+      title: '生效时间',
+      dataIndex: 'valFrom',
+      width: 200,
     },
     {
-      title: '授权权限值',
+      title: '失效时间',
+      dataIndex: 'valTo',
+      width: 200,
+    },
+    {
+      title: '授权权限',
       dataIndex: 'permissions',
       width: 300,
       render: (text) => {
@@ -54,6 +50,11 @@ class VehicleTable extends Component {
     {
       title: '附加信息',
       dataIndex: 'serverPersonal',
+      width: 200,
+    },
+    {
+      title: '申请时间',
+      dataIndex: 'applyTime',
       width: 200,
     },
     {
@@ -67,22 +68,21 @@ class VehicleTable extends Component {
     {
       title: '预配对值',
       dataIndex: 'pp',
-      width: 200,
     },
   ];
 
   render() {
-    const { selectedVehicleId } = this.props;
+    const { userId } = this.props;
     return (
       <div>
         <EasyTable
           autoFetch
-          source={keyListById}
+          source={keyListByUserId}
           dataProp={'data'}
           name={'carsTypeDataTable'}
           rowKey={'id'}
           columns={this.columns}
-          fixedParams={{ id: selectedVehicleId }}
+          fixedParams={{ id: userId }}
         />
       </div>
     );

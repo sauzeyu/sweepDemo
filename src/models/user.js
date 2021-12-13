@@ -122,7 +122,6 @@ export const SignPassword = (password) => {
 };
 
 function storeUser(user) {
-  console.log('store-user', user);
   if (user) {
     user = { ...user };
     delete user.routeMap;

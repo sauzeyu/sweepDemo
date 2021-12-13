@@ -4,20 +4,18 @@ import {
   updateVehicle,
   deleteVehicle,
   getVehicleDetail,
-  userListByVehicleId,
+  selectUserByPhone,
 } from '@/services/cars';
 import { vehicleListById } from '@/services/keys';
 
 export default {
   namespace: 'carsVehicle',
-  state: {
-    vehicleDetail: undefined,
-  },
+  state: {},
   effects: {
     *upsert({ payload }, { call }) {
       return yield call(payload.id ? updateVehicle : addVehicle, payload);
     },
-    *del({ payload }, { call }) {
+    *deleteVehicle({ payload }, { call }) {
       return yield call(deleteVehicle, payload);
     },
     *getVehicleDetail({ payload }, { call }) {
@@ -26,8 +24,8 @@ export default {
     *downloadTemplate({ payload }, { call }) {
       return yield call(downloadTemplate);
     },
-    *userListByVehicleId({ payload }, { call }) {
-      return yield call(userListByVehicleId, payload);
+    *selectUserByPhone({ payload }, { call }) {
+      return yield call(selectUserByPhone, payload);
     },
   },
   reducers: {
@@ -35,13 +33,6 @@ export default {
       return {
         ...state,
         ...payload,
-      };
-    },
-    initVehicleDetail(state, { payload }) {
-      let vehicleDetail = { vehicleDetail: payload };
-      return {
-        ...state,
-        ...vehicleDetail,
       };
     },
   },
