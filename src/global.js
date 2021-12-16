@@ -8,8 +8,6 @@ window.React = React;
 window.addEventListener('unhandledrejection', function (event) {
   if (event.reason && event.reason.type === 'RequestError') {
     event.preventDefault();
-    message.error(event.reason.message);
-    console.error('Error handled on unhandledrejection', event.reason.message);
   }
 });
 

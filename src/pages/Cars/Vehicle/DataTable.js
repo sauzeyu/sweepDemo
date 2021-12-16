@@ -1,10 +1,11 @@
+import { PlusCircleOutlined } from '_@ant-design_icons@4.7.0@@ant-design/icons';
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import FileUploader from '@/components/FileUploader';
-import { Button, Modal, message } from 'antd';
+import { Button, Modal, message, Tag } from 'antd';
 import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
-import { getVehicles } from '@/services/cars';
+import { getVehicles, stopVehicle, discardVehicle } from '@/services/cars';
 import { Link, history } from 'umi';
 import { log } from 'lodash-decorators/utils';
 import Authorized from '@/components/Authorized';
@@ -14,6 +15,11 @@ import {
   CAR_VEHICLE_IMPORT,
 } from '@/components/Authorized/AuthMap';
 import { connect } from 'dva';
+import DescriptionList from '@/components/DescriptionList';
+import VehicleTable from '@/pages/Cars/Vehicle/VehicleTable';
+import { status } from '@/constants/user';
+
+const { Description } = DescriptionList;
 
 @connect(({ carsVehicle, loading }) => ({
   carsVehicle,
@@ -23,8 +29,15 @@ import { connect } from 'dva';
 class DataTable extends Component {
   state = {
     // 新增/修改
+    showUserInfo: false,
+    showKeysInfo: false,
     editFormVisible: false,
+    keysFormVisible: false,
     selectedRowKeys: [],
+    userInfo: {},
+    keysInfo: {},
+    selectedCarId: '',
+    idList: [],
   };
   columns = [
     {
@@ -33,14 +46,10 @@ class DataTable extends Component {
       width: 200,
     },
     {
-      title: '车型ID',
-      dataIndex: 'model_id',
+      title: '车型代码',
+      dataIndex: 'modelCode',
       width: 100,
     },
-    // {
-    //   title: '证书',
-    //   dataIndex: 'cert',
-    // },
     {
       title: '车牌号',
       dataIndex: 'license',
@@ -48,7 +57,7 @@ class DataTable extends Component {
     },
     {
       title: '车主身份证号',
-      dataIndex: 'ownerID',
+      dataIndex: 'ownerIdCard',
       width: 180,
     },
     {
@@ -58,12 +67,15 @@ class DataTable extends Component {
     },
     {
       title: '是否有效',
-      dataIndex: 'isvalid',
+      dataIndex: 'isValid',
       width: 70,
+      render: (text) => {
+        return status[text];
+      },
     },
     {
       title: '颜色',
-      dataIndex: 'colour',
+      dataIndex: 'color',
       width: 80,
     },
     {
@@ -75,15 +87,26 @@ class DataTable extends Component {
       title: '操作',
       fixed: 'right',
       render: (col) => {
+        if (col.isValid === 0) {
+          return null;
+        }
+        const flag = col.isValid === 1;
         return (
           <div className={'link-group'}>
-            <a onClick={() => this.userInfo(col)}>查看用户</a>
-            <a onClick={() => this.del(col)}>查看钥匙</a>
-            <a onClick={() => this.del(col)}>启用</a>
-            <a className={'text-danger'} onClick={() => this.del(col)}>
-              停用
+            <a onClick={() => this.userInfo(col)}>查看车主</a>
+            <a onClick={() => this.keysInfo(col)}>查看钥匙</a>
+            <a
+              onClick={() => {
+                return stopVehicle(col.id).then(() => {
+                  col.isValid = col.isValid ^ 1 ^ 2;
+                  this.dataTable.refresh();
+                });
+              }}
+              style={{ color: flag ? '#1890FF' : '#FF4D4F' }}
+            >
+              {flag ? '启用' : '停用'}
             </a>
-            <a className={'text-danger'} onClick={() => this.del(col)}>
+            <a className={'text-danger'} onClick={() => this.revokeCar(col)}>
               吊销
             </a>
           </div>
@@ -91,6 +114,34 @@ class DataTable extends Component {
       },
     },
   ];
+
+  userInfo = (col) => {
+    this.setState({
+      showUserInfo: true,
+      userInfo: {},
+    });
+    this.props
+      .dispatch({
+        type: 'carsVehicle/selectUserByPhone',
+        payload: { phone: col.phone },
+      })
+      .then(
+        (res) => {
+          this.setState({ userInfo: res.data });
+        },
+        (err) => {
+          message.error(err.message);
+        },
+      );
+  };
+
+  keysInfo = (col) => {
+    this.setState({
+      keysFormVisible: true,
+      selectedCarId: col.id,
+    });
+  };
+
   upsert = (value) => {
     this.setState({ editFormVisible: true }, () => {
       if (value) {
@@ -101,34 +152,47 @@ class DataTable extends Component {
     });
   };
 
-  del = (items) => {
-    const idList = [];
-    items.map((item) => {
-      const json = JSON.parse(JSON.stringify({ id: item }));
-      idList.push(json);
-    });
+  revokeCar = (col) => {
     Modal.confirm({
-      title: '删除汽车信息',
-      content: `确定删除车辆？`,
+      title: '吊销车辆',
+      content: (
+        <span style={{ color: 'red' }}>
+          <br />
+          确定吊销车辆？吊销后将无法恢复
+        </span>
+      ),
       onOk: () => {
-        this.props
-          .dispatch({
-            type: 'carsVehicle/del',
-            payload: idList,
-          })
-          .then(
-            () => {
-              this.setState({ selectedRowKeys: [] });
-              this.dataList.refresh();
-            },
-            (err) => {
-              message.error(err.message);
-            },
-          );
+        discardVehicle(col.id).then(() => {
+          this.dataTable.refresh();
+        });
       },
     });
   };
-  onOk = async () => {
+
+  del = (model) => {
+    Modal.confirm({
+      title: '删除车辆',
+      content: `确定删除？`,
+      // onOk: () => {
+      //   return this.props
+      //     .dispatch({
+      //       type: 'carsVehicle/deleteVehicle',
+      //       payload: model,
+      //     })
+      //     .then(
+      //       () => {
+      //         message.success('操作成功');
+      //         // this.setState({flag: true})
+      //       },
+      //       (err) => {
+      //         message.error(err.message);
+      //       },
+      //     );
+      // },
+    });
+  };
+
+  addCar = async () => {
     this.editForm.validateFields().then((data) => {
       if (data.modelId && data.modelId.key != null) {
         data.modelId = data.modelId.key;
@@ -140,13 +204,18 @@ class DataTable extends Component {
         })
         .then(() => {
           this.setState({ editFormVisible: false });
-          this.dataList.refresh();
+          this.dataTable.refresh();
         });
     });
   };
   onCancel = () => {
-    this.editForm.resetFields();
-    this.setState({ editFormVisible: false });
+    // this.editForm.resetFields();
+    this.setState({
+      editFormVisible: false,
+      keysFormVisible: false,
+      showUserInfo: false,
+      showKeysInfo: false,
+    });
   };
   handleRowSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
@@ -154,8 +223,15 @@ class DataTable extends Component {
   handleTableChange = () => {
     // this.setState({ selectedRowKeys: [] });
   };
+
   render() {
-    const { editFormVisible, selectedRowKeys } = this.state;
+    const {
+      editFormVisible,
+      keysFormVisible,
+      selectedRowKeys,
+      userInfo = {},
+      showUserInfo,
+    } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: this.handleRowSelectChange,
@@ -170,35 +246,97 @@ class DataTable extends Component {
           rowKey={'id'}
           columns={this.columns}
           scroll={{ x: 1300 }}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           onChange={this.handleTableChange}
-          wrappedComponentRef={(ref) => (this.dataList = ref)}
+          wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
             <div className={'btn-group'}>
-              {selectedRowKeys.length > 0 && (
+              {/*selectedRowKeys.length > 0 && (
                 <Button
                   type={'danger'}
                   onClick={() => this.del(selectedRowKeys)}
                 >
                   删除
                 </Button>
-              )}
-              <Button onClick={() => this.upsert()} type={'primary'}>
-                新增
+              )*/}
+              <Button
+                onClick={() => this.upsert()}
+                type={'primary'}
+                icon={<PlusCircleOutlined />}
+              >
+                新增车辆
               </Button>
             </div>
           }
         />
+        <Modal
+          footer={null}
+          title={'车主信息'}
+          visible={showUserInfo}
+          onCancel={this.onCancel}
+          destroyOnClose={true}
+        >
+          <DescriptionList col={1}>
+            <Description term={'电话'}>
+              {userInfo ? userInfo.phone : ''}
+            </Description>
+            <Description term={'姓名'}>
+              {userInfo ? userInfo.username : ''}
+            </Description>
+            <Description term={'身份证'}>
+              {userInfo ? userInfo.idCard : ''}
+            </Description>
+            <Description term={'是否有效'}>
+              {userInfo ? (
+                userInfo.isValid === 0 ? (
+                  <Tag color="#f50">无效</Tag>
+                ) : (
+                  <Tag color="#87d068">有效</Tag>
+                )
+              ) : (
+                <Tag color="red">没有车主</Tag>
+              )}
+            </Description>
+            <Description term={'指纹'}>
+              {userInfo ? userInfo.phoneFingerprint : ''}
+            </Description>
+            <Description term={'实名信息'}>
+              {userInfo
+                ? (userInfo ? userInfo.status : 0) === 0
+                  ? '已注册'
+                  : '已实名认证'
+                : ''}
+            </Description>
+          </DescriptionList>
+        </Modal>
+
         <DrawerConfirm
           title={'汽车'}
           width={650}
           visible={editFormVisible}
-          onOk={this.onOk}
+          onOk={this.addCar}
           onCancel={this.onCancel}
           confirmLoading={this.props.upserting}
           destroyOnClose
         >
           <EditForm
+            editFormRef={(ref) => (this.editForm = ref.form.current)}
+            wrappedComponentRef={(ref) => (this.editFormWrapper = ref)}
+          />
+        </DrawerConfirm>
+
+        <DrawerConfirm
+          title={'钥匙'}
+          width={1000}
+          visible={keysFormVisible}
+          onOk={this.onCancel}
+          confirmLoading={false}
+          onCancel={this.onCancel}
+          hiddenOk={true}
+          destroyOnClose
+        >
+          <VehicleTable
+            selectedVehicleId={this.state.selectedCarId}
             editFormRef={(ref) => (this.editForm = ref.form.current)}
             wrappedComponentRef={(ref) => (this.editFormWrapper = ref)}
           />

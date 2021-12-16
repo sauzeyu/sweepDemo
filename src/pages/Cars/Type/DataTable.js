@@ -9,7 +9,6 @@ import { getCarModes, delCarModesPost } from '@/services/cars';
 
 @connect(({ carsType, loading }) => ({
   carsType,
-  upserting: loading.effects['carsType/upsert'],
 }))
 class DataTable extends Component {
   state = {
@@ -19,20 +18,12 @@ class DataTable extends Component {
   columns = [
     {
       title: '车型名称',
-      dataIndex: 'name',
+      dataIndex: 'modelName',
       ellipsis: true,
-      // render: (name, col) => {
-      //   return (
-      //     <Badge
-      //       status={col.isValid == 1 ? 'success' : 'error'}
-      //       text={<a onClick={() => this.upsert(col)}>{name}</a>}
-      //     />
-      //   );
-      // },
     },
     {
       title: '代码',
-      dataIndex: 'code',
+      dataIndex: 'modelCode',
       ellipsis: true,
     },
     {
@@ -98,9 +89,20 @@ class DataTable extends Component {
             payload: values,
           })
           .then(
-            () => {
+            (res) => {
               this.setState({ editFormVisible: false });
-              this.dataTable.refresh();
+              this.editForm.resetFields();
+              const msg = values.id == null ? '新增' : '修改';
+              if (res.code === 200) {
+                Modal.success({
+                  title: msg + '成功',
+                });
+                this.dataTable.refresh();
+              } else {
+                Modal.error({
+                  title: msg + '失败',
+                });
+              }
             },
             (err) => {
               Modal.error({
@@ -117,9 +119,9 @@ class DataTable extends Component {
     this.editForm.resetFields();
     this.setState({ editFormVisible: false });
   };
+
   render() {
     const { editFormVisible } = this.state;
-    const { upserting } = this.props;
     return (
       <div>
         <EasyTable
@@ -146,7 +148,6 @@ class DataTable extends Component {
           visible={editFormVisible}
           onOk={this.onOk}
           onCancel={this.onCancel}
-          confirmLoading={upserting}
         >
           <EditForm editFormRef={(ref) => (this.editForm = ref.form.current)} />
         </DrawerConfirm>

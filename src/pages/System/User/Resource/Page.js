@@ -169,7 +169,6 @@ export default class extends React.Component {
           });
         }
         if (json) {
-          console.log('import', json);
           loop(json, (item) => {
             item.local_added = true;
           });

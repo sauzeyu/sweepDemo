@@ -2,12 +2,18 @@ import request from '../utils/request';
 import { PermissionsUtil, joinPath } from '../utils';
 import { getPublicPath } from '@/utils';
 import menu from '@/models/menu.js';
+import Cookies from 'js-cookie';
+
 export async function login(params) {
   return request.post('/dkserver/login', params).then(decorateUserInfo);
 }
 
 export async function logout(params) {
-  return request.post('signOut', params);
+  // return request.post('signOut', params);
+  // window.location.href = '/user/login';
+  localStorage.removeItem('user-key');
+  Cookies.remove('user-key');
+  return null;
 }
 
 export async function modifyPassword(params) {

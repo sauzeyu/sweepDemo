@@ -1,9 +1,4 @@
-import {
-  enableKey,
-  revokeKey,
-  userListByKeyId,
-  vehicleListById,
-} from '@/services/keys';
+import { enableKey, revokeKey } from '@/services/keys';
 
 export default {
   namespace: 'keysManage',
@@ -14,12 +9,6 @@ export default {
     },
     *revokeKey({ payload }, { call }) {
       return yield call(revokeKey, { id: payload });
-    },
-    *userListByKeyId({ payload }, { call }) {
-      return yield call(userListByKeyId, payload);
-    },
-    *vehicleListById({ payload }, { call }) {
-      return yield call(vehicleListById, { id: payload });
     },
   },
   reducers: {

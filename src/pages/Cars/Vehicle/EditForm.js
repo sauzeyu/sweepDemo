@@ -57,7 +57,6 @@ class EditForm extends Component {
     });
   };
   handleCarTypeChange = (value, type, c) => {
-    console.log(type.vinMatch);
     // this.form.current.setFieldsValue({
     //   vin: type.vinMatch,
     // });
@@ -65,6 +64,7 @@ class EditForm extends Component {
       vinMatch: type.vinMatch,
     });
   };
+
   componentDidMount() {
     this.props.editFormRef && this.props.editFormRef(this);
     this.props.wrappedComponentRef && this.props.wrappedComponentRef(this);
@@ -72,6 +72,7 @@ class EditForm extends Component {
       isEdit: !!this.form.current.getFieldValue('id'),
     });
   }
+
   render() {
     const { loading } = this.state;
     const formItemLayout = {
@@ -128,69 +129,12 @@ class EditForm extends Component {
           >
             <RestrictiveInput trim disabled={isEdit} maxLength={17} />
           </Form.Item>
-          <Form.Item label={'车辆名称'} name="name">
-            <RestrictiveInput trim maxLength={50} />
-          </Form.Item>
-          <Form.Item label={'底盘型号'} name="chassisModel">
-            <RestrictiveInput trim maxLength={50} />
-          </Form.Item>
-          <Form.Item label={'发动机型号'} name="engineModel">
-            <RestrictiveInput trim maxLength={50} />
-          </Form.Item>
           <Row type={'flex'}>
             <Col span={12}>
               <Form.Item
                 {...formItemLayoutDouble}
-                label={'驱动方式'}
-                name="driveMode"
-              >
-                <FormItemInterceptor pipes={FormItemInterceptor.Pipes.String}>
-                  <Select allowClear>
-                    {Object.keys(DriveModes).map((key) => (
-                      <Select.Option value={key} key={key}>
-                        {DriveModes[key]}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </FormItemInterceptor>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item {...formItemLayoutDouble} label={'功率'} name="power">
-                <RestrictiveInput trim maxLength={50} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'排量'}
-                name="displacement"
-              >
-                <RestrictiveInput trim maxLength={50} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'燃料种类'}
-                name="fuelType"
-              >
-                <FormItemInterceptor pipes={FormItemInterceptor.Pipes.String}>
-                  <Select allowClear>
-                    {Object.keys(FuelTypes).map((key) => (
-                      <Select.Option value={key} key={key}>
-                        {FuelTypes[key]}
-                      </Select.Option>
-                    ))}
-                  </Select>
-                </FormItemInterceptor>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
                 label={'车身颜色'}
-                name="color"
+                name="colour"
               >
                 <RestrictiveInput
                   trim
@@ -202,40 +146,8 @@ class EditForm extends Component {
             <Col span={12}>
               <Form.Item
                 {...formItemLayoutDouble}
-                label={'座位数'}
-                name="seatCount"
-                initialValue={5}
-              >
-                <InputNumber min={1} max={100} style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'出厂日期'}
-                name="outDate"
-              >
-                <FormItemInterceptor
-                  pipes={FormItemInterceptor.Pipes.DateString('YYYY-MM-DD')}
-                >
-                  <DatePicker style={{ width: '100%' }} />
-                </FormItemInterceptor>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'车主姓名'}
-                name="ownerName"
-              >
-                <RestrictiveInput trim maxLength={10} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
                 label={'车主手机号'}
-                name="ownerPhone"
+                name="phone"
               >
                 <RestrictiveInput trim maxLength={11} />
               </Form.Item>
@@ -244,17 +156,17 @@ class EditForm extends Component {
               <Form.Item
                 {...formItemLayoutDouble}
                 label={'车牌号'}
-                name="licenseNumber"
+                name="license"
               >
                 <RestrictiveInput trim maxLength={10} />
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item label={'车主身份证号'} name="ownerCard">
-            <RestrictiveInput trim maxLength={18} />
+          <Form.Item label={'蓝牙'} name="bluetooth">
+            <RestrictiveInput trim maxLength={10} />
           </Form.Item>
-          <Form.Item label={'备注'} name="remark">
-            <Input.TextArea maxLength={200} />
+          <Form.Item label={'车主身份证号'} name="ownerID">
+            <RestrictiveInput trim maxLength={18} />
           </Form.Item>
         </Form>
       </Spin>

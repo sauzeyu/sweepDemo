@@ -5,10 +5,16 @@ export const Sex = {
 
 export const status = {
   1: '有效',
-  0: '无效',
+  2: '无效',
+  3: '报废',
+};
+
+export const realName = {
+  0: '已注册',
+  1: '已实名认证',
 };
 
 export const isVaild = {
-  0: '已注册',
-  1: '已实名认证',
+  0: '停用',
+  1: '启用',
 };

@@ -3,11 +3,17 @@ import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal, Tag } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
-import { getKeysList } from '@/services/keys';
+import {
+  getKeysList,
+  selectVehicleById,
+  selectUserById,
+} from '@/services/keys';
 import { Link } from 'umi';
 import { DKState, KeysState } from '@/constants/keys';
 import DescriptionList from '@/components/DescriptionList';
+
 const { Description } = DescriptionList;
+
 @connect(({ keysManage, loading }) => ({
   keysManage,
   // upserting: loading.effects['keysManage/upsert'],
@@ -22,11 +28,11 @@ class DataTable extends Component {
   columns = [
     {
       title: '手机设备指纹',
-      dataIndex: 'phone',
+      dataIndex: 'phoneFingerprint',
     },
     {
       title: '数字钥匙ID',
-      dataIndex: 'keyId',
+      dataIndex: 'keyOwnerId',
     },
     {
       title: '电话',
@@ -49,7 +55,7 @@ class DataTable extends Component {
     },
     {
       title: '授权权限值',
-      dataIndex: 'permit',
+      dataIndex: 'permissions',
     },
     {
       title: '附加信息',
@@ -61,28 +67,28 @@ class DataTable extends Component {
     },
     {
       title: '操作状态',
-      dataIndex: 'status',
+      dataIndex: 'keyStatus',
       render: (text) => {
         return KeysState[text];
       },
     },
     {
       title: '预配对值',
-      dataIndex: 'phone',
+      dataIndex: 'pp',
     },
     {
       title: '操作',
       fixed: 'right',
       width: 300,
       render: (col) => {
-        return col.dkState != 5 ? (
+        return col.dkState !== 5 ? (
           <div className={'link-group'}>
             <a onClick={() => this.userInfo(col)}>查看用户</a>
             <a onClick={() => this.carInfo(col)}>查看车辆</a>
-            {col.dkState == 3 && (
+            {col.dkState === 3 && (
               <a onClick={() => this.enableKey(col, true)}>启用</a>
             )}
-            {col.dkState == 1 && (
+            {col.dkState === 1 && (
               <a
                 className={'text-danger'}
                 onClick={() => this.enableKey(col, false)}
@@ -90,6 +96,8 @@ class DataTable extends Component {
                 停用
               </a>
             )}
+            {col.dkState === 0 && <a>未激活</a>}
+            {col.dkState === 4 && <a>已过期</a>}
             <a className={'text-danger'} onClick={() => this.revokeKey(col)}>
               吊销
             </a>
@@ -103,19 +111,14 @@ class DataTable extends Component {
       showUserInfo: true,
       userInfo: {},
     });
-    this.props
-      .dispatch({
-        type: 'keysManage/userListByKeyId',
-        payload: { id: col.id },
-      })
-      .then(
-        (res) => {
-          this.setState({ userInfo: (res.data && res.data[0]) || [] });
-        },
-        (err) => {
-          message.error(err.message);
-        },
-      );
+    selectUserById(col.userId).then(
+      (res) => {
+        this.setState({ userInfo: res.data });
+      },
+      (err) => {
+        message.error(err.message);
+      },
+    );
   };
   onCancel = () => {
     this.setState({
@@ -128,22 +131,17 @@ class DataTable extends Component {
       showCarInfo: true,
       carInfo: {},
     });
-    this.props
-      .dispatch({
-        type: 'keysManage/vehicleListById',
-        payload: col.id,
-      })
-      .then(
-        (res) => {
-          this.setState({ carInfo: (res.data && res.data[0]) || [] });
-        },
-        (err) => {
-          message.error(err.message);
-        },
-      );
+    selectVehicleById(col.vehicleId).then(
+      (res) => {
+        this.setState({ carInfo: res.data });
+      },
+      (err) => {
+        message.error(err.message);
+      },
+    );
   };
-  enableKey = (col, isEnablekey) => {
-    let txt = isEnablekey ? '启用' : '停用';
+  enableKey = (col, isEnableKey) => {
+    let txt = isEnableKey ? '启用' : '停用';
     Modal.confirm({
       title: txt + '钥匙',
       content: `确定${txt}钥匙？`,
@@ -154,8 +152,12 @@ class DataTable extends Component {
             payload: col.id,
           })
           .then(
-            () => {
-              message.success('操作成功');
+            (res) => {
+              if (res.code === 200) {
+                message.success(res.msg);
+              } else {
+                message.error(res.msg);
+              }
               this.dataTable.refresh();
             },
             (err) => {
@@ -209,6 +211,7 @@ class DataTable extends Component {
       },
     });
   };
+
   render() {
     const {
       showUserInfo,
@@ -236,22 +239,39 @@ class DataTable extends Component {
           destroyOnClose={true}
         >
           <DescriptionList col={1}>
-            <Description term={'电话'}>{userInfo.phone}</Description>
-            <Description term={'姓名'}>{userInfo.name}</Description>
-            <Description term={'身份证'}>{userInfo.idnum}</Description>
+            <Description term={'电话'}>
+              {userInfo ? userInfo.phone : ''}
+            </Description>
+            <Description term={'姓名'}>
+              {userInfo ? userInfo.username : ''}
+            </Description>
+            <Description term={'身份证'}>
+              {userInfo ? userInfo.idCard : ''}
+            </Description>
             <Description term={'是否有效'}>
-              {userInfo.isvalid === 0 ? (
-                <Tag color="#f50">无效</Tag>
+              {userInfo ? (
+                userInfo.isValid === 0 ? (
+                  <Tag color="#f50">无效</Tag>
+                ) : (
+                  <Tag color="#87d068">有效</Tag>
+                )
               ) : (
-                <Tag color="#87d068">有效</Tag>
+                <Tag color="red">无</Tag>
               )}
             </Description>
-            <Description term={'指纹'}>{userInfo.devFp}</Description>
+            <Description term={'指纹'}>
+              {userInfo ? userInfo.phoneFingerprint : ''}
+            </Description>
             <Description term={'状态'}>
-              {userInfo.status === 0 ? '已注册' : '已实名认证'}
+              {userInfo
+                ? userInfo.status === 0
+                  ? '已注册'
+                  : '已实名认证'
+                : ''}
             </Description>
           </DescriptionList>
         </Modal>
+
         <Modal
           footer={null}
           title={'车辆信息'}
@@ -260,21 +280,37 @@ class DataTable extends Component {
           destroyOnClose={true}
         >
           <DescriptionList col={1}>
-            <Description term={'车型代码'}>{carInfo.code}</Description>
-            <Description term={'车牌号'}>{carInfo.license}</Description>
-            <Description term={'创建时间'}>{carInfo.createTime}</Description>
-            <Description term={'车主身份证号'}>{carInfo.ownerID}</Description>
-            <Description term={'车主手机号'}>{carInfo.phone}</Description>
+            <Description term={'车型代码'}>
+              {carInfo ? carInfo.modelCode : ''}
+            </Description>
+            <Description term={'车牌号'}>
+              {carInfo ? carInfo.license : ''}
+            </Description>
+            <Description term={'创建时间'}>
+              {carInfo ? carInfo.createTime : ''}
+            </Description>
+            <Description term={'车主身份证号'}>
+              {carInfo ? carInfo.ownerIdCard : ''}
+            </Description>
+            <Description term={'车主手机号'}>
+              {carInfo ? carInfo.phone : ''}
+            </Description>
             <Description term={'是否有效'}>
-              {carInfo.isvalid === 0 ? (
-                <Tag color="#f50">报废</Tag>
+              {carInfo ? (
+                carInfo.isValid === 0 ? (
+                  <Tag color="#f50">报废</Tag>
+                ) : (
+                  <Tag color="#87d068">正常</Tag>
+                )
               ) : (
-                <Tag color="#87d068">正常</Tag>
+                <Tag color="red">无</Tag>
               )}
             </Description>
-            <Description term={'车辆颜色'}>{carInfo.colour}</Description>
+            <Description term={'车辆颜色'}>
+              {carInfo ? carInfo.color : ''}
+            </Description>
             <Description term={'车辆蓝牙链接标识'}>
-              {carInfo.bluetooth}
+              {carInfo ? carInfo.bluetooth : ''}
             </Description>
           </DescriptionList>
         </Modal>

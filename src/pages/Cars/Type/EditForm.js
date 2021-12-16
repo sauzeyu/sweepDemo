@@ -34,17 +34,22 @@ class EditForm extends Component {
         </Form.Item>
         <Form.Item
           label={'车型名称'}
-          name="name"
+          name="modelName"
           rules={[{ required: true, message: '名称不能为空' }]}
         >
-          <RestrictiveInput trim maxLength={40} />
+          <RestrictiveInput trim minLength={2} maxLength={40} />
         </Form.Item>
         <Form.Item
           label={'代码'}
-          name="code"
+          name="modelCode"
           rules={[{ required: true, message: '车型代码不能为空' }]}
         >
-          <RestrictiveInput trim maxLength={40} disabled={isEdit} />
+          <RestrictiveInput
+            trim
+            minLength={2}
+            maxLength={40}
+            disabled={isEdit}
+          />
         </Form.Item>
         {/* <Form.Item
           label={'VIN规则'}
