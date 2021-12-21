@@ -1,7 +1,7 @@
 export default [
   {
     id: 1,
-    title: '数据统计',
+    title: '首页',
     icon: 'dot-chart',
     href: 'statistics',
     target: null,
