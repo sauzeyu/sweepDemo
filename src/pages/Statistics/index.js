@@ -1,5 +1,4 @@
 import React from 'react';
-import './home.css';
 import nacos from '../../imgs/nacos.jpg';
 import admin from '../../imgs/admin.jpg';
 import zipkin from '../../imgs/zipkin.jpg';
