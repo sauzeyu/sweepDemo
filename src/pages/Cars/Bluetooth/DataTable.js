@@ -5,7 +5,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
-import { getCarModes, delCarModesPost } from '@/services/cars';
+import { getBluetooth, delBluetooth } from '@/services/cars';
 
 @connect(({ carsType, loading }) => ({
   carsType,
@@ -17,58 +17,74 @@ class DataTable extends Component {
   };
   columns = [
     {
-      title: '车型名称',
-      dataIndex: 'modelName',
-      ellipsis: true,
+      title: '设备序列号',
+      dataIndex: 'hwDeviceSn',
     },
     {
-      title: '代码',
-      dataIndex: 'modelCode',
-      ellipsis: true,
+      title: '设备ID号',
+      dataIndex: 'hwDeviceId',
     },
     {
-      title: 'VIN号匹配规则',
-      dataIndex: 'vinMatch',
+      title: '设备供应商编号',
+      dataIndex: 'hwDeviceProviderNo',
     },
     {
-      title: '备注',
-      dataIndex: 'remark',
-      ellipsis: true,
+      title: '数字钥匙软件版本号',
+      dataIndex: 'dkSdkVersion',
+    },
+    {
+      title: '数字钥匙安全单元ID',
+      dataIndex: 'dkSecUnitId',
+    },
+    {
+      title: '蓝牙名称',
+      dataIndex: 'bleName',
+    },
+    {
+      title: '蓝牙MAC地址',
+      dataIndex: 'bleMacAddress',
+    },
+    {
+      title: '蓝牙协议版本号',
+      dataIndex: 'bleProtocolVersion',
+    },
+    {
+      title: '蓝牙硬件版本号',
+      dataIndex: 'bleHardwareVersion',
+    },
+    {
+      title: '蓝牙软件版本号',
+      dataIndex: 'bleSoftwareVersion',
     },
     {
       title: '操作',
       render: (col) => {
         return (
           <div className={'link-group'}>
-            <a onClick={() => this.del(col)}>删除</a>
-            <a onClick={() => this.upsert(col)}>编辑</a>
+            {/*<a onClick={() => this.upsert(col)}>编辑</a>*/}
+            <a className={'text-danger'} onClick={() => this.del(col)}>
+              删除
+            </a>
           </div>
         );
       },
     },
   ];
   del = (model) => {
-    const json = JSON.parse(JSON.stringify({ id: model.id }));
-    const { idList } = this.state;
-    idList.push(json);
+    const { hwDeviceSn } = model;
     Modal.confirm({
-      title: '删除车型',
-      content: `确定删除“${model.name}”？`,
+      title: '删除蓝牙设备',
+      content: `确定设备“${hwDeviceSn}”？`,
       onOk: () => {
-        return this.props
-          .dispatch({
-            type: 'carsType/delModeBatch',
-            payload: idList,
-          })
-          .then(
-            () => {
-              message.success('操作成功');
-              this.dataTable.refresh();
-            },
-            (err) => {
-              message.error(err.message);
-            },
-          );
+        return delBluetooth(hwDeviceSn).then(
+          () => {
+            message.success('操作成功');
+            this.dataTable.refresh();
+          },
+          (err) => {
+            message.error(err.message);
+          },
+        );
       },
     });
   };
@@ -126,21 +142,21 @@ class DataTable extends Component {
       <div>
         <EasyTable
           autoFetch
-          source={getCarModes}
+          source={getBluetooth}
           dataProp={'data'}
           name={'carsTypeDataTable'}
           rowKey={'id'}
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
-          extra={
-            <Button
-              type={'primary'}
-              icon={<PlusCircleOutlined />}
-              onClick={() => this.upsert()}
-            >
-              新增车型
-            </Button>
-          }
+          // extra={
+          //   <Button
+          //     type={'primary'}
+          //     icon={<PlusCircleOutlined />}
+          //     onClick={() => this.upsert()}
+          //   >
+          //     新增蓝牙
+          //   </Button>
+          // }
         />
         <DrawerConfirm
           title={'车型'}

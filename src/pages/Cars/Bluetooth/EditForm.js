@@ -29,7 +29,7 @@ class EditForm extends Component {
     const isEdit = this.state.isEdit;
     return (
       <Form {...formItemLayout} ref={this.form}>
-        <Form.Item name="id" hidden>
+        <Form.Item name="hwDeviceSn" hidden>
           <Input type={'hidden'} />
         </Form.Item>
         <Form.Item

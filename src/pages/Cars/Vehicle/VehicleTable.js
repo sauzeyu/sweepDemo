@@ -26,11 +26,6 @@ class VehicleTable extends Component {
       width: 260,
     },
     {
-      title: '电话',
-      dataIndex: 'phone',
-      width: 130,
-    },
-    {
       title: '具体状态',
       dataIndex: 'dkState',
       width: 200,

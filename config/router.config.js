@@ -91,9 +91,9 @@ export default [
         title: '汽车管理',
         routes: [
           {
-            path: '/cars/type',
-            title: '车型管理',
-            component: './Cars/Type',
+            path: '/cars/bluetooth',
+            title: '蓝牙管理',
+            component: './Cars/Bluetooth',
           },
           {
             path: '/cars/vehicle',
@@ -110,6 +110,22 @@ export default [
             path: '/customer/info',
             title: '用户信息',
             component: './Customer/Info',
+          },
+        ],
+      },
+      {
+        path: '/log',
+        title: '日志管理',
+        routes: [
+          {
+            path: '/log/use',
+            title: '使用日志',
+            component: './Log/Use',
+          },
+          {
+            path: '/log/error',
+            title: '异常日志',
+            component: './Log/Error',
           },
         ],
       },

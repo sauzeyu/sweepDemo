@@ -2,49 +2,60 @@ import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { vehicleListById } from '@/services/customer';
 import { status } from '@/constants/user';
-
+import { checkResult, windowType, sunroofType, color } from '@/constants/cars';
 class VehicleTable extends Component {
   columns = [
     {
       title: 'VIN号',
       dataIndex: 'vin',
+      width: 200,
     },
     {
-      title: '车型代码',
-      dataIndex: 'modelCode',
-      ellipsis: true,
+      title: '发动机号',
+      dataIndex: 'ven',
+      width: 200,
     },
     {
-      title: '车牌号',
-      dataIndex: 'license',
-      //文本溢出长度后显示省略
-      ellipsis: true,
-    },
-    {
-      title: '车主身份证号',
-      dataIndex: 'ownerIdCard',
-    },
-    {
-      title: '车主手机号',
-      dataIndex: 'phone',
-    },
-    {
-      title: '是否有效',
-      dataIndex: 'isValid',
-      ellipsis: true,
+      title: '车身颜色',
+      dataIndex: 'color',
+      width: 100,
       render: (text) => {
-        return status[text];
+        return color[text];
       },
     },
     {
-      title: '车辆颜色',
-      dataIndex: 'color',
-      ellipsis: true,
+      title: '天窗类型',
+      dataIndex: 'sunroofType',
+      width: 120,
+      render: (text) => {
+        return sunroofType[text];
+      },
     },
     {
-      title: '蓝牙连接标识',
-      dataIndex: 'bluetooth',
-      ellipsis: true,
+      title: '后备门类型',
+      dataIndex: 'trunkType',
+      width: 150,
+    },
+    {
+      title: '车窗类型',
+      dataIndex: 'windowType',
+      width: 120,
+      render: (text) => {
+        return windowType[text];
+      },
+    },
+    {
+      title: '检测结果',
+      dataIndex: 'checkResult',
+      width: 80,
+      render: (text) => {
+        return checkResult[text];
+      },
+    },
+    {
+      title: '蓝牙编号',
+      dataIndex: 'bleNo',
+      width: 150,
     },
   ];
   render() {

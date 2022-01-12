@@ -230,7 +230,7 @@ class DataTable extends Component {
 
         <DrawerConfirm
           title={'车辆信息'}
-          width={1000}
+          width={1300}
           visible={carFormVisible}
           onCancel={this.onCancel}
           onOk={this.onCancel}
@@ -247,7 +247,7 @@ class DataTable extends Component {
 
         <DrawerConfirm
           title={'钥匙信息'}
-          width={1500}
+          width={1300}
           visible={keysFormVisible}
           onCancel={this.onCancel}
           onOk={this.onCancel}

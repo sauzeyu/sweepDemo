@@ -1,23 +1,13 @@
-import { PlusCircleOutlined } from '_@ant-design_icons@4.7.0@@ant-design/icons';
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import FileUploader from '@/components/FileUploader';
 import { Button, Modal, message, Tag } from 'antd';
 import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { getVehicles, stopVehicle, discardVehicle } from '@/services/cars';
-import { Link, history } from 'umi';
-import { log } from 'lodash-decorators/utils';
-import Authorized from '@/components/Authorized';
-import {
-  CAR_VEHICLE_ADD,
-  CAR_VEHICLE_UPDATE,
-  CAR_VEHICLE_IMPORT,
-} from '@/components/Authorized/AuthMap';
 import { connect } from 'dva';
 import DescriptionList from '@/components/DescriptionList';
 import VehicleTable from '@/pages/Cars/Vehicle/VehicleTable';
-import { status } from '@/constants/user';
+import { checkResult, windowType, sunroofType, color } from '@/constants/cars';
 
 const { Description } = DescriptionList;
 
@@ -46,19 +36,9 @@ class DataTable extends Component {
       width: 200,
     },
     {
-      title: '车型代码',
-      dataIndex: 'modelCode',
-      width: 100,
-    },
-    {
-      title: '车牌号',
-      dataIndex: 'license',
-      width: 130,
-    },
-    {
-      title: '车主身份证号',
-      dataIndex: 'ownerIdCard',
-      width: 180,
+      title: '发动机号',
+      dataIndex: 'ven',
+      width: 200,
     },
     {
       title: '车主手机号',
@@ -66,22 +46,46 @@ class DataTable extends Component {
       width: 150,
     },
     {
-      title: '是否有效',
-      dataIndex: 'isValid',
-      width: 70,
+      title: '车身颜色',
+      dataIndex: 'color',
+      width: 100,
       render: (text) => {
-        return status[text];
+        return color[text];
       },
     },
     {
-      title: '颜色',
-      dataIndex: 'color',
-      width: 80,
+      title: '天窗类型',
+      dataIndex: 'sunroofType',
+      width: 120,
+      render: (text) => {
+        return sunroofType[text];
+      },
     },
     {
-      title: '车辆蓝牙连接标识',
-      dataIndex: 'bluetooth',
-      width: 200,
+      title: '后备门类型',
+      dataIndex: 'trunkType',
+      width: 150,
+    },
+    {
+      title: '车窗类型',
+      dataIndex: 'windowType',
+      width: 120,
+      render: (text) => {
+        return windowType[text];
+      },
+    },
+    {
+      title: '检测结果',
+      dataIndex: 'checkResult',
+      width: 80,
+      render: (text) => {
+        return checkResult[text];
+      },
+    },
+    {
+      title: '蓝牙编号',
+      dataIndex: 'bleNo',
+      width: 150,
     },
     {
       title: '操作',
@@ -95,20 +99,20 @@ class DataTable extends Component {
           <div className={'link-group'}>
             <a onClick={() => this.userInfo(col)}>查看车主</a>
             <a onClick={() => this.keysInfo(col)}>查看钥匙</a>
-            <a
-              onClick={() => {
-                return stopVehicle(col.id).then(() => {
-                  col.isValid = col.isValid ^ 1 ^ 2;
-                  this.dataTable.refresh();
-                });
-              }}
-              style={{ color: flag ? '#1890FF' : '#FF4D4F' }}
-            >
-              {flag ? '启用' : '停用'}
-            </a>
-            <a className={'text-danger'} onClick={() => this.revokeCar(col)}>
-              吊销
-            </a>
+            {/*<a*/}
+            {/*  onClick={() => {*/}
+            {/*    return stopVehicle(col.id).then(() => {*/}
+            {/*      col.isValid = col.isValid ^ 1 ^ 2;*/}
+            {/*      this.dataTable.refresh();*/}
+            {/*    });*/}
+            {/*  }}*/}
+            {/*  style={{color: flag ? '#1890FF' : '#FF4D4F'}}*/}
+            {/*>*/}
+            {/*  {flag ? '启用' : '停用'}*/}
+            {/*</a>*/}
+            {/*<a className={'text-danger'} onClick={() => this.revokeCar(col)}>*/}
+            {/*  吊销*/}
+            {/*</a>*/}
           </div>
         );
       },
@@ -259,13 +263,13 @@ class DataTable extends Component {
                   删除
                 </Button>
               )*/}
-              <Button
-                onClick={() => this.upsert()}
-                type={'primary'}
-                icon={<PlusCircleOutlined />}
-              >
-                新增车辆
-              </Button>
+              {/*<Button*/}
+              {/*  onClick={() => this.upsert()}*/}
+              {/*  type={'primary'}*/}
+              {/*  icon={<PlusCircleOutlined/>}*/}
+              {/*>*/}
+              {/*  新增车辆*/}
+              {/*</Button>*/}
             </div>
           }
         />

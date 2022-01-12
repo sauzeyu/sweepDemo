@@ -32,3 +32,26 @@ export const electricStatus = {
   2: 'ON',
   3: 'RUN',
 };
+export const checkResult = {
+  0: ' 未通过',
+  1: '通过',
+};
+export const windowType = {
+  GP01: '无防夹',
+  GP02: '四车窗防夹',
+};
+
+export const sunroofType = {
+  GY01: '无天窗',
+  GY02: '普通天窗',
+  GY03: '全景天窗',
+};
+
+export const color = {
+  BG29: '闪电黑',
+  BG30: '玄瓷白',
+  BG31: '幻影银',
+  BG32: '玻璃红',
+  BG33: '流沙金',
+  BG34: '古铜金',
+};

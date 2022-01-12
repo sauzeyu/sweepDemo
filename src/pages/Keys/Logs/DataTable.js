@@ -3,7 +3,7 @@ import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal, Tag } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
-
+import { checkResult, windowType, sunroofType, color } from '@/constants/cars';
 import {
   getKeysLogsList,
   selectUserById,
@@ -26,10 +26,6 @@ class DataTable extends Component {
     carInfo: {},
   };
   columns = [
-    {
-      title: '车型名称',
-      dataIndex: 'modelName',
-    },
     {
       title: '车辆VIN',
       dataIndex: 'vin',
@@ -147,24 +143,24 @@ class DataTable extends Component {
           destroyOnClose={true}
         >
           <DescriptionList col={1}>
-            <Description term={'车型代码'}>{carInfo.modelCode}</Description>
-            <Description term={'车牌号'}>{carInfo.license}</Description>
-            <Description term={'创建时间'}>{carInfo.createTime}</Description>
-            <Description term={'车主身份证号'}>
-              {carInfo.ownerIdCard}
-            </Description>
-            <Description term={'车主手机号'}>{carInfo.phone}</Description>
-            <Description term={'是否有效'}>
-              {carInfo.isvalid === 0 ? (
-                <Tag color="#f50">报废</Tag>
+            <Description term={'工厂编号'}>{carInfo.factoryNo}</Description>
+            <Description term={'检测结果'}>
+              {carInfo.checkResult === 0 ? (
+                <Tag color="#f50">{checkResult[carInfo.checkResult]}</Tag>
               ) : (
-                <Tag color="#87d068">正常</Tag>
+                <Tag color="#87d068">{checkResult[carInfo.checkResult]}</Tag>
               )}
             </Description>
-            <Description term={'车辆颜色'}>{carInfo.color}</Description>
-            <Description term={'车辆蓝牙链接标识'}>
-              {carInfo.bluetooth}
+            <Description term={'车主手机号'}>{carInfo.phone}</Description>
+            <Description term={'车窗类型'}>
+              {windowType[carInfo.windowType]}
             </Description>
+            <Description term={'车辆颜色'}>{color[carInfo.color]}</Description>
+            <Description term={'天窗类型'}>
+              <Tag color="#87d068">{sunroofType[carInfo.sunroofType]}</Tag>
+            </Description>
+            <Description term={'蓝牙编号'}>{carInfo.bleNo}</Description>
+            <Description term={'创建时间'}>{carInfo.createTime}</Description>
           </DescriptionList>
         </Modal>
       </div>

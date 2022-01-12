@@ -15,14 +15,14 @@ export async function updateCarModes(data) {
   return request.post('dkmModel/updateById', data);
 }
 
-//删除车型
-export async function delCarModes(id) {
-  return request.post(`DKLinkVehicle/api/delete`, [{ id }]);
+// 分页查询蓝牙设备
+export async function getBluetooth(params) {
+  return request.get('dkmBluetooths/selectForPage', { params });
 }
 
-//删除车型
-export async function delModeBatch(params) {
-  return request.post('DKLinkVehicle/api/deleteModel', params);
+// 删除蓝牙设备
+export async function delBluetooth(hwDeviceSn) {
+  return request.post('dkmBluetooths/deleteById?hwDeviceSn=' + hwDeviceSn);
 }
 
 // 获取汽车列表
@@ -31,9 +31,9 @@ export async function getVehicles(params) {
 }
 
 // 删除汽车
-export async function deleteVehicle(params) {
-  return request.post('DKLinkVehicle/api/delete', params);
-}
+// export async function deleteVehicle(params) {
+//   return request.post('DKLinkVehicle/api/delete', params);
+// }
 
 // 添加车辆
 export async function addVehicle(params) {

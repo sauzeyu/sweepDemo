@@ -11,6 +11,7 @@ import {
 import { Link } from 'umi';
 import { DKState, KeysState } from '@/constants/keys';
 import DescriptionList from '@/components/DescriptionList';
+import { checkResult, color, sunroofType, windowType } from '@/constants/cars';
 
 const { Description } = DescriptionList;
 
@@ -280,38 +281,24 @@ class DataTable extends Component {
           destroyOnClose={true}
         >
           <DescriptionList col={1}>
-            <Description term={'车型代码'}>
-              {carInfo ? carInfo.modelCode : ''}
-            </Description>
-            <Description term={'车牌号'}>
-              {carInfo ? carInfo.license : ''}
-            </Description>
-            <Description term={'创建时间'}>
-              {carInfo ? carInfo.createTime : ''}
-            </Description>
-            <Description term={'车主身份证号'}>
-              {carInfo ? carInfo.ownerIdCard : ''}
-            </Description>
-            <Description term={'车主手机号'}>
-              {carInfo ? carInfo.phone : ''}
-            </Description>
-            <Description term={'是否有效'}>
-              {carInfo ? (
-                carInfo.isValid === 0 ? (
-                  <Tag color="#f50">报废</Tag>
-                ) : (
-                  <Tag color="#87d068">正常</Tag>
-                )
+            <Description term={'工厂编号'}>{carInfo.factoryNo}</Description>
+            <Description term={'检测结果'}>
+              {carInfo.checkResult === 0 ? (
+                <Tag color="#f50">{checkResult[carInfo.checkResult]}</Tag>
               ) : (
-                <Tag color="red">无</Tag>
+                <Tag color="#87d068">{checkResult[carInfo.checkResult]}</Tag>
               )}
             </Description>
-            <Description term={'车辆颜色'}>
-              {carInfo ? carInfo.color : ''}
+            <Description term={'车主手机号'}>{carInfo.phone}</Description>
+            <Description term={'车窗类型'}>
+              {windowType[carInfo.windowType]}
             </Description>
-            <Description term={'车辆蓝牙链接标识'}>
-              {carInfo ? carInfo.bluetooth : ''}
+            <Description term={'车辆颜色'}>{color[carInfo.color]}</Description>
+            <Description term={'天窗类型'}>
+              <Tag color="#87d068">{sunroofType[carInfo.sunroofType]}</Tag>
             </Description>
+            <Description term={'蓝牙编号'}>{carInfo.bleNo}</Description>
+            <Description term={'创建时间'}>{carInfo.createTime}</Description>
           </DescriptionList>
         </Modal>
       </div>

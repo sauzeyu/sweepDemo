@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import { Button, Col, DatePicker, Form, Input, Row, Select } from 'antd';
+import { Button, Col, Form, Row, Select, Input } from 'antd';
 import EasyTable from '@/components/EasyTable';
+import { Categories } from '@/constants/cars';
 
-@EasyTable.connect(({ carsVehicleDataTable }) => ({
-  carsVehicleDataTable,
+@EasyTable.connect(({ carsTypeDataTable }) => ({
+  carsTypeDataTable,
 }))
 class SearchForm extends Component {
   form = React.createRef();
-  handleSubmit = (values) => {
+  handleSubmit = (evt) => {
     this.form.current
       .validateFields()
       .then((values) => {
-        this.props.carsVehicleDataTable.fetch(values);
+        this.props.carsTypeDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
@@ -21,11 +22,11 @@ class SearchForm extends Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 6 },
+        sm: { span: 8 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 18 },
+        sm: { span: 16 },
       },
     };
     const colSpan = {
@@ -36,18 +37,20 @@ class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'关键字'} name="keywords">
-              <Input placeholder={'车主手机号/vin号'} />
+            <Form.Item label={'设备序列号'} name="keywords">
+              <Input placeholder="请输入设备序列号" />
             </Form.Item>
           </Col>
-          <Col {...colSpan} style={{ flex: 1 }}>
-            <Button
-              type={'primary'}
-              className={'gutter-left_lg'}
-              htmlType={'submit'}
-            >
-              查询
-            </Button>
+          <Col {...colSpan}>
+            <Form.Item>
+              <Button
+                type={'primary'}
+                className={'gutter-left_lg'}
+                htmlType={'submit'}
+              >
+                查询
+              </Button>
+            </Form.Item>
           </Col>
         </Row>
       </Form>

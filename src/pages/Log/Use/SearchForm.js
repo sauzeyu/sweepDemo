@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Row, Select, Input } from 'antd';
 import EasyTable from '@/components/EasyTable';
-import { Categories } from '@/constants/cars';
 
-@EasyTable.connect(({ carsTypeDataTable }) => ({
-  carsTypeDataTable,
+@EasyTable.connect(({ useLogDataTable }) => ({
+  useLogDataTable,
 }))
-class SearchForm extends Component {
+export default class SearchForm extends Component {
   form = React.createRef();
   handleSubmit = (evt) => {
     this.form.current
       .validateFields()
       .then((values) => {
-        this.props.carsTypeDataTable.fetch(values);
+        this.props.useLogDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
@@ -37,8 +36,8 @@ class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'车型名称'} name="modelName">
-              <Input placeholder="请输入车型名称" />
+            <Form.Item label={'指令'} name="keyword">
+              <Input placeholder="请输入指令" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
@@ -57,5 +56,3 @@ class SearchForm extends Component {
     );
   }
 }
-
-export default SearchForm;

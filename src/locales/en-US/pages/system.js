@@ -1,7 +1,7 @@
 export default {
   'Page.system.area.label.name': 'Name',
   'Page.system.area.label.number': 'Number',
-  'Page.system.area.label.areaType': 'Area Type',
+  'Page.system.area.label.areaType': 'Area Bluetooth',
   'Page.system.users.edit.title': 'Modifying user information',
   'Page.system.users.edit.deleteConfirm':
     'Do you make sure remove the account:{account}?',
@@ -21,7 +21,7 @@ export default {
   'Page.system.logs.label.keywords': 'Keywords',
   'Page.system.logs.label.operator': 'Operator',
   'Page.system.logs.label.operation': 'Actions',
-  'Page.system.logs.label.operationType': 'Operation Type',
+  'Page.system.logs.label.operationType': 'Operation Bluetooth',
   'Page.system.logs.label.operationTime': 'Operation Time',
   'Page.system.currency.label.unit': 'Unit',
   'Page.system.currency.label.name': 'Currency Name',
@@ -55,7 +55,7 @@ export default {
   'Page.system.dictionary.label.number': 'Number',
   'Page.system.dictionary.label.cnValue': 'Chinese Name',
   'Page.system.dictionary.label.businessParameterType':
-    'Business Parameter Type',
+    'Business Parameter Bluetooth',
   'Page.system.dictionary.delete.confirm':
     'Are you sure you want to delete the {name} ？',
   'Page.system.permissions.addChild': 'Add child',

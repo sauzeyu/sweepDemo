@@ -198,8 +198,8 @@ export function deepClone(obj) {
  */
 export function createPagination(props = {}) {
   const {
-    showSizeChanger = true,
-    showQuickJumper = true,
+    showSizeChanger = false,
+    showQuickJumper = false,
     size = 'small',
     pageSizeOptions = ['10', '20', '30', '40'],
     pageSize = 10,
@@ -218,6 +218,7 @@ export function createPagination(props = {}) {
     data,
   };
 }
+
 // 分页加载
 export function* fetchPageEffect({ payload }, { call }, page, action) {
   const params = {
