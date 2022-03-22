@@ -11,6 +11,7 @@ export default defineConfig({
   proxy: {
     '/dkserver-back': {
       // target: 'https://cd.vecentek.com:20611',
+      // target: 'http://172.16.13.12:9001/vecentek',
       target: 'http://172.16.13.12:9001/vecentek',
       // target: 'http://172.16.10.69:9001/vecentek',
       changeOrigin: true,
@@ -118,7 +119,7 @@ function getGlobalParams() {
   return {
     env: BUILD_ENV,
     baseUrl: PUBLIC_PATH, // /
-    buildVersion: startParams['bv'], // undefined
+    buildVersion: '1.0', // undefined
     StartParams: startParams, // {}
   };
 }

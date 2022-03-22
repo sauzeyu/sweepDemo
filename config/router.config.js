@@ -66,6 +66,27 @@ export default [
         ],
       },
       {
+        path: '/dashboard',
+        title: '仪表盘',
+        routes: [
+          {
+            path: '/dashboard/kibana',
+            title: 'Kibana',
+            component: './Dashboard/Kibana',
+          },
+          {
+            path: '/dashboard/admin',
+            title: 'SpringBootAdmin',
+            component: './Dashboard/Admin',
+          },
+          {
+            path: '/dashboard/zipkin',
+            title: 'Zipkin',
+            component: './Dashboard/Zipkin',
+          },
+        ],
+      },
+      {
         path: '/statistics',
         component: './Statistics',
         title: '数据统计',
