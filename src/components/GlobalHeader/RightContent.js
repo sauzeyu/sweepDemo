@@ -6,8 +6,8 @@ import styles from './index.less';
 // import router from 'umi/router';
 import { history } from 'umi';
 
-export default class GlobalHeaderRight extends PureComponent {
-  debugger;
+export default class RightContent extends PureComponent {
+  // debugger;
   handleUserMenuClick = ({ key }) => {
     switch (key) {
       case 'logout':
@@ -27,6 +27,7 @@ export default class GlobalHeaderRight extends PureComponent {
       className = `${styles.right}  ${styles.dark}`;
     }
     if (!currentUser) return null;
+    currentUser.avatar.content = currentUser.username;
     const menu = (
       <Menu
         theme={theme}
@@ -50,14 +51,14 @@ export default class GlobalHeaderRight extends PureComponent {
           <div className={`${styles.action} ${styles.account}`}>
             <Avatar
               size={isMobile ? 'small' : 'large'}
-              title={currentUser.name}
+              title={currentUser.username}
               className={styles.avatar}
               style={{
                 backgroundColor: currentUser.avatar.bgColor,
                 color: currentUser.avatar.color,
               }}
               src={currentUser.avatar.src}
-              alt={currentUser.name}
+              alt={currentUser.username}
             >
               {currentUser.avatar.content}
             </Avatar>

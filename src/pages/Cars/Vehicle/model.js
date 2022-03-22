@@ -1,11 +1,4 @@
-import {
-  addVehicle,
-  downloadTemplate,
-  updateVehicle,
-  deleteVehicle,
-  getVehicleDetail,
-  selectUserByPhone,
-} from '@/services/cars';
+import { addVehicle, selectUserByPhone } from '@/services/cars';
 import { vehicleListById } from '@/services/keys';
 
 export default {

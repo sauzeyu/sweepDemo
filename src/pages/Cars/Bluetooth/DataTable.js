@@ -144,7 +144,7 @@ class DataTable extends Component {
           autoFetch
           source={getBluetooth}
           dataProp={'data'}
-          name={'carsTypeDataTable'}
+          name={'carsBluetoothDataTable'}
           rowKey={'id'}
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}

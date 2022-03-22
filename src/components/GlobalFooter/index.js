@@ -8,7 +8,7 @@ export default class GlobalFooter extends React.Component {
   render() {
     const { className, links } = this.props;
     const clsString = classNames(styles.globalFooter, className);
-    const { buildVersion = 0 } = appMeta;
+    const { buildVersion } = appMeta;
     return (
       <div className={clsString}>
         {links && (
@@ -26,7 +26,7 @@ export default class GlobalFooter extends React.Component {
         )}
         <div className={styles.copyright}>
           <span>
-            Copyright <CopyrightOutlined /> 2021{' '}
+            Copyright <CopyrightOutlined /> 2022{' '}
             <FormattedMessage id={'App.copyright'} />
           </span>
           <span>

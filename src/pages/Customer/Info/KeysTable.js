@@ -79,7 +79,7 @@ class VehicleTable extends Component {
           autoFetch
           source={keyListByUserId}
           dataProp={'data'}
-          name={'carsTypeDataTable'}
+          name={'keysDataTable'}
           rowKey={'id'}
           columns={this.columns}
           fixedParams={{ id: userId }}

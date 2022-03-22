@@ -1,4 +1,4 @@
-import { getCaptcha, login, modifyPassword } from '../services/user';
+import { getCaptcha, login, modifyPassword } from '@/services/user';
 import { getPublicPath, md5 } from '@/utils';
 import { history } from 'umi';
 import pathToRegexp from 'path-to-regexp';
@@ -11,10 +11,12 @@ class UserCookieStore {
   userMarkPrefix = '@user_';
   Storage = localStorage;
   cookieKey = 'user-key';
+
   constructor(storePrefix) {
     /* 初始化时值为ssc */
     this.storePrefix = storePrefix;
   }
+
   set(data) {
     this.clear();
     if (!data) return;
@@ -22,6 +24,7 @@ class UserCookieStore {
     this.Storage.setItem(storeKey, window.JSON.stringify(data));
     Cookies.set(this.cookieKey, storeKey, { path: '/' });
   }
+
   get() {
     const storeKey = Cookies.get(this.cookieKey);
     if (!storeKey) return null;
@@ -29,9 +32,11 @@ class UserCookieStore {
     if (!user) return null;
     return window.JSON.parse(user);
   }
+
   getRealKey() {
     return this.storePrefix + this.userMarkPrefix;
   }
+
   clear() {
     const regx = new RegExp('^(' + this.getRealKey() + ')');
     for (let i = 0; i < this.Storage.length; i++) {
@@ -47,7 +52,7 @@ class UserCookieStore {
  *
  */
 const userCookieStore = new UserCookieStore('ssc');
-const localUser = getUserFromStore();
+const currentUser = getUserFromStore();
 /**
  * namespace 表示在全局 state 上的 key
  * state 是初始值，在这里是空数组
@@ -56,7 +61,7 @@ const localUser = getUserFromStore();
 export default {
   namespace: 'user',
   state: {
-    currentUser: localUser,
+    currentUser: currentUser,
   },
   effects: {
     /**
@@ -69,8 +74,8 @@ export default {
       // md5 加密密码
       payload.password = SignPassword(payload.password);
       // 调用 services的login 函数 目的:    携带提交的字段发起请求
-      const response = yield call(login, payload); // 等待响应结果 赋值给 response变量
-      const AuthUser = extUserAuthMap(response);
+      const userInfo = yield call(login, payload); // 等待响应结果 赋值给 response变量
+      const AuthUser = extUserAuthMap(userInfo);
       yield put({
         type: 'changeStatus',
         payload: {
@@ -80,7 +85,9 @@ export default {
       return AuthUser;
     },
     *logout({ payload }, { put, call, select }) {
-      const id = yield select((state) => state.user.currentUser.id);
+      const id = yield select((state) => {
+        state.user.currentUser.username;
+      });
       yield call(logout, { id });
       yield put({
         type: 'changeStatus',
@@ -138,11 +145,12 @@ function getUserFromStore() {
   return extUserAuthMap(user);
 }
 
-function extUserAuthMap(user) {
+function extUserAuthMap(userInfo) {
   // user是登陆请求获取的结果
   const routeMap = {},
     dnaMap = {};
-  const menus = user.menus || [];
+
+  const menus = userInfo.menus || [];
   // 处理菜单 将嵌套格式的router扁平化
   /* 例如:
     { route: /parts,
@@ -168,10 +176,11 @@ function extUserAuthMap(user) {
       }
     });
   }
-  user.routeMap = routeMap;
-  user.dnaMap = dnaMap;
-  user.avatar = createAvatar(user.name || '');
-  return user;
+
+  userInfo.routeMap = routeMap;
+  userInfo.dnaMap = dnaMap;
+  userInfo.avatar = createAvatar(userInfo.username || '');
+  return userInfo;
 }
 
 // 根据字符串生成头像
@@ -196,6 +205,7 @@ export function createAvatar(name) {
     };
   }
   return avatar;
+
   function getColorByName(name) {
     if (!name) return '#cccccc';
     let str = '';

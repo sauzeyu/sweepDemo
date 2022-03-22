@@ -8,6 +8,7 @@ class EditForm extends Component {
   state = {
     isEdit: false,
   };
+
   componentDidMount() {
     this.props.editFormRef && this.props.editFormRef(this);
     this.setState({
@@ -35,6 +36,7 @@ class EditForm extends Component {
         </Form.Item>
         <Form.Item
           label={'姓名'}
+          colon={false}
           name="username"
           rules={[{ required: true, message: '姓名不能为空' }]}
         >
@@ -43,6 +45,7 @@ class EditForm extends Component {
 
         <Form.Item
           label={'手机'}
+          colon={false}
           name="phone"
           rules={[{ required: true, message: '电话不能为空' }]}
         >
@@ -51,6 +54,7 @@ class EditForm extends Component {
 
         <Form.Item
           label={'指纹'}
+          colon={false}
           name="phoneFingerprint"
           rules={[{ required: true, message: '指纹不能为空' }]}
         >
@@ -59,13 +63,26 @@ class EditForm extends Component {
 
         <Form.Item
           label={'身份证'}
+          colon={false}
           name="idCard"
-          rules={[{ required: true, message: '身份证不能为空' }]}
+          rules={[
+            { required: true, message: '身份证不能为空' },
+            {
+              pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+              message: '身份证格式不正确',
+            },
+          ]}
         >
-          <RestrictiveInput trim maxLength={18} disabled={isEdit} />
+          <RestrictiveInput
+            trim
+            minLength={18}
+            maxLength={18}
+            disabled={isEdit}
+          />
         </Form.Item>
         <Form.Item
           label={'密码'}
+          colon={false}
           name="password"
           rules={[{ required: true, message: '密码不能为空' }]}
         >

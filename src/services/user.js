@@ -1,11 +1,11 @@
 import request from '../utils/request';
 import { PermissionsUtil, joinPath } from '../utils';
 import { getPublicPath } from '@/utils';
-import menu from '@/models/menu.js';
 import Cookies from 'js-cookie';
+import { message } from 'antd';
 
 export async function login(params) {
-  return request.post('/dkserver/login', params).then(decorateUserInfo);
+  return request.post('/login', params).then(decorateUserInfo);
 }
 
 export async function logout(params) {
@@ -20,16 +20,22 @@ export async function modifyPassword(params) {
   return request.post('modifyPwd', params);
 }
 
-function decorateUserInfo(data) {
+function decorateUserInfo(res) {
+  console.log(res);
+  if (res.code === 401) {
+    message.error('账号或密码不正确').then((r) => {});
+  }
+
   const userInfo = {
-    ...data.user,
-    token: data.token,
+    username: res.user.username,
+    token: res.token,
   };
   userInfo.avatar = getPublicPath('/img/avatar.png');
-  data.menus = menu;
-  const menus = PermissionsUtil.structureByDNA(data.menus);
+  res.menus = res.menu;
+  const menus = PermissionsUtil.structureByDNA(res.menus);
   _initMenus(menus);
   userInfo.menus = menus;
+
   return userInfo;
 }
 

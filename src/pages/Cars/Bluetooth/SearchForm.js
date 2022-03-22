@@ -3,8 +3,8 @@ import { Button, Col, Form, Row, Select, Input } from 'antd';
 import EasyTable from '@/components/EasyTable';
 import { Categories } from '@/constants/cars';
 
-@EasyTable.connect(({ carsTypeDataTable }) => ({
-  carsTypeDataTable,
+@EasyTable.connect(({ carsBluetoothDataTable }) => ({
+  carsBluetoothDataTable,
 }))
 class SearchForm extends Component {
   form = React.createRef();

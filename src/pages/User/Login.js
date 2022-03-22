@@ -77,7 +77,7 @@ export default class LoginPage extends Component {
           if (this.captcha) {
             this.captcha.refresh();
           }
-          message.error(e.message);
+          // message.error(e.message);
           // this.setState({ needCaptcha: data.validateCode != -1 });
         },
       );

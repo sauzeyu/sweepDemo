@@ -3,16 +3,17 @@ import React from 'react';
 import { Card } from 'antd';
 import FilterForm from './FilterForm';
 import { FormattedMessage } from 'umi';
-import DataTable from './table';
+import DataTable from './DataTable';
+import SearchForm from '@/pages/System/User/Manage/SearchForm';
 
-export default class UserList extends React.Component {
+export default class Index extends React.Component {
   render() {
     return (
       <div className={'card-group'}>
-        <Card bordered={false}>
-          <FilterForm />
+        <Card>
+          <SearchForm />
         </Card>
-        <Card bordered={false}>
+        <Card>
           <DataTable />
         </Card>
       </div>
