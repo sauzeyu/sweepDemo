@@ -17,8 +17,6 @@ export async function updateCarModes(data) {
 
 // 分页查询蓝牙设备
 export async function getBluetooth(params) {
-  console.log('getBluetooth ----');
-
   return request.get('dkmBluetooths/selectForPage', { params });
 }
 

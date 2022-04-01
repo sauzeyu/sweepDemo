@@ -72,6 +72,8 @@ class DataTable extends Component {
   ];
   del = (model) => {
     const { hwDeviceSn } = model;
+    console.log('this ', this);
+    console.log('this.onRow', this.onRow);
     Modal.confirm({
       title: '删除蓝牙设备',
       content: `确定设备“${hwDeviceSn}”？`,
@@ -79,7 +81,7 @@ class DataTable extends Component {
         return delBluetooth(hwDeviceSn).then(
           () => {
             message.success('操作成功');
-            this.dataTable.refresh();
+            this.dataTable.reload();
           },
           (err) => {
             message.error(err.message);

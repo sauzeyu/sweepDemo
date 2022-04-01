@@ -250,7 +250,7 @@ class DataTable extends Component {
           width={1300}
           visible={keysFormVisible}
           onCancel={this.onCancel}
-          onOk={this.onCancel}
+          hiddenOk={true}
           destroyOnClose
         >
           <KeysTable
