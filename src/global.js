@@ -10,7 +10,6 @@ window.addEventListener('unhandledrejection', function (event) {
     event.preventDefault();
   }
 });
-
 // 模态窗上扩展prompt 弹出输入组件
 Modal.prompt = function (opts) {
   const { inputProps, onOk, content, inputType, ...restProps } = opts;
