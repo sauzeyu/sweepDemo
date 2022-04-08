@@ -59,3 +59,12 @@ export async function stopVehicle(id) {
 export async function discardVehicle(id) {
   return request.post('dkmVehicle/updateValidById?id=' + id);
 }
+
+// 获取手机标定数据列表
+export async function getPhone(params) {
+  return request.get('dkmPhoneCalibrationData/selectForPage', { params });
+}
+// 修改手机标定数据列表
+export async function updatePhone(params) {
+  return request.post('dkmPhoneCalibrationData/updateById', params);
+}

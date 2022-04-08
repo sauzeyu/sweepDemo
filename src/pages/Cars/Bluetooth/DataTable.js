@@ -6,6 +6,7 @@ import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
 import { getBluetooth, delBluetooth } from '@/services/cars';
+import { uploadFlag } from '@/constants/cars';
 
 @connect(({ carsType, loading }) => ({
   carsType,
@@ -56,6 +57,13 @@ class DataTable extends Component {
     {
       title: '蓝牙软件版本号',
       dataIndex: 'bleSoftwareVersion',
+    },
+    {
+      title: '是否上传MES系统',
+      dataIndex: 'flag',
+      render: (text) => {
+        return uploadFlag[text];
+      },
     },
     {
       title: '操作',

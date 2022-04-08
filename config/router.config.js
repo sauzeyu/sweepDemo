@@ -121,6 +121,11 @@ export default [
             title: '汽车信息',
             component: './Cars/Vehicle',
           },
+          {
+            path: '/cars/phone',
+            title: '手机标定数据管理',
+            component: './Cars/Phone',
+          },
         ],
       },
       {

@@ -55,3 +55,7 @@ export const color = {
   BG33: '流沙金',
   BG34: '古铜金',
 };
+export const uploadFlag = {
+  0: '未上传',
+  1: '已上传',
+};
