@@ -26,6 +26,14 @@ export const Permit = {
   8: '启动',
   16: '车机',
 };
+
+export const PermitKeyLog = {
+  1: '前门解锁',
+  2: '后门解锁',
+  4: '尾箱解锁',
+  8: '启动解锁',
+  16: '车机解锁',
+};
 /**
  * 解析授权权限值
  * @param permission 传入的权限值 1-31
@@ -35,5 +43,11 @@ export const analyzePermissions = (permission) => {
   let p = '';
   for (let i = 1; i < 1 << 5; i <<= 1)
     if ((permission & i) === i) p = p.concat(Permit[i], ' ');
+  return p;
+};
+export const analyzePermissionsKeyLog = (permission) => {
+  let p = '';
+  for (let i = 1; i < 1 << 5; i <<= 1)
+    if ((permission & i) === i) p = p.concat(PermitKeyLog[i], ' ');
   return p;
 };

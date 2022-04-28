@@ -35,20 +35,20 @@ class DataTable extends Component {
       title: '指令执行状态',
       dataIndex: 'cmdStatus',
     },
-    {
-      title: '操作',
-      fixed: 'right',
-      width: 300,
-      render: (col) => {
-        return (
-          <div className={'link-group'}>
-            <a className={'text-danger'} onClick={false}>
-              删除
-            </a>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: '操作',
+    //   fixed: 'right',
+    //   width: 300,
+    //   render: (col) => {
+    //     return (
+    //       <div className={'link-group'}>
+    //         <a className={'text-danger'} onClick={false}>
+    //           删除
+    //         </a>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
   onCancel = () => {
     this.setState({

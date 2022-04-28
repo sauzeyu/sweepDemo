@@ -9,7 +9,7 @@ import {
   selectUserById,
 } from '@/services/keys';
 import { Link } from 'umi';
-import { DKState, KeysState } from '@/constants/keys';
+import { analyzePermissions, DKState, KeysState } from '@/constants/keys';
 import DescriptionList from '@/components/DescriptionList';
 import { checkResult, color, sunroofType, windowType } from '@/constants/cars';
 
@@ -27,16 +27,16 @@ class DataTable extends Component {
     carInfo: {},
   };
   columns = [
+    // {
+    //   title: '手机设备指纹',
+    //   dataIndex: 'phoneFingerprint',
+    // },
+    // {
+    //   title: '数字钥匙ID',
+    //   dataIndex: 'keyOwnerId',
+    // },
     {
-      title: '手机设备指纹',
-      dataIndex: 'phoneFingerprint',
-    },
-    {
-      title: '数字钥匙ID',
-      dataIndex: 'keyOwnerId',
-    },
-    {
-      title: '电话',
+      title: '用户电话',
       dataIndex: 'phone',
     },
     {
@@ -57,11 +57,15 @@ class DataTable extends Component {
     {
       title: '授权权限值',
       dataIndex: 'permissions',
+      width: 300,
+      render: (text) => {
+        return analyzePermissions(text);
+      },
     },
-    {
-      title: '附加信息',
-      dataIndex: 'serverPersonal',
-    },
+    // {
+    //   title: '附加信息',
+    //   dataIndex: 'serverPersonal',
+    // },
     {
       title: '申请时间',
       dataIndex: 'applyTime',
@@ -73,10 +77,10 @@ class DataTable extends Component {
         return KeysState[text];
       },
     },
-    {
-      title: '预配对值',
-      dataIndex: 'pp',
-    },
+    // {
+    //   title: '预配对值',
+    //   dataIndex: 'pp',
+    // },
     {
       title: '操作',
       fixed: 'right',

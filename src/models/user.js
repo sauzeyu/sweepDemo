@@ -105,11 +105,15 @@ export default {
       });
     },
     *modifyPassword({ payload }, { call, select }) {
-      const params = payload.params;
-      params.id = yield select((state) => state.user.currentUser.id);
-      params.oldPwd = SignPassword(params.password);
-      params.newPwd = SignPassword(params.new_password);
-      yield call(modifyPassword, params);
+      // const params = payload.params;
+      const params = new URLSearchParams();
+      // params.id = yield select((state) => state.user.currentUser.id);
+      params.append('username', payload.params.username);
+      params.append('password', SignPassword(payload.params.password));
+      params.append('newPassword', SignPassword(payload.params.newPassword));
+      // params.password = SignPassword(payload.params.password);
+      // params.newPassword = SignPassword(payload.params.newPassword);
+      return yield call(modifyPassword, params);
     },
   },
 

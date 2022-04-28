@@ -7,6 +7,7 @@ import EasyTable from '@/components/EasyTable';
 }))
 class SearchForm extends Component {
   form = React.createRef();
+
   handleSubmit = (values) => {
     this.form.current
       .validateFields()
@@ -17,6 +18,7 @@ class SearchForm extends Component {
         if (errors) return;
       });
   };
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -33,10 +35,22 @@ class SearchForm extends Component {
       sm: 6,
     };
     return (
-      <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
+      <Form
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        ref={this.form}
+        onFieldsChange={(changedFields, allFields) => {
+          this.props.getFormValues(allFields);
+        }}
+      >
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'关键字'} name="keywords">
+            <Form.Item label={'车型'} name="vehicleModel">
+              <Input placeholder={'车型'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'手机品牌'} name="phoneBrand">
               <Input placeholder={'手机品牌'} />
             </Form.Item>
           </Col>

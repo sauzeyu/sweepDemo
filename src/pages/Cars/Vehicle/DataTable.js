@@ -77,7 +77,7 @@ class DataTable extends Component {
     {
       title: '检测结果',
       dataIndex: 'checkResult',
-      width: 80,
+      width: 100,
       render: (text) => {
         return checkResult[text];
       },
@@ -95,6 +95,7 @@ class DataTable extends Component {
           return null;
         }
         const flag = col.isValid === 1;
+        // TODO 编辑车辆
         return (
           <div className={'link-group'}>
             <a onClick={() => this.userInfo(col)}>查看车主</a>

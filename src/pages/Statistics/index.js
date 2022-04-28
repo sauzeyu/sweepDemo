@@ -304,7 +304,7 @@ class index extends React.Component {
           <Col span={6}>
             <Card
               title={<Statistic value={'用户总量'} prefix={<UserOutlined />} />}
-              extra={<a href="#">More</a>}
+              // extra={<a href="#">More</a>}
               hoverable={true}
             >
               <Statistic title="Total Users" value={userTotal} />
@@ -318,7 +318,7 @@ class index extends React.Component {
                   prefix={<UsergroupAddOutlined />}
                 />
               }
-              extra={<a href="#">More</a>}
+              // extra={<a href="#">More</a>}
               hoverable={true}
             >
               <Statistic
@@ -337,7 +337,7 @@ class index extends React.Component {
           <Col span={6}>
             <Card
               title={<Statistic value={'钥匙总量'} prefix={<KeyOutlined />} />}
-              extra={<a href="#">More</a>}
+              // extra={<a href="#">More</a>}
               hoverable={true}
             >
               <Statistic title="Total Keys" value={keyTotal} />
@@ -346,7 +346,7 @@ class index extends React.Component {
           <Col span={6}>
             <Card
               title={<Statistic value={'车辆总量'} prefix={<CarOutlined />} />}
-              extra={<a href="#">More</a>}
+              // extra={<a href="#">More</a>}
               hoverable={true}
             >
               <Statistic title="Total Cars" value={vehicleTotal} />

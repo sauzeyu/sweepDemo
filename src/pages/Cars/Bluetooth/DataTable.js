@@ -22,10 +22,10 @@ class DataTable extends Component {
       title: '设备序列号',
       dataIndex: 'hwDeviceSn',
     },
-    {
-      title: '设备ID号',
-      dataIndex: 'hwDeviceId',
-    },
+    // {
+    //   title: '设备ID号',
+    //   dataIndex: 'hwDeviceId',
+    // },
     {
       title: '设备供应商编号',
       dataIndex: 'hwDeviceProviderNo',
@@ -34,10 +34,10 @@ class DataTable extends Component {
       title: '数字钥匙软件版本号',
       dataIndex: 'dkSdkVersion',
     },
-    {
-      title: '数字钥匙安全单元ID',
-      dataIndex: 'dkSecUnitId',
-    },
+    // {
+    //   title: '数字钥匙安全单元ID',
+    //   dataIndex: 'dkSecUnitId',
+    // },
     {
       title: '蓝牙名称',
       dataIndex: 'bleName',

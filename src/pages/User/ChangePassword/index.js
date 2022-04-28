@@ -5,6 +5,7 @@ import style from './style.less';
 import { connect } from 'dva';
 import { message, Modal } from 'antd';
 import { FormattedMessage } from 'umi';
+
 @connect(({ user, loading }) => ({
   currentUser: user.currentUser,
   submitting: loading.effects['user/modifyPassword'],
@@ -12,6 +13,8 @@ import { FormattedMessage } from 'umi';
 export default class extends React.Component {
   // 在子组件中调用函数 传递子组件中获得的表单上数据作为参数
   updatePassword = (vals) => {
+    console.log('vals ', vals);
+    console.log('vals ', vals);
     // 发送请求
     this.props
       .dispatch({
@@ -19,22 +22,31 @@ export default class extends React.Component {
         payload: {
           params: {
             username: this.props.currentUser.username,
-            ...vals,
+            password: vals.password,
+            newPassword: vals.newPassword,
           },
         },
       })
       .then(
-        () => {
-          // 成功
-          Modal.success({
-            title: '密码修改成功',
-            onOk: () => {
-              this.modifyForm.form.current.resetFields();
-              this.props.dispatch({
-                type: 'user/logout',
-              });
-            },
-          });
+        (res) => {
+          console.log('res ', res);
+          if (res.code === 200) {
+            // 成功
+            Modal.success({
+              title: '密码修改成功',
+              onOk: () => {
+                this.modifyForm.form.current.resetFields();
+                this.props.dispatch({
+                  type: 'user/logout',
+                });
+              },
+            });
+          } else {
+            // 失败
+            Modal.error({
+              content: res.msg,
+            });
+          }
         },
         (err) => {
           // 失败
@@ -44,6 +56,7 @@ export default class extends React.Component {
         },
       );
   };
+
   render() {
     const { submitting = false } = this.props;
     return (

@@ -17,7 +17,7 @@ class Index extends Component {
         style={{ border: 'none' }}
         sandbox="allow-scripts allow-forms allow-same-origin"
         scrolling="auto"
-        src={'http://localhost:7001/dkserver-admin/wallboard'}
+        src={'http://172.16.6.107:7001/dkserver-admin/wallboard'}
         width="100%"
         height="100%"
       />

@@ -6,6 +6,7 @@ export default {
   'Validator.number': '{name} 只能是数字',
   'Validator.numberletter': '{name} 只能是数字或字母',
   'Validator.pattern': '格式不正确',
+  'Validator.password': '密码应为6-16位数字、字母、英文符号',
   'Validator.limitFileTypes': '只支持 {types} 格式',
   'Validator.fileSize': '文件最大支持 {size}',
   'Validator.incompleteAddress': '地址项输入不全',

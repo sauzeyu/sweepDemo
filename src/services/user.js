@@ -17,7 +17,7 @@ export async function logout(params) {
 }
 
 export async function modifyPassword(params) {
-  return request.post('modifyPwd', params);
+  return request.post('/dkmAdmin/modifyPassword', params);
 }
 
 function decorateUserInfo(res) {

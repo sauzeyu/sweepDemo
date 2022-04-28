@@ -35,20 +35,20 @@ class DataTable extends Component {
       title: '错误码',
       dataIndex: 'errorCode',
     },
-    {
-      title: '操作',
-      fixed: 'right',
-      width: 300,
-      render: (col) => {
-        return (
-          <div className={'link-group'}>
-            <a className={'text-danger'} onClick={false}>
-              删除
-            </a>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: '操作',
+    //   fixed: 'right',
+    //   width: 300,
+    //   render: (col) => {
+    //     return (
+    //       <div className={'link-group'}>
+    //         <a className={'text-danger'} onClick={false}>
+    //           删除
+    //         </a>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
   onCancel = () => {
     this.setState({

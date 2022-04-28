@@ -47,7 +47,7 @@ class VehicleTable extends Component {
     {
       title: '检测结果',
       dataIndex: 'checkResult',
-      width: 80,
+      width: 100,
       render: (text) => {
         return checkResult[text];
       },

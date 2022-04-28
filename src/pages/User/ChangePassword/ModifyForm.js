@@ -20,16 +20,10 @@ export default class ModifyForm extends React.Component {
       .validateFields()
       .then((vals) => {
         // 校验两次密码是否一致
-        if (vals.new_password !== vals.re_new_password) {
+        if (vals.newPassword !== vals.reNewPassword) {
           // 调用ant 的 modal组件
           return Modal.error({
-            content: FormattedMessage(
-              { id: 'Validator.equals' },
-              {
-                a: '新密码',
-                b: '确认新密码',
-              },
-            ),
+            content: '两次输入密码不一致',
           });
         }
         // 一致的情况下调用父级组件的方法并传递表单数据作为参数
@@ -51,6 +45,7 @@ export default class ModifyForm extends React.Component {
         {/* 旧密码 */}
         <Form.Item
           {...formItemLayout}
+          label="旧密码"
           name="password"
           rules={[
             {
@@ -67,9 +62,11 @@ export default class ModifyForm extends React.Component {
           <Input type="password" placeholder={'请输入原密码'} />
         </Form.Item>
         {/* 新密码 */}
+
         <Form.Item
           {...formItemLayout}
-          name="new_password"
+          label="新密码"
+          name="newPassword"
           rules={[
             {
               required: true,
@@ -84,7 +81,7 @@ export default class ModifyForm extends React.Component {
               pattern: /[a-zA-Z0-9~!@#$%^&*()_+-=;':",./<>?`]{6,16}/,
               message: (
                 <FormattedMessage
-                  id={'Validator.pattern'}
+                  id={'Validator.password'}
                   values={{ name: labels.newPassword }}
                 />
               ),
@@ -93,13 +90,14 @@ export default class ModifyForm extends React.Component {
         >
           <Input
             type="password"
-            placeholder={'新密码，6-16位数字、字母、英文符号'}
+            placeholder={'输入新密码，6-16位数字、字母、英文符号'}
           />
         </Form.Item>
         {/* 重复输入新密码 */}
         <Form.Item
           {...formItemLayout}
-          name="re_new_password"
+          label="新密码"
+          name="reNewPassword"
           rules={[
             {
               required: true,
@@ -112,7 +110,7 @@ export default class ModifyForm extends React.Component {
             },
           ]}
         >
-          <Input type="password" placeholder={'请再次输入新密码'} />
+          <Input type="password" placeholder={'请重新输入新密码'} />
         </Form.Item>
         <Form.Item>
           <Button
