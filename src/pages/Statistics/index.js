@@ -9,6 +9,7 @@ import {
   selectTotalVehicle,
   selectTotalKey,
   selectYesterdayRegisterUser,
+  selectYesterdayRegisterKey,
   selectVehicleByFactory,
   selectLastWeekTotal,
 } from '@/services/echarts';
@@ -30,6 +31,7 @@ class index extends React.Component {
     keyTotal: 0,
     vehicleTotal: 0,
     yesterdayRegisterUserTotal: 0,
+    yesterdayRegisterKeyTotal: 0,
     vehicleFactoryList: [],
     userTotalList: [],
     keyTotalList: [],
@@ -138,7 +140,7 @@ class index extends React.Component {
           avoidLabelOverlap: true,
           itemStyle: {
             borderRadius: 10,
-            borderColor: '#FFFFFF',
+            borderColor: '#ffffff',
             borderWidth: 2,
           },
           data: [
@@ -279,6 +281,11 @@ class index extends React.Component {
       this.setState({ yesterdayRegisterUserTotal: res.data });
     });
   };
+  getYesterdayRegisterKey = () => {
+    selectYesterdayRegisterKey().then((res) => {
+      this.setState({ yesterdayRegisterKeyTotal: res.data });
+    });
+  };
   getVehicleFactoryList = () => {
     selectVehicleByFactory().then((res) => {
       this.setState({ vehicleFactoryList: res.data });
@@ -290,18 +297,24 @@ class index extends React.Component {
     this.getKeyTotal();
     this.getVehicleTotal();
     this.getYesterdayRegisterUserTotal();
+    this.getYesterdayRegisterKey();
     this.getVehicleFactoryList();
     this.getLastWeekTotal();
   }
 
   render() {
-    const { userTotal, keyTotal, vehicleTotal, yesterdayRegisterUserTotal } =
-      this.state;
+    const {
+      userTotal,
+      keyTotal,
+      vehicleTotal,
+      yesterdayRegisterUserTotal,
+      yesterdayRegisterKeyTotal,
+    } = this.state;
 
     return (
       <div style={{ width: '100%', height: '100%', background: '#FFFFFF' }}>
         <Row>
-          <Col span={6}>
+          <Col span={5}>
             <Card
               title={<Statistic value={'用户总量'} prefix={<UserOutlined />} />}
               // extra={<a href="#">More</a>}
@@ -310,11 +323,11 @@ class index extends React.Component {
               <Statistic title="Total Users" value={userTotal} />
             </Card>
           </Col>
-          <Col span={6}>
+          <Col span={5}>
             <Card
               title={
                 <Statistic
-                  value={'用户增长'}
+                  value={'今日注册用户'}
                   prefix={<UsergroupAddOutlined />}
                 />
               }
@@ -323,18 +336,13 @@ class index extends React.Component {
             >
               <Statistic
                 title="Increase"
-                value={
-                  (yesterdayRegisterUserTotal * 100) /
-                  (userTotal - yesterdayRegisterUserTotal)
-                }
-                precision={2}
+                value={yesterdayRegisterUserTotal}
                 valueStyle={{ color: '#cf1322' }}
                 prefix={<ArrowUpOutlined />}
-                suffix="%"
               />
             </Card>
           </Col>
-          <Col span={6}>
+          <Col span={5}>
             <Card
               title={<Statistic value={'钥匙总量'} prefix={<KeyOutlined />} />}
               // extra={<a href="#">More</a>}
@@ -343,7 +351,23 @@ class index extends React.Component {
               <Statistic title="Total Keys" value={keyTotal} />
             </Card>
           </Col>
-          <Col span={6}>
+          <Col span={5}>
+            <Card
+              title={
+                <Statistic value={'今日新增钥匙'} prefix={<KeyOutlined />} />
+              }
+              // extra={<a href="#">More</a>}
+              hoverable={true}
+            >
+              <Statistic
+                title="Increase"
+                value={yesterdayRegisterKeyTotal}
+                valueStyle={{ color: '#cf1322' }}
+                prefix={<ArrowUpOutlined />}
+              />
+            </Card>
+          </Col>
+          <Col span={4}>
             <Card
               title={<Statistic value={'车辆总量'} prefix={<CarOutlined />} />}
               // extra={<a href="#">More</a>}

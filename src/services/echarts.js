@@ -15,6 +15,10 @@ export async function selectTotalKey() {
 export async function selectYesterdayRegisterUser() {
   return request.get('echarts/selectYesterdayRegisterUserTotal');
 }
+// 获取昨日新增钥匙数量
+export async function selectYesterdayRegisterKey() {
+  return request.get('echarts/selectYesterdayRegisterKey');
+}
 // 获取车辆工厂分布图列表
 export async function selectVehicleByFactory() {
   return request.get('echarts/selectVehicleByFactory');
