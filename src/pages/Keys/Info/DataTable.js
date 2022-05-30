@@ -8,10 +8,10 @@ import {
   selectVehicleById,
   selectUserById,
 } from '@/services/keys';
-import { Link } from 'umi';
-import { analyzePermissions, DKState, KeysState } from '@/constants/keys';
+import { analyzePermissions, DKState, KeyType } from '@/constants/keys';
 import DescriptionList from '@/components/DescriptionList';
-import { checkResult, color, sunroofType, windowType } from '@/constants/cars';
+import { color, sunroofType, windowType } from '@/constants/cars';
+import { keyLifecycleList, keyUseListById } from '@/services/cars';
 
 const { Description } = DescriptionList;
 
@@ -23,21 +23,23 @@ class DataTable extends Component {
   state = {
     showUserInfo: false,
     showCarInfo: false,
+    keyUseInfo: false,
+    selectKey: {},
     userInfo: {},
     carInfo: {},
   };
   columns = [
-    // {
-    //   title: '手机设备指纹',
-    //   dataIndex: 'phoneFingerprint',
-    // },
-    // {
-    //   title: '数字钥匙ID',
-    //   dataIndex: 'keyOwnerId',
-    // },
     {
-      title: '用户电话',
-      dataIndex: 'phone',
+      title: '钥匙类型',
+      dataIndex: 'parentId',
+      render: (text) => {
+        return KeyType(text);
+      },
+    },
+    {
+      title: '车辆vin号',
+      dataIndex: 'vin',
+      width: 250,
     },
     {
       title: '具体状态',
@@ -55,71 +57,96 @@ class DataTable extends Component {
       dataIndex: 'valTo',
     },
     {
-      title: '授权权限值',
+      title: '钥匙权限',
       dataIndex: 'permissions',
       width: 300,
       render: (text) => {
         return analyzePermissions(text);
       },
     },
-    // {
-    //   title: '附加信息',
-    //   dataIndex: 'serverPersonal',
-    // },
     {
       title: '申请时间',
       dataIndex: 'applyTime',
     },
     {
-      title: '操作状态',
-      dataIndex: 'keyStatus',
-      render: (text) => {
-        return KeysState[text];
-      },
-    },
-    // {
-    //   title: '预配对值',
-    //   dataIndex: 'pp',
-    // },
-    {
       title: '操作',
       fixed: 'right',
-      width: 300,
+      width: 350,
       render: (col) => {
-        return col.dkState !== 5 ? (
+        let isDisable = col.dkState === 3;
+
+        let shareKeyStyle = {};
+
+        if (col.parentId) {
+          shareKeyStyle = {
+            onClick: false,
+            style: { opacity: 0.2 },
+          };
+        } else {
+          shareKeyStyle = {
+            onClick: () => {
+              this.userInfo(col);
+            },
+          };
+        }
+
+        return (
           <div className={'link-group'}>
-            <a onClick={() => this.userInfo(col)}>查看用户</a>
+            <a onClick={() => this.keyUseInfo(col)}>使用记录</a>
+            <a {...shareKeyStyle}>查看用户</a>
             <a onClick={() => this.carInfo(col)}>查看车辆</a>
-            {col.dkState === 3 && (
-              <a onClick={() => this.enableKey(col, true)}>启用</a>
-            )}
-            {col.dkState === 1 && (
-              <a
-                className={'text-danger'}
-                onClick={() => this.enableKey(col, false)}
-              >
-                停用
-              </a>
-            )}
-            {col.dkState === 0 && <a>未激活</a>}
-            {col.dkState === 4 && <a>已过期</a>}
+            <a onClick={() => this.enableKey(col, true)} hidden={!isDisable}>
+              解冻
+            </a>
+            <a
+              className={'text-danger'}
+              onClick={() => this.enableKey(col, false)}
+              hidden={isDisable}
+            >
+              冻结
+            </a>
             <a className={'text-danger'} onClick={() => this.revokeKey(col)}>
               吊销
             </a>
           </div>
-        ) : null;
+        );
       },
     },
   ];
+  keyUseLogColumns = [
+    {
+      title: '车辆vin号',
+      dataIndex: 'vin',
+      width: 250,
+    },
+    {
+      title: '操作类型',
+      dataIndex: 'statusCode',
+      width: 250,
+    },
+    {
+      title: '操作时间',
+      dataIndex: 'operateTime',
+      width: 400,
+    },
+  ];
+  keyUseInfo = (col) => {
+    this.setState({
+      keyUseInfo: true,
+      selectKey: col,
+    });
+  };
   userInfo = (col) => {
     this.setState({
       showUserInfo: true,
       userInfo: {},
     });
+
     selectUserById(col.userId).then(
       (res) => {
         this.setState({ userInfo: res.data });
       },
+
       (err) => {
         message.error(err.message);
       },
@@ -129,6 +156,8 @@ class DataTable extends Component {
     this.setState({
       showUserInfo: false,
       showCarInfo: false,
+      keyUseInfo: false,
+      selectKey: {},
     });
   };
   carInfo = (col) => {
@@ -146,7 +175,7 @@ class DataTable extends Component {
     );
   };
   enableKey = (col, isEnableKey) => {
-    let txt = isEnableKey ? '启用' : '停用';
+    let txt = isEnableKey ? '冻结' : '解冻';
     Modal.confirm({
       title: txt + '钥匙',
       content: `确定${txt}钥匙？`,
@@ -154,7 +183,7 @@ class DataTable extends Component {
         return this.props
           .dispatch({
             type: 'keysManage/enableKey',
-            payload: col.id,
+            payload: { id: col.id, dkState: isEnableKey ? 2 : 3 },
           })
           .then(
             (res) => {
@@ -163,7 +192,7 @@ class DataTable extends Component {
               } else {
                 message.error(res.msg);
               }
-              this.dataTable.refresh();
+              this.dataTable.reload();
             },
             (err) => {
               message.error(err.message);
@@ -250,30 +279,6 @@ class DataTable extends Component {
             <Description term={'姓名'}>
               {userInfo ? userInfo.username : ''}
             </Description>
-            <Description term={'身份证'}>
-              {userInfo ? userInfo.idCard : ''}
-            </Description>
-            <Description term={'是否有效'}>
-              {userInfo ? (
-                userInfo.isValid === 0 ? (
-                  <Tag color="#f50">无效</Tag>
-                ) : (
-                  <Tag color="#87d068">有效</Tag>
-                )
-              ) : (
-                <Tag color="red">无</Tag>
-              )}
-            </Description>
-            <Description term={'指纹'}>
-              {userInfo ? userInfo.phoneFingerprint : ''}
-            </Description>
-            <Description term={'状态'}>
-              {userInfo
-                ? userInfo.status === 0
-                  ? '已注册'
-                  : '已实名认证'
-                : ''}
-            </Description>
           </DescriptionList>
         </Modal>
 
@@ -286,13 +291,6 @@ class DataTable extends Component {
         >
           <DescriptionList col={1}>
             <Description term={'工厂编号'}>{carInfo.factoryNo}</Description>
-            <Description term={'检测结果'}>
-              {carInfo.checkResult === 0 ? (
-                <Tag color="#f50">{checkResult[carInfo.checkResult]}</Tag>
-              ) : (
-                <Tag color="#87d068">{checkResult[carInfo.checkResult]}</Tag>
-              )}
-            </Description>
             <Description term={'车主手机号'}>{carInfo.phone}</Description>
             <Description term={'车窗类型'}>
               {windowType[carInfo.windowType]}
@@ -301,9 +299,43 @@ class DataTable extends Component {
             <Description term={'天窗类型'}>
               <Tag color="#87d068">{sunroofType[carInfo.sunroofType]}</Tag>
             </Description>
-            <Description term={'蓝牙编号'}>{carInfo.bleNo}</Description>
+            <Description term={'蓝牙编号'}>{carInfo.hwDeviceSn}</Description>
             <Description term={'创建时间'}>{carInfo.createTime}</Description>
           </DescriptionList>
+        </Modal>
+
+        <Modal
+          footer={null}
+          title={'钥匙使用记录'}
+          visible={this.state.keyUseInfo}
+          onCancel={this.onCancel}
+          destroyOnClose={true}
+          // width={800}
+        >
+          <EasyTable
+            autoFetch
+            source={keyUseListById}
+            dataProp={'data'}
+            name={'keyUseLogDataTable'}
+            rowKey={'id'}
+            columns={this.keyUseLogColumns}
+            renderHeader={(title, extra, page) => {
+              let total = page.total;
+              total = '共 ' + total + ' 条记录';
+              return (
+                <>
+                  <p>
+                    <Badge color="purple" text="钥匙类型：" />
+                    {KeyType(this.state?.selectKey?.parentId)}
+                  </p>
+                  <div>
+                    <Badge color="blue" text={total} />
+                  </div>
+                </>
+              );
+            }}
+            fixedParams={{ keyId: this.state?.selectKey?.id }}
+          />
         </Modal>
       </div>
     );

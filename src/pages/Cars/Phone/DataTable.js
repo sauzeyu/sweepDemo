@@ -3,7 +3,8 @@ import request from '@/utils/request';
 import axios from 'axios';
 import EasyTable from '@/components/EasyTable';
 import DrawerConfirm from '@/components/DrawerConfirm';
-import FileUploader from '@/components/FileUploader';
+import importExcel from '@/utils/importExcel';
+import { exportPhoneCalibration } from '@/services/upOrDownload';
 import { getPublicPath } from '@/utils';
 import { Button, message, Modal, Upload, Row, Col, Form, Input } from 'antd';
 import {
@@ -17,8 +18,8 @@ import { connect } from 'dva';
 import { getDvaApp } from '@@/plugin-dva/exports';
 
 const { Dragger } = Upload;
-const xlsTemp = getPublicPath('template/xlsTemp.xls');
-const xlsxTemp = getPublicPath('template/xlsxTemp.xlsx');
+const xlsTemp = getPublicPath('template/phoneCalibrationExcel.xls');
+const xlsxTemp = getPublicPath('template/phoneCalibrationExcel.xlsx');
 
 @connect(({ carsVehicle, loading }) => ({
   carsVehicle,
@@ -79,16 +80,8 @@ class DataTable extends Component {
       fileName = '手机标定数据.xls';
       param.append('isXlsx', isXlsx);
     }
-    // Excel 导出时 axios 不能配置拦截器
-    axios({
-      method: 'post',
-      url: '/dkserver-back/dkmPhoneCalibrationData/downloadCalibrationExcel',
-      data: param,
-      responseType: 'blob',
-      headers: {
-        'access-token': getDvaApp()._store.getState().user.currentUser.token,
-      },
-    }).then((res) => {
+
+    exportPhoneCalibration(param).then((res) => {
       let blob = new Blob([res.data]);
       let link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
@@ -166,52 +159,6 @@ class DataTable extends Component {
     });
   };
 
-  openModalImport = () => {
-    const that = this;
-    const props = {
-      name: 'file',
-      multiple: true,
-      action: '/dkserver-back/dkmPhoneCalibrationData/importByExcel',
-      headers: {
-        'access-token': getDvaApp()._store.getState().user.currentUser.token,
-      },
-      onChange(info) {
-        const { status } = info.file;
-        if (status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (status === 'done') {
-          const { response } = info.file;
-          if (response.code === 200) {
-            message.success(`${info.file.name} 文件上传成功.`);
-            that.dataTable.reload();
-          } else if (response.code === 500) {
-            info.file.status = 'error';
-            message.error(response.msg + ` ${info.file.name} 文件上传失败.`);
-          }
-        } else if (status === 'error') {
-          info.file.status = 'error';
-          message.error(`${info.file.name} 文件上传失败.`);
-        }
-      },
-    };
-    return Modal.info({
-      width: 500,
-      icon: '',
-      okText: '取消',
-      closable: true,
-      content: (
-        <Dragger {...props}>
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">单击或拖动文件到此区域上传</p>
-          <p className="ant-upload-hint">仅支持 xlsx/xls 格式文件</p>
-        </Dragger>
-      ),
-    });
-  };
-
   editRow = (row) => {
     console.log('row ', row);
     this.setState(
@@ -266,6 +213,7 @@ class DataTable extends Component {
         sm: { span: 18 },
       },
     };
+    this.openModal;
     return (
       <div>
         <EasyTable
@@ -282,21 +230,29 @@ class DataTable extends Component {
             <div className={'btn-group'}>
               <Button
                 onClick={() => this.openDownloadTemplate()}
-                type={'primary'}
+                type={'ghost'}
+                size={'large'}
                 icon={<CloudDownloadOutlined />}
               >
                 导入模板
               </Button>
               <Button
                 onClick={() => this.openModalExport()}
-                type={'primary'}
+                type={'ghost'}
+                size={'large'}
                 icon={<DownloadOutlined />}
               >
                 导出
               </Button>
               <Button
-                onClick={() => this.openModalImport()}
-                type={'primary'}
+                onClick={() =>
+                  importExcel(
+                    '/dkserver-back/dkmPhoneCalibrationData/importByExcel',
+                    this,
+                  )
+                }
+                type={'ghost'}
+                size={'large'}
                 icon={<CloudUploadOutlined />}
               >
                 导入

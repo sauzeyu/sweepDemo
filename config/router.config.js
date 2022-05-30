@@ -105,6 +105,11 @@ export default [
             title: '钥匙使用日志',
             component: './Keys/Logs',
           },
+          {
+            path: '/keys/error',
+            title: '钥匙故障记录',
+            component: './Keys/Error',
+          },
         ],
       },
       {
@@ -136,6 +141,17 @@ export default [
             path: '/customer/info',
             title: '用户信息',
             component: './Customer/Info',
+          },
+        ],
+      },
+      {
+        path: '/aftermarketReplacement',
+        title: '售后换件管理',
+        routes: [
+          {
+            path: '/aftermarketReplacement/info',
+            title: '换件信息',
+            component: './AftermarketReplacement/Info',
           },
         ],
       },

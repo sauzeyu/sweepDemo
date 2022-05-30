@@ -50,17 +50,17 @@ export default class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row>
           <Col {...colSpan}>
-            <Form.Item label={'用户名'} name="username" colon={false}>
+            <Form.Item label={'用户名'} name="username">
               <Input placeholder={'请输入用户名'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'手机号'} name="phone" colon={false}>
+            <Form.Item label={'手机号'} name="phone">
               <Input placeholder={'请输入手机号码'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="注册时间" name={'startTime'} colon={false}>
+            <Form.Item label="注册时间" name={'startTime'}>
               <RangePicker />
             </Form.Item>
           </Col>

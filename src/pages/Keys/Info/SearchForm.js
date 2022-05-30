@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Row, Select, Input } from 'antd';
 import EasyTable from '@/components/EasyTable';
+import { Permit } from '@/constants/keys';
 
 @EasyTable.connect(({ keysDataTable }) => ({
   keysDataTable,
@@ -11,12 +12,18 @@ class SearchForm extends Component {
     this.form.current
       .validateFields()
       .then((values) => {
+        if (values.permission && values.permission.length > 0) {
+          values.permission = values.permission.reduce(
+            (prev, current) => prev + current,
+          );
+        }
         this.props.keysDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
       });
   };
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -28,19 +35,33 @@ class SearchForm extends Component {
         sm: { span: 16 },
       },
     };
-    const colSpan = {
-      xs: 24,
-      sm: 6,
-    };
+    // const colSpan = {
+    //   xs: 24,
+    //   sm: 6,
+    // };
+    const permit = [1, 2, 4, 8, 16];
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
-          <Col {...colSpan}>
-            <Form.Item label={'手机号'} name="phone">
-              <Input placeholder="请输入手机号码" />
+          {/*<Col span={8}>*/}
+          {/*  <Form.Item label={'手机号'} name="phone">*/}
+          {/*    <Input placeholder="请输入手机号码"/>*/}
+          {/*  </Form.Item>*/}
+          {/*</Col>*/}
+          <Col span={8}>
+            <Form.Item label={'钥匙权限'} name="permission">
+              <Select mode={'multiple'} allowClear={true}>
+                {permit.map((permission) => {
+                  return (
+                    <Select.Option key={permission} value={permission}>
+                      {Permit[permission]}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
             </Form.Item>
           </Col>
-          <Col {...colSpan}>
+          <Col span={8}>
             <Form.Item>
               <Button
                 type={'primary'}

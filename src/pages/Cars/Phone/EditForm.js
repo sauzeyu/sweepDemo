@@ -14,6 +14,9 @@ import {
 import RestrictiveInput from '@/components/RestrictiveInput';
 
 class EditForm extends Component {
+  state = {
+    isEdit: false,
+  };
   form = React.createRef();
 
   componentDidMount() {

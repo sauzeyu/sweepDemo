@@ -5,10 +5,6 @@ export async function getCustomerList(params) {
   return request.get('dkmUser/selectForPage', { params });
 }
 
-export async function stopDkUser(id) {
-  return request.post('dkmUser/updateValidById?id=' + id);
-}
-
 //新增客户
 export async function addDkCustomer(data) {
   return request.post('dkmUser/insert', data);

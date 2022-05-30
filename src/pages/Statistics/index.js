@@ -12,7 +12,7 @@ import {
   selectYesterdayRegisterKey,
   selectVehicleByFactory,
   selectLastWeekTotal,
-} from '@/services/echarts';
+} from '@/services/statistics';
 import ReactEcharts from 'echarts-for-react';
 
 import { Card, Col, Row, Statistic, Button, Space } from 'antd';
@@ -293,13 +293,13 @@ class index extends React.Component {
   };
 
   componentDidMount() {
-    this.getUserTotal();
-    this.getKeyTotal();
-    this.getVehicleTotal();
-    this.getYesterdayRegisterUserTotal();
-    this.getYesterdayRegisterKey();
-    this.getVehicleFactoryList();
-    this.getLastWeekTotal();
+    // this.getUserTotal();
+    // this.getKeyTotal();
+    // this.getVehicleTotal();
+    // this.getYesterdayRegisterUserTotal();
+    // this.getYesterdayRegisterKey();
+    // this.getVehicleFactoryList();
+    // this.getLastWeekTotal();
   }
 
   render() {

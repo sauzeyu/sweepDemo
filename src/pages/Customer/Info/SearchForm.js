@@ -17,6 +17,7 @@ class SearchForm extends Component {
         if (errors) return;
       });
   };
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -36,8 +37,13 @@ class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'关键字'} name="keywords">
-              <Input placeholder={'用户电话/姓名'} />
+            <Form.Item label={'用户姓名'} name="username">
+              <Input placeholder={'用户姓名'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'用户手机号'} name="phone">
+              <Input placeholder={'用户手机号'} />
             </Form.Item>
           </Col>
           <Col {...colSpan} style={{ flex: 1 }}>

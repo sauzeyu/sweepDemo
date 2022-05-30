@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Button, Col, DatePicker, Form, Input, Row, Select } from 'antd';
+import { Button, Col, DatePicker, Form, Input, Row } from 'antd';
 import EasyTable from '@/components/EasyTable';
-import RestrictiveInput from '@/components/RestrictiveInput';
+import moment from 'moment';
 
-@EasyTable.connect(({ carsVehicleDataTable }) => ({
-  carsVehicleDataTable,
+const { RangePicker } = DatePicker;
+@EasyTable.connect(({ aftermarketReplacementDataTable }) => ({
+  aftermarketReplacementDataTable,
 }))
 class SearchForm extends Component {
   form = React.createRef();
@@ -12,13 +13,19 @@ class SearchForm extends Component {
     this.form.current
       .validateFields()
       .then((values) => {
-        this.props.carsVehicleDataTable.fetch(values);
+        if (values.startTime) {
+          const startTime = values['startTime'];
+          values.startTime = moment(startTime[0]).format('YYYY-MM-DD');
+          values.endTime = moment(startTime[1])
+            .add(1, 'days')
+            .format('YYYY-MM-DD');
+        }
+        this.props.aftermarketReplacementDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
       });
   };
-
   render() {
     const formItemLayout = {
       labelCol: {
@@ -38,18 +45,13 @@ class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'车主手机号'} name="phone">
-              <RestrictiveInput trim placeholder={'车主手机号'} />
+            <Form.Item label={'车架号'} name="vin">
+              <Input placeholder={'车架号'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'vin号'} name="vin">
-              <RestrictiveInput trim placeholder={'vin号'} />
-            </Form.Item>
-          </Col>
-          <Col {...colSpan}>
-            <Form.Item label={'蓝牙编号'} name="hwDeviceSn">
-              <RestrictiveInput trim placeholder={'蓝牙编号'} />
+            <Form.Item label="换件时间" name={'startTime'}>
+              <RangePicker />
             </Form.Item>
           </Col>
           <Col {...colSpan} style={{ flex: 1 }}>

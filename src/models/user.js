@@ -150,6 +150,7 @@ function getUserFromStore() {
 }
 
 function extUserAuthMap(userInfo) {
+  console.log('userInfo= ', userInfo);
   // user是登陆请求获取的结果
   const routeMap = {},
     dnaMap = {};

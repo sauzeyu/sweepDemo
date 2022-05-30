@@ -6,7 +6,7 @@ import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
 import { getBluetooth, delBluetooth } from '@/services/cars';
-import { uploadFlag } from '@/constants/cars';
+import { overdue } from '@/constants/cars';
 
 @connect(({ carsType, loading }) => ({
   carsType,
@@ -22,10 +22,6 @@ class DataTable extends Component {
       title: '设备序列号',
       dataIndex: 'hwDeviceSn',
     },
-    // {
-    //   title: '设备ID号',
-    //   dataIndex: 'hwDeviceId',
-    // },
     {
       title: '设备供应商编号',
       dataIndex: 'hwDeviceProviderNo',
@@ -34,10 +30,6 @@ class DataTable extends Component {
       title: '数字钥匙软件版本号',
       dataIndex: 'dkSdkVersion',
     },
-    // {
-    //   title: '数字钥匙安全单元ID',
-    //   dataIndex: 'dkSecUnitId',
-    // },
     {
       title: '蓝牙名称',
       dataIndex: 'bleName',
@@ -59,10 +51,10 @@ class DataTable extends Component {
       dataIndex: 'bleSoftwareVersion',
     },
     {
-      title: '是否上传MES系统',
+      title: '设备状态',
       dataIndex: 'flag',
       render: (text) => {
-        return uploadFlag[text];
+        return overdue[text];
       },
     },
     {
@@ -70,7 +62,6 @@ class DataTable extends Component {
       render: (col) => {
         return (
           <div className={'link-group'}>
-            {/*<a onClick={() => this.upsert(col)}>编辑</a>*/}
             <a className={'text-danger'} onClick={() => this.del(col)}>
               删除
             </a>

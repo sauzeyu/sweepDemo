@@ -1,20 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Col,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  message,
-  Row,
-  Select,
-  Spin,
-  Switch,
-} from 'antd';
-import { CarTypesSelect } from '@/components/BasicDataSelect';
-import { DriveModes, FuelTypes } from '@/constants/cars';
-import FormItemInterceptor from '@/components/FormItemInterceptor';
-import { getVehicleDetail } from '@/services/cars';
+import { Col, Form, Input, message, Row, Spin } from 'antd';
 import RestrictiveInput from '@/components/RestrictiveInput';
 
 class EditForm extends Component {
@@ -25,44 +10,8 @@ class EditForm extends Component {
     isEdit: false,
   };
   initDetailData = (data) => {
-    this.setState({ loading: true });
-    getVehicleDetail(data.id)
-      .then(
-        (vehicle) => {
-          vehicle.region = [];
-          if (vehicle.modelId) {
-            vehicle.modelId = {
-              key: vehicle.modelId,
-              // label: vehicle.modelName,
-            };
-          }
-          this.form.current.setFieldsValue(vehicle);
-        },
-        (err) => {
-          message.error(err.message);
-        },
-      )
-      .finally(() => {
-        this.setState({ loading: false });
-      });
-  };
-  onRegionChange = (ids, values = []) => {
-    const province = values[0],
-      city = values[1];
-    this.form.current.setFieldsValue({
-      provinceId: province.value,
-      province: province.label,
-      cityId: city.value,
-      city: city.label,
-    });
-  };
-  handleCarTypeChange = (value, type, c) => {
-    // this.form.current.setFieldsValue({
-    //   vin: type.vinMatch,
-    // });
-    this.setState({
-      vinMatch: type.vinMatch,
-    });
+    this.setState({ loading: false });
+    this.form.current.setFieldsValue(data);
   };
 
   componentDidMount() {
@@ -103,16 +52,11 @@ class EditForm extends Component {
             <Input type={'hidden'} />
           </Form.Item>
           <Form.Item
-            label={'车型'}
-            name="modelId"
-            rules={[{ required: true, message: '车型不能为空' }]}
+            label={'工厂编号'}
+            name="factoryNo"
+            rules={[{ required: true, message: '工厂编号不能为空' }]}
           >
-            <CarTypesSelect
-              labelInValue
-              disabled={isEdit}
-              allowClear={false}
-              onChange={this.handleCarTypeChange}
-            />
+            <RestrictiveInput trim />
           </Form.Item>
           <Form.Item
             label={'VIN'}
@@ -129,16 +73,19 @@ class EditForm extends Component {
           >
             <RestrictiveInput trim disabled={isEdit} maxLength={17} />
           </Form.Item>
+          <Form.Item label={'发动机号'} name={'ven'}>
+            <Input trim />
+          </Form.Item>
           <Row type={'flex'}>
             <Col span={12}>
               <Form.Item
                 {...formItemLayoutDouble}
                 label={'车身颜色'}
-                name="colour"
+                name="color"
               >
                 <RestrictiveInput
                   trim
-                  maxLength={50}
+                  maxLength={10}
                   placeholder={'比如：蓝色'}
                 />
               </Form.Item>
@@ -146,27 +93,46 @@ class EditForm extends Component {
             <Col span={12}>
               <Form.Item
                 {...formItemLayoutDouble}
-                label={'车主手机号'}
-                name="phone"
+                label={'天窗类型'}
+                name="sunroofType"
               >
-                <RestrictiveInput trim maxLength={11} />
+                <RestrictiveInput trim maxLength={10} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
                 {...formItemLayoutDouble}
-                label={'车牌号'}
-                name="license"
+                label={'后备门类型'}
+                name="trunkType"
+              >
+                <RestrictiveInput trim maxLength={10} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                {...formItemLayoutDouble}
+                label={'车窗类型'}
+                name="windowType"
+              >
+                <RestrictiveInput trim maxLength={10} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                {...formItemLayoutDouble}
+                label={'遥控泊车'}
+                name="RPAType"
               >
                 <RestrictiveInput trim maxLength={10} />
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item label={'蓝牙'} name="bluetooth">
+          <Form.Item
+            label={'蓝牙编号'}
+            name="hwDeviceSn"
+            rules={[{ required: true, message: '蓝牙编号不能为空' }]}
+          >
             <RestrictiveInput trim maxLength={10} />
-          </Form.Item>
-          <Form.Item label={'车主身份证号'} name="ownerID">
-            <RestrictiveInput trim maxLength={18} />
           </Form.Item>
         </Form>
       </Spin>

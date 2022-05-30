@@ -29,7 +29,7 @@ export class DataTable extends Component {
           () => {
             if (user) {
               user.roleList = roleList;
-              this.editForm.setFieldsValue(user);
+              this.editForm?.setFieldsValue(user);
             }
           },
         );
@@ -120,13 +120,13 @@ export class DataTable extends Component {
                 onClick={() => editOrDeleteNotification('warning')}
                 style={{ color: '#808080' }}
               >
-                修改{' '}
+                修改
               </a>
               <a
                 onClick={() => editOrDeleteNotification('warning')}
                 style={{ color: '#808080' }}
               >
-                删除{' '}
+                删除
               </a>
             </div>
           </>
