@@ -27,3 +27,10 @@ export async function selectVehicleByFactory() {
 export async function selectLastWeekTotal() {
   return request.get('dkmStatistics/selectLastWeekTotal');
 }
+
+export async function selectTotal() {
+  return request.get('dkmStatistics/selectTotal');
+}
+export async function selectKeyLogByMonth() {
+  return request.get('dkmStatistics/selectKeyLogByMonth');
+}

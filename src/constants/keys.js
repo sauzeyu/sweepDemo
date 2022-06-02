@@ -43,7 +43,6 @@ export const Permit = {
   2: '后门',
   4: '尾箱',
   8: '启动',
-  16: '车机',
 };
 
 export const PermitKeyLog = {
@@ -51,7 +50,6 @@ export const PermitKeyLog = {
   2: '后门解锁',
   4: '尾箱解锁',
   8: '启动解锁',
-  16: '车机解锁',
 };
 /**
  * 解析授权权限值
@@ -60,13 +58,13 @@ export const PermitKeyLog = {
  */
 export const analyzePermissions = (permission) => {
   let p = [];
-  for (let i = 1; i < 1 << 5; i <<= 1)
+  for (let i = 1; i < 1 << 4; i <<= 1)
     if ((permission & i) === i) p.push(<Tag color="blue">{Permit[i]}</Tag>);
   return p;
 };
 export const analyzePermissionsKeyLog = (permission) => {
   let p = [];
-  for (let i = 1; i < 1 << 5; i <<= 1)
+  for (let i = 1; i < 1 << 4; i <<= 1)
     if ((permission & i) === i)
       p.push(<Tag color="blue">{PermitKeyLog[i]}</Tag>);
   return p;

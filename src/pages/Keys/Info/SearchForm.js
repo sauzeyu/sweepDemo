@@ -39,15 +39,10 @@ class SearchForm extends Component {
     //   xs: 24,
     //   sm: 6,
     // };
-    const permit = [1, 2, 4, 8, 16];
+    const permit = [1, 2, 4, 8];
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
-          {/*<Col span={8}>*/}
-          {/*  <Form.Item label={'手机号'} name="phone">*/}
-          {/*    <Input placeholder="请输入手机号码"/>*/}
-          {/*  </Form.Item>*/}
-          {/*</Col>*/}
           <Col span={8}>
             <Form.Item label={'钥匙权限'} name="permission">
               <Select mode={'multiple'} allowClear={true}>

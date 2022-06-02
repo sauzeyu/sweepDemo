@@ -80,7 +80,7 @@ class DataTable extends Component {
         if (col.parentId) {
           shareKeyStyle = {
             onClick: false,
-            style: { opacity: 0.2 },
+            style: { opacity: 0.2, cursor: 'not-allowed' },
           };
         } else {
           shareKeyStyle = {
@@ -122,7 +122,7 @@ class DataTable extends Component {
     {
       title: '操作类型',
       dataIndex: 'statusCode',
-      width: 250,
+      width: 700,
     },
     {
       title: '操作时间',
