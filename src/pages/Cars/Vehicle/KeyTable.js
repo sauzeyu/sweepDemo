@@ -19,8 +19,8 @@ class KeyTable extends Component {
   };
   columns = [
     {
-      title: '用户手机号',
-      dataIndex: 'phone',
+      title: '用户id',
+      dataIndex: 'userId',
       width: 200,
     },
     {
@@ -64,23 +64,15 @@ class KeyTable extends Component {
       render: (text, col) => {
         return (
           <a onClick={() => this.keyLifecycle(col)}>
-            <Tag color={'volcano'} style={{ fontSize: 15 }}>
-              生命周期
-            </Tag>
+            {/*<Tag color={'volcano'} style={{ fontSize: 15 }}>*/}
+            生命周期
+            {/*</Tag>*/}
           </a>
         );
       },
     },
   ];
   lifecycleColumns = [
-    // {
-    //   title: '钥匙类型',
-    //   dataIndex: 'keyType',
-    //   width: 200,
-    //   render: (text) => {
-    //     return KeyType(text);
-    //   },
-    // },
     {
       title: '操作时间',
       dataIndex: 'createTime',
@@ -121,8 +113,7 @@ class KeyTable extends Component {
     const { selectedVehicleId, selectedVehicleVin } = this.props;
     const { selectedKey } = this.state;
     let selectedKeyId = selectedKey.id;
-    let selectedKeyType = selectedKey.keyOwnerId;
-    console.log('selectedKeyId ', selectedKeyId);
+    let selectedKeyType = selectedKey.parentId;
     return (
       <div>
         <EasyTable
@@ -132,7 +123,6 @@ class KeyTable extends Component {
           name={'carsKeyListDataTable'}
           rowKey={'id'}
           renderHeader={(title, extra, page) => {
-            console.log('page ', page);
             let total = page.total;
             total = '共 ' + total + ' 条记录';
             return (

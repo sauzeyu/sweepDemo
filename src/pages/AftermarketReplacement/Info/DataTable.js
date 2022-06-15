@@ -6,6 +6,7 @@ import {
   InboxOutlined,
   PlusCircleOutlined,
   RightSquareTwoTone,
+  DownloadOutlined,
 } from '@ant-design/icons';
 import { connect } from 'dva';
 
@@ -33,12 +34,9 @@ class DataTable extends Component {
   };
   columns = [
     {
-      title: '车架号',
+      title: '车辆vin号',
       dataIndex: 'vin',
       width: 150,
-      render: (text, col) => {
-        return <a onClick={() => this.carInfo(col)}>{text}</a>;
-      },
     },
     {
       title: '旧蓝牙设备序列号',
@@ -55,21 +53,21 @@ class DataTable extends Component {
       dataIndex: 'replacementTime',
       width: 110,
     },
-    {
-      title: '操作',
-      fixed: 'right',
-      width: 270,
-      render: (col) => {
-        return (
-          <div className={'link-group'}>
-            <a onClick={() => this.historyAftermarketDataTable(col)}>
-              换件记录
-            </a>
-            {/*<a onClick={() => this.keysInfo(col)}>查看钥匙</a>*/}
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: '操作',
+    //   fixed: 'right',
+    //   width: 270,
+    //   render: (col) => {
+    //     return (
+    //       <div className={'link-group'}>
+    //         <a onClick={() => this.historyAftermarketDataTable(col)}>
+    //           换件记录
+    //         </a>
+    //         {/*<a onClick={() => this.keysInfo(col)}>查看钥匙</a>*/}
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
   historyAftermarketDataTable = (col) => {
     this.setState({
@@ -114,31 +112,8 @@ class DataTable extends Component {
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
             <div className={'btn-group'}>
-              <Button
-                onClick={() =>
-                  importExcel(
-                    '/dkserver-back/api/offlineCheck/importByExcel',
-                    this,
-                  )
-                }
-                type={'ghost'}
-                size={'large'}
-                icon={<CloudUploadOutlined />}
-              >
-                导入下线检测数据
-              </Button>
-              <Button
-                onClick={() =>
-                  importExcel(
-                    '/dkserver-back/dkmAftermarketReplacement/importByExcel',
-                    this,
-                  )
-                }
-                type={'ghost'}
-                size={'large'}
-                icon={<CloudUploadOutlined />}
-              >
-                导入换件信息
+              <Button type={'ghost'} size={'large'} icon={<DownloadOutlined />}>
+                导出换件信息
               </Button>
             </div>
           }
@@ -152,15 +127,14 @@ class DataTable extends Component {
         >
           <DescriptionList col={1}>
             <Description term={'工厂编号'}>{carInfo?.factoryNo}</Description>
-            <Description term={'车窗类型'}>
-              {windowType[carInfo?.windowType]}
-            </Description>
-            <Description term={'车辆颜色'}>{color[carInfo?.color]}</Description>
-            <Description term={'天窗类型'}>
-              {sunroofType[carInfo?.sunroofType]}
-            </Description>
+            {/*<Description term={'车窗类型'}>*/}
+            {/*  {windowType[carInfo?.windowType]}*/}
+            {/*</Description>*/}
+            {/*<Description term={'车辆颜色'}>{color[carInfo?.color]}</Description>*/}
+            {/*<Description term={'天窗类型'}>*/}
+            {/*  {sunroofType[carInfo?.sunroofType]}*/}
+            {/*</Description>*/}
             <Description term={'现蓝牙序列号'}>
-              {' '}
               <Tag color="blue">{carInfo?.hwDeviceSn}</Tag>
             </Description>
             <Description term={'创建时间'}>{carInfo?.createTime}</Description>

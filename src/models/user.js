@@ -86,7 +86,7 @@ export default {
     },
     *logout({ payload }, { put, call, select }) {
       const id = yield select((state) => {
-        state.user.currentUser.username;
+        state?.user?.currentUser?.username;
       });
       yield call(logout, { id });
       yield put({
@@ -150,7 +150,6 @@ function getUserFromStore() {
 }
 
 function extUserAuthMap(userInfo) {
-  console.log('userInfo= ', userInfo);
   // user是登陆请求获取的结果
   const routeMap = {},
     dnaMap = {};

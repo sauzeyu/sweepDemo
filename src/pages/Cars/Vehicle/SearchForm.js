@@ -32,24 +32,29 @@ class SearchForm extends Component {
     };
     const colSpan = {
       xs: 24,
-      sm: 6,
+      sm: 5,
     };
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'车主手机号'} name="phone">
-              <RestrictiveInput trim placeholder={'车主手机号'} />
+            <Form.Item label={'设备序列号'} name="hwDeviceSn">
+              <RestrictiveInput trim placeholder={'请输入蓝牙设备序列号'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'vin号'} name="vin">
-              <RestrictiveInput trim placeholder={'vin号'} />
+            <Form.Item label={'车辆vin号'} name="vin">
+              <RestrictiveInput trim placeholder={'请输入车辆vin号'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'蓝牙编号'} name="hwDeviceSn">
-              <RestrictiveInput trim placeholder={'蓝牙编号'} />
+            <Form.Item label={'车辆车型'} name="vehicleModel">
+              <RestrictiveInput trim placeholder={'请输入车辆车型'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'车辆品牌'} name="vehicleBrand">
+              <RestrictiveInput trim placeholder={'请输入车辆品牌'} />
             </Form.Item>
           </Col>
           <Col {...colSpan} style={{ flex: 1 }}>

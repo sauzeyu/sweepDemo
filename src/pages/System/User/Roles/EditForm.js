@@ -57,7 +57,6 @@ export default class EditForm extends Component {
         this.setState({
           menus: res.data,
         });
-        console.log('res.data menus -----', res.data);
       })
       .catch((e) => {
         Modal.error({
@@ -68,8 +67,6 @@ export default class EditForm extends Component {
   }
 
   onCheck = (checkedKey, event) => {
-    console.log('checkedKey ', checkedKey);
-    console.log('checkedKey event ', event);
     this.setState({
       checkedKeys: checkedKey,
       // selectedKeys: checkedKey.concat(event.halfCheckedKeys),

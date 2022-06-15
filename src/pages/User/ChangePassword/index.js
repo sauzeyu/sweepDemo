@@ -13,8 +13,6 @@ import { FormattedMessage } from 'umi';
 export default class extends React.Component {
   // 在子组件中调用函数 传递子组件中获得的表单上数据作为参数
   updatePassword = (vals) => {
-    console.log('vals ', vals);
-    console.log('vals ', vals);
     // 发送请求
     this.props
       .dispatch({
@@ -29,7 +27,6 @@ export default class extends React.Component {
       })
       .then(
         (res) => {
-          console.log('res ', res);
           if (res.code === 200) {
             // 成功
             Modal.success({

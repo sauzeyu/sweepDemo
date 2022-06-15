@@ -73,62 +73,8 @@ class EditForm extends Component {
           >
             <RestrictiveInput trim disabled={isEdit} maxLength={17} />
           </Form.Item>
-          <Form.Item label={'发动机号'} name={'ven'}>
-            <Input trim />
-          </Form.Item>
-          <Row type={'flex'}>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'车身颜色'}
-                name="color"
-              >
-                <RestrictiveInput
-                  trim
-                  maxLength={10}
-                  placeholder={'比如：蓝色'}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'天窗类型'}
-                name="sunroofType"
-              >
-                <RestrictiveInput trim maxLength={10} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'后备门类型'}
-                name="trunkType"
-              >
-                <RestrictiveInput trim maxLength={10} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'车窗类型'}
-                name="windowType"
-              >
-                <RestrictiveInput trim maxLength={10} />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                {...formItemLayoutDouble}
-                label={'遥控泊车'}
-                name="RPAType"
-              >
-                <RestrictiveInput trim maxLength={10} />
-              </Form.Item>
-            </Col>
-          </Row>
           <Form.Item
-            label={'蓝牙编号'}
+            label={'蓝牙序列号'}
             name="hwDeviceSn"
             rules={[{ required: true, message: '蓝牙编号不能为空' }]}
           >

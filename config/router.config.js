@@ -70,11 +70,6 @@ export default [
         title: '仪表盘',
         routes: [
           {
-            path: '/dashboard/kibana',
-            title: 'Kibana',
-            component: './Dashboard/Kibana',
-          },
-          {
             path: '/dashboard/admin',
             title: 'SpringBootAdmin',
             component: './Dashboard/Admin',
@@ -100,16 +95,6 @@ export default [
             title: '钥匙信息',
             component: './Keys/Info',
           },
-          {
-            path: '/keys/logs',
-            title: '钥匙使用日志',
-            component: './Keys/Logs',
-          },
-          {
-            path: '/keys/error',
-            title: '钥匙故障记录',
-            component: './Keys/Error',
-          },
         ],
       },
       {
@@ -134,17 +119,6 @@ export default [
         ],
       },
       {
-        path: '/customer',
-        title: '用户管理',
-        routes: [
-          {
-            path: '/customer/info',
-            title: '用户信息',
-            component: './Customer/Info',
-          },
-        ],
-      },
-      {
         path: '/aftermarketReplacement',
         title: '售后换件管理',
         routes: [
@@ -163,11 +137,6 @@ export default [
             path: '/log/use',
             title: '使用日志',
             component: './Log/Use',
-          },
-          {
-            path: '/log/error',
-            title: '异常日志',
-            component: './Log/Error',
           },
         ],
       },

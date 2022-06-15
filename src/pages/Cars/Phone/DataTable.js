@@ -160,7 +160,6 @@ class DataTable extends Component {
   };
 
   editRow = (row) => {
-    console.log('row ', row);
     this.setState(
       {
         rowData: row,

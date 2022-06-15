@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal, Tag } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { DownloadOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
 import {
   getKeysList,
   selectVehicleById,
   selectUserById,
 } from '@/services/keys';
-import { analyzePermissions, DKState, KeyType } from '@/constants/keys';
+import {
+  analyzePermissions,
+  DKState,
+  KeySource,
+  KeyState,
+  KeyType,
+} from '@/constants/keys';
 import DescriptionList from '@/components/DescriptionList';
 import { color, sunroofType, windowType } from '@/constants/cars';
 import { keyLifecycleList, keyUseListById } from '@/services/cars';
@@ -27,7 +33,34 @@ class DataTable extends Component {
     selectKey: {},
     userInfo: {},
     carInfo: {},
+    keyLifecycleInfoVisible: false,
+    selectedKey: {},
   };
+
+  lifecycleColumns = [
+    {
+      title: '操作时间',
+      dataIndex: 'createTime',
+      width: 350,
+    },
+    {
+      title: '操作状态',
+      dataIndex: 'keyStatus',
+      width: 160,
+      render: (text) => {
+        return KeyState[text];
+      },
+    },
+    {
+      title: '操作来源',
+      dataIndex: 'keySource',
+      width: 160,
+      render: (text) => {
+        return KeySource[text];
+      },
+    },
+  ];
+
   columns = [
     {
       title: '钥匙类型',
@@ -37,9 +70,13 @@ class DataTable extends Component {
       },
     },
     {
+      title: '用户id',
+      dataIndex: 'userId',
+    },
+    {
       title: '车辆vin号',
       dataIndex: 'vin',
-      width: 250,
+      width: 180,
     },
     {
       title: '具体状态',
@@ -57,14 +94,6 @@ class DataTable extends Component {
       dataIndex: 'valTo',
     },
     {
-      title: '钥匙权限',
-      dataIndex: 'permissions',
-      width: 300,
-      render: (text) => {
-        return analyzePermissions(text);
-      },
-    },
-    {
       title: '申请时间',
       dataIndex: 'applyTime',
     },
@@ -75,37 +104,40 @@ class DataTable extends Component {
       render: (col) => {
         let isDisable = col.dkState === 3;
 
-        let shareKeyStyle = {};
+        let disableStyle = {};
 
-        if (col.parentId) {
-          shareKeyStyle = {
+        if (col.dkState === 5 || col.dkState === 4) {
+          disableStyle = {
             onClick: false,
-            style: { opacity: 0.2, cursor: 'not-allowed' },
-          };
-        } else {
-          shareKeyStyle = {
-            onClick: () => {
-              this.userInfo(col);
-            },
+            style: { opacity: 0.2, cursor: 'not-allowed', color: 'gray' },
           };
         }
 
         return (
           <div className={'link-group'}>
-            <a onClick={() => this.keyUseInfo(col)}>使用记录</a>
-            <a {...shareKeyStyle}>查看用户</a>
+            {/*<a onClick={() => this.keyUseInfo(col)}>使用记录</a>*/}
+            <a onClick={() => this.keyLifecycle(col)}>生命周期</a>
             <a onClick={() => this.carInfo(col)}>查看车辆</a>
-            <a onClick={() => this.enableKey(col, true)} hidden={!isDisable}>
+            <a
+              onClick={() => this.enableKey(col, true)}
+              hidden={!isDisable}
+              {...disableStyle}
+            >
               解冻
             </a>
             <a
               className={'text-danger'}
               onClick={() => this.enableKey(col, false)}
               hidden={isDisable}
+              {...disableStyle}
             >
               冻结
             </a>
-            <a className={'text-danger'} onClick={() => this.revokeKey(col)}>
+            <a
+              className={'text-danger'}
+              onClick={() => this.revokeKey(col)}
+              {...disableStyle}
+            >
               吊销
             </a>
           </div>
@@ -136,6 +168,12 @@ class DataTable extends Component {
       selectKey: col,
     });
   };
+  keyLifecycle = (col) => {
+    this.setState({
+      keyLifecycleInfoVisible: true,
+      selectedKey: col,
+    });
+  };
   userInfo = (col) => {
     this.setState({
       showUserInfo: true,
@@ -158,6 +196,8 @@ class DataTable extends Component {
       showCarInfo: false,
       keyUseInfo: false,
       selectKey: {},
+      keyLifecycleInfoVisible: false,
+      selectedKey: {},
     });
   };
   carInfo = (col) => {
@@ -253,6 +293,11 @@ class DataTable extends Component {
       userInfo = {},
       carInfo = {},
     } = this.state;
+
+    const { selectedKey } = this.state;
+    let selectedKeyId = selectedKey.id;
+    let selectedKeyType = selectedKey.parentId;
+
     return (
       <div>
         <EasyTable
@@ -264,6 +309,11 @@ class DataTable extends Component {
           rowKey={'id'}
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
+          extra={
+            <Button type={'ghost'} size={'large'} icon={<DownloadOutlined />}>
+              导出钥匙信息
+            </Button>
+          }
         />
         <Modal
           footer={null}
@@ -290,17 +340,17 @@ class DataTable extends Component {
           destroyOnClose={true}
         >
           <DescriptionList col={1}>
-            <Description term={'工厂编号'}>{carInfo.factoryNo}</Description>
-            <Description term={'车主手机号'}>{carInfo.phone}</Description>
-            <Description term={'车窗类型'}>
-              {windowType[carInfo.windowType]}
+            <Description term={'车辆vin号'}>{carInfo?.vin}</Description>
+            <Description term={'车辆车型'}>{carInfo?.vehicleModel}</Description>
+            <Description term={'车辆品牌'}>{carInfo?.vehicleBrand}</Description>
+            <Description term={'蓝牙序列号'}>{carInfo?.hwDeviceSn}</Description>
+            <Description term={'蓝牙Mac地址'}>
+              {carInfo?.bleMacAddress}
             </Description>
-            <Description term={'车辆颜色'}>{color[carInfo.color]}</Description>
-            <Description term={'天窗类型'}>
-              <Tag color="#87d068">{sunroofType[carInfo.sunroofType]}</Tag>
+            <Description term={'蓝牙供应商编号'}>
+              {carInfo?.hwDeviceProviderNo}
             </Description>
-            <Description term={'蓝牙编号'}>{carInfo.hwDeviceSn}</Description>
-            <Description term={'创建时间'}>{carInfo.createTime}</Description>
+            <Description term={'创建时间'}>{carInfo?.createTime}</Description>
           </DescriptionList>
         </Modal>
 
@@ -335,6 +385,37 @@ class DataTable extends Component {
               );
             }}
             fixedParams={{ keyId: this.state?.selectKey?.id }}
+          />
+        </Modal>
+
+        <Modal
+          footer={null}
+          title={'钥匙生命周期'}
+          visible={this.state.keyLifecycleInfoVisible}
+          onCancel={this.onCancel}
+          destroyOnClose={true}
+          // width={800}
+        >
+          <EasyTable
+            autoFetch
+            source={keyLifecycleList}
+            dataProp={'data'}
+            name={'keyLifecycleDataTable'}
+            rowKey={'id'}
+            columns={this.lifecycleColumns}
+            renderHeader={(title, extra, page) => {
+              return (
+                <>
+                  <p>
+                    <Badge color="pink" text="钥匙id：" />
+                    <Tag color={'gold'}>{selectedKey?.id}</Tag>
+                    <Badge color="purple" text="钥匙类型：" />
+                    {KeyType(selectedKeyType)}
+                  </p>
+                </>
+              );
+            }}
+            fixedParams={{ keyId: selectedKeyId }}
           />
         </Modal>
       </div>

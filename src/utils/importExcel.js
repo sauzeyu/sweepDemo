@@ -24,7 +24,6 @@ function importExcel(url, that) {
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
       }
       // if (info?.file?.response?.code === 500) {
       //   info.file.status = 'error';

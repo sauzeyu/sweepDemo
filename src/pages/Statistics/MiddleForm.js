@@ -1,37 +1,27 @@
 import React from 'react';
-
+import moment from 'moment';
+import { Card, Col, Row, Tabs, DatePicker, Button } from 'antd';
 import {
-  Card,
-  Col,
-  Row,
-  Statistic,
-  Button,
-  Spin,
-  Tabs,
-  DatePicker,
-  Segmented,
-} from 'antd';
-import Icon, {
-  KeyOutlined,
-  CarOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import { icon_bluetooth } from '@/assets/icon';
-import { selectKeyLogByMonth, selectTotal } from '@/services/statistics';
+  selectKeyLogByMonth,
+  selectKeyUseLogByTime,
+  selectKeyErrorLogByTime,
+  selectTotal,
+} from '@/services/statistics';
 import ReactEcharts from 'echarts-for-react';
 
 const { RangePicker } = DatePicker;
 const { TabPane } = Tabs;
 
-class TopForm extends React.Component {
+class MiddleForm extends React.Component {
   state = {
     spinningVisible: true,
     statisticsTotal: {},
     useLogCount: [],
     errorLogCount: [],
-    buttonColor: '#272727',
+    keyUseLogCount: [],
+    keyErrorLogCount: [],
+    pickerTime: [moment(), moment().add(1, 'days')],
   };
-
   keyUseLogTotalByMonth = () => {
     return {
       tooltip: {
@@ -116,6 +106,130 @@ class TopForm extends React.Component {
     };
   };
 
+  getOptionByKeyUseLog = () => {
+    return {
+      title: {
+        text: '钥匙使用类型',
+        left: '20%',
+        top: '2%',
+      },
+      tooltip: {
+        trigger: 'item',
+      },
+      legend: {
+        top: '15%',
+        orient: 'vertical',
+        left: 'right',
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          mark: { show: true },
+          saveAsImage: {
+            show: true,
+            title: '保存为图片',
+          },
+          restore: {
+            show: true,
+            title: '重置',
+          },
+        },
+        top: 'top',
+      },
+      series: [
+        {
+          type: 'pie',
+          selectedMode: 'multiple',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          center: ['35%', '50%'],
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#FFFFFF',
+            borderWidth: 2,
+          },
+          label: {
+            show: false,
+            position: 'center',
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '20',
+              fontWeight: 'bold',
+            },
+          },
+          labelLine: {
+            show: false,
+          },
+          data: this.state.keyUseLogCount,
+        },
+      ],
+    };
+  };
+
+  getOptionByKeyErrorLog = () => {
+    return {
+      title: {
+        text: '钥匙故障类型',
+        left: '20%',
+        top: '2%',
+      },
+      tooltip: {
+        trigger: 'item',
+      },
+      legend: {
+        top: '15%',
+        orient: 'vertical',
+        left: 'right',
+      },
+      toolbox: {
+        show: true,
+        feature: {
+          mark: { show: true },
+          saveAsImage: {
+            show: true,
+            title: '保存为图片',
+          },
+          restore: {
+            show: true,
+            title: '重置',
+          },
+        },
+        top: 'top',
+      },
+      series: [
+        {
+          type: 'pie',
+          selectedMode: 'multiple',
+          radius: ['40%', '70%'],
+          avoidLabelOverlap: false,
+          center: ['35%', '50%'],
+          itemStyle: {
+            borderRadius: 10,
+            borderColor: '#FFFFFF',
+            borderWidth: 2,
+          },
+          label: {
+            show: false,
+            position: 'center',
+          },
+          emphasis: {
+            label: {
+              show: true,
+              fontSize: '20',
+              fontWeight: 'bold',
+            },
+          },
+          labelLine: {
+            show: false,
+          },
+          data: this.state.keyErrorLogCount,
+        },
+      ],
+    };
+  };
+
   componentDidMount() {
     selectTotal().then((res) => {
       this.setState({
@@ -125,71 +239,135 @@ class TopForm extends React.Component {
     });
     selectKeyLogByMonth().then((res) => {
       this.setState({
-        useLogCount: res.data.useLogCount,
-        errorLogCount: res.data.errorLogCount,
+        useLogCount: res.data?.useLogCount,
+        errorLogCount: res.data?.errorLogCount,
       });
     });
+
+    const timeString = [
+      moment().format('YYYY-MM-DD'),
+      moment().add(1, 'days').format('YYYY-MM-DD'),
+    ];
+    // this.timePickerOnChange(true, timeString);
+    this.selectKeyLogCount(timeString);
   }
 
-  render() {
-    const buttonStyle = {
-      style: { color: this.state.buttonColor },
-      onClick: (a, b, c, d) => {
-        console.log('buttonRef1 ', this.buttonRef2);
-      },
-      hover: () => {},
-    };
+  selectKeyLogCount = (times) => {
+    let params = new URLSearchParams();
+    params.append('startTime', moment(times[0]).format('YYYY-MM-DD'));
+    params.append(
+      'endTime',
+      moment(times[1]).add(1, 'days').format('YYYY-MM-DD'),
+    );
+    selectKeyUseLogByTime(params).then((res) => {
+      if (res.data) {
+        this.setState({
+          keyUseLogCount: res.data,
+        });
+      } else {
+        this.setState({
+          keyUseLogCount: [],
+        });
+      }
+    });
+    selectKeyErrorLogByTime(params).then((res) => {
+      if (res.data) {
+        this.setState({
+          keyErrorLogCount: res.data,
+        });
+      } else {
+        this.setState({
+          keyErrorLogCount: [],
+        });
+      }
+    });
+  };
 
+  timePickerOnChange = (time, timeString) => {
+    this.setState({
+      pickerTime: time,
+    });
+    if (time) {
+      this.selectKeyLogCount(timeString);
+    }
+  };
+
+  todayOnClick = () => {
+    const timeString = [moment().startOf('days'), moment().endOf('days')];
+    this.setState({
+      pickerTime: timeString,
+    });
+    this.selectKeyLogCount(timeString);
+  };
+
+  weekOnClick = () => {
+    const timeString = [
+      moment().day('Monday').add(1, 'days'),
+      moment()
+        .day('Monday')
+        .day(+7),
+    ];
+    this.setState({
+      pickerTime: timeString,
+    });
+    this.selectKeyLogCount(timeString);
+  };
+  monthOnClick = () => {
+    const timeString = [moment().startOf('month'), moment().endOf('month')];
+    this.setState({
+      pickerTime: timeString,
+    });
+    this.selectKeyLogCount(timeString);
+  };
+
+  yearOnClick = () => {
+    const timeString = [moment().startOf('year'), moment().endOf('year')];
+    this.setState({
+      pickerTime: timeString,
+    });
+    this.selectKeyLogCount(timeString);
+  };
+
+  render() {
     return (
       <Card>
         <Tabs
           size={'large'}
-          defaultActiveKey="1"
+          defaultActiveKey="use"
+          onTabClick={this.onTabClick}
+          destroyInactiveTabPane={true}
           tabBarExtraContent={
-            <Row>
+            <Row gutter={0}>
               <Col>
-                <Button
-                  type="link"
-                  ref={(ref) => (this.buttonRef1 = ref)}
-                  {...buttonStyle}
-                >
+                <Button type="default" onClick={this.todayOnClick}>
                   今日
                 </Button>
               </Col>
               <Col>
-                <Button
-                  type="link"
-                  ref={(ref) => (this.buttonRef2 = ref)}
-                  {...buttonStyle}
-                >
+                <Button type="default" onClick={this.weekOnClick}>
                   本周
                 </Button>
               </Col>
               <Col>
-                <Button
-                  type="link"
-                  ref={(ref) => (this.buttonRef3 = ref)}
-                  {...buttonStyle}
-                >
+                <Button type="default" onClick={this.monthOnClick}>
                   本月
                 </Button>
               </Col>
               <Col>
-                <Button
-                  type="link"
-                  ref={(ref) => (this.buttonRef4 = ref)}
-                  {...buttonStyle}
-                >
+                <Button type="default" onClick={this.yearOnClick}>
                   本年
                 </Button>
               </Col>
               <Col>
-                <RangePicker />
+                <RangePicker
+                  value={this.state.pickerTime}
+                  onChange={this.timePickerOnChange}
+                />
               </Col>
             </Row>
           }
         >
-          <TabPane tab="钥匙使用记录" key="1">
+          <TabPane tab="钥匙使用记录" key="use">
             <Row>
               <Col span={18}>
                 <ReactEcharts
@@ -198,13 +376,14 @@ class TopForm extends React.Component {
                 />
               </Col>
               <Col span={6}>
-                <Card>
-                  <Statistic title="Total Users" value={111} />
-                </Card>
+                <ReactEcharts
+                  option={this.getOptionByKeyUseLog()}
+                  notMerge={true}
+                />
               </Col>
             </Row>
           </TabPane>
-          <TabPane tab="钥匙故障记录" key="2">
+          <TabPane tab="钥匙故障记录" key="error">
             <Row>
               <Col span={18}>
                 <ReactEcharts
@@ -213,9 +392,10 @@ class TopForm extends React.Component {
                 />
               </Col>
               <Col span={6}>
-                <Card>
-                  <Statistic title="Total Users" value={111} />
-                </Card>
+                <ReactEcharts
+                  option={this.getOptionByKeyErrorLog()}
+                  notMerge={true}
+                />
               </Col>
             </Row>
           </TabPane>
@@ -239,4 +419,4 @@ class TopForm extends React.Component {
   }
 }
 
-export default TopForm;
+export default MiddleForm;

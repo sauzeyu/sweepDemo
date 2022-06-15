@@ -17,7 +17,6 @@ export default class EditForm extends Component {
   }
 
   handleSubmit = () => {
-    // console.log("this.dataTableRef ", this.props.dataTableRef)
     this.form.current.validateFields().then((values) => {
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;

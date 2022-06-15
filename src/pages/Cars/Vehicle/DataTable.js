@@ -33,93 +33,53 @@ class DataTable extends Component {
   };
   columns = [
     {
-      title: 'VIN号',
+      title: '车辆vin号',
       dataIndex: 'vin',
       width: 200,
     },
     {
-      title: '发动机号',
-      dataIndex: 'ven',
-      width: 200,
+      title: '车辆车型',
+      dataIndex: 'vehicleModel',
     },
     {
-      title: '车主手机号',
-      dataIndex: 'phone',
-      width: 150,
+      title: '车辆品牌',
+      dataIndex: 'vehicleBrand',
     },
     {
-      title: '车身颜色',
-      dataIndex: 'color',
-      width: 100,
-      render: (text) => {
-        return color[text];
-      },
-    },
-    {
-      title: '天窗类型',
-      dataIndex: 'sunroofType',
-      width: 120,
-      render: (text) => {
-        return sunroofType[text];
-      },
-    },
-    {
-      title: '后备门类型',
-      dataIndex: 'trunkType',
-      width: 150,
-    },
-    {
-      title: '车窗类型',
-      dataIndex: 'windowType',
-      width: 120,
-      render: (text) => {
-        return windowType[text];
-      },
-    },
-    {
-      title: '蓝牙编号',
+      title: '蓝牙设备序列号',
       dataIndex: 'hwDeviceSn',
-      width: 150,
+      width: 300,
+    },
+    {
+      title: '蓝牙检索号',
+      dataIndex: 'searchNumber',
+    },
+    {
+      title: '蓝牙供应商编号',
+      dataIndex: 'hwDeviceProviderNo',
+    },
+    {
+      title: '蓝牙Mac地址',
+      dataIndex: 'bleMacAddress',
     },
     {
       title: '操作',
       fixed: 'right',
+      width: 300,
       render: (col) => {
         if (col.isValid === 0) {
           return null;
         }
         // const flag = col.isValid === 1;
-        // TODO 编辑车辆
         return (
           <div className={'link-group'}>
-            <a onClick={() => this.userInfo(col)}>查看车主</a>
             <a onClick={() => this.keysInfo(col)}>查看钥匙</a>
-            <a onClick={() => this.addOrEditVehicle(col)}>编辑车辆</a>
+            {/*<a onClick={() => this.addOrEditVehicle(col)}>编辑车辆</a>*/}
           </div>
         );
       },
     },
   ];
-
-  userInfo = (col) => {
-    this.setState({
-      showUserInfo: true,
-      userInfo: {},
-    });
-    this.props
-      .dispatch({
-        type: 'carsVehicle/selectUserByVehicleId',
-        payload: { vehicleId: col.id },
-      })
-      .then(
-        (res) => {
-          this.setState({ userInfo: res.data });
-        },
-        (err) => {
-          message.error(err.message);
-        },
-      );
-  };
 
   keysInfo = (col) => {
     this.setState({
@@ -130,7 +90,6 @@ class DataTable extends Component {
   };
 
   addOrEditVehicle = (value) => {
-    console.log('addOrEditVehicleValue ', value);
     this.setState({ editFormVisible: true }, () => {
       if (value) {
         setTimeout(() => {
@@ -183,7 +142,6 @@ class DataTable extends Component {
     });
   };
   onCancel = () => {
-    // this.editForm.resetFields();
     this.setState({
       editFormVisible: false,
       keysFormVisible: false,

@@ -1,11 +1,20 @@
 //钥匙具体状态
-import { Tag } from 'antd';
+import { Tag, Badge } from 'antd';
 import React from 'react';
 
 export const DKState = {
   1: <Tag color="green">已启用</Tag>,
   3: <Tag color="blue">冻结</Tag>,
   4: <Tag color="warning">过期</Tag>,
+  5: <Tag color="red">已吊销</Tag>,
+};
+export const keyLogFlag = {
+  0: <Tag color="red">失败</Tag>,
+  1: <Tag color="green">成功</Tag>,
+};
+export const keyLogFlagBadge = {
+  0: <Badge color="red" text="失败" />,
+  1: <Badge color="green" text="成功" />,
 };
 export const KeyState = {
   1: <Tag color="green">开通</Tag>,
@@ -20,10 +29,10 @@ export const KeySource = {
   3: <Tag color="warning">换件</Tag>,
 };
 export const KeyType = (text) => {
-  if (text) {
-    return <Tag color="blue">分享钥匙</Tag>;
-  } else {
+  if (text === '0') {
     return <Tag color="green">车主钥匙</Tag>;
+  } else {
+    return <Tag color="blue">分享钥匙</Tag>;
   }
 };
 

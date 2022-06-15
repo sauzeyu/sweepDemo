@@ -55,5 +55,5 @@ export const color = {
 };
 export const overdue = {
   0: <Tag color="blue">正常</Tag>,
-  1: <Tag color="red">过期</Tag>,
+  1: <Tag color="red">报废</Tag>,
 };

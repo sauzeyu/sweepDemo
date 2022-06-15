@@ -14,8 +14,6 @@ import { overdue } from '@/constants/cars';
 class DataTable extends Component {
   state = {
     editFormVisible: false,
-
-    idList: [],
   };
   columns = [
     {
@@ -23,32 +21,20 @@ class DataTable extends Component {
       dataIndex: 'hwDeviceSn',
     },
     {
+      title: '设备检索号',
+      dataIndex: 'searchNumber',
+    },
+    {
       title: '设备供应商编号',
       dataIndex: 'hwDeviceProviderNo',
-    },
-    {
-      title: '数字钥匙软件版本号',
-      dataIndex: 'dkSdkVersion',
-    },
-    {
-      title: '蓝牙名称',
-      dataIndex: 'bleName',
     },
     {
       title: '蓝牙MAC地址',
       dataIndex: 'bleMacAddress',
     },
     {
-      title: '蓝牙协议版本号',
-      dataIndex: 'bleProtocolVersion',
-    },
-    {
-      title: '蓝牙硬件版本号',
-      dataIndex: 'bleHardwareVersion',
-    },
-    {
-      title: '蓝牙软件版本号',
-      dataIndex: 'bleSoftwareVersion',
+      title: '安全芯片SEID',
+      dataIndex: 'dkSecUnitId',
     },
     {
       title: '设备状态',
@@ -57,23 +43,21 @@ class DataTable extends Component {
         return overdue[text];
       },
     },
-    {
-      title: '操作',
-      render: (col) => {
-        return (
-          <div className={'link-group'}>
-            <a className={'text-danger'} onClick={() => this.del(col)}>
-              删除
-            </a>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: '操作',
+    //   render: (col) => {
+    //     return (
+    //       <div className={'link-group'}>
+    //         <a className={'text-danger'} onClick={() => this.del(col)}>
+    //           删除
+    //         </a>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
   del = (model) => {
     const { hwDeviceSn } = model;
-    console.log('this ', this);
-    console.log('this.onRow', this.onRow);
     Modal.confirm({
       title: '删除蓝牙设备',
       content: `确定设备“${hwDeviceSn}”？`,

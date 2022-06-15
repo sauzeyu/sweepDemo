@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Row, Select, Input } from 'antd';
+import { Button, Col, Form, Row, Select, Input, DatePicker } from 'antd';
 import EasyTable from '@/components/EasyTable';
 import { Permit } from '@/constants/keys';
+import moment from '_moment@2.29.1@moment';
+
+const { RangePicker } = DatePicker;
 
 @EasyTable.connect(({ keysDataTable }) => ({
   keysDataTable,
@@ -12,11 +15,33 @@ class SearchForm extends Component {
     this.form.current
       .validateFields()
       .then((values) => {
-        if (values.permission && values.permission.length > 0) {
-          values.permission = values.permission.reduce(
+        if (!values.keyType || values.keyType.length === 0) {
+          delete values.keyType;
+        }
+        if (!values.startTime) {
+          delete values.startTime;
+        }
+        if (!values.vin) {
+          delete values.vin;
+        }
+        if (!values.userId) {
+          delete values.userId;
+        }
+
+        if (values.keyType && values.keyType.length > 0) {
+          values.keyType = values.keyType.reduce(
             (prev, current) => prev + current,
           );
         }
+
+        if (values.startTime) {
+          const startTime = values['startTime'];
+          values.startTime = moment(startTime[0]).format('YYYY-MM-DD');
+          values.endTime = moment(startTime[1])
+            .add(1, 'days')
+            .format('YYYY-MM-DD');
+        }
+
         this.props.keysDataTable.fetch(values);
       })
       .catch((errors) => {
@@ -35,28 +60,45 @@ class SearchForm extends Component {
         sm: { span: 16 },
       },
     };
-    // const colSpan = {
-    //   xs: 24,
-    //   sm: 6,
-    // };
-    const permit = [1, 2, 4, 8];
+    const colSpan = {
+      xs: 24,
+      sm: 5,
+    };
+    const colTextSpan = {
+      xs: 24,
+      sm: 4,
+    };
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
-          <Col span={8}>
-            <Form.Item label={'钥匙权限'} name="permission">
+          <Col {...colSpan}>
+            <Form.Item label={'钥匙类型'} name="keyType">
               <Select mode={'multiple'} allowClear={true}>
-                {permit.map((permission) => {
-                  return (
-                    <Select.Option key={permission} value={permission}>
-                      {Permit[permission]}
-                    </Select.Option>
-                  );
-                })}
+                <Select.Option key={1} value={1}>
+                  车主钥匙
+                </Select.Option>
+                <Select.Option key={2} value={2}>
+                  分享钥匙
+                </Select.Option>
               </Select>
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col {...colTextSpan}>
+            <Form.Item label={'车辆vin码'} name="vin">
+              <Input placeholder="请输入车辆vin码" />
+            </Form.Item>
+          </Col>
+          <Col {...colTextSpan}>
+            <Form.Item label={'用户id'} name="userId">
+              <Input placeholder="请输入用户id" />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label="申请时间" name={'startTime'}>
+              <RangePicker />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
             <Form.Item>
               <Button
                 type={'primary'}
