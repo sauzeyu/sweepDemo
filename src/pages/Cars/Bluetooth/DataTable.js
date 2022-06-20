@@ -17,6 +17,15 @@ class DataTable extends Component {
   };
   columns = [
     {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.dataTable?.state?.currentIndex;
+        let currentPageSize = this.dataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
+    {
       title: '设备序列号',
       dataIndex: 'hwDeviceSn',
     },

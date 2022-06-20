@@ -13,6 +13,16 @@ import { keyLogFlag, keyLogFlagBadge } from '@/constants/keys';
 class DataTable extends Component {
   columns = [
     {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.keyLifecycleDataTable?.state?.currentIndex;
+        let currentPageSize =
+          this.keyLifecycleDataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
+    {
       title: '车辆vin号',
       dataIndex: 'vin',
     },
@@ -23,6 +33,10 @@ class DataTable extends Component {
     {
       title: '手机型号',
       dataIndex: 'phoneModel',
+    },
+    {
+      title: '手机品牌',
+      dataIndex: 'phoneBrand',
     },
     {
       title: '操作时间',

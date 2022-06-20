@@ -28,11 +28,11 @@ export default class extends React.PureComponent {
       >
         <Link to="/">
           <img
-            src={getPublicPath('img/app-logo_light.png')}
+            src={getPublicPath('img/logo.svg')}
             className={styles.logoIcon}
           />
           {/*<img className={styles.logoName} src={getPublicPath('img/app-logo_name_light.png')}/>*/}
-          <div className={styles.logoText}>数字钥匙管理平台</div>
+          {/*<div className={styles.logoText}>数字钥匙管理平台</div>*/}
         </Link>
       </div>
     );

@@ -13,6 +13,10 @@ import diff from 'deep-diff';
   easyTableProvider,
 }))
 class EasyTable extends React.Component {
+  state = {
+    currentIndex: 1,
+    currentPageSize: 10,
+  };
   // 设置prop的数据约束
   static propTypes = {
     source: PropTypes.oneOfType([PropTypes.func, PropTypes.string]).isRequired, // 数据源
@@ -49,6 +53,7 @@ class EasyTable extends React.Component {
   };
   // 组件增强 在头部search中使用过
   static connect = connector;
+
   constructor(props) {
     // easyTableProvider空间 内 调用数据池初始化
     props.dispatch({
@@ -70,6 +75,7 @@ class EasyTable extends React.Component {
     }
     super(props);
   }
+
   componentDidMount() {
     const {
       easyTableProvider: { page: dataPage },
@@ -88,11 +94,13 @@ class EasyTable extends React.Component {
       wrappedComponentRef(this);
     }
   }
+
   componentWillUnmount() {
     if (!this.props.keepData) {
       this.clean();
     }
   }
+
   UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
     if (this.props.name !== nextProps.name) {
       throw new Error(
@@ -126,6 +134,7 @@ class EasyTable extends React.Component {
       });
     }
   }
+
   //
   fetch = (params, pagination) => {
     return this._dispatch('easyTableProvider/fetch', {
@@ -157,9 +166,11 @@ class EasyTable extends React.Component {
       dataProp: easyTableProvider.dataProp[name],
     };
   };
+
   clean() {
     this._dispatch('easyTableProvider/clean', {});
   }
+
   /**
    *
    * @param {} action action名称
@@ -175,10 +186,18 @@ class EasyTable extends React.Component {
       },
     });
   }
+
   handleChange = (pagination) => {
     this.paging(pagination);
+    this.setState({
+      currentIndex: pagination?.current,
+      currentPageSize: pagination?.pageSize,
+    });
+    console.log('this ', this);
+    console.log('this pagination ', pagination);
     this.props.onChange && this.props.onChange(pagination);
   };
+
   render() {
     const {
       easyTableProvider: { page: dataPage, loading, errors },

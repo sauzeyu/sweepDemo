@@ -62,11 +62,7 @@ class SearchForm extends Component {
     };
     const colSpan = {
       xs: 24,
-      sm: 5,
-    };
-    const colTextSpan = {
-      xs: 24,
-      sm: 4,
+      sm: 6,
     };
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
@@ -83,22 +79,63 @@ class SearchForm extends Component {
               </Select>
             </Form.Item>
           </Col>
-          <Col {...colTextSpan}>
-            <Form.Item label={'车辆vin码'} name="vin">
-              <Input placeholder="请输入车辆vin码" />
+          <Col {...colSpan}>
+            <Form.Item label={'车辆vin号'} name="vin">
+              <Input placeholder="请输入车辆vin号" />
             </Form.Item>
           </Col>
-          <Col {...colTextSpan}>
+          <Col {...colSpan}>
             <Form.Item label={'用户id'} name="userId">
               <Input placeholder="请输入用户id" />
             </Form.Item>
           </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'钥匙状态'} name="keyState">
+              <Select
+                mode={'multiple'}
+                style={{ width: 280 }}
+                allowClear={true}
+              >
+                <Select.Option key={1} value={1}>
+                  启用
+                </Select.Option>
+                <Select.Option key={3} value={3}>
+                  冻结
+                </Select.Option>
+                <Select.Option key={4} value={4}>
+                  过期
+                </Select.Option>
+                <Select.Option key={5} value={5}>
+                  吊销
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
           <Col {...colSpan}>
             <Form.Item label="申请时间" name={'startTime'}>
               <RangePicker />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
+            <Form.Item label="生效时间" name={'startTime'}>
+              <RangePicker />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label="失效时间" name={'startTime'}>
+              <RangePicker />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'周期'} name="userId">
+              <Input placeholder="请输入钥匙周期 " style={{ width: 280 }} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col offset={23}>
             <Form.Item>
               <Button
                 type={'primary'}

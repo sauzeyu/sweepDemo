@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts';
-import { Card, Col, Row, Statistic, Spin } from 'antd';
+import { Card, Col, Row, Statistic, Spin, Progress } from 'antd';
 import Icon, {
   KeyOutlined,
   CarOutlined,
@@ -26,7 +26,104 @@ class TopForm extends React.Component {
       });
     });
   }
-
+  vehicleCountOption = {
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'line',
+        lineStyle: {
+          type: 'solid',
+        },
+      },
+    },
+    xAxis: {
+      show: false,
+      type: 'category',
+      boundaryGap: false,
+      data: [
+        '1月',
+        '2月',
+        '3月',
+        '4月',
+        '5月',
+        '6月',
+        '7月',
+        '8月',
+        '9月',
+        '10月',
+        '11月',
+        '12月',
+      ],
+    },
+    yAxis: {
+      show: false,
+      type: 'value',
+      boundaryGap: false,
+    },
+    series: [
+      {
+        data: [15, 32, 44, 55, 78, 185, 169, 73, 213, 95, 62, 11],
+        type: 'line',
+        lineStyle: {
+          color: '#ff7070',
+          width: 1,
+        },
+        itemStyle: {
+          opacity: 0,
+        },
+        // smooth: true,
+      },
+    ],
+    grid: {
+      x: 0, //距离左边
+      x2: 0, //距离右边
+      y: 0, //距离上边
+      y2: 0, //距离下边
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+  };
+  keyStateCountOption = {
+    tooltip: {
+      trigger: 'item',
+    },
+    series: [
+      {
+        roam: false,
+        type: 'treemap',
+        top: 30,
+        left: 0,
+        right: 0,
+        bottom: 10,
+        nodeClick: false,
+        breadcrumb: { show: false },
+        data: [
+          {
+            itemStyle: { color: '#ff915a' },
+            name: '车主钥匙',
+            value: 875,
+          },
+          {
+            itemStyle: { color: '#7ed3f4' },
+            name: '子钥匙',
+            value: 1625,
+          },
+        ],
+      },
+    ],
+    grid: {
+      x: 0, //距离左边
+      x2: 0, //距离右边
+      y: 0, //距离上边
+      y2: 0, //距离下边
+      left: 0,
+      right: 0,
+      top: 0,
+      bottom: 0,
+    },
+  };
   keyUseCountOption = {
     tooltip: {
       trigger: 'axis',
@@ -63,7 +160,7 @@ class TopForm extends React.Component {
     },
     series: [
       {
-        data: [7, 2, 4, 5, 8, 5, 9, 3, 1, 5, 3, 6],
+        data: [765, 212, 446, 518, 815, 645, 739, 643, 431, 1255, 963, 786],
         type: 'line',
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -123,7 +220,7 @@ class TopForm extends React.Component {
     },
     series: [
       {
-        data: [7, 2, 4, 5, 8, 5, 9, 3, 1, 5, 3, 6],
+        data: [715, 216, 436, 512, 876, 560, 920, 330, 153, 541, 396, 675],
         type: 'bar',
         color: '#6293f9',
         itemStyle: {
@@ -164,15 +261,30 @@ class TopForm extends React.Component {
       md: 12,
       sm: 12,
     };
+    const valueStyle = {
+      valueStyle: {
+        fontSize: 30,
+        fontWeight: 'normal',
+      },
+    };
     return (
       <Row gutter={24}>
         <Col {...colSpan}>
           <Spin spinning={spinningVisible}>
             <Card
               {...cardStyle}
-              title={<Statistic value={'车辆总量'} prefix={<CarOutlined />} />}
+              title={
+                <>
+                  <Statistic title="车辆总数" value={'1032'} {...valueStyle} />
+                  <ReactEcharts
+                    option={this.vehicleCountOption}
+                    notMerge={true}
+                    style={{ width: '100%', height: '50%' }}
+                  />
+                </>
+              }
             >
-              <Statistic title="Total Users" value={vehicleCount} />
+              今日新增车辆 361
             </Card>
           </Spin>
         </Col>
@@ -180,9 +292,22 @@ class TopForm extends React.Component {
           <Spin spinning={spinningVisible}>
             <Card
               {...cardStyle}
-              title={<Statistic value={'钥匙总量'} prefix={<KeyOutlined />} />}
+              title={
+                <>
+                  <Statistic
+                    title={'钥匙总量'}
+                    value={'2500'}
+                    {...valueStyle}
+                  />
+                  <ReactEcharts
+                    option={this.keyStateCountOption}
+                    notMerge={true}
+                    style={{ width: '100%', height: '50%' }}
+                  />
+                </>
+              }
             >
-              <Statistic title="Total Keys" value={keyCount} />
+              车主钥匙占比 35%
             </Card>
           </Spin>
         </Col>
@@ -194,8 +319,8 @@ class TopForm extends React.Component {
                 <>
                   <Statistic
                     title="钥匙使用次数"
-                    value={'5954314'}
-                    valueStyle={{ fontSize: 30, fontWeight: 'normal' }}
+                    value={'6330'}
+                    {...valueStyle}
                   />
                   <ReactEcharts
                     option={this.keyUseCountOption}
@@ -205,7 +330,7 @@ class TopForm extends React.Component {
                 </>
               }
             >
-              今日使用次数 200
+              今日使用次数 214
             </Card>
           </Spin>
         </Col>
@@ -215,13 +340,10 @@ class TopForm extends React.Component {
               {...cardStyle}
               title={
                 <>
-                  {/*<Statistic*/}
-                  {/*  value={'钥匙使用次数'}*/}
-                  {/*  prefix={<CheckCircleOutlined/>}/>*/}
                   <Statistic
                     title="钥匙故障次数"
-                    value={'9824'}
-                    valueStyle={{ fontSize: 30, fontWeight: 'normal' }}
+                    value={'8218'}
+                    {...valueStyle}
                   />
                   <ReactEcharts
                     option={this.keyErrorCountOption}

@@ -47,13 +47,47 @@ class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'车辆vin码'} name="vin">
+            <Form.Item label={'车辆vin号'} name="vin">
               <Input placeholder="请输入车辆vin码" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
             <Form.Item label={'用户id'} name="userId">
               <Input placeholder="请输入用户id" />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label="手机品牌" name={'phoneBrand'}>
+              <Input placeholder="请输入手机品牌" />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label="手机型号" name={'phoneModel'}>
+              <Input placeholder="请输入手机型号" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col {...colSpan}>
+            <Form.Item label="操作类型" name={'statusCode'}>
+              <Input placeholder="请输入手机型号" />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'操作结果'} name="flag">
+              <Select mode={'multiple'} allowClear={true}>
+                <Select.Option key={1} value={1}>
+                  成功
+                </Select.Option>
+                <Select.Option key={0} value={0}>
+                  失败
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label="手机型号" name={'phoneModel'}>
+              <Input placeholder="请输入手机型号" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>

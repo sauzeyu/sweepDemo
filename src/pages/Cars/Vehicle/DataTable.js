@@ -33,12 +33,21 @@ class DataTable extends Component {
   };
   columns = [
     {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.dataTable?.state?.currentIndex;
+        let currentPageSize = this.dataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
+    {
       title: '车辆vin号',
       dataIndex: 'vin',
       width: 200,
     },
     {
-      title: '车辆车型',
+      title: '车辆型号',
       dataIndex: 'vehicleModel',
     },
     {
@@ -70,11 +79,9 @@ class DataTable extends Component {
         if (col.isValid === 0) {
           return null;
         }
-        // const flag = col.isValid === 1;
         return (
           <div className={'link-group'}>
             <a onClick={() => this.keysInfo(col)}>查看钥匙</a>
-            {/*<a onClick={() => this.addOrEditVehicle(col)}>编辑车辆</a>*/}
           </div>
         );
       },
@@ -86,16 +93,6 @@ class DataTable extends Component {
       keysFormVisible: true,
       selectedVehicleId: col.id,
       selectedVehicleVin: col.vin,
-    });
-  };
-
-  addOrEditVehicle = (value) => {
-    this.setState({ editFormVisible: true }, () => {
-      if (value) {
-        setTimeout(() => {
-          this.editFormWrapper.initDetailData(value);
-        });
-      }
     });
   };
 
@@ -149,12 +146,6 @@ class DataTable extends Component {
       showKeysInfo: false,
     });
   };
-  handleRowSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
-  };
-  handleTableChange = () => {
-    // this.setState({ selectedRowKeys: [] });
-  };
 
   render() {
     const {
@@ -173,20 +164,8 @@ class DataTable extends Component {
           rowKey={'id'}
           columns={this.columns}
           scroll={{ x: 1300 }}
-          // rowSelection={rowSelection}
           onChange={this.handleTableChange}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
-          extra={
-            <div className={'btn-group'}>
-              <Button
-                onClick={() => this.addOrEditVehicle()}
-                type={'primary'}
-                icon={<PlusCircleOutlined />}
-              >
-                新增车辆
-              </Button>
-            </div>
-          }
         />
         <Modal
           footer={null}

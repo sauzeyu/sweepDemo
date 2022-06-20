@@ -39,6 +39,15 @@ class DataTable extends Component {
 
   lifecycleColumns = [
     {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.dataTable?.state?.currentIndex;
+        let currentPageSize = this.dataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
+    {
       title: '操作时间',
       dataIndex: 'createTime',
       width: 350,
@@ -62,6 +71,16 @@ class DataTable extends Component {
   ];
 
   columns = [
+    {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.dataTable?.state?.currentIndex;
+        let currentPageSize = this.dataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
+
     {
       title: '钥匙类型',
       dataIndex: 'parentId',
@@ -96,6 +115,10 @@ class DataTable extends Component {
     {
       title: '申请时间',
       dataIndex: 'applyTime',
+    },
+    {
+      title: '周期(分钟)',
+      dataIndex: 'period',
     },
     {
       title: '操作',
@@ -146,6 +169,15 @@ class DataTable extends Component {
     },
   ];
   keyUseLogColumns = [
+    {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.keyUseLogDataTable?.state?.currentIndex;
+        let currentPageSize = this.keyUseLogDataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
     {
       title: '车辆vin号',
       dataIndex: 'vin',
@@ -341,7 +373,7 @@ class DataTable extends Component {
         >
           <DescriptionList col={1}>
             <Description term={'车辆vin号'}>{carInfo?.vin}</Description>
-            <Description term={'车辆车型'}>{carInfo?.vehicleModel}</Description>
+            <Description term={'车辆型号'}>{carInfo?.vehicleModel}</Description>
             <Description term={'车辆品牌'}>{carInfo?.vehicleBrand}</Description>
             <Description term={'蓝牙序列号'}>{carInfo?.hwDeviceSn}</Description>
             <Description term={'蓝牙Mac地址'}>
@@ -369,6 +401,7 @@ class DataTable extends Component {
             name={'keyUseLogDataTable'}
             rowKey={'id'}
             columns={this.keyUseLogColumns}
+            wrappedComponentRef={(ref) => (this.keyUseLogDataTable = ref)}
             renderHeader={(title, extra, page) => {
               let total = page.total;
               total = '共 ' + total + ' 条记录';
@@ -403,6 +436,7 @@ class DataTable extends Component {
             name={'keyLifecycleDataTable'}
             rowKey={'id'}
             columns={this.lifecycleColumns}
+            wrappedComponentRef={(ref) => (this.keyLifecycleDataTable = ref)}
             renderHeader={(title, extra, page) => {
               return (
                 <>

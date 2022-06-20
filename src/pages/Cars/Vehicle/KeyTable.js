@@ -19,6 +19,15 @@ class KeyTable extends Component {
   };
   columns = [
     {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.carsKeyListDataTable?.state?.currentIndex;
+        let currentPageSize = this.carsKeyListDataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
+    {
       title: '用户id',
       dataIndex: 'userId',
       width: 200,
@@ -50,29 +59,25 @@ class KeyTable extends Component {
       width: 200,
     },
     {
-      title: '钥匙权限',
-      dataIndex: 'permissions',
-      width: 600,
-      render: (text) => {
-        return analyzePermissions(text);
-      },
-    },
-    {
       title: '操作',
       fixed: 'right',
       width: 160,
       render: (text, col) => {
-        return (
-          <a onClick={() => this.keyLifecycle(col)}>
-            {/*<Tag color={'volcano'} style={{ fontSize: 15 }}>*/}
-            生命周期
-            {/*</Tag>*/}
-          </a>
-        );
+        return <a onClick={() => this.keyLifecycle(col)}>生命周期</a>;
       },
     },
   ];
   lifecycleColumns = [
+    {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.keyLifecycleDataTable?.state?.currentIndex;
+        let currentPageSize =
+          this.keyLifecycleDataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
     {
       title: '操作时间',
       dataIndex: 'createTime',
@@ -122,6 +127,7 @@ class KeyTable extends Component {
           dataProp={'data'}
           name={'carsKeyListDataTable'}
           rowKey={'id'}
+          wrappedComponentRef={(ref) => (this.carsKeyListDataTable = ref)}
           renderHeader={(title, extra, page) => {
             let total = page.total;
             total = '共 ' + total + ' 条记录';
@@ -158,6 +164,7 @@ class KeyTable extends Component {
             name={'keyLifecycleDataTable'}
             rowKey={'id'}
             columns={this.lifecycleColumns}
+            wrappedComponentRef={(ref) => (this.keyLifecycleDataTable = ref)}
             renderHeader={(title, extra, page) => {
               return (
                 <>

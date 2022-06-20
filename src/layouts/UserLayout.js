@@ -1,6 +1,7 @@
 import React from 'react';
 import DocumentTitle from 'react-document-title';
 import GlobalFooter from '../components/GlobalFooter';
+import Icon from '@ant-design/icons';
 import styles from './UserLayout.less';
 import { getPublicPath } from '../utils';
 import classnames from 'classnames';
@@ -19,7 +20,7 @@ export default class UserLayout extends BaseLayout {
                   <img
                     alt="logo"
                     className={styles.logo}
-                    src={getPublicPath('img/app-title_logo.png')}
+                    src={getPublicPath('img/logo.svg')}
                   />
                   <div className={styles.sysName}>数字钥匙管理平台</div>
                 </div>
