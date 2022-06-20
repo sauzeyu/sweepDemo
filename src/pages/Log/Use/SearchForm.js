@@ -86,11 +86,6 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="手机型号" name={'phoneModel'}>
-              <Input placeholder="请输入手机型号" />
-            </Form.Item>
-          </Col>
-          <Col {...colSpan}>
             <Form.Item label="操作时间" name={'startTime'}>
               <RangePicker />
             </Form.Item>

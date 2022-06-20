@@ -42,6 +42,23 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
+            <Form.Item label="设备检索号" name={'searchNumber'}>
+              <Input placeholder="请输入手机型号" />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'设备状态'} name="flag">
+              <Select mode={'multiple'} allowClear={true}>
+                <Select.Option key={1} value={1}>
+                  正常
+                </Select.Option>
+                <Select.Option key={0} value={0}>
+                  报废
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
             <Form.Item>
               <Button
                 type={'primary'}
