@@ -1,0 +1,381 @@
+package com.vecentek.back.service.impl;
+
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.HexUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.HMac;
+import cn.hutool.crypto.digest.HmacAlgorithm;
+import cn.hutool.http.HttpRequest;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyStatusCodeEnum;
+import com.vecentek.back.dto.UploadBluetoothsErrorDTO;
+import com.vecentek.back.dto.UploadDTO;
+import com.vecentek.back.entity.*;
+import com.vecentek.back.exception.ParameterValidationException;
+import com.vecentek.back.exception.UploadOverMaximumException;
+import com.vecentek.back.exception.VecentException;
+import com.vecentek.back.mapper.*;
+import com.vecentek.back.vo.*;
+import com.vecentek.common.response.PageResp;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * 蓝牙数据(DkmBluetooths)表服务实现类
+ *
+ * @author EdgeYu
+ * @version 1.0
+ * @since 2022-01-10 14:48:00
+ */
+
+@Service("dkmOfflineCheckService")
+public class DkmOfflineCheckServiceImpl {
+
+    private static final int MAX_DATA_TOTAL = 50;
+
+    @Resource
+    private DkmOfflineCheckMapper dkmOfflineCheckMapper;
+    @Resource
+    private DkmBluetoothsMapper dkmBluetoothsMapper;
+    @Resource
+    private DkmVehicleMapper dkmVehicleMapper;
+    @Resource
+    private DkmAftermarketReplacementMapper dkmAftermarketReplacementMapper;
+    @Resource
+    private DkmKeyMapper dkmKeyMapper;
+    @Resource
+    private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
+    @Resource
+    private DkmUserMapper dkmUserMapper;
+    @Resource
+    private DkmKeyLogMapper dkmKeyLogMapper;
+
+    private void verifyVehicleBluetoothVO(List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
+        if (CollUtil.isEmpty(dkmVehicles)) {
+            throw new VecentException(1001, "上传数据不得为空！");
+        }
+        int startSize = dkmVehicles.size();
+
+        if (startSize > MAX_DATA_TOTAL) {
+            throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
+        }
+
+        //对 dkmVehicles 去重,根据 hashCode 与 equals 去重
+        dkmVehicles = dkmVehicles.stream().distinct().collect(Collectors.toList());
+        // 如果有重复参数,则抛出异常
+        if (startSize != dkmVehicles.size()) {
+            throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
+        }
+
+        for (VehicleBluetoothVO vehicle : dkmVehicles) {
+            if (CharSequenceUtil.hasBlank(vehicle.getVin(),
+                    vehicle.getVehicleModel(),
+                    vehicle.getHwDeviceSn(),
+                    vehicle.getSearchNumber(),
+                    vehicle.getBleMacAddress(),
+                    vehicle.getPubKey(),
+                    vehicle.getDkSecUnitId(),
+                    vehicle.getHwDeviceProviderNo())) {
+                throw new VecentException(1001, "必填参数未传递！");
+            }
+            if (vehicle.getHwDeviceSn().length() != 40) {
+                throw new VecentException(1001, "蓝牙设备序列号长度不正确！");
+            }
+            if (vehicle.getSearchNumber().length() != 38) {
+                throw new VecentException(1001, "蓝牙检索号长度不正确！");
+            }
+
+            if (vehicle.getBleMacAddress().length() != 12) {
+                throw new VecentException(1001, "蓝牙Mac地址长度不正确！");
+            }
+            if (vehicle.getPubKey().length() != 130) {
+                throw new VecentException(1001, "蓝牙公钥长度不正确！");
+            }
+            if (HexUtil.decodeHex(vehicle.getHwDeviceSn()) == null) {
+                throw new VecentException(1001, "蓝牙设备序列号格式不正确！");
+            }
+            if (HexUtil.decodeHex(vehicle.getSearchNumber()) == null) {
+                throw new VecentException(1001, "蓝牙检索号格式不正确！");
+            }
+
+            if (HexUtil.decodeHex(vehicle.getBleMacAddress()) == null) {
+                throw new VecentException(1001, "蓝牙Mac地址格式不正确！");
+            }
+
+            if (HexUtil.decodeHex(vehicle.getPubKey()) == null) {
+                throw new VecentException(1001, "蓝牙公钥格式不正确！");
+            }
+        }
+
+
+    }
+
+    /**
+     * 批量插入或更新车辆信息
+     *
+     * @param dkmVehicles 车辆信息集合
+     * @return 是否成功
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public PageResp insertOrUpdateVehicleBatch(List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
+        //校验车辆蓝牙信息
+        verifyVehicleBluetoothVO(dkmVehicles);
+        //划分换件车辆和新增车辆
+        List<String> alreadyExistsVehicleVinList = dkmOfflineCheckMapper.selectVehicleByVin(dkmVehicles);
+        List<VehicleBluetoothVO> newVehicleBluetoothList = dkmVehicles.stream()
+                .filter(dkmVehicle -> !alreadyExistsVehicleVinList.contains(dkmVehicle.getVin()))
+                .collect(Collectors.toList());
+        List<VehicleBluetoothVO> aftermarketReplacementVehicleBluetoothList = dkmVehicles.stream()
+                .filter(dkmVehicle -> alreadyExistsVehicleVinList.contains(dkmVehicle.getVin()))
+                .collect(Collectors.toList());
+        //当新增车辆存在时，插入新增车辆与蓝牙信息
+        if (newVehicleBluetoothList.size() > 0) {
+            newVehicleBluetoothList.forEach(vehicleBluetooth -> {
+                DkmVehicle vehicle = new DkmVehicle();
+                DkmBluetooths bluetooth = new DkmBluetooths();
+                BeanUtil.copyProperties(vehicleBluetooth, vehicle);
+                vehicle.setCreateTime(new Date());
+                dkmVehicleMapper.insert(vehicle);
+                BeanUtil.copyProperties(vehicleBluetooth, bluetooth);
+                bluetooth.setCreateTime(new Date());
+                bluetooth.setFlag(0);
+                dkmBluetoothsMapper.insert(bluetooth);
+            });
+        }
+        //当换件车辆存在时，更新换件车辆并插入蓝牙信息
+        if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
+
+            aftermarketReplacementVehicleBluetoothList.forEach(vehicleBluetooth -> {
+                DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery()
+                        .eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
+
+                List<DkmKey> keyList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
+                        .eq(DkmKey::getVin, vehicle.getVin()).eq(DkmKey::getDkState, "1"));
+                //若换件车辆存在钥匙，则吊销钥匙，并记录钥匙生命周期
+                if (keyList.size() > 0) {
+                    keyList.forEach(dkmKey -> {
+                        DkmUser dkmUser = dkmUserMapper.selectById(dkmKey.getUserId());
+                        dkmKey.setDkState(5);
+                        dkmKey.setUpdateTime(new Date());
+                        dkmKeyMapper.updateById(dkmKey);
+                        DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
+                        dkmKeyLifecycle.setKeyId(dkmKey.getId());
+                        dkmKeyLifecycle.setCreateTime(new Date());
+                        dkmKeyLifecycle.setVin(dkmKey.getVin());
+                        int keyType = 2;
+                        ArrayList<String> userList = new ArrayList<>();
+                        // 车主钥匙
+                        if (Objects.equals("0", dkmKey.getParentId())) {
+                            keyType = 1;
+                            // 查询子钥匙吊销
+                            List<DkmKey> childList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getParentId, dkmKey.getId()).eq(DkmKey::getDkState, "1"));
+                            for (DkmKey child : childList) {
+                                // 吊销子钥匙
+                                child.setDkState(5);
+                                child.setUpdateTime(new Date());
+                                dkmKeyMapper.updateById(child);
+                                // 钥匙生命周期
+                                // 封装生命周期对象
+                                DkmKeyLifecycle childLifecycle = new DkmKeyLifecycle();
+                                childLifecycle.setUserId(child.getUserId());
+                                childLifecycle.setKeyId(child.getId());
+                                childLifecycle.setVin(child.getVin());
+                                // 操作来源
+                                childLifecycle.setKeySource(3);
+                                dkmKeyLifecycle.setKeyType(2);
+                                dkmKeyLifecycle.setKeyStatus(5);
+                                dkmKeyLifecycle.setCreateTime(new Date());
+                                dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
+                                // 加入list
+                                userList.add(child.getUserId());
+                            }
+                        }
+                        // 加入list
+                        userList.add(dkmKey.getUserId());
+                        dkmKeyLifecycle.setKeyType(keyType);
+                        dkmKeyLifecycle.setKeyStatus(5);
+                        dkmKeyLifecycle.setKeySource(3);
+                        dkmKeyLifecycle.setUserId(dkmUser.getId().toString());
+                        dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
+                        // 钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台
+                        // “vin“: “ ASDCSDASDADA1“,
+                        // “userList”:[18202828282,15982637777,17237378989]
+
+                        HashMap<String, Object> paramMap = new HashMap<>(16);
+                        paramMap.put("vin", dkmKey.getVin());
+                        paramMap.put("userList", userList);
+
+                        String urlString = "http://localhost:8007/dkserver-icce/dkm/wechat/recv";
+                        HttpRequest.post(urlString).form(paramMap).execute().body();
+                    });
+                }
+                //更新旧蓝牙设备，插入新蓝牙设备，插入售后换件表
+                DkmBluetooths newBluetooth = new DkmBluetooths();
+                DkmBluetooths oldBluetooth = new DkmBluetooths();
+                BeanUtil.copyProperties(vehicleBluetooth, vehicle);
+                vehicle.setUpdateTime(new Date());
+                newBluetooth.setCreateTime(new Date());
+                newBluetooth.setFlag(1);
+                oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
+                oldBluetooth.setFlag(1);
+                oldBluetooth.setUpdateTime(new Date());
+                dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
+                        .eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
+                dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
+                BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
+                dkmBluetoothsMapper.insert(newBluetooth);
+                DkmAftermarketReplacement dkmAftermarketReplacement = new DkmAftermarketReplacement();
+                dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
+                dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
+                dkmAftermarketReplacement.setNewBluetoothSn(vehicleBluetooth.getHwDeviceSn());
+                dkmAftermarketReplacement.setReplacementTime(new Date());
+                dkmAftermarketReplacement.setCreateTime(new Date());
+                newBluetooth.setFlag(0);
+                dkmAftermarketReplacementMapper.insert(dkmAftermarketReplacement);
+            });
+        }
+        return PageResp.success("上传成功");
+    }
+
+    /**
+     * 批量插入蓝牙设备信息
+     *
+     * @param dkmBluetooths 蓝牙设备信息
+     * @return 是否成功
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public PageResp insertBluetoothBatch(List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException {
+        List<String> insertDeviceSnList = new ArrayList<>();
+        List<String> insertMacList = new ArrayList<>();
+        List<UploadBluetoothsErrorDTO> errorList = new ArrayList<>();
+        int startNum = dkmBluetooths.size();
+        for (DkmBluetooths bluetooth : dkmBluetooths) {
+            if (CharSequenceUtil.hasBlank(bluetooth.getHwDeviceSn(), bluetooth.getHwDeviceProviderNo(), bluetooth.getDkSdkVersion(), bluetooth.getDkSecUnitId(), bluetooth.getBleMacAddress())) {
+                throw new ParameterValidationException();
+            }
+        }
+        int initSize = dkmBluetooths.size();
+        if (initSize > MAX_DATA_TOTAL) {
+            throw new UploadOverMaximumException();
+        }
+        //对 dkmVehicles 去重,根据 hashCode 与 equals 去重
+        dkmBluetooths = dkmBluetooths.stream().distinct().collect(Collectors.toList());
+        // 如果有重复参数,则抛出异常
+        if (initSize != dkmBluetooths.size()) {
+            throw new ParameterValidationException();
+        }
+        dkmBluetooths.forEach(bluetooth -> insertDeviceSnList.add(bluetooth.getHwDeviceSn()));
+        dkmBluetooths.forEach(bluetooth -> insertMacList.add(bluetooth.getBleMacAddress()));
+        List<String> alreadyExistDeviceSnList = dkmOfflineCheckMapper.selectBluetoothBatchByHwDeviceSn(insertDeviceSnList);
+        List<String> alreadyExistMacList = dkmOfflineCheckMapper.selectBluetoothBatchByBleMacAddress(insertMacList);
+        // 排除已存在蓝牙序列号设备
+        if (CollUtil.isNotEmpty(alreadyExistDeviceSnList)) {
+            alreadyExistDeviceSnList.forEach(deviceSn -> {
+                UploadBluetoothsErrorDTO uploadBluetoothsErrorDTO = new UploadBluetoothsErrorDTO();
+                uploadBluetoothsErrorDTO.setDescription("蓝牙设备序列号已存在！");
+                uploadBluetoothsErrorDTO.setHwDeviceSn(deviceSn);
+                errorList.add(uploadBluetoothsErrorDTO);
+            });
+            dkmBluetooths = dkmBluetooths.stream().filter(bluetooth -> !alreadyExistDeviceSnList.contains(bluetooth.getHwDeviceSn())).collect(Collectors.toList());
+        }
+        // 排除已存在蓝牙Mac地址设备
+        if (CollUtil.isNotEmpty(alreadyExistMacList)) {
+            alreadyExistMacList.forEach(mac -> {
+                UploadBluetoothsErrorDTO uploadBluetoothsErrorDTO = new UploadBluetoothsErrorDTO();
+                uploadBluetoothsErrorDTO.setDescription("蓝牙设备Mac地址已存在！");
+                uploadBluetoothsErrorDTO.setBleMacAddress(mac);
+                errorList.add(uploadBluetoothsErrorDTO);
+            });
+            dkmBluetooths = dkmBluetooths.stream().filter(bluetooth -> !alreadyExistMacList.contains(bluetooth.getBleMacAddress())).collect(Collectors.toList());
+        }
+        int endNum = dkmBluetooths.size();
+        for (DkmBluetooths bluetooth : dkmBluetooths) {
+            // TODO: 从密码机中获取密钥并放置到Hmac算法中
+            HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
+            String digKey = hMac.digestHex(bluetooth.getHwDeviceSn());
+            bluetooth.setDigKey(digKey);
+            bluetooth.setMasterKey(digKey.substring(32));
+        }
+        int successfulNum = 0;
+        if (CollUtil.isNotEmpty(dkmBluetooths)) {
+            successfulNum = dkmOfflineCheckMapper.insertBluetoothBatch(dkmBluetooths);
+        }
+        if (startNum != endNum) {
+            return PageResp.fail(2106, "批量上传未完全成功", new UploadDTO<UploadBluetoothsErrorDTO>().buildUserVehicleDTO(successfulNum, errorList));
+        }
+        return PageResp.success("上传成功");
+    }
+
+    public PageResp getKeyLogDetail(List<KeyLogDetailVO> keyLogDetailVO) {
+        ArrayList<DkmKeyLog> dkmKeyLogs = new ArrayList<>();
+        ArrayList<KeyLogDetailResVO> res = new ArrayList<>();
+        // 入参检查
+        for (KeyLogDetailVO logDetailVO : keyLogDetailVO) {
+            if(StrUtil.isBlank(logDetailVO.getVin()) || StrUtil.isBlank(logDetailVO.getStartTime()) || StrUtil.isBlank(logDetailVO.getEndTime())){
+                return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
+            }
+            // 查询
+            List<DkmKeyLog> keyLogList = dkmKeyLogMapper.selectList(new QueryWrapper<DkmKeyLog>().lambda()
+                    .eq(DkmKeyLog::getVin, logDetailVO.getVin())
+                    .ge(DkmKeyLog::getOperateTime, logDetailVO.getStartTime())
+                    .le(DkmKeyLog::getOperateTime, logDetailVO.getEndTime())
+                    .eq(StrUtil.isNotBlank(logDetailVO.getUserId()), DkmKeyLog::getUserId, logDetailVO.getUserId())
+                    .eq(StrUtil.isNotBlank(logDetailVO.getStatusCode()), DkmKeyLog::getStatusCode, logDetailVO.getStatusCode())
+                    .orderBy(true,true,DkmKeyLog::getOperateTime));
+            dkmKeyLogs.addAll(keyLogList);
+        }
+        if (dkmKeyLogs.size() > 0){
+            // 转为结果对象
+            for (DkmKeyLog dkmKeyLog : dkmKeyLogs) {
+                KeyLogDetailResVO keyLogDetailResVO = new KeyLogDetailResVO();
+                // 赋值对象
+                BeanUtils.copyProperties(dkmKeyLog, keyLogDetailResVO);
+                // 根据枚举对应
+                keyLogDetailResVO.setStatusName(KeyStatusCodeEnum.matchName(dkmKeyLog.getStatusCode()));
+                keyLogDetailResVO.setErrorReasonName(KeyErrorReasonEnum.matchReason(dkmKeyLog.getErrorReason()));
+                res.add(keyLogDetailResVO);
+            }
+        }
+        return PageResp.success("查询成功",res);
+    }
+
+    public PageResp getKeyData(KeyLogDataVO keyLogDataVO) {
+        // 入参检查
+        if(StrUtil.isBlank(keyLogDataVO.getStartTime()) || StrUtil.isBlank(keyLogDataVO.getEndTime()) || StrUtil.isBlank(keyLogDataVO.getVin())){
+            return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
+        }
+        boolean parentId = false;
+        if (keyLogDataVO.getStatus() != null){
+            parentId = keyLogDataVO.getStatus() == 1 ? true:false;
+        }
+
+        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new QueryWrapper<DkmKey>().lambda()
+                .ge(DkmKey::getValFrom, keyLogDataVO.getStartTime())
+                .le(DkmKey::getValTo, keyLogDataVO.getEndTime())
+                .eq(DkmKey::getVin, keyLogDataVO.getVin())
+                .eq(StrUtil.isNotBlank(keyLogDataVO.getUserId()), DkmKey::getUserId, keyLogDataVO.getUserId())
+                .eq(keyLogDataVO.getDkState() != null, DkmKey::getDkState, keyLogDataVO.getDkState())
+                .eq(parentId, DkmKey::getDkState, "0"));
+        ArrayList<KeyLogDataResVO> res = new ArrayList<>();
+        for (DkmKey dkmKey : dkmKeys) {
+            KeyLogDataResVO keyLogDataResVO = new KeyLogDataResVO();
+            BeanUtil.copyProperties(dkmKey,keyLogDataResVO);
+            keyLogDataResVO.setKeyId(dkmKey.getId());
+            res.add(keyLogDataResVO);
+        }
+        return PageResp.success("查询成功",res);
+    }
+}

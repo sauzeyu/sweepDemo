@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: @project.artifactId@
+  profiles:
+    active: test
+    include: base
+  cloud:
+    nacos:
+      discovery:
+        ip: 172.16.6.107
+      config:
+        shared-configs:
+          - data-id: logging.yaml
+            refresh: true
+            group: common
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
