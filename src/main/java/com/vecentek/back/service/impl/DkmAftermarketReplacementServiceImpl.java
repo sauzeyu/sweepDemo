@@ -38,7 +38,6 @@ public class DkmAftermarketReplacementServiceImpl {
         page = dkmAftermarketReplacementMapper.selectPage(page, queryWrapper);
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
-
     public PageResp selectByVin(int pageIndex, int pageSize, String vin) {
         Page<DkmAftermarketReplacement> page = new Page<>(pageIndex, pageSize);
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()

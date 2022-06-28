@@ -1,13 +1,10 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
+import com.vecentek.back.vo.SelectKeyForPageVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
@@ -33,8 +30,22 @@ public class DkmKeyController {
 
 
     @GetMapping(value = "/selectForPage")
-    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String vin,String userId,Integer keyType,String startTime,String endTime) {
-        return this.dkmKeyServiceImpl.selectForPage(pageIndex, pageSize, vin,userId,keyType,startTime,endTime);
+    public PageResp selectForPage(@RequestBody SelectKeyForPageVO selectKeyForPageVO) {
+        return this.dkmKeyServiceImpl.selectForPage(selectKeyForPageVO.getPageIndex(),
+                selectKeyForPageVO.getPageSize(),
+                selectKeyForPageVO.getVin(),
+                selectKeyForPageVO.getUserId(),
+                selectKeyForPageVO.getKeyType(),
+                selectKeyForPageVO.getApplyStartTime(),
+                selectKeyForPageVO.getApplyEndTime(),
+                selectKeyForPageVO.getPeriodMax(),
+                selectKeyForPageVO.getPeriodMin(),
+                selectKeyForPageVO.getPeriodUnit(),
+                selectKeyForPageVO.getValFromStartTime(),
+                selectKeyForPageVO.getValFromEndTime(),
+                selectKeyForPageVO.getValToStartTime(),
+                selectKeyForPageVO.getValToEndTime(),
+                selectKeyForPageVO.getDkState());
     }
 
 

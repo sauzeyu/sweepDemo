@@ -53,6 +53,7 @@ public class DkmKeyServiceImpl {
      */
     public PageResp selectById(String id) {
         DkmKey dkmKey = this.dkmKeyMapper.selectById(id);
+
         return PageResp.success("查询成功", dkmKey);
     }
 
@@ -84,21 +85,64 @@ public class DkmKeyServiceImpl {
         return PageResp.success("查询成功", page.getTotal(), keyList);
     }
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, Integer keyType, String startTime, String endTime) {
+    public PageResp selectForPage(Integer pageIndex,
+                                  Integer pageSize,
+                                  String vin,
+                                  String userId,
+                                  Integer keyType,
+                                  String applyStartTime,
+                                  String applyEndTime,
+                                  Integer periodMax,
+                                  Integer periodMin,
+                                  String periodUnit,
+                                  String valFromStartTime,
+                                  String valFromEndTime,
+                                  String valToStartTime,
+                                  String valToEndTime,
+                                  List<Integer> dkStates) {
         if (keyType == null) {
             keyType = 3;
         }
+        // 是否需要period条件
+        boolean periodBool = false;
+        int periodMaxFormat = 0;
+        int periodMinFormat = 0;
+        if (periodMax != null && periodMin != null && periodUnit != null){
+            // 根据单元转换时间周期
+            if (Objects.equals(periodUnit,"minute")){ // 分钟
+                periodMaxFormat = periodMax;
+                periodMinFormat = periodMin;
+            }else if (Objects.equals(periodUnit,"hour")){
+                periodMaxFormat = periodMax * 60;
+                periodMinFormat = periodMin * 60;
+            }else if (Objects.equals(periodUnit,"day")){
+                periodMaxFormat = periodMax * 60 * 24;
+                periodMinFormat = periodMin * 60 * 24;
+            }
+            periodBool = true;
+        }
+        // 是否需要dkStates条件
+        if (dkStates != null && dkStates.size() > 0){
+
+        }
+
         Page<DkmKey> page = new Page<>(pageIndex, pageSize);
         page = dkmKeyMapper.selectPage(page, Wrappers.<DkmKey>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
                 .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
-                .ge(StrUtil.isNotBlank(startTime), DkmKey::getApplyTime, startTime)
-                .le(StrUtil.isNotBlank(endTime), DkmKey::getApplyTime, endTime)
+                .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
+                .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
+                .ge(StrUtil.isNotBlank(valFromStartTime), DkmKey::getValFrom, valFromStartTime)
+                .le(StrUtil.isNotBlank(valFromEndTime), DkmKey::getValFrom, valFromEndTime)
+                .ge(StrUtil.isNotBlank(valToStartTime), DkmKey::getValTo, valToStartTime)
+                .le(StrUtil.isNotBlank(valToEndTime), DkmKey::getValTo, valToEndTime)
+                .ge(periodBool, DkmKey::getPeriod, periodMinFormat)
+                .le(periodBool, DkmKey::getPeriod, periodMaxFormat)
                 .eq(keyType == 1, DkmKey::getParentId, "0")
                 .ne(keyType == 2, DkmKey::getParentId, "0")
                 .orderByDesc(DkmKey::getVin)
                 .orderByAsc(DkmKey::getParentId)
-                .orderByAsc(DkmKey::getDkState)
+                .orderByDesc(DkmKey::getApplyTime)
         );
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }

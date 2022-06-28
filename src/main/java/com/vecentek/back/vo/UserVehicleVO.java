@@ -24,7 +24,7 @@ public class UserVehicleVO {
     /**
      * 用户手机号
      */
-    private String phone;
+    private String userId;
     /**
      * 车牌号
      */

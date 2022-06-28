@@ -6,9 +6,10 @@ spring:
     include: base
   cloud:
     nacos:
-      discovery:
-        ip: 172.16.6.107
+#      discovery:
+#        ip: 172.16.10.104
       config:
+        group: liujz
         shared-configs:
           - data-id: logging.yaml
             refresh: true

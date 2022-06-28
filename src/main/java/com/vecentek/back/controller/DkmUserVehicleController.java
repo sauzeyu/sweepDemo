@@ -2,12 +2,15 @@ package com.vecentek.back.controller;
 
 import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.service.impl.DkmUserVehicleServiceImpl;
-import com.vecentek.back.vo.*;
+import com.vecentek.back.vo.GetBluetoothVinVO;
+import com.vecentek.back.vo.LogoutUserVehicleVO;
+import com.vecentek.back.vo.RevokeKeyVO;
+import com.vecentek.back.vo.UserChangeVO;
+import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -24,7 +27,7 @@ public class DkmUserVehicleController {
     private DkmUserVehicleServiceImpl dkmUserVehicleService;
 
     @RequestMapping(value = "/insertUserVehicle", method = RequestMethod.POST)
-    public PageResp insertUserVehicle(@RequestParam UserVehicleVO userVehicle)  {
+    public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle)  {
         return dkmUserVehicleService.insertUserVehicle(userVehicle);
     }
 

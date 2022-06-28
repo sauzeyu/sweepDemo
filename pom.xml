@@ -203,9 +203,9 @@
                     <entryPoint>["java","-jar","${project.build.finalName}.jar"]</entryPoint>
 
                     <!-- 指定远程 Docker API地址  -->
-                    <dockerHost>https://172.16.6.107:2376</dockerHost>
+                    <dockerHost>https://172.16.13.11:2376</dockerHost>
                     <!-- 指定tls证书的目录 -->
-                    <dockerCertPath>C:\Users\Y7701\Desktop\为辰信安-Start\docker-ca\为辰-6-107</dockerCertPath>
+                    <dockerCertPath>E:\docker-ca\为辰-13-11</dockerCertPath>
 
                     <!-- 复制 jar包到docker容器指定目录-->
                     <resources>
