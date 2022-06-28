@@ -121,13 +121,18 @@ public class DkmKeyServiceImpl {
             }
             periodBool = true;
         }
+        LambdaQueryWrapper<DkmKey> dkmKeyLambdaQueryWrapper = Wrappers.<DkmKey>lambdaQuery();
+        Page<DkmKey> page = new Page<>(pageIndex, pageSize);
         // 是否需要dkStates条件
         if (dkStates != null && dkStates.size() > 0){
-
+            dkmKeyLambdaQueryWrapper.eq(DkmKey::getDkState, dkStates.get(0));
+            if (dkStates.size() > 1) {
+                for (int i = 1; i < dkStates.size(); i++) {
+                    dkmKeyLambdaQueryWrapper.or().eq(DkmKey::getDkState,dkStates.get(i));
+                }
         }
-
-        Page<DkmKey> page = new Page<>(pageIndex, pageSize);
-        page = dkmKeyMapper.selectPage(page, Wrappers.<DkmKey>lambdaQuery()
+        }
+        page = dkmKeyMapper.selectPage(page, dkmKeyLambdaQueryWrapper
                 .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
                 .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
                 .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
