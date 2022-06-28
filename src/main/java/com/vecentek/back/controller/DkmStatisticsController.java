@@ -1,11 +1,9 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmStatisticsServiceImpl;
+import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -22,9 +20,24 @@ public class DkmStatisticsController {
     @Resource
     private DkmStatisticsServiceImpl echartsServiceImpl;
 
-    @RequestMapping(value = "/selectTotal", method = RequestMethod.GET)
-    public PageResp selectUserTotal(String startTime, String endTime) {
-        return echartsServiceImpl.selectTotal(startTime, endTime);
+    /**
+     * 面向TSP
+     * @param timeQuantumVO
+     * @return
+     */
+    @RequestMapping(value = "/selectTotal", method = RequestMethod.POST)
+    public PageResp selectUserTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
+        return echartsServiceImpl.selectTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
+    }
+
+    /**
+     * 面向Back服務前端
+     * @param timeQuantumVO
+     * @return
+     */
+    @RequestMapping(value = "/api/selectTotal", method = RequestMethod.POST)
+    public PageResp tspSelectUserTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
+        return echartsServiceImpl.selectTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
 
     @RequestMapping(value = "/selectKeyLogByMonth", method = RequestMethod.GET)
@@ -80,7 +93,17 @@ public class DkmStatisticsController {
      */
     @RequestMapping(value = "/keyUseTimeStatistics", method = RequestMethod.GET)
     public PageResp keyUseTimeStatistics() {
-        return echartsServiceImpl.keyStatistics();
+        return echartsServiceImpl.keyUseTimeStatistics();
+    }
+
+    /**
+     * 钥匙故障次数
+     * 子钥匙，车主钥匙，车主钥匙占比
+     * @return
+     */
+    @RequestMapping(value = "/keyErrorTimeStatistics", method = RequestMethod.GET)
+    public PageResp keyErrorTimeStatistics() {
+        return echartsServiceImpl.keyErrorTimeStatistics();
     }
 
     /**
@@ -89,8 +112,8 @@ public class DkmStatisticsController {
      * @return
      */
     @RequestMapping(value = "/selectErrorStatusTotal", method = RequestMethod.POST)
-    public PageResp selectErrorStatusTotal(@RequestParam String startTime, @RequestParam String endTime) {
-        return echartsServiceImpl.selectErrorStatusTotal(startTime, endTime);
+    public PageResp selectErrorStatusTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
+        return echartsServiceImpl.selectErrorStatusTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
 
 

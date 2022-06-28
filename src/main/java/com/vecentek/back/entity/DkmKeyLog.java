@@ -2,6 +2,7 @@ package com.vecentek.back.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -65,4 +66,14 @@ public class DkmKeyLog implements Serializable {
     private String updator;
     private String createTime;
     private String updateTime;
+    /**
+     * 车辆品牌
+     */
+    @ApiModelProperty(name = "vehicle_brand", notes = "车辆品牌", dataType = "String", required = true)
+    private String vehicleBrand;
+    /**
+     * 车辆型号
+     */
+    @ApiModelProperty(name = "vehicle_model", notes = "车辆型号", dataType = "String", required = true)
+    private String vehicleModel;
 }

@@ -70,4 +70,10 @@ public interface DkmVehicleMapper extends BaseMapper<DkmVehicle> {
 
     @Select("select count(1) as count from dkm_vehicle where day(create_time) = day(now())")
     Integer selectNewToday();
+
+    @Select("select DATE_FORMAT(operate_time, '%m') as month, count(1) as count from dkm_key_log where flag = 1 and year(operate_time) = year(now()) group by month")
+    List<MonthCountDTO> countUseByMonth();
+
+    @Select("select DATE_FORMAT(operate_time, '%m') as month, count(1) as count from dkm_key_log where flag = 0 and year(operate_time) = year(now()) group by month")
+    List<MonthCountDTO> countErrorByMonth();
 }

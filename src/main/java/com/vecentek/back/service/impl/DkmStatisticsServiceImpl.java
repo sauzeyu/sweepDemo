@@ -68,50 +68,11 @@ public class DkmStatisticsServiceImpl {
 
 
     public PageResp selectKeyLogByMonth() {
-        String[] monthList = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
         List<MonthCountDTO> useLogCount = dkmKeyLogMapper.selectUseLogCountByMonth();
         List<MonthCountDTO> errorLogCount = dkmKeyLogMapper.selectErrorLogCountByMonth();
-        List<Integer> useCountList = new ArrayList<>();
-        List<Integer> errorCountList = new ArrayList<>();
-        List<MonthCountDTO> emptyUseLogCountList = new ArrayList<>();
-        List<MonthCountDTO> emptyErrorLogCountList = new ArrayList<>();
-
-        for (String month : monthList) {
-            MonthCountDTO useMonthCountDTO = new MonthCountDTO();
-            MonthCountDTO errorMonthCountDTO = new MonthCountDTO();
-            useMonthCountDTO.setMonth(month);
-            errorMonthCountDTO.setMonth(month);
-            useMonthCountDTO.setCount(0);
-            errorMonthCountDTO.setCount(0);
-            emptyUseLogCountList.add(useMonthCountDTO);
-            emptyErrorLogCountList.add(errorMonthCountDTO);
-        }
-        for (MonthCountDTO monthCountDTO : useLogCount) {
-            for (MonthCountDTO countDTO : emptyUseLogCountList) {
-                if (monthCountDTO.getMonth().equals(countDTO.getMonth())) {
-                    countDTO.setCount(monthCountDTO.getCount());
-                }
-            }
-        }
-        for (MonthCountDTO monthCountDTO : errorLogCount) {
-            for (MonthCountDTO countDTO : emptyErrorLogCountList) {
-                if (monthCountDTO.getMonth().equals(countDTO.getMonth())) {
-                    countDTO.setCount(monthCountDTO.getCount());
-                }
-            }
-        }
-        emptyUseLogCountList.forEach(use -> useCountList.add(use.getCount()));
-
-        emptyErrorLogCountList.forEach(error -> errorCountList.add(error.getCount()));
-
-        // 今日使用次数
-        int countUseToday = dkmKeyLogMapper.countUseToday();
-        // 今日故障次数
-        int countErrorToday = dkmKeyLogMapper.countErrorToday();
-        JSONObject total = new JSONObject().set("useLogCount", useCountList)
-                .set("errorLogCount", errorCountList)
-                .set("countUseToday", countUseToday)
-                .set("countErrorToday", countErrorToday);
+        JSONObject total = new JSONObject()
+                .set("useLogCount", useLogCount)
+                .set("errorLogCount", errorLogCount);
         return PageResp.success("查询成功", total);
     }
 
@@ -172,6 +133,8 @@ public class DkmStatisticsServiceImpl {
         // 设置精确到小数点后2位
         numberFormat.setMaximumFractionDigits(2);
         String result = numberFormat.format((float)num/(float)allNum*100) + "%";
+
+
         JSONObject res = new JSONObject().set("masterCount", masterCount).set("childCount", childCount).set("proportion", result);
         return PageResp.success("查询成功",res);
     }
@@ -214,5 +177,23 @@ public class DkmStatisticsServiceImpl {
             }
         }
         return map;
+    }
+
+    public PageResp keyUseTimeStatistics() {
+        // 今日使用次数
+        int countUseToday = dkmKeyLogMapper.countUseToday();
+        // 每个月的使用数
+        List<MonthCountDTO> useMonthList = dkmVehicleMapper.countUseByMonth();
+        JSONObject res = new JSONObject().set("countUseToday", countUseToday).set("useMonthList", useMonthList);
+        return PageResp.success("查询成功",res);
+    }
+
+    public PageResp keyErrorTimeStatistics() {
+        // 今日故障次数
+        int countErrorToday = dkmKeyLogMapper.countErrorToday();
+        // 每个月的使用数
+        List<MonthCountDTO> errorMonthList = dkmVehicleMapper.countErrorByMonth();
+        JSONObject res = new JSONObject().set("countErrorToday", countErrorToday).set("errorMonthList", errorMonthList);
+        return PageResp.success("查询成功",res);
     }
 }

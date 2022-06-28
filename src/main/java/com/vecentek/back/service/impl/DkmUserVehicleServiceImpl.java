@@ -50,15 +50,15 @@ public class DkmUserVehicleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
-        if (StrUtil.hasBlank(userVehicle.getPhone(), userVehicle.getVin(), userVehicle.getUsername())) {
+        if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin(), userVehicle.getUsername())) {
             return PageResp.fail("上传失败，用户姓名或用户手机号或车辆vin号未传递！");
         }
-        LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getPhone());
+        LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
 
         DkmUser dkmUser = dkmUserMapper.selectOne(userWrapper);
         if (dkmUser == null) {
             dkmUser = new DkmUser();
-            dkmUser.setPhone(userVehicle.getPhone());
+            dkmUser.setPhone(userVehicle.getUserId());
             dkmUser.setUsername(userVehicle.getUsername());
             dkmUserMapper.insert(dkmUser);
         }
@@ -75,7 +75,7 @@ public class DkmUserVehicleServiceImpl {
         dkmUserVehicle.setLicense(userVehicle.getLicense());
         dkmUserVehicle.setVehicleType(userVehicle.getVehicleType());
         dkmUserVehicle.setVin(userVehicle.getVin());
-        dkmUserVehicle.setPhone(userVehicle.getPhone());
+        dkmUserVehicle.setPhone(userVehicle.getUserId());
         dkmUserVehicle.setCreateTime(new Date());
 
         int insert = dkmUserVehicleMapper.insert(dkmUserVehicle);
