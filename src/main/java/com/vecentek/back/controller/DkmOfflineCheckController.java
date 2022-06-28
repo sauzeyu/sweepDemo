@@ -45,7 +45,7 @@ public class DkmOfflineCheckController {
      * @return
      */
     @RequestMapping(value = "/getKeyLogDetail", method = RequestMethod.POST)
-    public PageResp getKeyLogDetail(@RequestBody List<KeyLogDetailVO> keyLogDetailVO) {
+    public PageResp getKeyLogDetail(@RequestBody KeyLogDetailVO keyLogDetailVO) {
         return dkmOfflineCheckServiceImpl.getKeyLogDetail(keyLogDetailVO);
     }
 
