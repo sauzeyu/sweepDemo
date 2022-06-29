@@ -325,11 +325,11 @@ public class DkmOfflineCheckServiceImpl {
         ArrayList<KeyLogDetailResVO> res = new ArrayList<>();
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
         // 入参检查
-        if(StrUtil.isBlank(keyLogDetailVO.getVin()) || StrUtil.isBlank(keyLogDetailVO.getStartTime()) || StrUtil.isBlank(keyLogDetailVO.getEndTime())){
+        if(StrUtil.isBlank(keyLogDetailVO.getStartTime()) || StrUtil.isBlank(keyLogDetailVO.getEndTime())){
             return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
         }
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = new QueryWrapper<DkmKeyLog>().lambda()
-                .eq(DkmKeyLog::getVin, keyLogDetailVO.getVin())
+                .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()),DkmKeyLog::getVin, keyLogDetailVO.getVin())
                 .ge(DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
                 .le(DkmKeyLog::getOperateTime, keyLogDetailVO.getEndTime())
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getUserId()), DkmKeyLog::getUserId, keyLogDetailVO.getUserId())
@@ -354,7 +354,6 @@ public class DkmOfflineCheckServiceImpl {
         // 入参检查
         if(StrUtil.isBlank(keyLogDataVO.getStartTime()) ||
                 StrUtil.isBlank(keyLogDataVO.getEndTime()) ||
-                StrUtil.isBlank(keyLogDataVO.getVin()) ||
                 Objects.isNull(keyLogDataVO.getPageIndex()) ||
                 Objects.isNull(keyLogDataVO.getPageSize())){
             return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
@@ -367,7 +366,7 @@ public class DkmOfflineCheckServiceImpl {
         LambdaQueryWrapper<DkmKey> wrapper = new QueryWrapper<DkmKey>().lambda()
                 .ge(DkmKey::getValFrom, keyLogDataVO.getStartTime())
                 .le(DkmKey::getValTo, keyLogDataVO.getEndTime())
-                .eq(DkmKey::getVin, keyLogDataVO.getVin())
+                .eq(StrUtil.isNotBlank(keyLogDataVO.getVin()),DkmKey::getVin, keyLogDataVO.getVin())
                 .eq(StrUtil.isNotBlank(keyLogDataVO.getUserId()), DkmKey::getUserId, keyLogDataVO.getUserId())
                 .eq(keyLogDataVO.getDkState() != null, DkmKey::getDkState, keyLogDataVO.getDkState())
                 .eq(parentId, DkmKey::getDkState, "0");
