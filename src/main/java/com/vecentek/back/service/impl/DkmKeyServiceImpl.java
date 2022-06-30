@@ -1,27 +1,50 @@
 package com.vecentek.back.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.BigExcelWriter;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.vecentek.back.constant.BluetoothErrorReasonEnum;
+import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyStatusCodeEnum;
+import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.DkmKeyDTO;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
+import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
+import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
+import com.vecentek.back.vo.DkmKeyVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +66,8 @@ public class DkmKeyServiceImpl {
     private DkmUserMapper dkmUserMapper;
     @Resource
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
-
+    @Resource
+    private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
     /**
      * 通过ID查询单条数据
@@ -286,5 +310,280 @@ public class DkmKeyServiceImpl {
                 .ge(StrUtil.isNotBlank(valTo), DkmKey::getValTo, valTo)
                 .le(ObjectUtil.isNotNull(period), DkmKey::getPeriod, period));
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
+    }
+
+    @Async
+    public void downloadKeyLogExcel( String id,
+                                     Integer vehicleId,
+                                     String userId,
+                                     String vin,
+                                     Long cycleStartTime,
+                                     Long cycleEndTime,
+                                     String cycleUnit,
+                                     String applyStartTime,
+                                     String applyEndTime,
+                                     String effectiveStartTime,
+                                     String effectiveEndTime,
+                                     String failStartTime,
+                                     String failEndTime,
+                                     Integer keyType,
+                                     Integer keyState)  {
+        String startTime = applyStartTime;
+        String endTime = applyEndTime;
+        // 异步导出如果没有选条件默认导出当前月份的数据
+        if (CharSequenceUtil.isBlank(applyStartTime) && CharSequenceUtil.isBlank(applyEndTime)){
+            String now = DateUtil.now();
+            DateTime dateTime = new DateTime(now, DatePattern.NORM_DATETIME_FORMAT);
+            int month = dateTime.getMonth() + 1;
+            int nextMonth;
+            if(month == 12){
+                nextMonth = 1;
+            } else {
+                nextMonth = month + 1 ;
+            }
+            startTime = getFirstDayOfMonth(month);
+            endTime = getFirstDayOfMonth(nextMonth);
+
+        }
+        // 1Excel 文件名 文件格式 文件路径的提前处理
+        // 1.1时间格式化格式
+
+        Date createTime = new Date();
+        // 1.2导出的excel按月份以时间命名 如2022-6-1~2022-7-1钥匙使用记录
+        DateTime startName = DateUtil.parse(startTime);
+        String startFileName = DateUtil.format(startName, "yyyy-MM-dd");
+
+        DateTime endName = DateUtil.parse(endTime);
+        String endFileName = DateUtil.format(endName, "yyyy-MM-dd");
+        String fileName = startFileName + "~" + endFileName;
+        // 1.3形成文件名
+        String excelName = fileName + "钥匙信息记录";
+
+
+        // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
+        String filePath = ("d:/test/" +  excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        // 是否有重名文件
+        if (FileUtil.isFile(filePath)) {
+            FileUtil.del(filePath);
+        }
+        BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
+
+
+
+
+        // 2向历史导出记录新增一条状态为导出中的数据
+        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, null, null, createTime, null));
+
+
+        // 3.1所有数据量
+        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery()
+                .like(CharSequenceUtil.isNotBlank(id), DkmKey::getUserId, id)
+                .like(CharSequenceUtil.isNotBlank(vin), DkmKey::getVin, vin)
+
+                .ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
+                .le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
+                //TODO 周期单位
+                //.eq(dkmKeyVO.getCycleUnit()!=null,DkmKey::getPeriodUnit,dkmKeyVO.getCycleUnit())
+
+                .ge(applyStartTime!=null,DkmKey::getApplyTime , applyStartTime)
+                .le(applyEndTime!=null, DkmKey::getApplyTime, applyEndTime)
+
+                .ge(effectiveStartTime!=null,DkmKey::getValFrom , effectiveStartTime)
+                .le(effectiveEndTime !=null, DkmKey::getValFrom, effectiveEndTime)
+
+                .ge(failStartTime!=null,DkmKey::getValTo , failStartTime)
+                .le(failEndTime!=null, DkmKey::getValTo, failEndTime)
+
+                .eq(keyType!= null, DkmKey::getFlag,keyType)
+
+                .eq(keyState!= null, DkmKey::getDkState, keyState);
+
+        Integer sum = dkmKeyMapper.selectCount(queryWrapper);
+        // 3.2每次分页数据量50W (SXXSF 最大分页100W)
+        Integer end = 500000;
+
+        List<DkmKey> dkmKeys;
+
+
+        // 4将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
+        // TODO stream流
+        for (int i = 0; i <= sum / end; i++) {
+            int start = (i * end);
+
+            // 4.1分页查询数据 否则会OOM
+            dkmKeys = getDkmKeyLogs( id,
+                    vehicleId,
+                    userId,
+                    vin,
+                    cycleStartTime,
+                    cycleEndTime,
+                    cycleUnit,
+                    applyStartTime,
+                    applyEndTime,
+                    effectiveStartTime,
+                    effectiveEndTime,
+                    failStartTime,
+                    failEndTime,
+                    keyType,
+                    keyState,
+                    start,
+                    end);
+
+            // 4.2首个sheet需要重新命名
+            if (i == 0) {
+                writer.renameSheet("初始表");
+                // 4.3写入新sheet会刷新样式 每次都需要重新设置单元格样式
+                extracted(writer);
+                // 4.4一次性写出内容，使用默认样式，强制输出标题
+                writer.write(dkmKeys, true);
+                continue;
+            }
+            writer.setSheet("表" + (i + 1));
+            extracted(writer);
+            writer.write(dkmKeys, true);
+        }
+
+        writer.close();
+
+        // 5将历史记录中该条数据记录根据导出情况进行修改
+        dkmKeyLogHistoryExportMapper.update(null,
+                Wrappers.<DkmKeyLogHistoryExport>lambdaUpdate().set(DkmKeyLogHistoryExport::getExportStatus, 1).eq(DkmKeyLogHistoryExport::getMissionName, excelName));
+
+    }
+
+    /**
+     * BigExcelWriter设置单元格样式
+     * @param writer
+     */
+    private void extracted(BigExcelWriter writer) {
+        // 4.3.1表头只显示取别名的字段
+        writer.setOnlyAlias(true);
+
+        // 4.3.2设置单元格与字体的样式
+        Font headFont = writer.createFont();
+        Font cellFont = writer.createFont();
+
+        cellFont.setFontName("宋体");
+        headFont.setFontName("宋体");
+        headFont.setBold(true);
+
+        CellStyle headCellStyle = writer.getHeadCellStyle();
+        headCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        headCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        headCellStyle.setFont(headFont);
+        headCellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+
+        CellStyle cellStyle = writer.getCellStyle();
+        cellStyle.setFont(cellFont);
+
+        writer.setColumnWidth(0, 30);
+        writer.setColumnWidth(1, 20);
+        writer.setColumnWidth(2, 20);
+        writer.setColumnWidth(3, 20);
+        writer.setColumnWidth(4, 20);
+        writer.setColumnWidth(5, 20);
+        writer.setColumnWidth(6, 20);
+        writer.setColumnWidth(7, 20);
+
+
+        writer.addHeaderAlias("parentId", "钥匙类型");
+        writer.addHeaderAlias("userId", "用户id");
+        writer.addHeaderAlias("vin", "车辆vin号");
+        writer.addHeaderAlias("personalAndCalibration", "钥匙状态");
+        writer.addHeaderAlias("valFrom", "生效时间");
+        writer.addHeaderAlias("valTo", "失效时间");
+        writer.addHeaderAlias("applyTime", "申请时间");
+        writer.addHeaderAlias("period", "周期(分钟)");
+    }
+
+    /**
+     * 根据分页条件去查询钥匙记录
+
+     * @return
+     */
+    private List<DkmKey> getDkmKeyLogs(String id,
+                                       Integer vehicleId,
+                                       String userId,
+                                       String vin,
+                                       Long cycleStartTime,
+                                       Long cycleEndTime,
+                                       String cycleUnit,
+                                       String applyStartTime,
+                                       String applyEndTime,
+                                       String effectiveStartTime,
+                                       String effectiveEndTime,
+                                       String failStartTime,
+                                       String failEndTime,
+                                       Integer keyType,
+                                       Integer keyState,
+                                          Integer start,
+                                          Integer end) {
+
+        // 4.1.1根据条件查出库中对应记录数据
+        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery()
+                .like(CharSequenceUtil.isNotBlank(id), DkmKey::getUserId, id)
+                .like(CharSequenceUtil.isNotBlank(vin), DkmKey::getVin, vin)
+
+                .ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
+                .le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
+                //TODO 周期单位
+                //.eq(dkmKeyVO.getCycleUnit()!=null,DkmKey::getPeriodUnit,dkmKeyVO.getCycleUnit())
+
+                .ge(applyStartTime!=null,DkmKey::getApplyTime , applyStartTime)
+                .le(applyEndTime!=null, DkmKey::getApplyTime, applyEndTime)
+
+                .ge(effectiveStartTime!=null,DkmKey::getValFrom , effectiveStartTime)
+                .le(effectiveEndTime !=null, DkmKey::getValFrom, effectiveEndTime)
+
+                .ge(failStartTime!=null,DkmKey::getValTo , failStartTime)
+                .le(failEndTime!=null, DkmKey::getValTo, failEndTime)
+
+                .eq(keyType!= null, DkmKey::getFlag,keyType)
+
+                .eq(keyState!= null, DkmKey::getDkState, keyState)
+
+                .last("limit " + start + "," + end);
+        List<DkmKey> keyList = dkmKeyMapper.selectList(queryWrapper);
+
+        // 4.1.2执行库中部分字段二次封装
+        if (!keyList.isEmpty()) {
+
+            keyList.forEach(key -> {
+                if (key.getParentId() == "0") {
+                    key.setParentId("车主钥匙");
+                } else {
+                    key.setParentId("分享钥匙");
+                }
+
+                key.setPersonalAndCalibration(KeyStatusEnum.matchName(key.getDkState()));
+            });
+
+        }
+
+
+        return keyList;
+    }
+
+    /**
+     * 获取当前月第一天
+     * @param month
+     * @return
+     */
+    public static String getFirstDayOfMonth(int month) {
+        Calendar calendar = Calendar.getInstance();
+        // 设置月份
+        calendar.set(Calendar.MONTH, month - 1);
+        // 获取某月最小天数
+        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+        // 设置日历中月份的最小天数
+        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
+        // 格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        return sdf.format(calendar.getTime())+" 00:00:00";
+    }
+    public PageResp checkKeyUseLog() {
+        List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(null);
+        return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
     }
 }

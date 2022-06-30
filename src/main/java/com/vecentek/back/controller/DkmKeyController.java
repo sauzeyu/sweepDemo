@@ -1,8 +1,10 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
+import com.vecentek.back.vo.DkmKeyVO;
 import com.vecentek.back.vo.SelectKeyForPageVO;
 import com.vecentek.common.response.PageResp;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -120,6 +122,84 @@ public class DkmKeyController {
     public PageResp selectForPageByVal(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
                                        @RequestParam String valFrom, @RequestParam String valTo, @RequestParam Long period,@RequestParam Long dkState) {
         return this.dkmKeyServiceImpl.selectForPageByVal(pageIndex, pageSize, valFrom, valTo, period, dkState);
+    }
+
+    /**
+     * 开始导出
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/downloadKeyExcel")
+    public PageResp startLoadKeyLogExcel( String id,
+                                          Integer vehicleId,
+                                          String userId,
+                                          String vin,
+                                          Long cycleStartTime,
+                                          Long cycleEndTime,
+                                          String cycleUnit,
+                                          String applyStartTime,
+                                          String applyEndTime,
+                                          String effectiveStartTime,
+                                          String effectiveEndTime,
+                                          String failStartTime,
+                                          String failEndTime,
+                                          Integer keyType,
+                                          Integer keyState)  {
+        downloadKeyExcel(  id,
+                 vehicleId,
+                 userId,
+                 vin,
+                 cycleStartTime,
+                 cycleEndTime,
+                 cycleUnit,
+                 applyStartTime,
+                 applyEndTime,
+                 effectiveStartTime,
+                 effectiveEndTime,
+                 failStartTime,
+                 failEndTime,
+                 keyType,
+                 keyState);
+        return PageResp.success();
+
+    }
+
+    /**
+     * 异步导出
+
+     */
+    @Async
+    public void downloadKeyExcel( String id,
+                                  Integer vehicleId,
+                                  String userId,
+                                  String vin,
+                                  Long cycleStartTime,
+                                  Long cycleEndTime,
+                                  String cycleUnit,
+                                  String applyStartTime,
+                                  String applyEndTime,
+                                  String effectiveStartTime,
+                                  String effectiveEndTime,
+                                  String failStartTime,
+                                  String failEndTime,
+                                  Integer keyType,
+                                  Integer keyState)  {
+        this.dkmKeyServiceImpl.downloadKeyLogExcel(
+                id,
+                vehicleId,
+                userId,
+                vin,
+                cycleStartTime,
+                cycleEndTime,
+                cycleUnit,
+                applyStartTime,
+                applyEndTime,
+                effectiveStartTime,
+                effectiveEndTime,
+                failStartTime,
+                failEndTime,
+                keyType,
+                keyState);;
     }
 
 }

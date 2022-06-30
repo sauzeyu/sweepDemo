@@ -1,8 +1,8 @@
-package com.vecentek.auth.util;
+package com.vecentek.back.util;
 
 import cn.hutool.core.lang.UUID;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vecentek.auth.constant.JwtConstant;
+import com.vecentek.back.constant.JwtConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;

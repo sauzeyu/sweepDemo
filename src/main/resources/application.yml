@@ -1,0 +1,40 @@
+spring:
+  shardingsphere:
+    props:
+      # 是否显示sql
+      sql-show: false
+    datasource:
+      ds0:
+      url: jdbc:mysql://172.16.13.13:3306/dkserverdb_foton?characterEncoding=UTF-8&useUnicode=true&useSSL=false&tinyInt1isBit=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+      username: root
+      password: edgeyu
+      driver-class-name: com.mysql.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+        names: ds0
+    rules:
+      sharding:
+      key-generators:
+        snowflake:
+        type: SNOWFLAKE
+      sharding-algorithms:
+        ota-strategy-inline:
+        props:
+          strategy: standard
+          # 自定义标准分配算法
+          algorithmClassName: com.test.business.algorithm.OTAStrategyShardingAlgorithm
+        type: CLASS_BASED
+      tables:
+        #逻辑表  下面是节点表,分表后还有数据在原来的表，所有查询节点需要加上原来的表
+        ota_strategy_info:
+        actual-data-nodes: ds0.dkm_key_log_202$->{201..212}
+        key-generate-strategy:
+          column: id
+          key-generator-name: snowflake
+        # 配置分表策略
+        table-strategy:
+          #分片策略 以创建时候分表，实现类计算
+          standard:
+          sharding-column: create_time
+          #对应下面的分表策略类
+          sharding-algorithm-name: ota-strategy-inline
+      # OTA升级策略表水平分表 ================================================================

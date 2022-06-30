@@ -3,11 +3,14 @@ package com.vecentek.back.controller;
 import com.vecentek.back.service.impl.DkmAftermarketReplacementServiceImpl;
 import com.vecentek.common.response.PageResp;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 售后换件 Controller
@@ -44,5 +47,14 @@ public class DkmAftermarketReplacementController {
     @GetMapping(value = "/selectVehicleByVin")
     public PageResp selectVehicleByVin(@RequestParam String vin) {
         return dkmAftermarketReplacementService.selectVehicleByVin(vin);
+    }
+
+    @PostMapping(value = "/downloadAftermarketReplacement")
+    public void downloadAftermarketReplacement(String vin,
+                                         String startTime,
+                                         String endTime,
+                                         Boolean isXls,
+                                         HttpServletResponse response) throws UnsupportedEncodingException {
+        this.dkmAftermarketReplacementService.downloadAftermarketReplacement(vin, startTime, endTime,isXls, response);
     }
 }

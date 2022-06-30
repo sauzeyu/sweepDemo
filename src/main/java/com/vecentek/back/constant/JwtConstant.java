@@ -1,4 +1,4 @@
-package com.vecentek.auth.constant;
+package com.vecentek.back.constant;
 
 import java.util.concurrent.TimeUnit;
 

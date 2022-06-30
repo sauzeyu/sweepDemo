@@ -13,13 +13,18 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.JwtConstant;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
+import com.vecentek.back.constant.TokenConstant;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
+import com.vecentek.back.util.TokenUtils;
 import com.vecentek.common.response.PageResp;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -29,6 +34,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,25 +88,9 @@ public class DkmKeyLogServiceImpl {
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
-    public static void main(String[] args) {
-
-
-
-        // 1.3形成文件名
-        String excelName ="2023-6-1--2022-7-12钥匙使用记录";
-
-        // 1.4对xls.xlsx区分 确定文件后缀
-        String suffix =  ExcelConstant.EXCEL_SUFFIX_XLS ;
-        excelName = excelName + suffix;
-        // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        BigExcelWriter writer = ExcelUtil.getBigWriter("d:\\"+ excelName);
-        writer.write(new ArrayList<>());
-        writer.flush();
-        writer.close();
-    }
     @Async
     public void downloadKeyLogExcel(String vin, String userId, String startTime, String endTime,
-                                    String phoneBrand,String phoneModel,String statusCode,Integer flag,Boolean isXlsx) {
+                                    String phoneBrand, String phoneModel, String statusCode, Integer flag, String token) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
         // 异步导出如果没有选条件默认导出当前月份的数据
         if (CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)){
@@ -127,14 +120,10 @@ public class DkmKeyLogServiceImpl {
         String fileName = startFileName + "~" + endFileName;
         // 1.3形成文件名
         String excelName = fileName + "钥匙使用记录";
-        if (isXlsx == null) {
-            isXlsx = false;
-        }
-        // 1.4对xls.xlsx区分 确定文件后缀
-        String suffix = isXlsx ? ExcelConstant.EXCEL_SUFFIX_XLS : ExcelConstant.EXCEL_SUFFIX_XLSX;
+
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        String filePath = ("d:/test/" +  excelName + suffix);
+        String filePath = ("d:/test/" +  excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
             FileUtil.del(filePath);
@@ -142,10 +131,16 @@ public class DkmKeyLogServiceImpl {
         BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
 
 
-
-
         // 2向历史导出记录新增一条状态为导出中的数据
-        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, null, null, createTime, null));
+
+        String username = null;
+        if (CharSequenceUtil.isNotBlank(token)) {
+            username  = TokenUtils.parseToken(JwtConstant.JWT_USER_INFO_KEY, token, String.class);
+        }
+
+
+
+        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, username, null, createTime, null));
 
 
         // 3.1所有数据量
@@ -324,8 +319,10 @@ public class DkmKeyLogServiceImpl {
 
         return sdf.format(calendar.getTime())+" 00:00:00";
     }
-    public PageResp checkKeyUseLog() {
-        List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(null);
+    public PageResp checkKeyUseLog(String creator) {
+        LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator!=null,DkmKeyLogHistoryExport::getCreator,creator);
+        List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
     }
 }
