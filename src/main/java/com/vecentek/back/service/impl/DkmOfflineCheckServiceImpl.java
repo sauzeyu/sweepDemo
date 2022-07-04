@@ -23,6 +23,7 @@ import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.*;
 import com.vecentek.back.vo.*;
 import com.vecentek.common.response.PageResp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,7 @@ import java.util.stream.Collectors;
  */
 
 @Service("dkmOfflineCheckService")
+@Slf4j
 public class DkmOfflineCheckServiceImpl {
 
     private static final int MAX_DATA_TOTAL = 50;
@@ -67,11 +69,13 @@ public class DkmOfflineCheckServiceImpl {
 
     private void verifyVehicleBluetoothVO(List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
         if (CollUtil.isEmpty(dkmVehicles)) {
+            log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据不得为空！");
             throw new VecentException(1001, "上传数据不得为空！");
         }
         int startSize = dkmVehicles.size();
 
         if (startSize > MAX_DATA_TOTAL) {
+            log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据量超过最大值，请控制在 50 条以内！");
             throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
         }
 
@@ -79,6 +83,7 @@ public class DkmOfflineCheckServiceImpl {
         dkmVehicles = dkmVehicles.stream().distinct().collect(Collectors.toList());
         // 如果有重复参数,则抛出异常
         if (startSize != dkmVehicles.size()) {
+            log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据包含重复参数，请检查后上传！");
             throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
         }
 
@@ -91,33 +96,42 @@ public class DkmOfflineCheckServiceImpl {
                     vehicle.getPubKey(),
                     vehicle.getDkSecUnitId(),
                     vehicle.getHwDeviceProviderNo())) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
                 throw new VecentException(1001, "必填参数未传递！");
             }
             if (vehicle.getHwDeviceSn().length() != 40) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙设备序列号长度不正确！");
                 throw new VecentException(1001, "蓝牙设备序列号长度不正确！");
             }
             if (vehicle.getSearchNumber().length() != 38) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号长度不正确！");
                 throw new VecentException(1001, "蓝牙检索号长度不正确！");
             }
 
             if (vehicle.getBleMacAddress().length() != 12) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址长度不正确！");
                 throw new VecentException(1001, "蓝牙Mac地址长度不正确！");
             }
             if (vehicle.getPubKey().length() != 130) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙公钥长度不正确！");
                 throw new VecentException(1001, "蓝牙公钥长度不正确！");
             }
             if (HexUtil.decodeHex(vehicle.getHwDeviceSn()) == null) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙设备序列号格式不正确！");
                 throw new VecentException(1001, "蓝牙设备序列号格式不正确！");
             }
             if (HexUtil.decodeHex(vehicle.getSearchNumber()) == null) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号格式不正确！");
                 throw new VecentException(1001, "蓝牙检索号格式不正确！");
             }
 
             if (HexUtil.decodeHex(vehicle.getBleMacAddress()) == null) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址格式不正确！");
                 throw new VecentException(1001, "蓝牙Mac地址格式不正确！");
             }
 
             if (HexUtil.decodeHex(vehicle.getPubKey()) == null) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙公钥格式不正确！");
                 throw new VecentException(1001, "蓝牙公钥格式不正确！");
             }
         }
@@ -212,7 +226,7 @@ public class DkmOfflineCheckServiceImpl {
                         dkmKeyLifecycle.setKeySource(3);
                         dkmKeyLifecycle.setUserId(dkmUser.getId().toString());
                         dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
-                        // 钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台
+                        // 2.6 发送用户消息（换件后） 钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台
                         // “vin“: “ ASDCSDASDADA1“,
                         // “userList”:[18202828282,15982637777,17237378989]
 
@@ -222,6 +236,7 @@ public class DkmOfflineCheckServiceImpl {
 
                         String urlString = "http://localhost:8007/dkserver-icce/dkm/wechat/recv";
                         HttpRequest.post(urlString).form(paramMap).execute().body();
+                        log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台");
                     });
                 }
                 //更新旧蓝牙设备，插入新蓝牙设备，插入售后换件表
@@ -249,6 +264,7 @@ public class DkmOfflineCheckServiceImpl {
                 dkmAftermarketReplacementMapper.insert(dkmAftermarketReplacement);
             });
         }
+        log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传成功");
         return PageResp.success("上传成功");
     }
 
@@ -326,6 +342,7 @@ public class DkmOfflineCheckServiceImpl {
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
         // 入参检查
         if(StrUtil.isBlank(keyLogDetailVO.getStartTime()) || StrUtil.isBlank(keyLogDetailVO.getEndTime())){
+            log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
             return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
         }
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = new QueryWrapper<DkmKeyLog>().lambda()
@@ -347,6 +364,7 @@ public class DkmOfflineCheckServiceImpl {
             keyLogDetailResVO.setErrorReasonName(KeyErrorReasonEnum.matchReason(dkmKeyLog.getErrorReason()));
             res.add(keyLogDetailResVO);
         }
+        log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "查询成功" + res);
         return PageResp.success("查询成功",page.getTotal(),res);
     }
 
@@ -356,6 +374,7 @@ public class DkmOfflineCheckServiceImpl {
                 StrUtil.isBlank(keyLogDataVO.getEndTime()) ||
                 Objects.isNull(keyLogDataVO.getPageIndex()) ||
                 Objects.isNull(keyLogDataVO.getPageSize())){
+            log.info("response：" + "/api/offlineCheck/getKeyData " + "必填参数未传递或传入的参数格式不正确！");
             return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
         }
         Page<DkmKey> page = new Page<>(keyLogDataVO.getPageIndex(), keyLogDataVO.getPageSize());
@@ -378,6 +397,7 @@ public class DkmOfflineCheckServiceImpl {
             keyLogDataResVO.setKeyId(dkmKey.getId());
             res.add(keyLogDataResVO);
         }
+        log.info("response：" + "/api/offlineCheck/getKeyData " + res);
         return PageResp.success("查询成功",page.getTotal(),res);
     }
 }

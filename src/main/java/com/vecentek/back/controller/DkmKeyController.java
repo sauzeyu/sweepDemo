@@ -44,8 +44,8 @@ public class DkmKeyController {
                 selectKeyForPageVO.getValFromStartTime(),
                 selectKeyForPageVO.getValFromEndTime(),
                 selectKeyForPageVO.getValToStartTime(),
-                selectKeyForPageVO.getValToEndTime(),
-                selectKeyForPageVO.getDkState());
+                selectKeyForPageVO.getValToEndTime());
+//                selectKeyForPageVO.getDkState());
     }
 
 

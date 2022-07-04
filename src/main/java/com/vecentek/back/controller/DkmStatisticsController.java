@@ -3,9 +3,11 @@ package com.vecentek.back.controller;
 import com.vecentek.back.service.impl.DkmStatisticsServiceImpl;
 import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author ：EdgeYu
@@ -15,6 +17,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping(value = "/dkmStatistics")
+@Slf4j
 public class DkmStatisticsController {
 
     @Resource
@@ -27,6 +30,7 @@ public class DkmStatisticsController {
      */
     @RequestMapping(value = "/selectTotal", method = RequestMethod.POST)
     public PageResp selectUserTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
+        log.info("request：" + "/dkmStatistics/selectTotal " + timeQuantumVO.toString());
         return echartsServiceImpl.selectTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
 
@@ -37,6 +41,7 @@ public class DkmStatisticsController {
      */
     @RequestMapping(value = "/api/selectTotal", method = RequestMethod.POST)
     public PageResp tspSelectUserTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
+        log.info("request：" + "/api/dkmStatistics/selectTotal " + timeQuantumVO.toString());
         return echartsServiceImpl.selectTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
 
@@ -53,6 +58,16 @@ public class DkmStatisticsController {
     @RequestMapping(value = "/selectKeyErrorLogByTime", method = RequestMethod.GET)
     public PageResp selectKeyErrorLogByTime(@RequestParam String startTime, @RequestParam String endTime) {
         return echartsServiceImpl.selectKeyErrorLogByTime(startTime, endTime);
+    }
+
+    /**
+     * 根据各手机品牌查询对应错误日志占比
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/selectKeyErrorLogByAllPhoneBrand", method = RequestMethod.GET)
+    public PageResp selectKeyErrorLogByAllPhoneBrand() {
+        return echartsServiceImpl.selectKeyErrorLogByAllPhoneBrand();
     }
 
     /**
@@ -73,6 +88,7 @@ public class DkmStatisticsController {
      */
     @RequestMapping(value = "/vehicleStatistics", method = RequestMethod.GET)
     public PageResp vehicleStatistics() {
+        log.info("/dkmStatistics/vehicleStatistics");
         return echartsServiceImpl.vehicleStatistics();
     }
 
@@ -113,6 +129,7 @@ public class DkmStatisticsController {
      */
     @RequestMapping(value = "/selectErrorStatusTotal", method = RequestMethod.POST)
     public PageResp selectErrorStatusTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
+        log.info("request：" + "/dkmStatistics/selectErrorStatusTotal " + timeQuantumVO.toString());
         return echartsServiceImpl.selectErrorStatusTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
 

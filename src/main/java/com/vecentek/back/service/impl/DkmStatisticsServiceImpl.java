@@ -17,6 +17,7 @@ import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.common.response.PageResp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,6 +35,7 @@ import java.util.Map;
  * @since 2022-02-10 15:44
  */
 @Service
+@Slf4j
 public class DkmStatisticsServiceImpl {
 
     @Resource
@@ -63,6 +65,7 @@ public class DkmStatisticsServiceImpl {
         statisticsDTO.setVehicleCount(totalVehicles);
         statisticsDTO.setKeyCount(totalKeys);
         statisticsDTO.setKeyUseCount(totalKeyUse);
+        log.info("response：" + "/selectTotal" + "查询成功" + statisticsDTO);
         return PageResp.success("查询成功", statisticsDTO);
     }
 
@@ -141,6 +144,7 @@ public class DkmStatisticsServiceImpl {
 
     public PageResp selectErrorStatusTotal(String startTime, String endTime) {
         if(StrUtil.isBlank(startTime) || StrUtil.isBlank(endTime)){
+            log.info("response：" + "/dkmStatistics/selectErrorStatusTotal " + "必填参数未传递或传入的参数格式不正确！");
             return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
         }
         HashMap<String, Object> phoneData = new HashMap<>();
@@ -156,6 +160,7 @@ public class DkmStatisticsServiceImpl {
         vehicleData = count(vehicleList);
 
         JSONObject res = new JSONObject().set("phoneData", phoneData).set("statusCodeData", statusCodeData).set("vehicleData", vehicleData);
+        log.info("response：" + "/dkmStatistics/selectErrorStatusTotal " + "查询成功 " + res);
         return PageResp.success("查询成功",res);
     }
 
@@ -195,5 +200,10 @@ public class DkmStatisticsServiceImpl {
         List<MonthCountDTO> errorMonthList = dkmVehicleMapper.countErrorByMonth();
         JSONObject res = new JSONObject().set("countErrorToday", countErrorToday).set("errorMonthList", errorMonthList);
         return PageResp.success("查询成功",res);
+    }
+
+    public PageResp selectKeyErrorLogByAllPhoneBrand() {
+        List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand();
+        return PageResp.success("查询成功",list);
     }
 }
