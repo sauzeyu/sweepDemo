@@ -199,7 +199,7 @@ public class DkmKeyController {
                 failStartTime,
                 failEndTime,
                 keyType,
-                keyState);;
+                keyState);
     }
 
 }

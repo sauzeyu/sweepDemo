@@ -376,12 +376,34 @@ public class DkmKeyServiceImpl {
 
 
         // 3.1所有数据量
+        // 是否需要period条件
+        boolean periodBool = false;
+        Long periodMaxFormat = 0L;
+        Long periodMinFormat = 0L;
+        if (cycleEndTime != null && cycleStartTime != null && cycleUnit != null){
+            // 根据单元转换时间周期
+            if (Objects.equals(cycleUnit,"minute")){ // 分钟
+                periodMaxFormat = cycleEndTime;
+                periodMinFormat = cycleStartTime;
+            }else if (Objects.equals(cycleUnit,"hour")){
+                periodMaxFormat = cycleEndTime * 60;
+                periodMinFormat = cycleStartTime * 60;
+            }else if (Objects.equals(cycleUnit,"day")){
+                periodMaxFormat = cycleEndTime * 60 * 24;
+                periodMinFormat = cycleStartTime * 60 * 24;
+            }
+            periodBool = true;
+        }
+
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery()
                 .like(CharSequenceUtil.isNotBlank(id), DkmKey::getUserId, id)
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKey::getVin, vin)
 
-                .ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
-                .le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
+                .ge(periodBool, DkmKey::getPeriod, periodMinFormat)
+                .le(periodBool, DkmKey::getPeriod, periodMaxFormat)
+
+                //.ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
+                //.le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
                 //TODO 周期单位
                 //.eq(dkmKeyVO.getCycleUnit()!=null,DkmKey::getPeriodUnit,dkmKeyVO.getCycleUnit())
 
@@ -518,15 +540,38 @@ public class DkmKeyServiceImpl {
                                        Integer keyState,
                                           Integer start,
                                           Integer end) {
+        boolean periodBool = false;
+        Long periodMaxFormat = 0L;
+        Long periodMinFormat = 0L;
+        if (cycleEndTime != null && cycleStartTime != null && cycleUnit != null){
+            // 根据单元转换时间周期
+            if (Objects.equals(cycleUnit,"minute")){ // 分钟
+                periodMaxFormat = cycleEndTime;
+                periodMinFormat = cycleStartTime;
+            }else if (Objects.equals(cycleUnit,"hour")){
+                periodMaxFormat = cycleEndTime * 60;
+                periodMinFormat = cycleStartTime * 60;
+            }else if (Objects.equals(cycleUnit,"day")){
+                periodMaxFormat = cycleEndTime * 60 * 24;
+                periodMinFormat = cycleStartTime * 60 * 24;
+            }
+            periodBool = true;
+        }
 
         // 4.1.1根据条件查出库中对应记录数据
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery()
                 .like(CharSequenceUtil.isNotBlank(id), DkmKey::getUserId, id)
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKey::getVin, vin)
 
-                .ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
-                .le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
+                .ge(periodBool, DkmKey::getPeriod, periodMinFormat)
+                .le(periodBool, DkmKey::getPeriod, periodMaxFormat)
+
+                //.ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
+                //.le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
                 //TODO 周期单位
+
+
+
                 //.eq(dkmKeyVO.getCycleUnit()!=null,DkmKey::getPeriodUnit,dkmKeyVO.getCycleUnit())
 
                 .ge(applyStartTime!=null,DkmKey::getApplyTime , applyStartTime)
