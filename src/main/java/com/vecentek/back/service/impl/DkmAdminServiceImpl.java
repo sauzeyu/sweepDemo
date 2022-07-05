@@ -12,6 +12,7 @@ import com.vecentek.back.mapper.DkmAdminMapper;
 import com.vecentek.back.mapper.DkmAdminRoleMapper;
 import com.vecentek.back.mapper.DkmRoleMapper;
 import com.vecentek.back.vo.AdminVO;
+import com.vecentek.back.vo.InsertAdminVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -114,4 +115,18 @@ public class DkmAdminServiceImpl {
     }
 
 
+    public PageResp insert(InsertAdminVO insertAdminVO) {
+        DkmAdmin admin = new DkmAdmin();
+        BeanUtils.copyProperties(insertAdminVO, admin);
+        dkmAdminMapper.insert(admin);
+        // 新建用户角色中间表
+        Integer[] role = insertAdminVO.getRole();
+        for (Integer integer : role) {
+            DkmAdminRole dkmAdminRole = new DkmAdminRole();
+            dkmAdminRole.setAdminId(admin.getId());
+            dkmAdminRole.setRoleId(integer);
+            dkmAdminRoleMapper.insert(dkmAdminRole);
+        }
+        return PageResp.success("新增成功");
+    }
 }

@@ -28,25 +28,42 @@ public class DkmKeyController {
     private DkmKeyServiceImpl dkmKeyServiceImpl;
 
 
-
+    // 列表分页查询
     @GetMapping(value = "/selectForPage")
-    public PageResp selectForPage(@RequestBody SelectKeyForPageVO selectKeyForPageVO) {
-        return this.dkmKeyServiceImpl.selectForPage(selectKeyForPageVO.getPageIndex(),
-                selectKeyForPageVO.getPageSize(),
-                selectKeyForPageVO.getVin(),
-                selectKeyForPageVO.getUserId(),
-                selectKeyForPageVO.getKeyType(),
-                selectKeyForPageVO.getApplyStartTime(),
-                selectKeyForPageVO.getApplyEndTime(),
-                selectKeyForPageVO.getPeriodMax(),
-                selectKeyForPageVO.getPeriodMin(),
-                selectKeyForPageVO.getPeriodUnit(),
-                selectKeyForPageVO.getValFromStartTime(),
-                selectKeyForPageVO.getValFromEndTime(),
-                selectKeyForPageVO.getValToStartTime(),
-                selectKeyForPageVO.getValToEndTime());
-//                selectKeyForPageVO.getDkState());
+    public PageResp selectForPage(@RequestParam Integer pageIndex,
+                                  @RequestParam Integer pageSize,
+                                  @RequestParam(required = false) String vin,
+                                  @RequestParam(required = false) String userId,
+                                  @RequestParam(required = false) Integer keyType,
+                                  @RequestParam(required = false) String applyStartTime,
+                                  @RequestParam(required = false) String applyEndTime,
+                                  @RequestParam(required = false) Integer periodMax,
+                                  @RequestParam(required = false) Integer periodMin,
+                                  @RequestParam(required = false) String periodUnit,
+                                  @RequestParam(required = false) String valFromStartTime,
+                                  @RequestParam(required = false) String valFromEndTime,
+                                  @RequestParam(required = false) String ValToStartTime,
+                                  @RequestParam(required = false) String valToEndTime,
+                                  @RequestParam(required = false) Integer[] dkStates
+                                  ) {
+        return this.dkmKeyServiceImpl.selectForPage(pageIndex,
+                pageSize,
+                vin,
+                userId,
+                keyType,
+                applyStartTime,
+                applyEndTime,
+                periodMax,
+                periodMin,
+                periodUnit,
+                valFromStartTime,
+                valFromEndTime,
+                ValToStartTime,
+                valToEndTime,
+                dkStates);
     }
+
+
 
 
     /**
@@ -83,7 +100,7 @@ public class DkmKeyController {
      * @return
      */
     @PostMapping(value = "/updateStateById")
-    public PageResp updateStateById( @RequestParam String keyId, @RequestParam Integer dkState,@RequestParam String userId) {
+        public PageResp updateStateById( @RequestParam String keyId, @RequestParam Integer dkState,@RequestParam String userId) {
         return this.dkmKeyServiceImpl.updateStateById(keyId, dkState,userId);
     }
 

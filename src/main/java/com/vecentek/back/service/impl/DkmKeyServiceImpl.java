@@ -98,8 +98,8 @@ public class DkmKeyServiceImpl {
                                   String valFromStartTime,
                                   String valFromEndTime,
                                   String valToStartTime,
-                                  String valToEndTime
-//                                  Integer[] dkStates
+                                  String valToEndTime,
+                                  Integer[] dkStates
     ) {
         if (keyType == null) {
             keyType = 3;
@@ -125,14 +125,14 @@ public class DkmKeyServiceImpl {
         LambdaQueryWrapper<DkmKey> dkmKeyLambdaQueryWrapper = Wrappers.<DkmKey>lambdaQuery();
         Page<DkmKey> page = new Page<>(pageIndex, pageSize);
         // 是否需要dkStates条件
-//        if (dkStates != null && dkStates.length > 0){
-//            dkmKeyLambdaQueryWrapper.eq(DkmKey::getDkState, dkStates[0]);
-//            if (dkStates.length > 1) {
-//                for (int i = 1; i < dkStates.length; i++) {
-//                    dkmKeyLambdaQueryWrapper.or().eq(DkmKey::getDkState,dkStates[i]);
-//                }
-//        }
-//        }
+        if (dkStates != null && dkStates.length > 0){
+            dkmKeyLambdaQueryWrapper.eq(DkmKey::getDkState, dkStates[0]);
+            if (dkStates.length > 1) {
+                for (int i = 1; i < dkStates.length; i++) {
+                    dkmKeyLambdaQueryWrapper.or().eq(DkmKey::getDkState,dkStates[i]);
+                }
+        }
+        }
         page = dkmKeyMapper.selectPage(page, dkmKeyLambdaQueryWrapper
                 .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
                 .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)

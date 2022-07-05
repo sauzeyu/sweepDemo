@@ -2,6 +2,7 @@ package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmAdminServiceImpl;
 import com.vecentek.back.vo.AdminVO;
+import com.vecentek.back.vo.InsertAdminVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,13 +85,18 @@ public class DkmAdminController {
     }
 
     /**
-     * 查询所有角色
-     *
-     * @return 角色列表
+     * 删除用户
+     * @param id
+     * @return
      */
     @PostMapping(value = "/deleteById")
     public PageResp deleteById(@RequestParam("id") int id) {
-
         return this.dkmAdminService.deleteById(id);
+    }
+
+
+    @PostMapping(value = "/insert")
+    public PageResp insert(@RequestBody InsertAdminVO insertAdminVO) {
+        return this.dkmAdminService.insert(insertAdminVO);
     }
 }
