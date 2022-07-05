@@ -3,11 +3,9 @@ package com.vecentek.back.controller;
 import com.vecentek.back.service.impl.DkmStatisticsServiceImpl;
 import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * @author ：EdgeYu
@@ -17,7 +15,6 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/dkmStatistics")
-@Slf4j
 public class DkmStatisticsController {
 
     @Resource
@@ -28,34 +25,32 @@ public class DkmStatisticsController {
      * @param timeQuantumVO
      * @return
      */
-    @RequestMapping(value = "/selectTotal", method = RequestMethod.POST)
+    @PostMapping( "/selectTotal")
     public PageResp selectUserTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
-        log.info("request：" + "/dkmStatistics/selectTotal " + timeQuantumVO.toString());
         return echartsServiceImpl.selectTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
 
     /**
-     * 面向Back服務前端
-     * @param timeQuantumVO
-     * @return
+     * @return {@link PageResp}
+     * @author EdgeYu
+     * @date 2022-06-28 15:56
      */
-    @RequestMapping(value = "/api/selectTotal", method = RequestMethod.POST)
-    public PageResp tspSelectUserTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
-        log.info("request：" + "/api/dkmStatistics/selectTotal " + timeQuantumVO.toString());
-        return echartsServiceImpl.selectTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
+    @GetMapping("/selectVehicleAndKeyAndKeyLogTotal")
+    public PageResp selectVehicleAndKeyAndKeyLogTotal() {
+        return echartsServiceImpl.selectVehicleAndKeyAndKeyLogTotal();
     }
 
-    @RequestMapping(value = "/selectKeyLogByMonth", method = RequestMethod.GET)
+    @GetMapping("/selectKeyLogByMonth")
     public PageResp selectKeyLogByMonth() {
         return echartsServiceImpl.selectKeyLogByMonth();
     }
 
-    @RequestMapping(value = "/selectKeyUseLogByTime", method = RequestMethod.GET)
+    @GetMapping( "/selectKeyUseLogByTime")
     public PageResp selectKeyUseLogByTime(@RequestParam String startTime, @RequestParam String endTime) {
         return echartsServiceImpl.selectKeyUseLogByTime(startTime, endTime);
     }
 
-    @RequestMapping(value = "/selectKeyErrorLogByTime", method = RequestMethod.GET)
+    @GetMapping( "/selectKeyErrorLogByTime")
     public PageResp selectKeyErrorLogByTime(@RequestParam String startTime, @RequestParam String endTime) {
         return echartsServiceImpl.selectKeyErrorLogByTime(startTime, endTime);
     }
@@ -75,7 +70,7 @@ public class DkmStatisticsController {
      * @param phoneBrand
      * @return
      */
-    @RequestMapping(value = "/selectKeyErrorLogByPhoneBrand", method = RequestMethod.GET)
+    @GetMapping("/selectKeyErrorLogByPhoneBrand")
     public PageResp selectKeyErrorLogByPhoneBrand(@RequestParam String phoneBrand) {
         return echartsServiceImpl.selectKeyErrorLogByPhoneBrand(phoneBrand);
     }
@@ -86,18 +81,18 @@ public class DkmStatisticsController {
      * 每日新增车辆数
      * @return
      */
-    @RequestMapping(value = "/vehicleStatistics", method = RequestMethod.GET)
+    @GetMapping(value = "/vehicleStatistics")
     public PageResp vehicleStatistics() {
-        log.info("/dkmStatistics/vehicleStatistics");
         return echartsServiceImpl.vehicleStatistics();
     }
 
     /**
      * 钥匙总量统计框
      * 子钥匙，车主钥匙，车主钥匙占比
+     *
      * @return
      */
-    @RequestMapping(value = "/keyStatistics", method = RequestMethod.GET)
+    @GetMapping(value = "/keyStatistics")
     public PageResp keyStatistics() {
         return echartsServiceImpl.keyStatistics();
     }
@@ -107,7 +102,7 @@ public class DkmStatisticsController {
      * 子钥匙，车主钥匙，车主钥匙占比
      * @return
      */
-    @RequestMapping(value = "/keyUseTimeStatistics", method = RequestMethod.GET)
+    @GetMapping(value = "/keyUseTimeStatistics")
     public PageResp keyUseTimeStatistics() {
         return echartsServiceImpl.keyUseTimeStatistics();
     }
@@ -117,7 +112,7 @@ public class DkmStatisticsController {
      * 子钥匙，车主钥匙，车主钥匙占比
      * @return
      */
-    @RequestMapping(value = "/keyErrorTimeStatistics", method = RequestMethod.GET)
+    @GetMapping(value = "/keyErrorTimeStatistics")
     public PageResp keyErrorTimeStatistics() {
         return echartsServiceImpl.keyErrorTimeStatistics();
     }
@@ -127,9 +122,8 @@ public class DkmStatisticsController {
      * 不同手机型号的故障率,不同车型的故障率,不同故障码的故障率
      * @return
      */
-    @RequestMapping(value = "/selectErrorStatusTotal", method = RequestMethod.POST)
+    @GetMapping(value = "/selectErrorStatusTotal")
     public PageResp selectErrorStatusTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
-        log.info("request：" + "/dkmStatistics/selectErrorStatusTotal " + timeQuantumVO.toString());
         return echartsServiceImpl.selectErrorStatusTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
 

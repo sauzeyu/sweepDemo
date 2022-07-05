@@ -85,21 +85,21 @@ public class DkmKeyServiceImpl {
         return PageResp.success("查询成功", page.getTotal(), keyList);
     }
 
-    public PageResp selectForPage(Integer pageIndex,
-                                  Integer pageSize,
-                                  String vin,
-                                  String userId,
-                                  Integer keyType,
-                                  String applyStartTime,
-                                  String applyEndTime,
-                                  Integer periodMax,
-                                  Integer periodMin,
-                                  String periodUnit,
-                                  String valFromStartTime,
-                                  String valFromEndTime,
-                                  String valToStartTime,
-                                  String valToEndTime,
-                                  Integer[] dkStates
+        public PageResp selectForPage(Integer pageIndex,
+                Integer pageSize,
+                String vin,
+                String userId,
+                Integer keyType,
+                String applyStartTime,
+                String applyEndTime,
+                Integer periodMax,
+                Integer periodMin,
+                String periodUnit,
+                String valFromStartTime,
+                String valFromEndTime,
+                String valToStartTime,
+                String valToEndTime,
+                Integer[] dkStates
     ) {
         if (keyType == null) {
             keyType = 3;
@@ -129,7 +129,7 @@ public class DkmKeyServiceImpl {
             dkmKeyLambdaQueryWrapper.eq(DkmKey::getDkState, dkStates[0]);
             if (dkStates.length > 1) {
                 for (int i = 1; i < dkStates.length; i++) {
-                    dkmKeyLambdaQueryWrapper.or().eq(DkmKey::getDkState,dkStates[i]);
+                    dkmKeyLambdaQueryWrapper.or(). eq(DkmKey::getDkState,dkStates[i]);
                 }
         }
         }
