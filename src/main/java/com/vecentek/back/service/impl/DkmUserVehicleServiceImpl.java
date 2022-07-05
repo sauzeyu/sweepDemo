@@ -16,6 +16,7 @@ import com.vecentek.back.mapper.DkmUserVehicleMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.back.vo.*;
 import com.vecentek.common.response.PageResp;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ import java.util.Objects;
  */
 
 @Service("dkmUserVehicleService")
+@Slf4j
 public class DkmUserVehicleServiceImpl {
 
     private static final int MAX_DATA_TOTAL = 50;
@@ -51,6 +53,7 @@ public class DkmUserVehicleServiceImpl {
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin(), userVehicle.getUsername())) {
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户姓名或用户手机号或车辆vin号未传递！");
             return PageResp.fail("上传失败，用户姓名或用户手机号或车辆vin号未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
@@ -65,6 +68,7 @@ public class DkmUserVehicleServiceImpl {
         LambdaQueryWrapper<DkmVehicle> vehicleWrapper = Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, userVehicle.getVin());
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(vehicleWrapper);
         if (dkmVehicle == null) {
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
             return PageResp.fail(2106, "系统不存在该车辆信息！");
         }
         DkmUserVehicle dkmUserVehicle = new DkmUserVehicle();
@@ -81,8 +85,10 @@ public class DkmUserVehicleServiceImpl {
         int insert = dkmUserVehicleMapper.insert(dkmUserVehicle);
 
         if (insert == 1) {
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
             return PageResp.success("上传成功");
         }
+        log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");
         return PageResp.fail("系统繁忙，请稍后再试！");
     }
 
@@ -104,6 +110,7 @@ public class DkmUserVehicleServiceImpl {
         Date logoutTime = logoutUserVehicle.getLogoutTime();
         if (StrUtil.hasBlank(userId, vin)) {
             // 用户与车辆信息不匹配
+            log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
             return PageResp.fail(1001, "必填参数未传递!");
         }
         if (logoutTime == null) {
@@ -116,12 +123,14 @@ public class DkmUserVehicleServiceImpl {
                 .eq(DkmUserVehicle::getBindStatus, 1));
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
+            log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "用户与车辆信息不匹配!");
             return PageResp.fail(1001, "用户与车辆信息不匹配!");
         }
         // 根据vin查询车辆表
         DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, vin));
         if (vehicle == null) {
             // 用户与车辆信息不匹配
+            log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "系统不存在该车辆信息!");
             return PageResp.fail(2106, "系统不存在该车辆信息!");
         }
         // 解绑 首先改变bind_status 的状态为2 然后吊销当前车辆的所有钥匙 返回钥匙用户id
@@ -162,20 +171,23 @@ public class DkmUserVehicleServiceImpl {
             // 返回钥匙用户id
             userList.add(key.getUserId());
         }
+        log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "注销成功" + userList);
         return PageResp.success("注销成功", userList);
     }
 
     public PageResp getBluetoothVin(GetBluetoothVinVO getBluetoothVinVO) {
         String vin = getBluetoothVinVO.getVin();
         if (StrUtil.hasBlank(vin)) {
+            log.info("response：" + "/api/userVehicle/getBluetoothVin " + "必填参数未传递!");
             return PageResp.fail(1001, "必填参数未传递!");
         }
         // 根据vin查询车辆表 表查得到就是有蓝牙 查不到说明没有蓝牙
         DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, vin));
         if (vehicle == null) {
-            // 用户与车辆信息不匹配
+            log.info("response：" + "/api/userVehicle/getBluetoothVin " + "不具有蓝牙钥匙功能!");
             return PageResp.success("不具有蓝牙钥匙功能!", false);
         }
+        log.info("response：" + "/api/userVehicle/getBluetoothVin " + "具有蓝牙钥匙功能!");
         return PageResp.success("具有蓝牙钥匙功能!", true);
     }
 
@@ -183,6 +195,7 @@ public class DkmUserVehicleServiceImpl {
     public PageResp revokeKey(RevokeKeyVO revokeKeyVO) {
         String userId = revokeKeyVO.getUserId();
         if (StrUtil.hasBlank(userId)) {
+            log.info("response：" + "/api/userVehicle/revokeKey " + "必填参数未传递!");
             return PageResp.fail(1001, "必填参数未传递!");
         }
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙
@@ -240,6 +253,7 @@ public class DkmUserVehicleServiceImpl {
             // 加入list
             list.add(key.getUserId() + "-" + key.getVin());
         }
+        log.info("response：" + "/api/userVehicle/revokeKey " + "吊销钥匙成功!" + list);
         return PageResp.success("吊销钥匙成功!", list);
     }
 }

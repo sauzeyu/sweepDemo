@@ -39,8 +39,10 @@ public class DkmKeyLogController {
                                   String phoneBrand,
                                   String phoneModel,
                                   String statusCode,
-                                  String errorReason) {
-        return dkmKeyUseLogService.selectForPage(pageIndex, pageSize, vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, errorReason);
+                                  Integer flag,
+                                  String vehicle_brand,
+                                  String vehicle_model) {
+        return dkmKeyUseLogService.selectForPage(pageIndex, pageSize, vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag,vehicle_brand,vehicle_model);
     }
 
     /**

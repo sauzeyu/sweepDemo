@@ -9,6 +9,7 @@ import com.vecentek.back.vo.KeyLogDataVO;
 import com.vecentek.back.vo.KeyLogDetailVO;
 import com.vecentek.back.vo.VehicleBluetoothVO;
 import com.vecentek.common.response.PageResp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -24,6 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/offlineCheck")
+@Slf4j
 public class DkmOfflineCheckController {
 
     @Resource
@@ -36,6 +38,7 @@ public class DkmOfflineCheckController {
 
     @RequestMapping(value = "/insertOrUpdateVehicleBatch", method = RequestMethod.POST)
     public PageResp insertOrUpdateVehicleBatch(@RequestBody List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
+        log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());
         return dkmOfflineCheckServiceImpl.insertOrUpdateVehicleBatch(dkmVehicles);
     }
 
@@ -45,7 +48,8 @@ public class DkmOfflineCheckController {
      * @return
      */
     @RequestMapping(value = "/getKeyLogDetail", method = RequestMethod.POST)
-    public PageResp getKeyLogDetail(@RequestBody List<KeyLogDetailVO> keyLogDetailVO) {
+    public PageResp getKeyLogDetail(@RequestBody KeyLogDetailVO keyLogDetailVO) {
+        log.info("request：" + "/api/offlineCheck/getKeyLogDetail " + keyLogDetailVO.toString());
         return dkmOfflineCheckServiceImpl.getKeyLogDetail(keyLogDetailVO);
     }
 
@@ -56,6 +60,7 @@ public class DkmOfflineCheckController {
      */
     @RequestMapping(value = "/getKeyData", method = RequestMethod.POST)
     public PageResp getKeyData(@RequestBody KeyLogDataVO keyLogDataVO) {
+        log.info("request：" + "/api/offlineCheck/getKeyData " + keyLogDataVO.toString());
         return dkmOfflineCheckServiceImpl.getKeyData(keyLogDataVO);
     }
 }

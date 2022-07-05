@@ -66,13 +66,37 @@ public class DkmStatisticsServiceImpl {
         return PageResp.success("查询成功", statisticsDTO);
     }
 
+    public PageResp selectVehicleAndKeyAndKeyLogTotal() {
+        int totalVehicles = dkmVehicleMapper.selectCount(null);
+        int totalKeys = dkmKeyMapper.selectCount(null);
+        int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
+                .eq(DkmKeyLog::getFlag, 0));
+        int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
+                .eq(DkmKeyLog::getFlag, 1));
+        StatisticsDTO statisticsDTO = new StatisticsDTO();
+        statisticsDTO.setKeyErrorCount(totalKeyError);
+        statisticsDTO.setVehicleCount(totalVehicles);
+        statisticsDTO.setKeyCount(totalKeys);
+        statisticsDTO.setKeyUseCount(totalKeyUse);
+        return PageResp.success("查询成功", statisticsDTO);
+    }
+
 
     public PageResp selectKeyLogByMonth() {
+        List<String> monthList = MonthCountDTO.generateMonthList();
         List<MonthCountDTO> useLogCount = dkmKeyLogMapper.selectUseLogCountByMonth();
+        useLogCount = MonthCountDTO.checkMonthCount(useLogCount, monthList);
+
+        List<Integer> useLogCountList = MonthCountDTO.countToList(useLogCount);
+
         List<MonthCountDTO> errorLogCount = dkmKeyLogMapper.selectErrorLogCountByMonth();
+        errorLogCount = MonthCountDTO.checkMonthCount(errorLogCount, monthList);
+        List<Integer> errorLogCountList = MonthCountDTO.countToList(errorLogCount);
+
         JSONObject total = new JSONObject()
-                .set("useLogCount", useLogCount)
-                .set("errorLogCount", errorLogCount);
+                .set("monthList", monthList)
+                .set("useLogCount", useLogCountList)
+                .set("errorLogCount", errorLogCountList);
         return PageResp.success("查询成功", total);
     }
 
@@ -105,14 +129,16 @@ public class DkmStatisticsServiceImpl {
      * @return
      */
     public PageResp vehicleStatistics() {
-        List<MonthCountDTO> vehicleMonthList = new ArrayList<>();
-        int newToday = 0;
+        List<MonthCountDTO> vehicleMonthList ;
+
+        int newToday;
         // 每个月的车辆总数
-        vehicleMonthList = dkmVehicleMapper.selectCountByMonth();
-        // 每日新增车辆数
+        vehicleMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.selectCountByMonth());
+        List<Integer> countList = MonthCountDTO.countToList(vehicleMonthList);
+
         newToday = dkmVehicleMapper.selectNewToday();
         JSONObject res = new JSONObject().set("vehicleMonthList", vehicleMonthList).set("newToday", newToday);
-        return PageResp.success("查询成功",res);
+        return PageResp.success("查询成功", res);
     }
 
     /**
@@ -122,41 +148,40 @@ public class DkmStatisticsServiceImpl {
      */
     public PageResp keyStatistics() {
         // 车主钥匙
-        int masterCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().eq(DkmKey::getParentId,"0"));
+        int masterCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().eq(DkmKey::getParentId, "0"));
         // 子钥匙
-        int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().ne(DkmKey::getParentId,"0"));
+        int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().ne(DkmKey::getParentId, "0"));
         // 车主钥匙占比
-        int num = masterCount;
-        int allNum = masterCount + childCount;
+
         // 创建一个数值格式化对象
         NumberFormat numberFormat = NumberFormat.getInstance();
         // 设置精确到小数点后2位
         numberFormat.setMaximumFractionDigits(2);
-        String result = numberFormat.format((float)num/(float)allNum*100) + "%";
+        String result = numberFormat.format((float) masterCount / (float) (masterCount + childCount) * 100) + "%";
 
 
         JSONObject res = new JSONObject().set("masterCount", masterCount).set("childCount", childCount).set("proportion", result);
-        return PageResp.success("查询成功",res);
+        return PageResp.success("查询成功", res);
     }
 
     public PageResp selectErrorStatusTotal(String startTime, String endTime) {
-        if(StrUtil.isBlank(startTime) || StrUtil.isBlank(endTime)){
-            return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
+        if (StrUtil.isBlank(startTime) || StrUtil.isBlank(endTime)) {
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         HashMap<String, Object> phoneData = new HashMap<>();
         HashMap<String, Object> statusCodeData = new HashMap<>();
         HashMap<String, Object> vehicleData = new HashMap<>();
         // 手机品牌和操作码
-        List<CountDTO> phoneList = dkmKeyLogMapper.selectPhoneErrorCountByTime(startTime,endTime);
-        List<CountDTO> statusList = dkmKeyLogMapper.selectStatusErrorCountByTime(startTime,endTime);
+        List<CountDTO> phoneList = dkmKeyLogMapper.selectPhoneErrorCountByTime(startTime, endTime);
+        List<CountDTO> statusList = dkmKeyLogMapper.selectStatusErrorCountByTime(startTime, endTime);
         phoneData = count(phoneList);
         statusCodeData = count(statusList);
         // 车型 先查vin号再查车型
-        List<CountDTO> vehicleList = dkmKeyLogMapper.selectVehicleErrorCountByTime(startTime,endTime);
+        List<CountDTO> vehicleList = dkmKeyLogMapper.selectVehicleErrorCountByTime(startTime, endTime);
         vehicleData = count(vehicleList);
 
         JSONObject res = new JSONObject().set("phoneData", phoneData).set("statusCodeData", statusCodeData).set("vehicleData", vehicleData);
-        return PageResp.success("查询成功",res);
+        return PageResp.success("查询成功", res);
     }
 
     private HashMap<String, Object> count(List<CountDTO> list){
@@ -172,8 +197,8 @@ public class DkmStatisticsServiceImpl {
                 NumberFormat numberFormat = NumberFormat.getInstance();
                 // 设置精确到小数点后2位
                 numberFormat.setMaximumFractionDigits(0);
-                String result = numberFormat.format((float)num/(float)allNum*100) + "%";
-                map.put(countDTO.getName(),result);
+                String result = numberFormat.format((float) num / (float) allNum * 100) + "%";
+                map.put(countDTO.getName(), result);
             }
         }
         return map;
@@ -183,17 +208,24 @@ public class DkmStatisticsServiceImpl {
         // 今日使用次数
         int countUseToday = dkmKeyLogMapper.countUseToday();
         // 每个月的使用数
-        List<MonthCountDTO> useMonthList = dkmVehicleMapper.countUseByMonth();
-        JSONObject res = new JSONObject().set("countUseToday", countUseToday).set("useMonthList", useMonthList);
-        return PageResp.success("查询成功",res);
+        List<MonthCountDTO>   useMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countUseByMonth());
+        List<Integer> countList = MonthCountDTO.countToList(useMonthList);
+        JSONObject res = new JSONObject().set("countUseToday", countUseToday).set("useMonthList", countList);
+        return PageResp.success("查询成功", res);
     }
 
     public PageResp keyErrorTimeStatistics() {
         // 今日故障次数
         int countErrorToday = dkmKeyLogMapper.countErrorToday();
         // 每个月的使用数
-        List<MonthCountDTO> errorMonthList = dkmVehicleMapper.countErrorByMonth();
-        JSONObject res = new JSONObject().set("countErrorToday", countErrorToday).set("errorMonthList", errorMonthList);
-        return PageResp.success("查询成功",res);
+        List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth());
+        List<Integer> countList = MonthCountDTO.countToList(errorMonthList);
+        JSONObject res = new JSONObject().set("countErrorToday", countErrorToday).set("errorMonthList", countList);
+        return PageResp.success("查询成功", res);
+    }
+
+    public PageResp selectKeyErrorLogByAllPhoneBrand() {
+        List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand();
+        return PageResp.success("查询成功",list);
     }
 }

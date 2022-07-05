@@ -2,6 +2,7 @@ package com.vecentek.back.vo;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -65,5 +66,5 @@ public class SelectKeyForPageVO {
     /**
      * 钥匙状态多选
      */
-    private List<Integer> dkState;
+    private Integer[] dkState;
 }

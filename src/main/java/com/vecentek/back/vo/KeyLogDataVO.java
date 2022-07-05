@@ -5,6 +5,14 @@ import lombok.Data;
 @Data
 public class KeyLogDataVO {
     /**
+     * 分页页数
+     */
+    private Integer pageIndex;
+    /**
+     * 每页条数
+     */
+    private Integer pageSize;
+    /**
      * 车辆vin号
      */
     private String vin;

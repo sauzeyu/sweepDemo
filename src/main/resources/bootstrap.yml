@@ -5,8 +5,6 @@ spring:
     active: test
   cloud:
     nacos:
-#      discovery:
-#        ip: 172.16.10.104
       config:
         server-addr: 172.16.13.13:8848  #  配置中心地址
         file-extension: yaml # 指定配置文件类型

@@ -6,7 +6,11 @@ import com.vecentek.back.vo.SelectKeyForPageVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
@@ -32,22 +36,36 @@ public class DkmKeyController {
 
 
     @GetMapping(value = "/selectForPage")
-    public PageResp selectForPage(@RequestBody SelectKeyForPageVO selectKeyForPageVO) {
-        return this.dkmKeyServiceImpl.selectForPage(selectKeyForPageVO.getPageIndex(),
-                selectKeyForPageVO.getPageSize(),
-                selectKeyForPageVO.getVin(),
-                selectKeyForPageVO.getUserId(),
-                selectKeyForPageVO.getKeyType(),
-                selectKeyForPageVO.getApplyStartTime(),
-                selectKeyForPageVO.getApplyEndTime(),
-                selectKeyForPageVO.getPeriodMax(),
-                selectKeyForPageVO.getPeriodMin(),
-                selectKeyForPageVO.getPeriodUnit(),
-                selectKeyForPageVO.getValFromStartTime(),
-                selectKeyForPageVO.getValFromEndTime(),
-                selectKeyForPageVO.getValToStartTime(),
-                selectKeyForPageVO.getValToEndTime(),
-                selectKeyForPageVO.getDkState());
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
+                                  String vin,
+                                  String userId,
+                                  Integer keyType,
+                                  String applyStartTime,
+                                  String applyEndTime,
+                                  Integer periodMax,
+                                  Integer periodMin,
+                                  String periodUnit,
+                                  String valFromStartTime,
+                                  String valFromEndTime,
+                                  String valToStartTime,
+                                  String valToEndTime,
+                                  Integer[] dkStates
+    ) {
+        return this.dkmKeyServiceImpl.selectForPage(pageIndex,
+                pageSize,
+                vin,
+                userId,
+                keyType,
+                applyStartTime,
+                applyEndTime,
+                periodMax,
+                periodMin,
+                periodUnit,
+                valFromStartTime,
+                valFromEndTime,
+                valToStartTime,
+                valToEndTime
+                , dkStates);
     }
 
 
