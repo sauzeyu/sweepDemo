@@ -76,7 +76,7 @@ public class DkmRoleServiceImpl {
         BeanUtils.copyProperties(role, dkmRole);
         dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, role.getId()));
         dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId()));
-        for (String menuId : role.getCheckedKey()) {
+        for (String menuId :  role.getCheckedKey()) {
             DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();
             dkmRoleMenu.setRoleId(role.getId());
             dkmRoleMenu.setMenuId(Integer.parseInt(menuId));
