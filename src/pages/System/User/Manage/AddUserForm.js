@@ -1,36 +1,20 @@
 'use strict';
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Select, Spin, message } from 'antd';
-import { getAllRole, updateAdminById } from '@/services/admin';
-import moment from 'moment';
-import { getDvaApp } from '@@/plugin-dva/exports';
+import { getAllRole } from '@/services/admin';
 
-export default class EditForm extends Component {
+export default class AddUserForm extends Component {
   form = React.createRef();
   state = {
     roles: [],
   };
-
   componentDidMount() {
     this.fetchRoles();
-    this.props.editFormRef && this.props.editFormRef(this);
+    this.props.addFormEef && this.props.addFormEef(this);
   }
 
   handleSubmit = () => {
-    this.form.current.validateFields().then((values) => {
-      values.updator =
-        getDvaApp()._store.getState()?.user?.currentUser?.username;
-      values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-      updateAdminById(values).then(
-        (res) => {
-          message.success(res.msg);
-          this.props.dataTableRef.refresh();
-        },
-        (res) => {
-          message.error(res.msg);
-        },
-      );
-    });
+    this.form.current.validateFields().then((values) => {});
   };
 
   fetchRoles() {
@@ -47,7 +31,6 @@ export default class EditForm extends Component {
         });
       });
   }
-
   render() {
     const { roles } = this.state;
     const loadingRoles = false;
@@ -62,17 +45,20 @@ export default class EditForm extends Component {
       },
     };
     return (
-      // <Spin spinning={loadingDetail}>
       <Form ref={this.form} {...formItemLayout} onFinish={this.handleSubmit}>
-        <Form.Item name="id" hidden>
-          <Input type="hidden" />
-        </Form.Item>
         <Form.Item
-          label={'姓名'}
+          label={'用户名'}
           name="username"
           rules={[{ required: true, message: '姓名不能为空' }]}
         >
-          <Input maxLength={40} placeholder={'用户姓名'} />
+          <Input maxLength={40} placeholder={'请输入用户姓名'} />
+        </Form.Item>
+        <Form.Item
+          label={'密码'}
+          name="password"
+          rules={[{ required: true, message: '密码不能为空' }]}
+        >
+          <Input.Password maxLength={40} placeholder={'请输入密码'} />
         </Form.Item>
         <Spin spinning={loadingRoles}>
           <Form.Item
@@ -91,11 +77,11 @@ export default class EditForm extends Component {
             </Select>
           </Form.Item>
         </Spin>
-        <Form.Item {...formItemLayout} label={'额外信息'} name="extraInfo">
+
+        <Form.Item {...formItemLayout} label={'描述'} name="extraInfo">
           <Input.TextArea maxLength={200} />
         </Form.Item>
       </Form>
-      // </Spin>
     );
   }
 }

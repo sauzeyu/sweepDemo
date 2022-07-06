@@ -6,7 +6,17 @@ import DrawerConfirm from '@/components/DrawerConfirm';
 import importExcel from '@/utils/importExcel';
 import { exportPhoneCalibration } from '@/services/upOrDownload';
 import { getPublicPath } from '@/utils';
-import { Button, message, Modal, Upload, Row, Col, Form, Input } from 'antd';
+import {
+  Button,
+  message,
+  Modal,
+  Upload,
+  Row,
+  Col,
+  Form,
+  Input,
+  Tooltip,
+} from 'antd';
 import {
   CloudUploadOutlined,
   InboxOutlined,
@@ -42,7 +52,7 @@ class DataTable extends Component {
       },
     },
     {
-      title: '车型',
+      title: '车辆型号',
       dataIndex: 'vehicleModel',
     },
     {
@@ -57,6 +67,14 @@ class DataTable extends Component {
       title: '手机标定数据',
       dataIndex: 'personalAndCalibrationString',
       width: 650,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '操作',

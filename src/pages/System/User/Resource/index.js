@@ -1,28 +1,19 @@
-'use strict';
-import React from 'react';
+import React, { Component } from 'react';
 import { Card } from 'antd';
-import Page from './Page';
-import { connect } from 'dva';
+import SearchForm from './SearchForm';
+import DataTable from './DataTable';
 
-@connect(({ permission, loading }) => ({
-  permission,
-  loading,
-}))
 export default class extends React.Component {
-  componentWillUnmount() {
-    this.props.dispatch({
-      type: 'permission/reset',
-    });
-  }
   render() {
     return (
-      <Card bordered={false}>
-        <Page
-          permission={this.props.permission}
-          loading={this.props.loading.models.permission}
-          dispatch={this.props.dispatch}
-        />
-      </Card>
+      <div className={'card-group'}>
+        <Card bordered={false}>
+          <SearchForm />
+        </Card>
+        <Card bordered={false}>
+          <DataTable />
+        </Card>
+      </div>
     );
   }
 }

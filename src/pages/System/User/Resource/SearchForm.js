@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { Button, Col, DatePicker, Form, Input, Row, Select } from 'antd';
+import { Button, Col, Form, Input, Row } from 'antd';
 import EasyTable from '@/components/EasyTable';
+import moment from 'moment';
 
-@EasyTable.connect(({ phoneDataTable }) => ({
-  phoneDataTable,
+@EasyTable.connect(({ resourceDataTable }) => ({
+  resourceDataTable,
 }))
-class SearchForm extends Component {
+export default class SearchForm extends Component {
   form = React.createRef();
-
   handleSubmit = (values) => {
     this.form.current
       .validateFields()
       .then((values) => {
-        this.props.phoneDataTable.fetch(values);
+        this.props.resourceDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
@@ -31,30 +31,28 @@ class SearchForm extends Component {
       },
     };
     const colSpan = {
-      xs: 24,
-      sm: 6,
+      span: 6,
     };
+
     return (
-      <Form
-        {...formItemLayout}
-        onFinish={this.handleSubmit}
-        ref={this.form}
-        onFieldsChange={(changedFields, allFields) => {
-          this.props.getFormValues(allFields);
-        }}
-      >
-        <Row type={'flex'} gutter={16}>
+      <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
+        <Row gutter={16}>
           <Col {...colSpan}>
-            <Form.Item label={'车辆型号'} name="vehicleModel">
-              <Input placeholder={'请输入车辆型号'} />
+            <Form.Item label={'菜单名'} name="title">
+              <Input placeholder={'请输入菜单名'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'手机品牌'} name="phoneBrand">
-              <Input placeholder={'请输入手机品牌'} />
+            <Form.Item label={'icon'} name="icon">
+              <Input placeholder={'请输入icon'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan} style={{ flex: 1 }}>
+          <Col {...colSpan}>
+            <Form.Item label="路由" name={'href'}>
+              <Input placeholder={'请输入路由'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
             <Button
               onClick={() => {
                 this.form.current.resetFields();
@@ -75,5 +73,3 @@ class SearchForm extends Component {
     );
   }
 }
-
-export default SearchForm;

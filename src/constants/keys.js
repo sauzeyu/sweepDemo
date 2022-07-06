@@ -3,10 +3,10 @@ import { Tag, Badge } from 'antd';
 import React from 'react';
 
 export const DKState = {
-  1: <Tag color="green">已启用</Tag>,
-  3: <Tag color="blue">冻结</Tag>,
-  4: <Tag color="warning">过期</Tag>,
-  5: <Tag color="red">已吊销</Tag>,
+  1: <Badge color="green" text="启用" />,
+  3: <Badge color="blue" text="冻结" />,
+  4: <Badge color="yellow" text="过期" />,
+  5: <Badge color="red" text="吊销" />,
 };
 export const keyLogFlag = {
   0: <Tag color="red">失败</Tag>,
@@ -17,16 +17,16 @@ export const keyLogFlagBadge = {
   1: <Badge color="green" text="成功" />,
 };
 export const KeyState = {
-  1: <Tag color="green">开通</Tag>,
-  2: <Tag color="blue">冻结</Tag>,
-  3: <Tag color="geekblue">解冻</Tag>,
-  4: <Tag color="warning">过期</Tag>,
-  5: <Tag color="red">吊销</Tag>,
+  1: <Badge color="green" text="开通" />,
+  2: <Badge color="blue" text="冻结" />,
+  3: <Badge color="#2db7f5" text="解冻" />,
+  4: <Badge color="yellow" text="过期" />,
+  5: <Badge color="red" text="吊销" />,
 };
 export const KeySource = {
-  1: <Tag color="green">web 端</Tag>,
-  2: <Tag color="blue">app 端</Tag>,
-  3: <Tag color="warning">换件</Tag>,
+  1: 'web 端',
+  2: 'app 端',
+  3: '换件',
 };
 export const KeyType = (text) => {
   if (text === '0') {

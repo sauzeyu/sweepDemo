@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-//获取管理员列表
+//获取管理员列表·
 export async function getAdminList(params) {
   return request.get('dkmAdmin/selectForPage', { params });
 }

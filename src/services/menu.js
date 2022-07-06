@@ -7,3 +7,7 @@ export async function selectMenuTree() {
 export async function selectMenuByRoleId(roleId) {
   return request.get('dkmMenu/selectMenuByRoleId?id=' + roleId);
 }
+
+export async function selectForPage(params) {
+  return request.get('dkmMenu/selectForPage', { params });
+}

@@ -10,236 +10,285 @@ import Icon, {
   CheckCircleOutlined,
 } from '@ant-design/icons';
 import { icon_bluetooth } from '@/assets/icon';
-import { selectTotal } from '@/services/statistics';
+import {
+  selectTotal,
+  vehicleStatistics,
+  keyStatistics,
+  keyUseTimeStatistics,
+  keyErrorTimeStatistics,
+} from '@/services/statistics';
 
 class TopForm extends React.Component {
   state = {
     spinningVisible: true,
     statisticsTotal: {},
+    vehicleTotal: [],
+    keyUseTimeTotal: {},
+    keyErrorTimeTotal: {},
+    keyTotal: {},
   };
 
   componentDidMount() {
     selectTotal().then((res) => {
       this.setState({
         statisticsTotal: res.data,
+      });
+    });
+    vehicleStatistics().then((res) => {
+      this.setState({
+        vehicleTotal: res.data,
+      });
+    });
+    keyStatistics().then((res) => {
+      this.setState({
+        keyTotal: res.data,
         spinningVisible: false,
       });
     });
+    keyUseTimeStatistics().then((res) => {
+      this.setState({
+        keyUseTimeTotal: res.data,
+      });
+    });
+    keyErrorTimeStatistics().then((res) => {
+      this.setState({
+        keyErrorTimeTotal: res.data,
+      });
+    });
   }
-  vehicleCountOption = {
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'line',
-        lineStyle: {
-          type: 'solid',
+
+  vehicleCountOption = () => {
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'line',
+          lineStyle: {
+            type: 'solid',
+          },
         },
       },
-    },
-    xAxis: {
-      show: false,
-      type: 'category',
-      boundaryGap: false,
-      data: [
-        '1月',
-        '2月',
-        '3月',
-        '4月',
-        '5月',
-        '6月',
-        '7月',
-        '8月',
-        '9月',
-        '10月',
-        '11月',
-        '12月',
-      ],
-    },
-    yAxis: {
-      show: false,
-      type: 'value',
-      boundaryGap: false,
-    },
-    series: [
-      {
-        data: [15, 32, 44, 55, 78, 185, 169, 73, 213, 95, 62, 11],
-        type: 'line',
-        lineStyle: {
-          color: '#ff7070',
-          width: 1,
-        },
-        itemStyle: {
-          opacity: 0,
-        },
-        // smooth: true,
-      },
-    ],
-    grid: {
-      x: 0, //距离左边
-      x2: 0, //距离右边
-      y: 0, //距离上边
-      y2: 0, //距离下边
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    },
-  };
-  keyStateCountOption = {
-    tooltip: {
-      trigger: 'item',
-    },
-    series: [
-      {
-        roam: false,
-        type: 'treemap',
-        top: 30,
-        left: 0,
-        right: 0,
-        bottom: 10,
-        nodeClick: false,
-        breadcrumb: { show: false },
+      xAxis: {
+        show: false,
+        type: 'category',
+        boundaryGap: false,
         data: [
-          {
-            itemStyle: { color: '#ff915a' },
-            name: '车主钥匙',
-            value: 875,
-          },
-          {
-            itemStyle: { color: '#7ed3f4' },
-            name: '子钥匙',
-            value: 1625,
-          },
+          '1月',
+          '2月',
+          '3月',
+          '4月',
+          '5月',
+          '6月',
+          '7月',
+          '8月',
+          '9月',
+          '10月',
+          '11月',
+          '12月',
         ],
       },
-    ],
-    grid: {
-      x: 0, //距离左边
-      x2: 0, //距离右边
-      y: 0, //距离上边
-      y2: 0, //距离下边
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    },
-  };
-  keyUseCountOption = {
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'line',
-        lineStyle: {
-          type: 'solid',
-        },
+      yAxis: {
+        show: false,
+        type: 'value',
+        boundaryGap: false,
       },
-    },
-    xAxis: {
-      show: false,
-      type: 'category',
-      boundaryGap: false,
-      data: [
-        '1月',
-        '2月',
-        '3月',
-        '4月',
-        '5月',
-        '6月',
-        '7月',
-        '8月',
-        '9月',
-        '10月',
-        '11月',
-        '12月',
+      series: [
+        {
+          data: this.state.vehicleTotal?.vehicleMonthList,
+          type: 'line',
+          lineStyle: {
+            color: '#ff7070',
+            width: 1,
+          },
+          itemStyle: {
+            opacity: 0,
+          },
+          // smooth: true,
+        },
       ],
-    },
-    yAxis: {
-      show: false,
-      type: 'value',
-      boundaryGap: false,
-    },
-    series: [
-      {
-        data: [765, 212, 446, 518, 815, 645, 739, 643, 431, 1255, 963, 786],
-        type: 'line',
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(151,95,228,0.1)' },
-            { offset: 0.5, color: 'rgba(238,130,238,0.6)' },
-            { offset: 1, color: 'rgba(186,85,211)' },
-          ]),
-        },
-        lineStyle: {
-          color: '#975FE4',
-          width: 1,
-        },
-        itemStyle: {
-          opacity: 0,
-        },
-        smooth: true,
+      grid: {
+        x: 0, //距离左边
+        x2: 0, //距离右边
+        y: 0, //距离上边
+        y2: 0, //距离下边
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
       },
-    ],
-    grid: {
-      x: 0, //距离左边
-      x2: 0, //距离右边
-      y: 0, //距离上边
-      y2: 0, //距离下边
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    },
+    };
   };
-  keyErrorCountOption = {
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow',
+  keyStateCountOption = () => {
+    return {
+      tooltip: {
+        trigger: 'item',
+        formatter: function (param) {
+          return (
+            param.marker +
+            param.name +
+            '&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<b>' +
+            param.value +
+            '</b>'
+          );
+        },
       },
-    },
-    xAxis: {
-      type: 'category',
-      data: [
-        '1月',
-        '2月',
-        '3月',
-        '4月',
-        '5月',
-        '6月',
-        '7月',
-        '8月',
-        '9月',
-        '10月',
-        '11月',
-        '12月',
+      series: [
+        {
+          roam: false,
+          type: 'treemap',
+          top: 30,
+          left: 0,
+          right: 0,
+          bottom: 10,
+          nodeClick: false,
+          breadcrumb: { show: false },
+          data: [
+            {
+              itemStyle: { color: '#ff915a' },
+              name: '车主钥匙',
+              value: this.state.keyTotal?.masterCount,
+            },
+            {
+              itemStyle: { color: '#7ed3f4' },
+              name: '子钥匙',
+              value: this.state.keyTotal?.childCount,
+            },
+          ],
+        },
       ],
-    },
-    yAxis: {
-      splitLine: { show: false },
-      type: 'value',
-    },
-    series: [
-      {
-        data: [715, 216, 436, 512, 876, 560, 920, 330, 153, 541, 396, 675],
-        type: 'bar',
-        color: '#6293f9',
-        itemStyle: {
-          emphasis: {
-            color: '#53ea13',
+      grid: {
+        x: 0, //距离左边
+        x2: 0, //距离右边
+        y: 0, //距离上边
+        y2: 0, //距离下边
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      },
+    };
+  };
+  keyUseCountOption = () => {
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'line',
+          lineStyle: {
+            type: 'solid',
           },
         },
       },
-    ],
-    grid: {
-      x: 0, //距离左边
-      x2: 0, //距离右边
-      y: 0, //距离上边
-      y2: 0, //距离下边
-      left: 0,
-      right: 0,
-      top: 0,
-      bottom: 0,
-    },
+      xAxis: {
+        show: false,
+        type: 'category',
+        boundaryGap: false,
+        data: [
+          '1月',
+          '2月',
+          '3月',
+          '4月',
+          '5月',
+          '6月',
+          '7月',
+          '8月',
+          '9月',
+          '10月',
+          '11月',
+          '12月',
+        ],
+      },
+      yAxis: {
+        show: false,
+        type: 'value',
+        boundaryGap: false,
+      },
+      series: [
+        {
+          data: this.state.keyUseTimeTotal?.useMonthList,
+          type: 'line',
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(151,95,228,0.1)' },
+              { offset: 0.5, color: 'rgba(238,130,238,0.6)' },
+              { offset: 1, color: 'rgba(186,85,211)' },
+            ]),
+          },
+          lineStyle: {
+            color: '#975FE4',
+            width: 1,
+          },
+          itemStyle: {
+            opacity: 0,
+          },
+          smooth: true,
+        },
+      ],
+      grid: {
+        x: 0, //距离左边
+        x2: 0, //距离右边
+        y: 0, //距离上边
+        y2: 0, //距离下边
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      },
+    };
+  };
+  keyErrorCountOption = () => {
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+      },
+      xAxis: {
+        type: 'category',
+        data: [
+          '1月',
+          '2月',
+          '3月',
+          '4月',
+          '5月',
+          '6月',
+          '7月',
+          '8月',
+          '9月',
+          '10月',
+          '11月',
+          '12月',
+        ],
+      },
+      yAxis: {
+        splitLine: { show: false },
+        type: 'value',
+      },
+      series: [
+        {
+          data: this.state.keyErrorTimeTotal?.errorMonthList,
+          type: 'bar',
+          color: '#6293f9',
+          itemStyle: {
+            emphasis: {
+              color: '#53ea13',
+            },
+          },
+        },
+      ],
+      grid: {
+        x: 0, //距离左边
+        x2: 0, //距离右边
+        y: 0, //距离上边
+        y2: 0, //距离下边
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+      },
+    };
   };
 
   render() {
@@ -247,6 +296,11 @@ class TopForm extends React.Component {
 
     const { vehicleCount, keyCount, keyUseCount, keyErrorCount } =
       statisticsTotal;
+
+    const { countErrorToday } = this.state?.keyErrorTimeTotal;
+    const { countUseToday } = this.state?.keyUseTimeTotal;
+    const { proportion } = this.state?.keyTotal;
+    const { newToday } = this.state?.vehicleTotal;
     const cardStyle = {
       bodyStyle: {
         paddingTop: 9,
@@ -275,16 +329,20 @@ class TopForm extends React.Component {
               {...cardStyle}
               title={
                 <>
-                  <Statistic title="车辆总数" value={'1032'} {...valueStyle} />
+                  <Statistic
+                    title="车辆总数"
+                    value={vehicleCount}
+                    {...valueStyle}
+                  />
                   <ReactEcharts
-                    option={this.vehicleCountOption}
+                    option={this.vehicleCountOption()}
                     notMerge={true}
                     style={{ width: '100%', height: '50%' }}
                   />
                 </>
               }
             >
-              今日新增车辆 361
+              今日新增车辆 {newToday}
             </Card>
           </Spin>
         </Col>
@@ -296,18 +354,18 @@ class TopForm extends React.Component {
                 <>
                   <Statistic
                     title={'钥匙总量'}
-                    value={'2500'}
+                    value={keyCount}
                     {...valueStyle}
                   />
                   <ReactEcharts
-                    option={this.keyStateCountOption}
+                    option={this.keyStateCountOption()}
                     notMerge={true}
                     style={{ width: '100%', height: '50%' }}
                   />
                 </>
               }
             >
-              车主钥匙占比 35%
+              车主钥匙占比 {proportion}
             </Card>
           </Spin>
         </Col>
@@ -319,18 +377,18 @@ class TopForm extends React.Component {
                 <>
                   <Statistic
                     title="钥匙使用次数"
-                    value={'6330'}
+                    value={keyUseCount}
                     {...valueStyle}
                   />
                   <ReactEcharts
-                    option={this.keyUseCountOption}
+                    option={this.keyUseCountOption()}
                     notMerge={true}
                     style={{ width: '100%', height: '50%' }}
                   />
                 </>
               }
             >
-              今日使用次数 214
+              今日使用次数 {countUseToday}
             </Card>
           </Spin>
         </Col>
@@ -342,18 +400,18 @@ class TopForm extends React.Component {
                 <>
                   <Statistic
                     title="钥匙故障次数"
-                    value={'8218'}
+                    value={keyErrorCount}
                     {...valueStyle}
                   />
                   <ReactEcharts
-                    option={this.keyErrorCountOption}
+                    option={this.keyErrorCountOption()}
                     notMerge={true}
                     style={{ width: '100%', height: '50%' }}
                   />
                 </>
               }
             >
-              今日故障次数 3512
+              今日故障次数 {countErrorToday}
             </Card>
           </Spin>
         </Col>

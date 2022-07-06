@@ -54,11 +54,11 @@ export default [
             title: '角色权限管理',
             component: './System/User/Roles',
           },
-          {
-            path: '/sys/logs',
-            title: '操作日志',
-            component: './System/Logs',
-          },
+          // {
+          //   path: '/sys/logs',
+          //   title: '操作日志',
+          //   component: './System/Logs',
+          // },
           {
             path: '/sys/userResource',
             component: './System/User/Resource',

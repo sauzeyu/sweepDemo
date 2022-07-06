@@ -1,4 +1,4 @@
-import { Tag } from 'antd';
+import { Badge, Tag } from 'antd';
 
 export const Categories = {
   1: '轿车',
@@ -54,6 +54,6 @@ export const color = {
   BG34: '古铜金',
 };
 export const overdue = {
-  0: <Tag color="blue">正常</Tag>,
-  1: <Tag color="red">报废</Tag>,
+  0: <Badge color="red" text="正常" />,
+  1: <Badge color="green" text="报废" />,
 };
