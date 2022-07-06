@@ -17,6 +17,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.JwtConstant;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.constant.KeyStatusEnum;
@@ -29,6 +30,8 @@ import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
+import com.vecentek.back.util.DownLoadUtil;
+import com.vecentek.back.util.TokenUtils;
 import com.vecentek.back.vo.DkmKeyVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +45,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -314,49 +320,24 @@ public class DkmKeyServiceImpl {
     }
 
     @Async
-    public void downloadKeyLogExcel( String id,
-                                     Integer vehicleId,
+    public void downloadKeyLogExcel( String vin,
                                      String userId,
-                                     String vin,
-                                     Long cycleStartTime,
-                                     Long cycleEndTime,
-                                     String cycleUnit,
+                                     Integer keyType,
                                      String applyStartTime,
                                      String applyEndTime,
-                                     String effectiveStartTime,
-                                     String effectiveEndTime,
-                                     String failStartTime,
-                                     String failEndTime,
-                                     Integer keyType,
-                                     Integer keyState)  {
-        String startTime = applyStartTime;
-        String endTime = applyEndTime;
-        // 异步导出如果没有选条件默认导出当前月份的数据
-        if (CharSequenceUtil.isBlank(applyStartTime) && CharSequenceUtil.isBlank(applyEndTime)){
-            String now = DateUtil.now();
-            DateTime dateTime = new DateTime(now, DatePattern.NORM_DATETIME_FORMAT);
-            int month = dateTime.getMonth() + 1;
-            int nextMonth;
-            if(month == 12){
-                nextMonth = 1;
-            } else {
-                nextMonth = month + 1 ;
-            }
-            startTime = getFirstDayOfMonth(month);
-            endTime = getFirstDayOfMonth(nextMonth);
-
-        }
-        // 1Excel 文件名 文件格式 文件路径的提前处理
-        // 1.1时间格式化格式
-
-        Date createTime = new Date();
-        // 1.2导出的excel按月份以时间命名 如2022-6-1~2022-7-1钥匙使用记录
-        DateTime startName = DateUtil.parse(startTime);
-        String startFileName = DateUtil.format(startName, "yyyy-MM-dd");
-
-        DateTime endName = DateUtil.parse(endTime);
-        String endFileName = DateUtil.format(endName, "yyyy-MM-dd");
-        String fileName = startFileName + "~" + endFileName;
+                                     Integer periodMax,
+                                     Integer periodMin,
+                                     String periodUnit,
+                                     String valFromStartTime,
+                                     String valFromEndTime,
+                                     String valToStartTime,
+                                     String valToEndTime,
+                                     Integer[] dkStates,String token)  {
+        List<String> objects = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, token);
+        applyStartTime = objects.get(0);
+        applyEndTime = objects.get(1);
+        String fileName = objects.get(2);
+        String username = objects.get(3);
         // 1.3形成文件名
         String excelName = fileName + "钥匙信息记录";
 
@@ -370,58 +351,65 @@ public class DkmKeyServiceImpl {
         BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
 
 
-
-
         // 2向历史导出记录新增一条状态为导出中的数据
-        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, null, null, createTime, null));
+        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, username, null, new Date(), null));
 
 
         // 3.1所有数据量
+
+        if (keyType == null) {
+            keyType = 3;
+        }
         // 是否需要period条件
         boolean periodBool = false;
-        Long periodMaxFormat = 0L;
-        Long periodMinFormat = 0L;
-        if (cycleEndTime != null && cycleStartTime != null && cycleUnit != null){
+        int periodMaxFormat = 0;
+        int periodMinFormat = 0;
+        if (periodMax != null && periodMin != null && periodUnit != null){
             // 根据单元转换时间周期
-            if (Objects.equals(cycleUnit,"minute")){ // 分钟
-                periodMaxFormat = cycleEndTime;
-                periodMinFormat = cycleStartTime;
-            }else if (Objects.equals(cycleUnit,"hour")){
-                periodMaxFormat = cycleEndTime * 60;
-                periodMinFormat = cycleStartTime * 60;
-            }else if (Objects.equals(cycleUnit,"day")){
-                periodMaxFormat = cycleEndTime * 60 * 24;
-                periodMinFormat = cycleStartTime * 60 * 24;
+            if (Objects.equals(periodUnit,"minute")){ // 分钟
+                periodMaxFormat = periodMax;
+                periodMinFormat = periodMin;
+            }else if (Objects.equals(periodUnit,"hour")){
+                periodMaxFormat = periodMax * 60;
+                periodMinFormat = periodMin * 60;
+            }else if (Objects.equals(periodUnit,"day")){
+                periodMaxFormat = periodMax * 60 * 24;
+                periodMinFormat = periodMin * 60 * 24;
             }
             periodBool = true;
         }
+        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery();
 
-        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery()
-                .like(CharSequenceUtil.isNotBlank(id), DkmKey::getUserId, id)
-                .like(CharSequenceUtil.isNotBlank(vin), DkmKey::getVin, vin)
+        // 是否需要dkStates条件
+        if (dkStates != null && dkStates.length > 0){
+            queryWrapper.eq(DkmKey::getDkState, dkStates[0]);
+            if (dkStates.length > 1) {
+                for (int i = 1; i < dkStates.length; i++) {
+                    queryWrapper.or(). eq(DkmKey::getDkState,dkStates[i]);
+                }
+            }
+        }
 
+        queryWrapper
+                .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
+                .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
+                .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
+                .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
+                .ge(StrUtil.isNotBlank(valFromStartTime), DkmKey::getValFrom, valFromStartTime)
+                .le(StrUtil.isNotBlank(valFromEndTime), DkmKey::getValFrom, valFromEndTime)
+                .ge(StrUtil.isNotBlank(valToStartTime), DkmKey::getValTo, valToStartTime)
+                .le(StrUtil.isNotBlank(valToEndTime), DkmKey::getValTo, valToEndTime)
                 .ge(periodBool, DkmKey::getPeriod, periodMinFormat)
                 .le(periodBool, DkmKey::getPeriod, periodMaxFormat)
-
-                //.ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
-                //.le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
-                //TODO 周期单位
-                //.eq(dkmKeyVO.getCycleUnit()!=null,DkmKey::getPeriodUnit,dkmKeyVO.getCycleUnit())
-
-                .ge(applyStartTime!=null,DkmKey::getApplyTime , applyStartTime)
-                .le(applyEndTime!=null, DkmKey::getApplyTime, applyEndTime)
-
-                .ge(effectiveStartTime!=null,DkmKey::getValFrom , effectiveStartTime)
-                .le(effectiveEndTime !=null, DkmKey::getValFrom, effectiveEndTime)
-
-                .ge(failStartTime!=null,DkmKey::getValTo , failStartTime)
-                .le(failEndTime!=null, DkmKey::getValTo, failEndTime)
-
-                .eq(keyType!= null, DkmKey::getFlag,keyType)
-
-                .eq(keyState!= null, DkmKey::getDkState, keyState);
+                .eq(keyType == 1, DkmKey::getParentId, "0")
+                .ne(keyType == 2, DkmKey::getParentId, "0")
+                .orderByDesc(DkmKey::getVin)
+                .orderByAsc(DkmKey::getParentId)
+                .orderByDesc(DkmKey::getApplyTime);
 
         Integer sum = dkmKeyMapper.selectCount(queryWrapper);
+
+
         // 3.2每次分页数据量50W (SXXSF 最大分页100W)
         Integer end = 500000;
 
@@ -434,21 +422,19 @@ public class DkmKeyServiceImpl {
             int start = (i * end);
 
             // 4.1分页查询数据 否则会OOM
-            dkmKeys = getDkmKeyLogs( id,
-                    vehicleId,
+            dkmKeys = getDkmKeyLogs( vin,
                     userId,
-                    vin,
-                    cycleStartTime,
-                    cycleEndTime,
-                    cycleUnit,
+                    keyType,
                     applyStartTime,
                     applyEndTime,
-                    effectiveStartTime,
-                    effectiveEndTime,
-                    failStartTime,
-                    failEndTime,
-                    keyType,
-                    keyState,
+                    periodMax,
+                    periodMin,
+                    periodUnit,
+                    valFromStartTime,
+                    valFromEndTime,
+                    valToStartTime,
+                    valToEndTime,
+                     dkStates,
                     start,
                     end);
 
@@ -524,70 +510,70 @@ public class DkmKeyServiceImpl {
 
      * @return
      */
-    private List<DkmKey> getDkmKeyLogs(String id,
-                                       Integer vehicleId,
+    private List<DkmKey> getDkmKeyLogs(String vin,
                                        String userId,
-                                       String vin,
-                                       Long cycleStartTime,
-                                       Long cycleEndTime,
-                                       String cycleUnit,
+                                       Integer keyType,
                                        String applyStartTime,
                                        String applyEndTime,
-                                       String effectiveStartTime,
-                                       String effectiveEndTime,
-                                       String failStartTime,
-                                       String failEndTime,
-                                       Integer keyType,
-                                       Integer keyState,
+                                       Integer periodMax,
+                                       Integer periodMin,
+                                       String periodUnit,
+                                       String valFromStartTime,
+                                       String valFromEndTime,
+                                       String valToStartTime,
+                                       String valToEndTime,
+                                       Integer[] dkStates,
                                           Integer start,
                                           Integer end) {
+        if (keyType == null) {
+            keyType = 3;
+        }
+        // 是否需要period条件
         boolean periodBool = false;
-        Long periodMaxFormat = 0L;
-        Long periodMinFormat = 0L;
-        if (cycleEndTime != null && cycleStartTime != null && cycleUnit != null){
+        int periodMaxFormat = 0;
+        int periodMinFormat = 0;
+        if (periodMax != null && periodMin != null && periodUnit != null){
             // 根据单元转换时间周期
-            if (Objects.equals(cycleUnit,"minute")){ // 分钟
-                periodMaxFormat = cycleEndTime;
-                periodMinFormat = cycleStartTime;
-            }else if (Objects.equals(cycleUnit,"hour")){
-                periodMaxFormat = cycleEndTime * 60;
-                periodMinFormat = cycleStartTime * 60;
-            }else if (Objects.equals(cycleUnit,"day")){
-                periodMaxFormat = cycleEndTime * 60 * 24;
-                periodMinFormat = cycleStartTime * 60 * 24;
+            if (Objects.equals(periodUnit,"minute")){ // 分钟
+                periodMaxFormat = periodMax;
+                periodMinFormat = periodMin;
+            }else if (Objects.equals(periodUnit,"hour")){
+                periodMaxFormat = periodMax * 60;
+                periodMinFormat = periodMin * 60;
+            }else if (Objects.equals(periodUnit,"day")){
+                periodMaxFormat = periodMax * 60 * 24;
+                periodMinFormat = periodMin * 60 * 24;
             }
             periodBool = true;
         }
+        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery();
 
-        // 4.1.1根据条件查出库中对应记录数据
-        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery()
-                .like(CharSequenceUtil.isNotBlank(id), DkmKey::getUserId, id)
-                .like(CharSequenceUtil.isNotBlank(vin), DkmKey::getVin, vin)
+        // 是否需要dkStates条件
+        if (dkStates != null && dkStates.length > 0){
+            queryWrapper.eq(DkmKey::getDkState, dkStates[0]);
+            if (dkStates.length > 1) {
+                for (int i = 1; i < dkStates.length; i++) {
+                    queryWrapper.or(). eq(DkmKey::getDkState,dkStates[i]);
+                }
+            }
+        }
 
+        queryWrapper
+                .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
+                .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
+                .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
+                .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
+                .ge(StrUtil.isNotBlank(valFromStartTime), DkmKey::getValFrom, valFromStartTime)
+                .le(StrUtil.isNotBlank(valFromEndTime), DkmKey::getValFrom, valFromEndTime)
+                .ge(StrUtil.isNotBlank(valToStartTime), DkmKey::getValTo, valToStartTime)
+                .le(StrUtil.isNotBlank(valToEndTime), DkmKey::getValTo, valToEndTime)
                 .ge(periodBool, DkmKey::getPeriod, periodMinFormat)
                 .le(periodBool, DkmKey::getPeriod, periodMaxFormat)
-
-                //.ge(cycleStartTime!=null,DkmKey::getPeriod , cycleStartTime)
-                //.le(cycleEndTime!=null, DkmKey::getPeriod, cycleEndTime )
-                //TODO 周期单位
-
-
-
-                //.eq(dkmKeyVO.getCycleUnit()!=null,DkmKey::getPeriodUnit,dkmKeyVO.getCycleUnit())
-
-                .ge(applyStartTime!=null,DkmKey::getApplyTime , applyStartTime)
-                .le(applyEndTime!=null, DkmKey::getApplyTime, applyEndTime)
-
-                .ge(effectiveStartTime!=null,DkmKey::getValFrom , effectiveStartTime)
-                .le(effectiveEndTime !=null, DkmKey::getValFrom, effectiveEndTime)
-
-                .ge(failStartTime!=null,DkmKey::getValTo , failStartTime)
-                .le(failEndTime!=null, DkmKey::getValTo, failEndTime)
-
-                .eq(keyType!= null, DkmKey::getFlag,keyType)
-
-                .eq(keyState!= null, DkmKey::getDkState, keyState)
-
+                .eq(keyType == 1, DkmKey::getParentId, "0")
+                .ne(keyType == 2, DkmKey::getParentId, "0")
+                .orderByDesc(DkmKey::getVin)
+                .orderByAsc(DkmKey::getParentId)
+                .orderByDesc(DkmKey::getApplyTime)
                 .last("limit " + start + "," + end);
         List<DkmKey> keyList = dkmKeyMapper.selectList(queryWrapper);
 

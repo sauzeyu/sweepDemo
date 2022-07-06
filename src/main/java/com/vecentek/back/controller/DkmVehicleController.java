@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 /**
  * 车辆(DkmVehicle)表控制层
@@ -95,5 +97,12 @@ public class DkmVehicleController {
         return this.dkmVehicleServiceImpl.updateById(dkmVehicle);
     }
 
-
+    @PostMapping(value = "/downloadDkmVehicle")
+    public void downloadDkmVehicle(String vin,
+                                               String hwDeviceSn,
+                                               String vehicleModel,
+                                               String vehicleBrand,
+                                               HttpServletResponse response)  {
+        this.dkmVehicleServiceImpl.downloadDkmVehicle(vin, hwDeviceSn, vehicleModel,vehicleBrand,response);
+    }
 }

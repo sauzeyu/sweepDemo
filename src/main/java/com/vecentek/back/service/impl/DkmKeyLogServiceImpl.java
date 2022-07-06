@@ -22,6 +22,7 @@ import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
+import com.vecentek.back.util.DownLoadUtil;
 import com.vecentek.back.util.TokenUtils;
 import com.vecentek.common.response.PageResp;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -93,34 +94,16 @@ public class DkmKeyLogServiceImpl {
 
     @Async
     public void downloadKeyLogExcel(String vin, String userId, String startTime, String endTime,
-                                    String phoneBrand, String phoneModel, String statusCode, Integer flag, String token) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+                                    String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,
+                                    String vehicleModel,String token) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
-        // 异步导出如果没有选条件默认导出当前月份的数据
-        if (CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)){
-            String now = DateUtil.now();
-            DateTime dateTime = new DateTime(now, DatePattern.NORM_DATETIME_FORMAT);
-            int month = dateTime.getMonth() + 1;
-            int nextMonth;
-            if(month == 12){
-                nextMonth = 1;
-            } else {
-                nextMonth = month + 1 ;
-            }
-            startTime = getFirstDayOfMonth(month);
-            endTime = getFirstDayOfMonth(nextMonth);
 
-        }
-        // 1Excel 文件名 文件格式 文件路径的提前处理
-        // 1.1时间格式化格式
 
-        Date createTime = new Date();
-        // 1.2导出的excel按月份以时间命名 如2022-6-1~2022-7-1钥匙使用记录
-        DateTime startName = DateUtil.parse(startTime);
-        String startFileName = DateUtil.format(startName, "yyyy-MM-dd");
-
-        DateTime endName = DateUtil.parse(endTime);
-        String endFileName = DateUtil.format(endName, "yyyy-MM-dd");
-        String fileName = startFileName + "~" + endFileName;
+        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, token);
+        startTime = objects.get(0);
+        endTime = objects.get(1);
+        String fileName = objects.get(2);
+        String username = objects.get(3);
         // 1.3形成文件名
         String excelName = fileName + "钥匙使用记录";
 
@@ -136,14 +119,7 @@ public class DkmKeyLogServiceImpl {
 
         // 2向历史导出记录新增一条状态为导出中的数据
 
-        String username = null;
-        if (CharSequenceUtil.isNotBlank(token)) {
-            username  = TokenUtils.parseToken(JwtConstant.JWT_USER_INFO_KEY, token, String.class);
-        }
-
-
-
-        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, username, null, createTime, null));
+        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, username, null, new Date(), null));
 
 
         // 3.1所有数据量
@@ -152,6 +128,8 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
                 .like(CharSequenceUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
+                .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .eq(flag!= null, DkmKeyLog::getFlag, flag)
                 .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
@@ -177,6 +155,8 @@ public class DkmKeyLogServiceImpl {
                     phoneModel,
                     statusCode,
                     flag,
+                    vehicleBrand,
+                    vehicleModel,
                     start,
                     end);
 
@@ -239,8 +219,10 @@ public class DkmKeyLogServiceImpl {
 
         writer.addHeaderAlias("vin", "车辆vin号");
         writer.addHeaderAlias("userId", "用户id");
-        writer.addHeaderAlias("phoneModel", "手机型号");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
+        writer.addHeaderAlias("phoneModel", "手机型号");
+        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("operateTime", "操作时间");
         writer.addHeaderAlias("statusCode", "操作类型");
         writer.addHeaderAlias("flag", "操作结果");
@@ -269,6 +251,8 @@ public class DkmKeyLogServiceImpl {
                                           String phoneModel,
                                           String statusCode,
                                           Integer flag,
+                                          String vehicleBrand,
+                                          String vehicleModel,
                                           Integer start,
                                           Integer end) {
 
@@ -278,6 +262,8 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
                 .like(CharSequenceUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
+                .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .eq(flag!= null, DkmKeyLog::getFlag, flag)
                 .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
@@ -304,24 +290,7 @@ public class DkmKeyLogServiceImpl {
         return keyLogList;
     }
 
-    /**
-     * 获取当前月第一天
-     * @param month
-     * @return
-     */
-    public static String getFirstDayOfMonth(int month) {
-        Calendar calendar = Calendar.getInstance();
-        // 设置月份
-        calendar.set(Calendar.MONTH, month - 1);
-        // 获取某月最小天数
-        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-        // 设置日历中月份的最小天数
-        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
-        // 格式化日期
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        return sdf.format(calendar.getTime())+" 00:00:00";
-    }
     public PageResp checkKeyUseLog(String creator) {
         LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
         dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator!=null,DkmKeyLogHistoryExport::getCreator,creator);

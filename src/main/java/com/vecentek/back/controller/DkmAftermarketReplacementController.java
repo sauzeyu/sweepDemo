@@ -54,7 +54,8 @@ public class DkmAftermarketReplacementController {
                                          String startTime,
                                          String endTime,
                                          Boolean isXls,
+                                         String token,
                                          HttpServletResponse response) throws UnsupportedEncodingException {
-        this.dkmAftermarketReplacementService.downloadAftermarketReplacement(vin, startTime, endTime,isXls, response);
+        this.dkmAftermarketReplacementService.downloadAftermarketReplacement(vin, startTime, endTime,isXls, token,response);
     }
 }

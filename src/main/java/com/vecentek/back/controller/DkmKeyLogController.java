@@ -65,11 +65,13 @@ public class DkmKeyLogController {
                                          String phoneBrand,
                                          String phoneModel,
                                          String statusCode,
+                                         String vehicleBrand,
+                                         String vehicleModel,
                                          Integer flag,
                                          HttpServletRequest httpServletRequest
-                                        ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         String token = httpServletRequest.getHeader("access-token");
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag,token);
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, token);
         return PageResp.success("正在导出");
 
     }
@@ -94,19 +96,30 @@ public class DkmKeyLogController {
                                     String phoneModel,
                                     String statusCode,
                                     Integer flag,
+                                    String vehicleBrand,
+                                    String vehicleModel,
                                     String token
-                                    ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
-        this.dkmKeyUseLogService.downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag,token);
+        this.dkmKeyUseLogService.downloadKeyLogExcel
+                (vin,
+                userId,
+                startTime,
+                endTime,
+                phoneBrand,
+                phoneModel,
+                statusCode,
+                flag,
+                vehicleBrand,
+                vehicleModel,
+                token);
 
     }
 
     @GetMapping("/checkKeyUseLog")
     public PageResp checkKeyUseLog( String creator) {
         //查询历史导出记录表(倒排)
-
         return this.dkmKeyUseLogService.checkKeyUseLog(creator);
-
     }
 
 }

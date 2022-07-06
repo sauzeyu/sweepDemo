@@ -1,5 +1,10 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -7,13 +12,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.JwtConstant;
 import com.vecentek.back.entity.DkmAftermarketReplacement;
 import com.vecentek.back.entity.DkmKey;
+import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
 import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.mapper.DkmAftermarketReplacementMapper;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
+import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
+import com.vecentek.back.util.DownLoadUtil;
+import com.vecentek.back.util.TokenUtils;
 import com.vecentek.common.response.PageResp;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -27,6 +37,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,6 +57,8 @@ public class DkmAftermarketReplacementServiceImpl {
     private DkmBluetoothsMapper dkmBluetoothsMapper;
     @Resource
     private DkmVehicleMapper dkmVehicleMapper;
+    @Resource
+    private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String startTime, String endTime) {
         Page<DkmAftermarketReplacement> page = new Page<>(pageIndex, pageSize);
@@ -68,7 +85,15 @@ public class DkmAftermarketReplacementServiceImpl {
         return PageResp.success("查询成功", dkmVehicle);
     }
 
-    public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, HttpServletResponse response) throws UnsupportedEncodingException {
+    public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String token,HttpServletResponse response) throws UnsupportedEncodingException {
+        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, token);
+         startTime = objects.get(0);
+         endTime = objects.get(1);
+        String fileName = objects.get(2);
+        String username = objects.get(3);
+        // 1.3形成文件名
+        String excelName = fileName + "换件信息";
+
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmAftermarketReplacement::getVin, vin)
                 .ge(startTime!=null, DkmAftermarketReplacement::getReplacementTime , startTime)
@@ -84,8 +109,10 @@ public class DkmAftermarketReplacementServiceImpl {
             suffix = ExcelConstant.EXCEL_SUFFIX_XLSX;
         }
 
+
+
         // 设置响应头信息
-        response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + URLEncoder.encode("换件信息", "UTF-8") + suffix);
+        response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + URLEncoder.encode(excelName, "UTF-8") + suffix);
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/vnd.ms-excel");
 
@@ -130,6 +157,21 @@ public class DkmAftermarketReplacementServiceImpl {
         } finally {
             writer.close();
         }
+        // 2向历史导出记录新增一条状态为导出中的数据
+        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(1, excelName, null, username, null, new Date(), null));
 
+    }
+    public static String getFirstDayOfMonth(int month) {
+        Calendar calendar = Calendar.getInstance();
+        // 设置月份
+        calendar.set(Calendar.MONTH, month - 1);
+        // 获取某月最小天数
+        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+        // 设置日历中月份的最小天数
+        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
+        // 格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        return sdf.format(calendar.getTime())+" 00:00:00";
     }
 }

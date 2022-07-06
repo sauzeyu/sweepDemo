@@ -148,37 +148,34 @@ public class DkmKeyController {
      * @return
      */
     @PostMapping(value = "/downloadKeyExcel")
-    public PageResp startLoadKeyLogExcel( String id,
-                                          Integer vehicleId,
+    public PageResp startLoadKeyLogExcel( String vin,
                                           String userId,
-                                          String vin,
-                                          Long cycleStartTime,
-                                          Long cycleEndTime,
-                                          String cycleUnit,
+                                          Integer keyType,
                                           String applyStartTime,
                                           String applyEndTime,
-                                          String effectiveStartTime,
-                                          String effectiveEndTime,
-                                          String failStartTime,
-                                          String failEndTime,
-                                          Integer keyType,
-                                          Integer keyState)  {
-        downloadKeyExcel(  id,
-                 vehicleId,
-                 userId,
-                 vin,
-                 cycleStartTime,
-                 cycleEndTime,
-                 cycleUnit,
-                 applyStartTime,
-                 applyEndTime,
-                 effectiveStartTime,
-                 effectiveEndTime,
-                 failStartTime,
-                 failEndTime,
-                 keyType,
-                 keyState);
-        return PageResp.success();
+                                          Integer periodMax,
+                                          Integer periodMin,
+                                          String periodUnit,
+                                          String valFromStartTime,
+                                          String valFromEndTime,
+                                          String valToStartTime,
+                                          String valToEndTime,
+                                          Integer[] dkStates,
+                                          String token)  {
+        downloadKeyExcel(vin,
+                userId,
+                keyType,
+                applyStartTime,
+                applyEndTime,
+                periodMax,
+                periodMin,
+                periodUnit,
+                valFromStartTime,
+                valFromEndTime,
+                valToStartTime,
+                valToEndTime
+                , dkStates,token);
+        return PageResp.success("正在导出");
 
     }
 
@@ -187,37 +184,34 @@ public class DkmKeyController {
 
      */
     @Async
-    public void downloadKeyExcel( String id,
-                                  Integer vehicleId,
+    public void downloadKeyExcel( String vin,
                                   String userId,
-                                  String vin,
-                                  Long cycleStartTime,
-                                  Long cycleEndTime,
-                                  String cycleUnit,
+                                  Integer keyType,
                                   String applyStartTime,
                                   String applyEndTime,
-                                  String effectiveStartTime,
-                                  String effectiveEndTime,
-                                  String failStartTime,
-                                  String failEndTime,
-                                  Integer keyType,
-                                  Integer keyState)  {
+                                  Integer periodMax,
+                                  Integer periodMin,
+                                  String periodUnit,
+                                  String valFromStartTime,
+                                  String valFromEndTime,
+                                  String valToStartTime,
+                                  String valToEndTime,
+                                  Integer[] dkStates,
+                                  String token)  {
         this.dkmKeyServiceImpl.downloadKeyLogExcel(
-                id,
-                vehicleId,
-                userId,
                 vin,
-                cycleStartTime,
-                cycleEndTime,
-                cycleUnit,
+                userId,
+                keyType,
                 applyStartTime,
                 applyEndTime,
-                effectiveStartTime,
-                effectiveEndTime,
-                failStartTime,
-                failEndTime,
-                keyType,
-                keyState);
+                periodMax,
+                periodMin,
+                periodUnit,
+                valFromStartTime,
+                valFromEndTime,
+                valToStartTime,
+                valToEndTime
+                , dkStates,token);
     }
 
 }
