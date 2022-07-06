@@ -137,7 +137,7 @@ public class DkmStatisticsServiceImpl {
         List<Integer> countList = MonthCountDTO.countToList(vehicleMonthList);
 
         newToday = dkmVehicleMapper.selectNewToday();
-        JSONObject res = new JSONObject().set("vehicleMonthList", vehicleMonthList).set("newToday", newToday);
+        JSONObject res = new JSONObject().set("vehicleMonthList", countList).set("newToday", newToday);
         return PageResp.success("查询成功", res);
     }
 
