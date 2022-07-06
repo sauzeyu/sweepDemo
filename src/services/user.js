@@ -21,7 +21,6 @@ export async function modifyPassword(params) {
 }
 
 function decorateUserInfo(res) {
-  console.log(res);
   if (res.code === 401) {
     message.error('账号或密码不正确').then((r) => {});
   }

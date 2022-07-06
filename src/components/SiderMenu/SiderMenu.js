@@ -81,7 +81,7 @@ export default class SiderMenu extends PureComponent {
         collapsed={collapsed} /* 当前收起状态 */
         breakpoint="lg" /* 触发响应式布局的断点 */
         onCollapse={onCollapse} /* 收起展开的回调函数 */
-        width={256}
+        width={208}
         theme={theme}
         className={siderClassName}
       >

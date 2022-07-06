@@ -1,6 +1,6 @@
 import React from 'react';
 import E403 from '@/pages/Exception/403';
-// import E404 from '@/pages/Error/404';
+// import E404 from '@/pages/Use/404';
 import { getRouteByLink } from '@/utils';
 import { checkUserAuth } from '@/components/Authorized';
 

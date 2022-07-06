@@ -198,8 +198,8 @@ export function deepClone(obj) {
  */
 export function createPagination(props = {}) {
   const {
-    showSizeChanger = false,
-    showQuickJumper = false,
+    showSizeChanger = true,
+    showQuickJumper = true,
     size = 'small',
     pageSizeOptions = ['10', '20', '30', '40'],
     pageSize = 10,

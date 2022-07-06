@@ -1,97 +1,83 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import { Badge, Button, message, Modal, Tag } from 'antd';
-import { getUseLogList } from '@/services/log';
+import { connect } from 'dva';
 
+import { getKeyLogList } from '@/services/keys';
+import { Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
+import { keyLogFlag, keyLogFlagBadge } from '@/constants/keys';
+
+@connect(({ keysManage, loading }) => ({
+  keysManage,
+}))
 class DataTable extends Component {
-  state = {
-    showUserInfo: false,
-    showCarInfo: false,
-    userInfo: {},
-    carInfo: {},
-  };
   columns = [
     {
-      title: '文档id',
-      dataIndex: 'id',
-    },
-    {
-      title: '时间',
-      dataIndex: 'time',
-    },
-    {
-      title: '钥匙 Slot',
-      dataIndex: 'keySlot',
-    },
-    {
-      title: '日志类型',
-      dataIndex: 'logType',
-    },
-    {
-      title: '指令',
-      dataIndex: 'cmd',
-    },
-    {
-      title: '指令执行状态',
-      dataIndex: 'cmdStatus',
-    },
-    // {
-    //   title: '操作',
-    //   fixed: 'right',
-    //   width: 300,
-    //   render: (col) => {
-    //     return (
-    //       <div className={'link-group'}>
-    //         <a className={'text-danger'} onClick={false}>
-    //           删除
-    //         </a>
-    //       </div>
-    //     );
-    //   },
-    // },
-  ];
-  onCancel = () => {
-    this.setState({
-      showUserInfo: false,
-      showCarInfo: false,
-    });
-  };
-
-  revokeKey = (col) => {
-    Modal.confirm({
-      title: '删除日志',
-      content: '确定删除日志？',
-      onOk: () => {
-        return this.props
-          .dispatch({
-            type: 'keysManage/revokeKey',
-            payload: col.id,
-          })
-          .then(
-            () => {
-              message.success('操作成功');
-              this.dataTable.refresh();
-            },
-            (err) => {
-              message.error(err.message);
-            },
-          );
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.keyLifecycleDataTable?.state?.currentIndex;
+        let currentPageSize =
+          this.keyLifecycleDataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
       },
-    });
-  };
+    },
+    {
+      title: '车辆vin号',
+      dataIndex: 'vin',
+    },
+    {
+      title: '用户id',
+      dataIndex: 'userId',
+    },
+    {
+      title: '手机型号',
+      dataIndex: 'phoneModel',
+    },
+    {
+      title: '手机品牌',
+      dataIndex: 'phoneBrand',
+    },
+    {
+      title: '操作时间',
+      dataIndex: 'operateTime',
+    },
+    {
+      title: '操作类型',
+      dataIndex: 'statusCode',
+    },
+    {
+      title: '操作结果',
+      dataIndex: 'flag',
+      render: (text) => {
+        return keyLogFlagBadge[text];
+      },
+    },
+    {
+      title: '失败原因',
+      dataIndex: 'errorReason',
+    },
+  ];
 
   render() {
     return (
       <div>
         <EasyTable
+          rowKey={'id'}
           scroll={{ x: '1200px' }}
           autoFetch
-          source={getUseLogList}
+          source={getKeyLogList}
           dataProp={'data'}
-          name={'useLogDataTable'}
-          rowKey={'id'}
+          name={'keyErrorLogDataTable'}
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
+          extra={
+            <div className={'btn-group'}>
+              <Button type={'ghost'} size={'large'} icon={<DownloadOutlined />}>
+                导出钥匙使用记录
+              </Button>
+            </div>
+          }
         />
       </div>
     );

@@ -6,7 +6,7 @@ import Debounce from 'lodash-decorators/debounce';
 import styles from './index.less';
 import RightContent from './RightContent';
 import { getPublicPath } from '@/utils';
-const logo = getPublicPath('img/app-logo_light.png');
+const logo = getPublicPath('img/logo.svg');
 
 export default class GlobalHeader extends PureComponent {
   componentWillUnmount() {

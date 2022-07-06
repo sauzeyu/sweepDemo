@@ -6,7 +6,7 @@ import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
 import { getBluetooth, delBluetooth } from '@/services/cars';
-import { uploadFlag } from '@/constants/cars';
+import { overdue } from '@/constants/cars';
 
 @connect(({ carsType, loading }) => ({
   carsType,
@@ -14,75 +14,59 @@ import { uploadFlag } from '@/constants/cars';
 class DataTable extends Component {
   state = {
     editFormVisible: false,
-
-    idList: [],
   };
   columns = [
+    {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.dataTable?.state?.currentIndex;
+        let currentPageSize = this.dataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
     {
       title: '设备序列号',
       dataIndex: 'hwDeviceSn',
     },
-    // {
-    //   title: '设备ID号',
-    //   dataIndex: 'hwDeviceId',
-    // },
+    {
+      title: '设备检索号',
+      dataIndex: 'searchNumber',
+    },
     {
       title: '设备供应商编号',
       dataIndex: 'hwDeviceProviderNo',
-    },
-    {
-      title: '数字钥匙软件版本号',
-      dataIndex: 'dkSdkVersion',
-    },
-    // {
-    //   title: '数字钥匙安全单元ID',
-    //   dataIndex: 'dkSecUnitId',
-    // },
-    {
-      title: '蓝牙名称',
-      dataIndex: 'bleName',
     },
     {
       title: '蓝牙MAC地址',
       dataIndex: 'bleMacAddress',
     },
     {
-      title: '蓝牙协议版本号',
-      dataIndex: 'bleProtocolVersion',
+      title: '安全芯片SEID',
+      dataIndex: 'dkSecUnitId',
     },
     {
-      title: '蓝牙硬件版本号',
-      dataIndex: 'bleHardwareVersion',
-    },
-    {
-      title: '蓝牙软件版本号',
-      dataIndex: 'bleSoftwareVersion',
-    },
-    {
-      title: '是否上传MES系统',
+      title: '设备状态',
       dataIndex: 'flag',
       render: (text) => {
-        return uploadFlag[text];
+        return overdue[text];
       },
     },
-    {
-      title: '操作',
-      render: (col) => {
-        return (
-          <div className={'link-group'}>
-            {/*<a onClick={() => this.upsert(col)}>编辑</a>*/}
-            <a className={'text-danger'} onClick={() => this.del(col)}>
-              删除
-            </a>
-          </div>
-        );
-      },
-    },
+    // {
+    //   title: '操作',
+    //   render: (col) => {
+    //     return (
+    //       <div className={'link-group'}>
+    //         <a className={'text-danger'} onClick={() => this.del(col)}>
+    //           删除
+    //         </a>
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
   del = (model) => {
     const { hwDeviceSn } = model;
-    console.log('this ', this);
-    console.log('this.onRow', this.onRow);
     Modal.confirm({
       title: '删除蓝牙设备',
       content: `确定设备“${hwDeviceSn}”？`,

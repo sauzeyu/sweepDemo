@@ -5,6 +5,7 @@ import { selectMenuTree, selectMenuByRoleId } from '@/services/menu';
 import { updateRoleById } from '@/services/role';
 import { removeEmptyProperty } from '@/utils';
 import moment from 'moment';
+import { getDvaApp } from '@@/plugin-dva/exports';
 
 export default class EditForm extends Component {
   form = React.createRef();
@@ -27,13 +28,14 @@ export default class EditForm extends Component {
 
   handleSubmit = (val) => {
     this.form.current.validateFields().then((values) => {
-      values.updator = localStorage.getItem('last_username');
+      values.updator =
+        getDvaApp()._store.getState()?.user?.currentUser?.username;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-      if (this.state.selectedKeys.length === 0) {
-        values.checkedKey = this.state.checkedKeys;
-      } else {
-        values.checkedKey = this.state.selectedKeys;
-      }
+      // if (this.state.selectedKeys.length === 0) {
+      values.checkedKey = this.state.checkedKeys?.checked;
+      // } else {
+      //   values.checkedKey = this.state.selectedKeys;
+      // }
       updateRoleById(values).then(
         (res) => {
           message.success(res.msg);
@@ -43,7 +45,6 @@ export default class EditForm extends Component {
           message.error(res.msg);
         },
       );
-      console.log('values ', values);
       this.setState({
         selectedKeys: [],
       });
@@ -68,18 +69,12 @@ export default class EditForm extends Component {
   onCheck = (checkedKey, event) => {
     this.setState({
       checkedKeys: checkedKey,
-      selectedKeys: checkedKey.concat(event.halfCheckedKeys),
+      // selectedKeys: checkedKey.concat(event.halfCheckedKeys),
     });
   };
-  onLoad = (loadedKeys, tree) => {
-    console.log('loadedKeys ', loadedKeys);
-    console.log('event.tree ', tree);
-  };
+  onLoad = (loadedKeys, tree) => {};
 
   render() {
-    // const {roles} = this.state
-    const loadingRoles = false;
-    const loadingDetail = false;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -91,7 +86,6 @@ export default class EditForm extends Component {
       },
     };
     const { menus } = this.state;
-
     return (
       // <Spin spinning={loadingDetail}>
       <Form ref={this.form} {...formItemLayout} onFinish={this.handleSubmit}>
@@ -100,7 +94,6 @@ export default class EditForm extends Component {
         </Form.Item>
         <Form.Item
           label={'角色名称'}
-          colon={false}
           name="roleName"
           rules={[{ required: true, message: '角色名称不能为空' }]}
         >
@@ -108,17 +101,17 @@ export default class EditForm extends Component {
         </Form.Item>
         <Form.Item
           label={'角色代码'}
-          colon={false}
           name="code"
           rules={[{ required: true, message: '角色代码不能为空' }]}
         >
           <Input maxLength={5} placeholder={'角色代码'} />
         </Form.Item>
-        <Form.Item label={'菜单权限'} colon={false}>
+        <Form.Item label={'菜单权限'}>
           {menus.length > 0 && (
             <Tree
               onLoad={this.onLoad}
               checkable
+              checkStrictly
               autoExpandParent={false}
               onCheck={this.onCheck}
               treeData={menus}
@@ -126,12 +119,7 @@ export default class EditForm extends Component {
             />
           )}
         </Form.Item>
-        <Form.Item
-          {...formItemLayout}
-          label={'角色描述'}
-          colon={false}
-          name="intro"
-        >
+        <Form.Item {...formItemLayout} label={'角色描述'} name="intro">
           <Input.TextArea maxLength={200} />
         </Form.Item>
       </Form>

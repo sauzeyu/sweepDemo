@@ -36,7 +36,6 @@ class EditForm extends Component {
         </Form.Item>
         <Form.Item
           label={'姓名'}
-          colon={false}
           name="username"
           rules={[{ required: true, message: '姓名不能为空' }]}
         >
@@ -45,7 +44,6 @@ class EditForm extends Component {
 
         <Form.Item
           label={'手机'}
-          colon={false}
           name="phone"
           rules={[{ required: true, message: '电话不能为空' }]}
         >
@@ -54,7 +52,6 @@ class EditForm extends Component {
 
         <Form.Item
           label={'指纹'}
-          colon={false}
           name="phoneFingerprint"
           rules={[{ required: true, message: '指纹不能为空' }]}
         >
@@ -63,7 +60,6 @@ class EditForm extends Component {
 
         <Form.Item
           label={'身份证'}
-          colon={false}
           name="idCard"
           rules={[
             { required: true, message: '身份证不能为空' },
@@ -82,7 +78,6 @@ class EditForm extends Component {
         </Form.Item>
         <Form.Item
           label={'密码'}
-          colon={false}
           name="password"
           rules={[{ required: true, message: '密码不能为空' }]}
         >

@@ -71,10 +71,7 @@ function createDefaultRequest() {
             });
           }
           // const status = response.status;
-          // console.log("else--------------------")
           // if (status === 401 && status.data.code === 9000) {
-          //   console.log(" --response--", response)
-          //   console.log(" --status--", status)
           //   message.warn("没有此页面访问权限！")
           //   // getDvaApp()._store.dispatch({
           //   //   type: 'user/logout',

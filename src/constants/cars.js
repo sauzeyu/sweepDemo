@@ -1,3 +1,5 @@
+import { Tag } from 'antd';
+
 export const Categories = {
   1: '轿车',
   2: 'SUV',
@@ -32,10 +34,6 @@ export const electricStatus = {
   2: 'ON',
   3: 'RUN',
 };
-export const checkResult = {
-  0: ' 未通过',
-  1: '通过',
-};
 export const windowType = {
   GP01: '无防夹',
   GP02: '四车窗防夹',
@@ -55,7 +53,7 @@ export const color = {
   BG33: '流沙金',
   BG34: '古铜金',
 };
-export const uploadFlag = {
-  0: '未上传',
-  1: '已上传',
+export const overdue = {
+  0: <Tag color="blue">正常</Tag>,
+  1: <Tag color="red">报废</Tag>,
 };

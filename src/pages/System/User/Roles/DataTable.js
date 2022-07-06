@@ -52,7 +52,6 @@ export class DataTable extends Component {
   };
 
   onOk = () => {
-    console.log('this.editForm ', this.editForm);
     this.setState({
       userInfoVisible: false,
     });

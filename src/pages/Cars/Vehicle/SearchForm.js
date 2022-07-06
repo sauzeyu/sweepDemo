@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Col, DatePicker, Form, Input, Row, Select } from 'antd';
 import EasyTable from '@/components/EasyTable';
+import RestrictiveInput from '@/components/RestrictiveInput';
 
 @EasyTable.connect(({ carsVehicleDataTable }) => ({
   carsVehicleDataTable,
@@ -17,6 +18,7 @@ class SearchForm extends Component {
         if (errors) return;
       });
   };
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -30,14 +32,29 @@ class SearchForm extends Component {
     };
     const colSpan = {
       xs: 24,
-      sm: 6,
+      sm: 5,
     };
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'关键字'} name="keywords">
-              <Input placeholder={'车主手机号/vin号'} />
+            <Form.Item label={'设备序列号'} name="hwDeviceSn">
+              <RestrictiveInput trim placeholder={'请输入蓝牙设备序列号'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'车辆vin号'} name="vin">
+              <RestrictiveInput trim placeholder={'请输入车辆vin号'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'车辆型号'} name="vehicleModel">
+              <RestrictiveInput trim placeholder={'请输入车辆型号'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'车辆品牌'} name="vehicleBrand">
+              <RestrictiveInput trim placeholder={'请输入车辆品牌'} />
             </Form.Item>
           </Col>
           <Col {...colSpan} style={{ flex: 1 }}>

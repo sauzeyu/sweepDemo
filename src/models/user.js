@@ -86,7 +86,7 @@ export default {
     },
     *logout({ payload }, { put, call, select }) {
       const id = yield select((state) => {
-        state.user.currentUser.username;
+        state?.user?.currentUser?.username;
       });
       yield call(logout, { id });
       yield put({

@@ -12,7 +12,7 @@ class SearchForm extends Component {
     this.form.current
       .validateFields()
       .then((values) => {
-        this.props.carsTypeDataTable.fetch(values);
+        this.props.carsBluetoothDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
@@ -37,8 +37,25 @@ class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'设备序列号'} name="keywords">
+            <Form.Item label={'设备序列号'} name="hwDeviceSn">
               <Input placeholder="请输入设备序列号" />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label="设备检索号" name={'searchNumber'}>
+              <Input placeholder="请输入手机型号" />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan}>
+            <Form.Item label={'设备状态'} name="flag">
+              <Select mode={'multiple'} allowClear={true}>
+                <Select.Option key={1} value={1}>
+                  正常
+                </Select.Option>
+                <Select.Option key={0} value={0}>
+                  报废
+                </Select.Option>
+              </Select>
             </Form.Item>
           </Col>
           <Col {...colSpan}>

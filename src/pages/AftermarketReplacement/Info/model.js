@@ -2,10 +2,10 @@ import {
   addDkCustomer,
   editDkCustomer,
   deleteDkCustomer,
-} from '@/services/customer';
+} from '@/services/aftermarketReplacement';
 
 export default {
-  namespace: 'customer',
+  namespace: 'aftermarketReplacement',
   state: {},
   effects: {
     *upsert({ payload }, { call }) {

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Select, Spin, message } from 'antd';
 import { getAllRole, updateAdminById } from '@/services/admin';
 import moment from 'moment';
+import { getDvaApp } from '@@/plugin-dva/exports';
 
 export default class EditForm extends Component {
   form = React.createRef();
@@ -16,9 +17,9 @@ export default class EditForm extends Component {
   }
 
   handleSubmit = () => {
-    // console.log("this.dataTableRef ", this.props.dataTableRef)
     this.form.current.validateFields().then((values) => {
-      values.updator = localStorage.getItem('last_username');
+      values.updator =
+        getDvaApp()._store.getState()?.user?.currentUser?.username;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       updateAdminById(values).then(
         (res) => {
@@ -69,7 +70,6 @@ export default class EditForm extends Component {
         </Form.Item>
         <Form.Item
           label={'姓名'}
-          colon={false}
           name="username"
           rules={[{ required: true, message: '姓名不能为空' }]}
         >
@@ -78,7 +78,6 @@ export default class EditForm extends Component {
         <Spin spinning={loadingRoles}>
           <Form.Item
             label={'权限角色'}
-            colon={false}
             name="roleList"
             rules={[{ required: true, message: '权限角色不能为空' }]}
           >
@@ -93,12 +92,7 @@ export default class EditForm extends Component {
             </Select>
           </Form.Item>
         </Spin>
-        <Form.Item
-          {...formItemLayout}
-          label={'额外信息'}
-          colon={false}
-          name="extraInfo"
-        >
+        <Form.Item {...formItemLayout} label={'额外信息'} name="extraInfo">
           <Input.TextArea maxLength={200} />
         </Form.Item>
       </Form>

@@ -34,6 +34,10 @@ export async function getVehicles(params) {
 // export async function deleteVehicle(params) {
 //   return request.post('DKLinkVehicle/api/delete', params);
 // }
+// 编辑车辆
+export async function updateVehicle(params) {
+  return request.post('dkmVehicle/updateById', params);
+}
 
 // 添加车辆
 export async function addVehicle(params) {
@@ -41,13 +45,13 @@ export async function addVehicle(params) {
 }
 
 // 通过车主电话查询用户信息
-export async function selectUserByPhone(phone) {
-  return request.get('dkmUser/selectByPhone', { params: phone });
+export async function selectUserByVehicleId(params) {
+  return request.get('dkmVehicle/selectUserByVehicleId', { params });
 }
 
 // 通过车辆 id 分页查询钥匙列表
 export async function keyListById(params) {
-  return request.get('dkmKey/selectByVehicleIdForPage', { params });
+  return request.get('dkmKey/selectForPageByVehicleId', { params });
 }
 
 // 停用/启用车辆
@@ -68,4 +72,13 @@ export async function getPhone(params) {
 // 修改手机标定数据列表
 export async function updatePhone(params) {
   return request.post('dkmPhoneCalibrationData/updateById', params);
+}
+
+// 通过车辆 id 分页查询钥匙列表
+export async function keyLifecycleList(params) {
+  return request.get('dkmKeyLifecycle/selectForPageByKeyId', { params });
+}
+// 通过车辆 id 分页查询钥匙列表
+export async function keyUseListById(params) {
+  return request.get('dkmKeyUseLog/selectForPage', { params });
 }

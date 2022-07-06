@@ -1,5 +1,8 @@
-import { addVehicle, selectUserByPhone } from '@/services/cars';
-import { vehicleListById } from '@/services/keys';
+import {
+  addVehicle,
+  updateVehicle,
+  selectUserByVehicleId,
+} from '@/services/cars';
 
 export default {
   namespace: 'carsVehicle',
@@ -8,17 +11,8 @@ export default {
     *upsert({ payload }, { call }) {
       return yield call(payload.id ? updateVehicle : addVehicle, payload);
     },
-    *deleteVehicle({ payload }, { call }) {
-      return yield call(deleteVehicle, payload);
-    },
-    *getVehicleDetail({ payload }, { call }) {
-      return yield call(getVehicleDetail, payload);
-    },
-    *downloadTemplate({ payload }, { call }) {
-      return yield call(downloadTemplate);
-    },
-    *selectUserByPhone({ payload }, { call }) {
-      return yield call(selectUserByPhone, payload);
+    *selectUserByVehicleId({ payload }, { call }) {
+      return yield call(selectUserByVehicleId, payload);
     },
   },
   reducers: {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Col, DatePicker, Form, Input, Row, Select } from 'antd';
+import { Button, Col, DatePicker, Form, Input, Row } from 'antd';
 import EasyTable from '@/components/EasyTable';
 import moment from 'moment';
 
@@ -51,17 +51,17 @@ export default class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row>
           <Col {...colSpan}>
-            <Form.Item label={'角色名称'} name="roleName" colon={false}>
+            <Form.Item label={'角色名称'} name="roleName">
               <Input placeholder={'请输入角色名称'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'角色代码'} name="code" colon={false}>
+            <Form.Item label={'角色代码'} name="code">
               <Input placeholder={'请输入角色代码'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="创建时间" name={'startTime'} colon={false}>
+            <Form.Item label="创建时间" name={'startTime'}>
               <RangePicker />
             </Form.Item>
           </Col>
