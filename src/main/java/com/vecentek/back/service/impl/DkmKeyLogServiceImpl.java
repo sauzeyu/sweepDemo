@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -48,16 +49,18 @@ public class DkmKeyLogServiceImpl {
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, String errorReason) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,String vehicleModel) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
 
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
-                .like(StrUtil.isNotBlank(errorReason), DkmKeyLog::getErrorReason, errorReason)
+                .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
                 .like(StrUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(StrUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .like(StrUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
+                .eq(ObjectUtil.isNotNull(flag),DkmKeyLog::getFlag,flag)
                 .ge(StrUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
                 .le(StrUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
                 .orderByDesc(DkmKeyLog::getOperateTime);

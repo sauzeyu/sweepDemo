@@ -105,5 +105,8 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
             "and k.operate_time <= #{endTime}\n" +
             "group by v.vehicle_model")
     List<CountDTO> selectVehicleErrorCountByTime(String startTime, String endTime);
+
+    @Select("SELECT phone_brand as name,COUNT( 1 ) as value FROM dkm_key_log WHERE flag = 0 GROUP BY phone_brand")
+    List<CountDTO> selectKeyErrorLogByAllPhoneBrand();
 }
 

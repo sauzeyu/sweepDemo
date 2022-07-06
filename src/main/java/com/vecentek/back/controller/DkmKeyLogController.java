@@ -27,15 +27,28 @@ public class DkmKeyLogController {
     @GetMapping("/selectForPage")
     public PageResp selectForPage(@RequestParam("pageIndex") int pageIndex,
                                   @RequestParam("pageSize") int pageSize,
-                                  String vin,
                                   String userId,
+                                  String vin,
                                   String startTime,
                                   String endTime,
                                   String phoneBrand,
                                   String phoneModel,
                                   String statusCode,
-                                  String errorReason) {
-        return dkmKeyUseLogService.selectForPage(pageIndex, pageSize, vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, errorReason);
+                                  Integer flag,
+                                  String vehicleBrand,
+                                  String vehicleModel) {
+        return dkmKeyUseLogService.selectForPage(pageIndex,
+                pageSize,
+                vin,
+                userId,
+                startTime,
+                endTime,
+                phoneBrand,
+                phoneModel,
+                statusCode,
+                flag,
+                vehicleBrand,
+                vehicleModel);
     }
 
     @PostMapping(value = "/downloadKeyLogExcel")
@@ -47,9 +60,17 @@ public class DkmKeyLogController {
                                          String phoneModel,
                                          String statusCode,
                                          Integer flag,
-                                         Boolean isXlsx)  {
+                                         Boolean isXlsx) {
 
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, isXlsx);
+        downloadKeyLogExcel(vin,
+                userId,
+                startTime,
+                endTime,
+                phoneBrand,
+                phoneModel,
+                statusCode,
+                flag,
+                isXlsx);
         return PageResp.success();
 
     }
@@ -64,7 +85,15 @@ public class DkmKeyLogController {
                                     String statusCode,
                                     Integer flag,
                                     Boolean isXlsx) {
-        this.dkmKeyUseLogService.downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, isXlsx);
+        this.dkmKeyUseLogService.downloadKeyLogExcel(vin,
+                userId,
+                startTime,
+                endTime,
+                phoneBrand,
+                phoneModel,
+                statusCode,
+                flag,
+                isXlsx);
 
     }
 

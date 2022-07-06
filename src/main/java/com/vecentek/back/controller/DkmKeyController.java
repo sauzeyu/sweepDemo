@@ -1,14 +1,16 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
-import com.vecentek.back.vo.SelectKeyForPageVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 
 /**
  * 钥匙信息(DkmKey)表控制层
@@ -28,24 +30,38 @@ public class DkmKeyController {
     private DkmKeyServiceImpl dkmKeyServiceImpl;
 
 
-
     @GetMapping(value = "/selectForPage")
-    public PageResp selectForPage(@RequestBody SelectKeyForPageVO selectKeyForPageVO) {
-        return this.dkmKeyServiceImpl.selectForPage(selectKeyForPageVO.getPageIndex(),
-                selectKeyForPageVO.getPageSize(),
-                selectKeyForPageVO.getVin(),
-                selectKeyForPageVO.getUserId(),
-                selectKeyForPageVO.getKeyType(),
-                selectKeyForPageVO.getApplyStartTime(),
-                selectKeyForPageVO.getApplyEndTime(),
-                selectKeyForPageVO.getPeriodMax(),
-                selectKeyForPageVO.getPeriodMin(),
-                selectKeyForPageVO.getPeriodUnit(),
-                selectKeyForPageVO.getValFromStartTime(),
-                selectKeyForPageVO.getValFromEndTime(),
-                selectKeyForPageVO.getValToStartTime(),
-                selectKeyForPageVO.getValToEndTime(),
-                selectKeyForPageVO.getDkState());
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
+                                  @RequestParam(name = "pageSize") int pageSize,
+                                  String userId,
+                                  String vin,
+                                  Integer periodMin,
+                                  Integer periodMax,
+                                  String periodUnit,
+                                  String applyStartTime,
+                                  String applyEndTime,
+                                  String valFromStartTime,
+                                  String valFromEndTime,
+                                  String valToStartTime,
+                                  String valToEndTime,
+                                  Integer keyType,
+                                  Integer[] dkState
+    ) {
+        return this.dkmKeyServiceImpl.selectForPage(pageIndex,
+                pageSize,
+                userId,
+                vin,
+                periodMin,
+                periodMax,
+                periodUnit,
+                applyStartTime,
+                applyEndTime,
+                valFromStartTime,
+                valFromEndTime,
+                valToStartTime,
+                valToEndTime,
+                keyType,
+                dkState);
     }
 
 
@@ -77,20 +93,20 @@ public class DkmKeyController {
 
     /**
      * 解冻/冻结钥匙
+     *
      * @param keyId
      * @param dkState
      * @param userId
      * @return
      */
     @PostMapping(value = "/updateStateById")
-    public PageResp updateStateById( @RequestParam String keyId, @RequestParam Integer dkState,@RequestParam String userId) {
-        return this.dkmKeyServiceImpl.updateStateById(keyId, dkState,userId);
+    public PageResp updateStateById(@RequestParam String keyId, @RequestParam Integer dkState, @RequestParam String userId) {
+        return this.dkmKeyServiceImpl.updateStateById(keyId, dkState, userId);
     }
 
 
-
     @GetMapping(value = "/selectUserByKeyId")
-    public PageResp selectUserByKeyId( @RequestParam String keyId ) {
+    public PageResp selectUserByKeyId(@RequestParam String keyId) {
         return this.dkmKeyServiceImpl.selectUserByKeyId(keyId);
     }
 
@@ -108,6 +124,7 @@ public class DkmKeyController {
 
     /**
      * 根据 生效时间 失效时间 状态 周期 分页查询
+     *
      * @param pageIndex
      * @param pageSize
      * @param valFrom
@@ -118,7 +135,7 @@ public class DkmKeyController {
      */
     @GetMapping(value = "/selectForPageByVal")
     public PageResp selectForPageByVal(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
-                                       @RequestParam String valFrom, @RequestParam String valTo, @RequestParam Long period,@RequestParam Long dkState) {
+                                       @RequestParam String valFrom, @RequestParam String valTo, @RequestParam Long period, @RequestParam Long dkState) {
         return this.dkmKeyServiceImpl.selectForPageByVal(pageIndex, pageSize, valFrom, valTo, period, dkState);
     }
 

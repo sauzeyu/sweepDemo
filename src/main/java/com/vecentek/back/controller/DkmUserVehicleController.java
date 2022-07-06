@@ -8,12 +8,15 @@ import com.vecentek.back.vo.RevokeKeyVO;
 import com.vecentek.back.vo.UserChangeVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * @author ：EdgeYu
@@ -22,12 +25,14 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/api/userVehicle")
+@Slf4j
 public class DkmUserVehicleController {
     @Resource
     private DkmUserVehicleServiceImpl dkmUserVehicleService;
 
     @RequestMapping(value = "/insertUserVehicle", method = RequestMethod.POST)
     public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle)  {
+        log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         return dkmUserVehicleService.insertUserVehicle(userVehicle);
     }
 
@@ -44,6 +49,7 @@ public class DkmUserVehicleController {
      */
     @RequestMapping(value = "/logoutUserVehicle", method = RequestMethod.POST)
     public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle)  {
+        log.info("request：" + "/api/userVehicle/logoutUserVehicle " + logoutUserVehicle.toString());
         return dkmUserVehicleService.logoutUserVehicle(logoutUserVehicle);
     }
 
@@ -55,6 +61,7 @@ public class DkmUserVehicleController {
      */
     @RequestMapping(value = "/getBluetoothVin", method = RequestMethod.POST)
     public PageResp getBluetoothVin(@RequestBody GetBluetoothVinVO getBluetoothVinVO)  {
+        log.info("request：" + "/api/userVehicle/getBluetoothVin " + getBluetoothVinVO.toString());
         return dkmUserVehicleService.getBluetoothVin(getBluetoothVinVO);
     }
 
@@ -66,6 +73,7 @@ public class DkmUserVehicleController {
      */
     @RequestMapping(value = "/revokeKey", method = RequestMethod.POST)
     public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO)  {
+        log.info("request：" + "/api/userVehicle/revokeKey " + revokeKeyVO.toString());
         return dkmUserVehicleService.revokeKey(revokeKeyVO);
     }
 }
