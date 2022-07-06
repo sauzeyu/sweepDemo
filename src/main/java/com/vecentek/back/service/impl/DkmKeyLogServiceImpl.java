@@ -59,13 +59,13 @@ public class DkmKeyLogServiceImpl {
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicle_brand,String vehicle_model) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,String vehicleModel) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
 
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
-                .like(StrUtil.isNotBlank(vehicle_brand), DkmKeyLog::getVehicleBrand, vehicle_brand)
-                .like(StrUtil.isNotBlank(vehicle_model), DkmKeyLog::getVehicleModel, vehicle_model)
+                .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
                 .like(StrUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(StrUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
