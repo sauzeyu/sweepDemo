@@ -24,7 +24,15 @@ public class DkmMenuController {
     @GetMapping(value = "/selectAll")
     public PageResp selectAll() {
         return dkmMenuService.selectAll();
+    }
 
+    @GetMapping(value = "/selectForPage")
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
+                                  @RequestParam(name = "pageSize") int pageSize,
+                                  String title,
+                                  String icon,
+                                  String href) {
+        return dkmMenuService.selectForPage(pageIndex,pageSize,title,icon,href);
     }
 
     @GetMapping(value = "/selectMenuByRoleId")

@@ -3,7 +3,6 @@ spring:
     name: @project.artifactId@
   profiles:
     active: test
-    include: base
   cloud:
     nacos:
       config:
