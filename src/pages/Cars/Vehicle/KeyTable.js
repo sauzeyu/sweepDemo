@@ -1,22 +1,56 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import { message, Modal, Tag, Button, Badge, Space, Row, Col } from 'antd';
-import { SyncOutlined } from '@ant-design/icons';
+import { Table, Card } from 'antd';
+import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import { keyLifecycleList, keyListById } from '@/services/cars';
-import {
-  analyzePermissions,
-  DKState,
-  KeyState,
-  KeyType,
-  KeySource,
-} from '@/constants/keys';
-import DescriptionList from '@/components/DescriptionList';
+import { DKState, KeyState, KeyType, KeySource } from '@/constants/keys';
+import { useMemo } from 'react';
+
+const SubTable = (props) => {
+  const dataList = React.useRef();
+  const columns = [
+    {
+      title: '操作时间',
+      dataIndex: 'createTime',
+      width: 350,
+    },
+    {
+      title: '操作状态',
+      dataIndex: 'keyStatus',
+      width: 160,
+      render: (text) => {
+        return KeyState[text];
+      },
+    },
+    {
+      title: '吊销来源',
+      dataIndex: 'keySource',
+      width: 160,
+      render: (text) => {
+        return KeySource[text];
+      },
+    },
+  ];
+  const name = useMemo(() => `carSubModelsDataTable_${props.id}`, [props.id]);
+  return (
+    <Card>
+      <EasyTable
+        columns={columns}
+        rowKey={'id'}
+        source={keyLifecycleList}
+        name={name}
+        autoFetch
+        fixedParams={{ keyId: props.id }}
+        renderHeader={() => null}
+        wrappedComponentRef={() => {
+          return dataList;
+        }}
+      />
+    </Card>
+  );
+};
 
 class KeyTable extends Component {
-  state = {
-    keyLifecycleInfoVisible: false,
-    selectedKey: {},
-  };
   columns = [
     {
       title: '序号',
@@ -58,71 +92,15 @@ class KeyTable extends Component {
       dataIndex: 'valTo',
       width: 200,
     },
-    {
-      title: '操作',
-      fixed: 'right',
-      width: 160,
-      render: (text, col) => {
-        return <a onClick={() => this.keyLifecycle(col)}>生命周期</a>;
-      },
-    },
   ];
-  lifecycleColumns = [
-    {
-      title: '序号',
-      width: 80,
-      render: (text, record, index) => {
-        let currentIndex = this.keyLifecycleDataTable?.state?.currentIndex;
-        let currentPageSize =
-          this.keyLifecycleDataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
-      },
-    },
-    {
-      title: '操作时间',
-      dataIndex: 'createTime',
-      width: 350,
-    },
-    {
-      title: '操作状态',
-      dataIndex: 'keyStatus',
-      width: 160,
-      render: (text) => {
-        return KeyState[text];
-      },
-    },
-    {
-      title: '操作来源',
-      dataIndex: 'keySource',
-      width: 160,
-      render: (text) => {
-        return KeySource[text];
-      },
-    },
-  ];
-
-  keyLifecycle = (col) => {
-    this.setState({
-      keyLifecycleInfoVisible: true,
-      selectedKey: col,
-    });
-  };
-  onCancel = () => {
-    this.setState({
-      keyLifecycleInfoVisible: false,
-      selectedKey: {},
-    });
-  };
 
   render() {
     const { selectedVehicleId, selectedVehicleVin } = this.props;
-    const { selectedKey } = this.state;
-    let selectedKeyId = selectedKey.id;
-    let selectedKeyType = selectedKey.parentId;
     return (
       <div>
         <EasyTable
           autoFetch
+          columnWidth={200}
           source={keyListById}
           dataProp={'data'}
           name={'carsKeyListDataTable'}
@@ -133,54 +111,44 @@ class KeyTable extends Component {
             total = '共 ' + total + ' 条记录';
             return (
               <>
-                <p>
-                  <Badge color="pink" text="当前车辆 vin 号：" />
-                  <Tag color={'gold'} style={{ fontSize: 14 }}>
-                    {selectedVehicleVin}
-                  </Tag>
-                </p>
-                <div>
-                  <Badge color="blue" text={total} />
-                </div>
+                <p>当前车辆 vin 号：{selectedVehicleVin}</p>
+                <p>{total}</p>
               </>
             );
           }}
           columns={this.columns}
           fixedParams={{ vehicleId: selectedVehicleId }}
+          expandIconAsCell={false}
+          expandIconColumnIndex={6}
+          expandable={{
+            expandedRowRender: (record) => {
+              return <SubTable {...record} />;
+            },
+            expandIcon: (props) => {
+              if (props.expanded) {
+                return (
+                  <a
+                    onClick={(e) => {
+                      props.onExpand(props.record, e);
+                    }}
+                  >
+                    生命周期 <UpOutlined />
+                  </a>
+                );
+              } else {
+                return (
+                  <a
+                    onClick={(e) => {
+                      props.onExpand(props.record, e);
+                    }}
+                  >
+                    生命周期 <DownOutlined />
+                  </a>
+                );
+              }
+            },
+          }}
         />
-
-        <Modal
-          footer={null}
-          title={'钥匙生命周期'}
-          visible={this.state.keyLifecycleInfoVisible}
-          onCancel={this.onCancel}
-          destroyOnClose={true}
-          // width={800}
-        >
-          <EasyTable
-            autoFetch
-            source={keyLifecycleList}
-            dataProp={'data'}
-            name={'keyLifecycleDataTable'}
-            rowKey={'id'}
-            columns={this.lifecycleColumns}
-            wrappedComponentRef={(ref) => (this.keyLifecycleDataTable = ref)}
-            renderHeader={(title, extra, page) => {
-              return (
-                <>
-                  <p>
-                    <Badge color="pink" text="车辆 vin 号：" />
-                    <Tag color={'gold'}>{selectedVehicleVin}</Tag>
-                    <Badge color="purple" text="钥匙类型：" />
-                    {KeyType(selectedKeyType)}
-                  </p>
-                  {/*<div><Badge color="blue" text={total}/></div>*/}
-                </>
-              );
-            }}
-            fixedParams={{ keyId: selectedKeyId }}
-          />
-        </Modal>
       </div>
     );
   }

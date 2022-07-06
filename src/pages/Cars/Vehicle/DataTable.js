@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import { Button, Modal, message, Tag } from 'antd';
+import { Button, Modal, message, Tag, Tooltip } from 'antd';
 import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { getVehicles, stopVehicle, discardVehicle } from '@/services/cars';
@@ -47,21 +47,37 @@ class DataTable extends Component {
       width: 200,
     },
     {
-      title: '车辆型号',
-      dataIndex: 'vehicleModel',
-    },
-    {
       title: '车辆品牌',
       dataIndex: 'vehicleBrand',
+    },
+    {
+      title: '车辆型号',
+      dataIndex: 'vehicleModel',
     },
     {
       title: '蓝牙设备序列号',
       dataIndex: 'hwDeviceSn',
       width: 300,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '蓝牙检索号',
       dataIndex: 'searchNumber',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '蓝牙供应商编号',

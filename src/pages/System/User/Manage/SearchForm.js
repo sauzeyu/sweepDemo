@@ -66,6 +66,13 @@ export default class SearchForm extends Component {
           </Col>
           <Col {...colSpan}>
             <Button
+              onClick={() => {
+                this.form.current.resetFields();
+              }}
+            >
+              重置
+            </Button>
+            <Button
               type={'primary'}
               className={'gutter-left_lg'}
               htmlType={'submit'}

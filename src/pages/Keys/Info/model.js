@@ -6,8 +6,9 @@ export default {
   effects: {
     *enableKey({ payload }, { call }) {
       const params = new URLSearchParams();
-      params.append('id', payload.id);
+      params.append('keyId', payload.keyId);
       params.append('dkState', payload.dkState);
+      params.append('userId', payload.userId);
       return yield call(enableKey, params);
     },
     *revokeKey({ payload }, { call }) {

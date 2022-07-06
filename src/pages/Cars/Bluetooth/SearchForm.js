@@ -35,7 +35,7 @@ class SearchForm extends Component {
     };
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
-        <Row type={'flex'}>
+        <Row type={'flex'} gutter={16}>
           <Col {...colSpan}>
             <Form.Item label={'设备序列号'} name="hwDeviceSn">
               <Input placeholder="请输入设备序列号" />
@@ -43,12 +43,17 @@ class SearchForm extends Component {
           </Col>
           <Col {...colSpan}>
             <Form.Item label="设备检索号" name={'searchNumber'}>
-              <Input placeholder="请输入手机型号" />
+              <Input placeholder="请输入设备检索号" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
             <Form.Item label={'设备状态'} name="flag">
-              <Select mode={'multiple'} allowClear={true}>
+              <Select
+                mode={'multiple'}
+                allowClear={true}
+                showArrow
+                placeholder="请选择设备状态"
+              >
                 <Select.Option key={1} value={1}>
                   正常
                 </Select.Option>
@@ -60,6 +65,13 @@ class SearchForm extends Component {
           </Col>
           <Col {...colSpan}>
             <Form.Item>
+              <Button
+                onClick={() => {
+                  this.form.current.resetFields();
+                }}
+              >
+                重置
+              </Button>
               <Button
                 type={'primary'}
                 className={'gutter-left_lg'}

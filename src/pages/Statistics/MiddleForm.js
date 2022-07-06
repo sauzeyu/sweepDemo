@@ -14,12 +14,11 @@ const { TabPane } = Tabs;
 
 class MiddleForm extends React.Component {
   state = {
-    spinningVisible: true,
-    statisticsTotal: {},
     useLogCount: [],
     errorLogCount: [],
     keyUseLogCount: [],
     keyErrorLogCount: [],
+    monthList: [],
     pickerTime: [moment(), moment().add(1, 'days')],
   };
   keyUseLogTotalByMonth = () => {
@@ -32,20 +31,7 @@ class MiddleForm extends React.Component {
       },
       xAxis: {
         type: 'category',
-        data: [
-          '1月',
-          '2月',
-          '3月',
-          '4月',
-          '5月',
-          '6月',
-          '7月',
-          '8月',
-          '9月',
-          '10月',
-          '11月',
-          '12月',
-        ],
+        data: this.state.monthList,
       },
       yAxis: {
         type: 'value',
@@ -74,20 +60,7 @@ class MiddleForm extends React.Component {
       },
       xAxis: {
         type: 'category',
-        data: [
-          '1月',
-          '2月',
-          '3月',
-          '4月',
-          '5月',
-          '6月',
-          '7月',
-          '8月',
-          '9月',
-          '10月',
-          '11月',
-          '12月',
-        ],
+        data: this.state.monthList,
       },
       yAxis: {
         type: 'value',
@@ -231,16 +204,11 @@ class MiddleForm extends React.Component {
   };
 
   componentDidMount() {
-    selectTotal().then((res) => {
-      this.setState({
-        statisticsTotal: res.data,
-        spinningVisible: false,
-      });
-    });
     selectKeyLogByMonth().then((res) => {
       this.setState({
         useLogCount: res.data?.useLogCount,
         errorLogCount: res.data?.errorLogCount,
+        monthList: res.data?.monthList,
       });
     });
 
@@ -248,7 +216,6 @@ class MiddleForm extends React.Component {
       moment().format('YYYY-MM-DD'),
       moment().add(1, 'days').format('YYYY-MM-DD'),
     ];
-    // this.timePickerOnChange(true, timeString);
     this.selectKeyLogCount(timeString);
   }
 

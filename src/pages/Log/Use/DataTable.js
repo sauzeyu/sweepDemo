@@ -16,9 +16,8 @@ class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.keyLifecycleDataTable?.state?.currentIndex;
-        let currentPageSize =
-          this.keyLifecycleDataTable?.state?.currentPageSize;
+        let currentIndex = this.dataTable?.state?.currentIndex;
+        let currentPageSize = this.dataTable?.state?.currentPageSize;
         return (currentIndex - 1) * currentPageSize + (index + 1);
       },
     },
@@ -31,12 +30,20 @@ class DataTable extends Component {
       dataIndex: 'userId',
     },
     {
+      title: '手机品牌',
+      dataIndex: 'phoneBrand',
+    },
+    {
       title: '手机型号',
       dataIndex: 'phoneModel',
     },
     {
-      title: '手机品牌',
-      dataIndex: 'phoneBrand',
+      title: '车辆品牌',
+      dataIndex: 'vehicleBrand',
+    },
+    {
+      title: '车辆型号',
+      dataIndex: 'vehicleModel',
     },
     {
       title: '操作时间',

@@ -8,62 +8,18 @@ import {
   deleteById,
 } from '@/services/admin';
 import EditForm from '@/pages/System/User/Manage/EditForm';
+import { UserAddOutlined } from '@ant-design/icons';
+import AddUserForm from '@/pages/System/User/Manage/AddUserForm';
 
 export class DataTable extends Component {
   state = {
     userInfoVisible: false,
+    addUserVisible: false,
     userId: '',
     userInfo: {},
     roleList: [],
   };
 
-  editUser = (user) => {
-    let roleList;
-    getAdminRoleNameById(user.id).then(
-      (res) => {
-        roleList = res.data;
-        this.setState(
-          {
-            userInfoVisible: true,
-          },
-          () => {
-            if (user) {
-              user.roleList = roleList;
-              this.editForm?.setFieldsValue(user);
-            }
-          },
-        );
-      },
-      (error) => {
-        message.error('服务器繁忙,请稍后再试！');
-      },
-    );
-  };
-  deleteUser = (user) => {
-    const that = this.dataTable;
-    Modal.error({
-      title: '删除管理员',
-      content: `确定删除 ${user.username}？`,
-      onOk: () => {
-        return deleteById(user.id).then(() => {
-          that.refresh();
-        });
-      },
-      okText: '删除',
-    });
-  };
-
-  onOk = () => {
-    this.setState({
-      userInfoVisible: false,
-    });
-    this.editForm.submit();
-  };
-  hideUserInfoModal = () => {
-    this.setState({
-      userInfoVisible: false,
-    });
-  };
   columns = [
     {
       title: '用户名',
@@ -135,9 +91,60 @@ export class DataTable extends Component {
     },
   ];
 
+  editUser = (user) => {
+    let roleList;
+    getAdminRoleNameById(user.id).then(
+      (res) => {
+        roleList = res.data;
+        this.setState(
+          {
+            userInfoVisible: true,
+          },
+          () => {
+            if (user) {
+              user.roleList = roleList;
+              this.editForm?.setFieldsValue(user);
+            }
+          },
+        );
+      },
+      (error) => {
+        message.error('服务器繁忙,请稍后再试！');
+      },
+    );
+  };
+  addUserFormOk = () => {
+    this.setState({ addUserVisible: false });
+  };
+  deleteUser = (user) => {
+    const that = this.dataTable;
+    Modal.confirm({
+      title: '删除管理员',
+      content: `确定删除 ${user.username}？`,
+      onOk: () => {
+        return deleteById(user.id).then(() => {
+          that.refresh();
+        });
+      },
+      okText: '删除',
+    });
+  };
+
+  onOk = () => {
+    this.setState({
+      userInfoVisible: false,
+    });
+    this.editForm.submit();
+  };
+  onCancel = () => {
+    this.setState({
+      userInfoVisible: false,
+      addUserVisible: false,
+    });
+  };
   render() {
     return (
-      <div>
+      <>
         <EasyTable
           autoFetch
           source={getAdminList}
@@ -146,12 +153,25 @@ export class DataTable extends Component {
           rowKey={'id'}
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
+          extra={
+            <Button
+              type={'primary'}
+              icon={<UserAddOutlined />}
+              onClick={() => {
+                this.setState({
+                  addUserVisible: true,
+                });
+              }}
+            >
+              新增用户
+            </Button>
+          }
         />
         <Modal
           title="修改用户"
           visible={this.state.userInfoVisible}
           onOk={this.onOk}
-          onCancel={this.hideUserInfoModal}
+          onCancel={this.onCancel}
           okText="确认"
           cancelText="取消"
         >
@@ -160,7 +180,20 @@ export class DataTable extends Component {
             editFormRef={(ref) => (this.editForm = ref.form.current)}
           />
         </Modal>
-      </div>
+        <Modal
+          title="新增用户"
+          visible={this.state.addUserVisible}
+          onOk={this.addUserFormOk}
+          onCancel={this.onCancel}
+          okText="确认"
+          cancelText="取消"
+        >
+          <AddUserForm
+            dataTableRef={this.dataTable}
+            addFormEef={(ref) => (this.addForm = ref.form.current)}
+          />
+        </Modal>
+      </>
     );
   }
 }

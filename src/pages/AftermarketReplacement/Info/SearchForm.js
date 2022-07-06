@@ -56,6 +56,13 @@ class SearchForm extends Component {
           </Col>
           <Col {...colSpan} style={{ flex: 1 }}>
             <Button
+              onClick={() => {
+                this.form.current.resetFields();
+              }}
+            >
+              重置
+            </Button>
+            <Button
               type={'primary'}
               className={'gutter-left_lg'}
               htmlType={'submit'}

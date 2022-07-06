@@ -18,3 +18,8 @@ export const isVaild = {
   0: '停用',
   1: '启用',
 };
+export const menuType = {
+  0: '菜单',
+  1: '动作',
+  2: '目录',
+};

@@ -36,7 +36,7 @@ class SearchForm extends Component {
     };
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
-        <Row type={'flex'}>
+        <Row type={'flex'} gutter={16}>
           <Col {...colSpan}>
             <Form.Item label={'设备序列号'} name="hwDeviceSn">
               <RestrictiveInput trim placeholder={'请输入蓝牙设备序列号'} />
@@ -58,6 +58,13 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan} style={{ flex: 1 }}>
+            <Button
+              onClick={() => {
+                this.form.current.resetFields();
+              }}
+            >
+              重置
+            </Button>
             <Button
               type={'primary'}
               className={'gutter-left_lg'}

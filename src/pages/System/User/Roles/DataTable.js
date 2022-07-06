@@ -33,7 +33,7 @@ export class DataTable extends Component {
 
   deleteUser = (role) => {
     const that = this.dataTable;
-    Modal.error({
+    Modal.confirm({
       title: '删除角色',
       content: `确定删除 ${role.roleName}？`,
       onOk: () => {
@@ -67,19 +67,19 @@ export class DataTable extends Component {
   };
   columns = [
     {
-      title: '角色代码',
+      title: '父菜单',
       dataIndex: 'code',
     },
     {
-      title: '角色名称',
+      title: '标题',
       dataIndex: 'roleName',
     },
     {
-      title: '角色描述',
+      title: 'icon',
       dataIndex: 'intro',
     },
     {
-      title: '创建时间',
+      title: '路由',
       dataIndex: 'createTime',
     },
     {
