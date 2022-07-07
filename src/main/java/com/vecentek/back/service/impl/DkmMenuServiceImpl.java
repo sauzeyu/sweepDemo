@@ -1,5 +1,9 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.dto.TreeMenuDTO;
 import com.vecentek.back.entity.DkmMenu;
 import com.vecentek.back.mapper.DkmMenuMapper;
@@ -63,5 +67,18 @@ public class DkmMenuServiceImpl {
         List<String> menuIds = dkmMenuMapper.selectMenuByRoleId(id);
         return PageResp.success("查询成功", menuIds);
 
+    }
+
+    public PageResp selectForPage(Integer pageIndex, Integer pageSize, String title, String icon, String href) {
+        LambdaQueryWrapper<DkmMenu> lambdaQuery = Wrappers.lambdaQuery();
+        Page<DkmMenu> page = new Page<>(pageIndex, pageSize);
+        page = dkmMenuMapper.selectPage(page, lambdaQuery
+                .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
+                .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
+                .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
+                .orderByAsc(DkmMenu::getDna)
+        );
+
+        return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 }
