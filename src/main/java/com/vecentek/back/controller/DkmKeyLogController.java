@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * @author ：EdgeYu
@@ -51,6 +56,18 @@ public class DkmKeyLogController {
                 vehicleModel);
     }
 
+    /**
+     * 开始导出
+     * @param vin
+     * @param userId
+     * @param startTime
+     * @param endTime
+     * @param phoneBrand
+     * @param phoneModel
+     * @param statusCode
+     * @param flag
+     * @return
+     */
     @PostMapping(value = "/downloadKeyLogExcel")
     public PageResp startLoadKeyLogExcel(String vin,
                                          String userId,
@@ -59,22 +76,28 @@ public class DkmKeyLogController {
                                          String phoneBrand,
                                          String phoneModel,
                                          String statusCode,
+                                         String vehicleBrand,
+                                         String vehicleModel,
                                          Integer flag,
-                                         Boolean isXlsx) {
-
-        downloadKeyLogExcel(vin,
-                userId,
-                startTime,
-                endTime,
-                phoneBrand,
-                phoneModel,
-                statusCode,
-                flag,
-                isXlsx);
-        return PageResp.success();
+                                         HttpServletRequest httpServletRequest
+    ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        String token = httpServletRequest.getHeader("access-token");
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, token);
+        return PageResp.success("正在导出");
 
     }
 
+    /**
+     * 异步导出
+     * @param vin
+     * @param userId
+     * @param startTime
+     * @param endTime
+     * @param phoneBrand
+     * @param phoneModel
+     * @param statusCode
+     * @param flag
+     */
     @Async
     public void downloadKeyLogExcel(String vin,
                                     String userId,
@@ -84,8 +107,13 @@ public class DkmKeyLogController {
                                     String phoneModel,
                                     String statusCode,
                                     Integer flag,
-                                    Boolean isXlsx) {
-        this.dkmKeyUseLogService.downloadKeyLogExcel(vin,
+                                    String vehicleBrand,
+                                    String vehicleModel,
+                                    String token
+    ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+
+        this.dkmKeyUseLogService.downloadKeyLogExcel
+                (vin,
                 userId,
                 startTime,
                 endTime,
@@ -93,15 +121,16 @@ public class DkmKeyLogController {
                 phoneModel,
                 statusCode,
                 flag,
-                isXlsx);
+                vehicleBrand,
+                vehicleModel,
+                token);
 
     }
 
     @GetMapping("/checkKeyUseLog")
-    public PageResp checkKeyUseLog() {
+    public PageResp checkKeyUseLog( String creator) {
         //查询历史导出记录表(倒排)
-        return this.dkmKeyUseLogService.checkKeyUseLog();
-
+        return this.dkmKeyUseLogService.checkKeyUseLog(creator);
     }
 
 }

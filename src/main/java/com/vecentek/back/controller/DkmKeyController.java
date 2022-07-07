@@ -2,6 +2,7 @@ package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
 import com.vecentek.common.response.PageResp;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
 /**
  * 钥匙信息(DkmKey)表控制层
@@ -137,6 +139,78 @@ public class DkmKeyController {
     public PageResp selectForPageByVal(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
                                        @RequestParam String valFrom, @RequestParam String valTo, @RequestParam Long period, @RequestParam Long dkState) {
         return this.dkmKeyServiceImpl.selectForPageByVal(pageIndex, pageSize, valFrom, valTo, period, dkState);
+    }
+
+    /**
+     * 开始导出
+     * @param
+     * @return
+     */
+    @PostMapping(value = "/downloadKeyExcel")
+    public PageResp startLoadKeyLogExcel( String vin,
+                                          String userId,
+                                          Integer keyType,
+                                          String applyStartTime,
+                                          String applyEndTime,
+                                          Integer periodMax,
+                                          Integer periodMin,
+                                          String periodUnit,
+                                          String valFromStartTime,
+                                          String valFromEndTime,
+                                          String valToStartTime,
+                                          String valToEndTime,
+                                          Integer[] dkStates,
+                                          String token)  {
+        downloadKeyExcel(vin,
+                userId,
+                keyType,
+                applyStartTime,
+                applyEndTime,
+                periodMax,
+                periodMin,
+                periodUnit,
+                valFromStartTime,
+                valFromEndTime,
+                valToStartTime,
+                valToEndTime
+                , dkStates,token);
+        return PageResp.success("正在导出");
+
+    }
+
+    /**
+     * 异步导出
+
+     */
+    @Async
+    public void downloadKeyExcel( String vin,
+                                  String userId,
+                                  Integer keyType,
+                                  String applyStartTime,
+                                  String applyEndTime,
+                                  Integer periodMax,
+                                  Integer periodMin,
+                                  String periodUnit,
+                                  String valFromStartTime,
+                                  String valFromEndTime,
+                                  String valToStartTime,
+                                  String valToEndTime,
+                                  Integer[] dkStates,
+                                  String token)  {
+        this.dkmKeyServiceImpl.downloadKeyLogExcel(
+                vin,
+                userId,
+                keyType,
+                applyStartTime,
+                applyEndTime,
+                periodMax,
+                periodMin,
+                periodUnit,
+                valFromStartTime,
+                valFromEndTime,
+                valToStartTime,
+                valToEndTime
+                , dkStates,token);
     }
 
 }
