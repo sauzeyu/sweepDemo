@@ -144,7 +144,7 @@ class DataTable extends Component {
             {/*<Description term={'天窗类型'}>*/}
             {/*  {sunroofType[carInfo?.sunroofType]}*/}
             {/*</Description>*/}
-            <Description term={'现蓝牙序列号'}>
+            <Description term={'现蓝牙设备序列号'}>
               <Tag color="blue">{carInfo?.hwDeviceSn}</Tag>
             </Description>
             <Description term={'创建时间'}>{carInfo?.createTime}</Description>

@@ -26,11 +26,11 @@ class DataTable extends Component {
       },
     },
     {
-      title: '设备序列号',
+      title: '蓝牙设备序列号',
       dataIndex: 'hwDeviceSn',
     },
     {
-      title: '设备检索号',
+      title: '蓝牙检索号',
       dataIndex: 'searchNumber',
     },
     {

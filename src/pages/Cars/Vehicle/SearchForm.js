@@ -34,11 +34,19 @@ class SearchForm extends Component {
       xs: 24,
       sm: 5,
     };
+    const colSpan2 = {
+      xs: 24,
+      sm: 4,
+    };
+    const colSpan1 = {
+      xs: 24,
+      sm: 7,
+    };
     return (
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row type={'flex'} gutter={16}>
-          <Col {...colSpan}>
-            <Form.Item label={'设备序列号'} name="hwDeviceSn">
+          <Col {...colSpan1}>
+            <Form.Item label={'蓝牙设备序列号'} name="hwDeviceSn">
               <RestrictiveInput trim placeholder={'请输入蓝牙设备序列号'} />
             </Form.Item>
           </Col>
@@ -47,17 +55,17 @@ class SearchForm extends Component {
               <RestrictiveInput trim placeholder={'请输入车辆vin号'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan}>
+          <Col {...colSpan2}>
             <Form.Item label={'车辆型号'} name="vehicleModel">
               <RestrictiveInput trim placeholder={'请输入车辆型号'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan}>
+          <Col {...colSpan2}>
             <Form.Item label={'车辆品牌'} name="vehicleBrand">
               <RestrictiveInput trim placeholder={'请输入车辆品牌'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan} style={{ flex: 1 }}>
+          <Col {...colSpan2} style={{ flex: 1 }}>
             <Button
               onClick={() => {
                 this.form.current.resetFields();
