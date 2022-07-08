@@ -21,6 +21,7 @@
 
 
     <dependencies>
+
         <dependency>
             <groupId>com.payneteasy</groupId>
             <artifactId>ber-tlv</artifactId>
@@ -164,6 +165,7 @@
         </dependency>
 
 
+
     </dependencies>
 
     <build>
@@ -172,53 +174,53 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <!--执行mvn package,即执行 mvn clean package docker:build-->
-                    <execution>
-                        <id>build-image</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
+<!--            <plugin>-->
+<!--                <groupId>com.spotify</groupId>-->
+<!--                <artifactId>docker-maven-plugin</artifactId>-->
+<!--                <version>1.0.0</version>-->
+<!--                <executions>-->
+<!--                    &lt;!&ndash;执行mvn package,即执行 mvn clean package docker:build&ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>build-image</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>build</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
 
-                <configuration>
-                    <!-- 镜像名称 -->
-                    <imageName>${project.artifactId}</imageName>
-                    <!-- 指定标签 -->
-                    <imageTags>
-                        <imageTag>latest</imageTag>
-                    </imageTags>
-                    <!-- 基础镜像-->
-                    <baseImage>openjdk:8-jdk-alpine</baseImage>
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; 镜像名称 &ndash;&gt;-->
+<!--                    <imageName>${project.artifactId}</imageName>-->
+<!--                    &lt;!&ndash; 指定标签 &ndash;&gt;-->
+<!--                    <imageTags>-->
+<!--                        <imageTag>latest</imageTag>-->
+<!--                    </imageTags>-->
+<!--                    &lt;!&ndash; 基础镜像&ndash;&gt;-->
+<!--                    <baseImage>openjdk:8-jdk-alpine</baseImage>-->
 
-                    <!-- 切换到容器工作目录-->
-                    <workdir>/</workdir>
+<!--                    &lt;!&ndash; 切换到容器工作目录&ndash;&gt;-->
+<!--                    <workdir>/</workdir>-->
 
-                    <entryPoint>["java","-jar","${project.build.finalName}.jar"]</entryPoint>
+<!--                    <entryPoint>["java","-jar","${project.build.finalName}.jar"]</entryPoint>-->
 
-                    <!-- 指定远程 Docker API地址  -->
-                    <dockerHost>https://172.16.13.12:2376</dockerHost>
-                    <!-- 指定tls证书的目录 -->
-                    <dockerCertPath>C:\Users\Y7701\Desktop\为辰信安-Start\docker-ca\为辰-13-12</dockerCertPath>
+<!--                    &lt;!&ndash; 指定远程 Docker API地址  &ndash;&gt;-->
+<!--                    <dockerHost>https://172.16.13.11:2376</dockerHost>-->
+<!--                    &lt;!&ndash; 指定tls证书的目录 &ndash;&gt;-->
+<!--                    <dockerCertPath>E:\docker-ca\为辰-13-11</dockerCertPath>-->
 
-                    <!-- 复制 jar包到docker容器指定目录-->
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <!-- 用于指定需要复制的根目录，${project.build.directory}表示target目录 -->
-                            <directory>${project.build.directory}</directory>
-                            <!-- 用于指定需要复制的文件，${project.build.finalName}.jar就是打包后的target目录下的jar包名称　-->
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
-                </configuration>
-            </plugin>
+<!--                    &lt;!&ndash; 复制 jar包到docker容器指定目录&ndash;&gt;-->
+<!--                    <resources>-->
+<!--                        <resource>-->
+<!--                            <targetPath>/</targetPath>-->
+<!--                            &lt;!&ndash; 用于指定需要复制的根目录，${project.build.directory}表示target目录 &ndash;&gt;-->
+<!--                            <directory>${project.build.directory}</directory>-->
+<!--                            &lt;!&ndash; 用于指定需要复制的文件，${project.build.finalName}.jar就是打包后的target目录下的jar包名称　&ndash;&gt;-->
+<!--                            <include>${project.build.finalName}.jar</include>-->
+<!--                        </resource>-->
+<!--                    </resources>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

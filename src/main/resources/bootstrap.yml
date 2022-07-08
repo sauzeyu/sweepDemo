@@ -13,6 +13,7 @@ spring:
           - data-id: common.yaml
             refresh: true
             group: common
+        group: liujz
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
