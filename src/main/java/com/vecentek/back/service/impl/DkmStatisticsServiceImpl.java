@@ -1,11 +1,15 @@
 package com.vecentek.back.service.impl;
 
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.CountDTO;
 import com.vecentek.back.dto.MonthCountDTO;
 import com.vecentek.back.dto.StatisticsDTO;
@@ -103,21 +107,66 @@ public class DkmStatisticsServiceImpl {
 
     public PageResp selectKeyUseLogByTime(String startTime, String endTime) {
         List<CountDTO> keyLogCount = dkmKeyLogMapper.selectUseCountByTime(startTime, endTime);
-
-        return PageResp.success("查询成功", keyLogCount);
+        // 数据简化处理 四位状态码的日志只返回开启和关闭两大类 不显示具体开启情况
+        List<CountDTO> list1 = simpleLog(keyLogCount,"01");
+        List<CountDTO> list2 = simpleLog(keyLogCount,"03");
+        List<CountDTO> list3 = simpleLog(keyLogCount,"04");
+        List<CountDTO> list4 = simpleLog(keyLogCount,"05");
+        List<CountDTO> list5 = simpleLog(keyLogCount,"06");
+        List<CountDTO> list6 = simpleLog(keyLogCount,"07");
+        List<CountDTO> list7 = simpleLog(keyLogCount,"08");
+        List<CountDTO> list8 = simpleLog(keyLogCount,"09");
+        List<CountDTO> list9 = simpleLog(keyLogCount,"0A");
+        List<CountDTO> list10 = simpleLog2(keyLogCount,"0C");
+        // 两位状态码的日志 不做简化处理
+        List<CountDTO> list11 = twoBytesLog(keyLogCount);
+        list1.addAll(list2);
+        list1.addAll(list3);
+        list1.addAll(list4);
+        list1.addAll(list5);
+        list1.addAll(list6);
+        list1.addAll(list7);
+        list1.addAll(list8);
+        list1.addAll(list9);
+        list1.addAll(list10);
+        list1.addAll(list11);
+        return PageResp.success("查询成功", list1);
     }
 
     public PageResp selectKeyErrorLogByTime(String startTime, String endTime) {
         List<CountDTO> keyLogCount = dkmKeyLogMapper.selectErrorCountByTime(startTime, endTime);
-        return PageResp.success("查询成功", keyLogCount);
+        // 数据简化处理 四位状态码的日志只返回开启和关闭两大类 不显示具体开启情况
+        List<CountDTO> list1 = simpleLog(keyLogCount,"01");
+        List<CountDTO> list2 = simpleLog(keyLogCount,"03");
+        List<CountDTO> list3 = simpleLog(keyLogCount,"04");
+        List<CountDTO> list4 = simpleLog(keyLogCount,"05");
+        List<CountDTO> list5 = simpleLog(keyLogCount,"06");
+        List<CountDTO> list6 = simpleLog(keyLogCount,"07");
+        List<CountDTO> list7 = simpleLog(keyLogCount,"08");
+        List<CountDTO> list8 = simpleLog(keyLogCount,"09");
+        List<CountDTO> list9 = simpleLog(keyLogCount,"0A");
+        List<CountDTO> list10 = simpleLog2(keyLogCount,"0C");
+        // 两位状态码的日志 不做简化处理
+        List<CountDTO> list11 = twoBytesLog(keyLogCount);
+        list1.addAll(list2);
+        list1.addAll(list3);
+        list1.addAll(list4);
+        list1.addAll(list5);
+        list1.addAll(list6);
+        list1.addAll(list7);
+        list1.addAll(list8);
+        list1.addAll(list9);
+        list1.addAll(list10);
+        list1.addAll(list11);
+        return PageResp.success("查询成功", list1);
     }
 
     public PageResp selectKeyErrorLogByPhoneBrand(String phoneBrand) {
         List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByPhoneBrand(phoneBrand);
         for (CountDTO countDTO : list) {
             String name = countDTO.getName();
-            String errorReason = KeyErrorReasonEnum.matchReason(name);
-            countDTO.setName(errorReason);
+            String reason = KeyErrorReasonEnum.matchReason(name);
+            countDTO.setName(reason);
         }
         return PageResp.success("查询成功",list);
     }
@@ -168,9 +217,9 @@ public class DkmStatisticsServiceImpl {
         if (StrUtil.isBlank(startTime) || StrUtil.isBlank(endTime)) {
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
-        HashMap<String, Object> phoneData = new HashMap<>();
-        HashMap<String, Object> statusCodeData = new HashMap<>();
-        HashMap<String, Object> vehicleData = new HashMap<>();
+        HashMap<String, Object> phoneData ;
+        HashMap<String, Object> statusCodeData ;
+        HashMap<String, Object> vehicleData ;
         // 手机品牌和操作码
         List<CountDTO> phoneList = dkmKeyLogMapper.selectPhoneErrorCountByTime(startTime, endTime);
         List<CountDTO> statusList = dkmKeyLogMapper.selectStatusErrorCountByTime(startTime, endTime);
@@ -227,5 +276,137 @@ public class DkmStatisticsServiceImpl {
     public PageResp selectKeyErrorLogByAllPhoneBrand() {
         List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand();
         return PageResp.success("查询成功",list);
+    }
+
+    /**
+     * 简化数据
+     * @param countDTOs
+     * @param statusCode
+     * @return
+     */
+    List<CountDTO> simpleLog(List<CountDTO> countDTOs,String statusCode){
+        String type = "";
+        List<CountDTO> data = new ArrayList<>();
+        int OpenInt = 0; // 开启总条数
+
+        for (CountDTO countDTO : countDTOs) {
+            if (countDTO.getName().length() == 4){
+                if (ObjectUtil.equals(statusCode,"01")){
+                    type = "解闭锁";
+                }else if (ObjectUtil.equals(statusCode,"03")){
+                    type = "寻车";
+                }else if (ObjectUtil.equals(statusCode,"04")){
+                    type = "发动机";
+                }else if (ObjectUtil.equals(statusCode,"05")){
+                    type = "空调";
+                }else if (ObjectUtil.equals(statusCode,"06")){
+                    type = "司机车窗";
+                }else if (ObjectUtil.equals(statusCode,"07")){
+                    type = "副驾车窗";
+                }else if (ObjectUtil.equals(statusCode,"08")){
+                    type = "左后车窗";
+                }else if (ObjectUtil.equals(statusCode,"09")){
+                    type = "右后车窗";
+                }else if (ObjectUtil.equals(statusCode,"0A")){
+                    type = "遮阳罩";
+                }
+
+                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(),0,2),statusCode)
+                        && ObjectUtil.equals(StrUtil.sub(countDTO.getName(),2,4),"00")){ // 关闭
+                    countDTO.setName(type + "关闭");
+                    countDTO.setValue(countDTO.getValue());
+                    data.add(countDTO);
+                }else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(),0,2),statusCode)
+                        && ObjectUtil.notEqual(StrUtil.sub(countDTO.getName(),2,4),"00")){ // 开启
+                    Integer value = countDTO.getValue();
+                    int intValue = value.intValue();
+                    OpenInt += intValue;
+                }
+            }
+        }
+
+        if (OpenInt != 0){
+            CountDTO countDTO = new CountDTO();
+            countDTO.setName(type + "开启");
+            countDTO.setValue(OpenInt);
+            data.add(countDTO);
+        }
+        return data;
+    }
+
+    /**
+     * 主驾副驾通风加热
+     * @param countDTOs
+     * @param statusCode
+     * @return
+     */
+    List<CountDTO> simpleLog2(List<CountDTO> countDTOs,String statusCode){
+        String type = "通风加热";
+        List<CountDTO> data = new ArrayList<>();
+        int mainOpenInt = 0; // 主驾通风加热开启总条数
+        int secOpenInt = 0; // 副驾通风加热开启总条数
+
+        for (CountDTO countDTO : countDTOs) {
+            if (countDTO.getName().length() == 4){
+                // 主驾通风加热特殊处理
+                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(),0,2),"0C")
+                        && ObjectUtil.equals(StrUtil.sub(countDTO.getName(),2,4),"00")){ // 主驾通风加热关闭
+                    countDTO.setName("主驾" + type + "关闭");
+                    countDTO.setValue(countDTO.getValue());
+                    data.add(countDTO);
+                }else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(),0,2),"0C")
+                        && Convert.toInt(StrUtil.sub(countDTO.getName(),2,4)) <= 12 ){ // 主驾通风加热开启
+                    Integer value = countDTO.getValue();
+                    int intValue = value.intValue();
+                    mainOpenInt += intValue;
+                }
+
+                // 副驾通风加热特殊处理
+                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(),0,2),"0C")
+                        && ObjectUtil.equals(StrUtil.sub(countDTO.getName(),2,4),"13")){ // 主驾通风加热关闭
+                    countDTO.setName("副驾" + type + "关闭");
+                    countDTO.setValue(countDTO.getValue());
+                    data.add(countDTO);
+                }else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(),0,2),"0C")
+                        && Convert.toInt(StrUtil.sub(countDTO.getName(),2,4)) >= 14
+                        && Convert.toInt(StrUtil.sub(countDTO.getName(),2,4)) <= 25 ){ // 主驾通风加热开启
+                    Integer value = countDTO.getValue();
+                    int intValue = value.intValue();
+                    secOpenInt += intValue;
+                }
+
+            }
+        }
+        if (ObjectUtil.equals(statusCode,"0C") && mainOpenInt != 0){
+            CountDTO countDTO = new CountDTO();
+            countDTO.setName("主驾" + type + "开启");
+            countDTO.setValue(mainOpenInt);
+            data.add(countDTO);
+        }
+
+        if (ObjectUtil.equals(statusCode,"0C") && secOpenInt != 0){
+            CountDTO countDTO = new CountDTO();
+            countDTO.setName("副驾" + type + "开启");
+            countDTO.setValue(secOpenInt);
+            data.add(countDTO);
+        }
+        return data;
+    }
+
+    /**
+     * 两位状态码的日志
+     * @param countDTOs
+     * @return
+     */
+    List<CountDTO> twoBytesLog(List<CountDTO> countDTOs){
+        List<CountDTO> data = new ArrayList<>();
+        for (CountDTO countDTO : countDTOs) {
+            if (countDTO.getName().length() == 2){
+                String matchName = KeyStatusCodeEnum.matchName(countDTO.getName());
+                countDTO.setName(matchName);
+                data.add(countDTO);
+            }
+        }
+        return data;
     }
 }

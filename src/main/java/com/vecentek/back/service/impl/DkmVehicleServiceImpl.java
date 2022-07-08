@@ -1,10 +1,16 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.dto.DkmVehicleDTO;
+import com.vecentek.back.entity.DkmAftermarketReplacement;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.entity.DkmUserVehicle;
 import com.vecentek.back.entity.DkmVehicle;
@@ -12,9 +18,20 @@ import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.mapper.DkmUserVehicleMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.common.response.PageResp;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -123,4 +140,73 @@ public class DkmVehicleServiceImpl {
         }
         return PageResp.fail("查询失败");
     }
+
+    public void downloadDkmVehicle(String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand, HttpServletResponse response) {
+
+                LambdaQueryWrapper< DkmVehicle > queryWrapper = Wrappers.<DkmVehicle>lambdaQuery()
+                .like(StrUtil.isNotBlank(vin), DkmVehicle::getVin, vin)
+                .like(StrUtil.isNotBlank(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn)
+                .like(StrUtil.isNotBlank(vehicleModel), DkmVehicle::getVehicleModel, vehicleModel)
+                .like(StrUtil.isNotBlank(vehicleBrand), DkmVehicle::getVehicleBrand, vehicleBrand)
+                .orderByDesc(DkmVehicle::getCreateTime);
+        List<DkmVehicle> dkmVehicles = dkmVehicleMapper.selectList(queryWrapper);
+        // 设置响应头信息
+        try {
+            response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + URLEncoder.encode("车辆信息", "UTF-8") + ".xls");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/vnd.ms-excel");
+
+
+        ExcelWriter writer = ExcelUtil.getBigWriter();
+
+
+        writer.setOnlyAlias(true);
+
+        Font headFont = writer.createFont();
+        Font cellFont = writer.createFont();
+
+        cellFont.setFontName("宋体");
+        headFont.setFontName("宋体");
+        headFont.setBold(true);
+
+        CellStyle headCellStyle = writer.getHeadCellStyle();
+        headCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        headCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        headCellStyle.setFont(headFont);
+        headCellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+
+        CellStyle cellStyle = writer.getCellStyle();
+        cellStyle.setFont(cellFont);
+
+        writer.setColumnWidth(0, 20);
+        writer.setColumnWidth(1, 20);
+        writer.setColumnWidth(2, 20);
+        writer.setColumnWidth(3, 20);
+        writer.setColumnWidth(2, 20);
+        writer.setColumnWidth(3, 20);
+        writer.setColumnWidth(3, 20);
+
+        writer.addHeaderAlias("vin", "车辆vin号");
+        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        writer.addHeaderAlias("vehicleModel", "车辆型号");
+        writer.addHeaderAlias("hwDeviceSn", "蓝牙设备序列号");
+        writer.addHeaderAlias("searchNumber", "蓝牙检索号");
+        writer.addHeaderAlias("hwDeviceProviderNo", "蓝牙供应商编号");
+        writer.addHeaderAlias("bleMacAddress", "蓝牙Mac地址");
+
+
+        writer.write(dkmVehicles, true);
+
+        try {
+            writer.flush(response.getOutputStream(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            writer.close();
+        }
+    }
+
 }

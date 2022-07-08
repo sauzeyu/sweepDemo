@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 蓝牙数据(DkmBluetooths)表控制层
@@ -53,4 +54,8 @@ public class DkmBluetoothsController {
         return this.dkmBluetoothsServiceImpl.deleteById(hwDeviceSn);
     }
 
+    @PostMapping(value = "/downloadDkmBluetooths")
+    public void downloadDkmBluetooths(String hwDeviceSn,String searchNumber,Integer flag,HttpServletResponse response)  {
+        this.dkmBluetoothsServiceImpl.downloadDkmBluetooths(hwDeviceSn, searchNumber, flag,response);
+    }
 }
