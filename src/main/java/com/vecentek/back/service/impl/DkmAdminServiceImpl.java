@@ -114,10 +114,17 @@ public class DkmAdminServiceImpl {
         return PageResp.fail("修改失败");
     }
 
-
+    @Transactional(rollbackFor = Exception.class)
     public PageResp insert(InsertAdminVO insertAdminVO) {
+        if (StrUtil.hasBlank(insertAdminVO.getUsername(),insertAdminVO.getPassword())) {
+            return PageResp.fail(9001, "必填参数未传递");
+        }
         DkmAdmin admin = new DkmAdmin();
         BeanUtils.copyProperties(insertAdminVO, admin);
+        DkmAdmin alreadyExistAdmin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery().eq(DkmAdmin::getUsername, admin.getUsername()));
+        if (alreadyExistAdmin != null) {
+            return PageResp.fail(500, "用户名已存在");
+        }
         dkmAdminMapper.insert(admin);
         // 新建用户角色中间表
         Integer[] role = insertAdminVO.getRole();
