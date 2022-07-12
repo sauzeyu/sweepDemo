@@ -35,32 +35,28 @@ public class DkmMenuServiceImpl {
         return treeNode;
     }
 
+    private List<TreeMenuDTO> generateTreeData(List<TreeMenuDTO> allNode) {
+        return allNode.stream()
+                .filter(node -> node.getParentId() == null)
+                .peek(node -> node.setChildren(getChildList(node, allNode)))
+                .collect(Collectors.toList());
+    }
+
+    private List<TreeMenuDTO> getChildList(TreeMenuDTO supperNode, List<TreeMenuDTO> allNode) {
+        return allNode.stream()
+                .filter(node -> Objects.equals(Integer.parseInt(supperNode.getKey()), node.getParentId()))
+                .peek(node -> node.setChildren(getChildList(node, allNode)))
+                .collect(Collectors.toList());
+    }
+
+
     public PageResp selectAll() {
+
+
         List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(null);
-        List<TreeMenuDTO> parentMenuList = new ArrayList<>();
-        List<TreeMenuDTO> subMenuList = new ArrayList<>();
-        List<DkmMenu> parentMenu = dkmMenus.stream().filter(menu -> menu.getParentId() == null).collect(Collectors.toList());
-        List<DkmMenu> subMenu = dkmMenus.stream().filter(menu -> menu.getParentId() != null).collect(Collectors.toList());
-
-        for (DkmMenu menu : subMenu) {
-            TreeMenuDTO subTreeNode = castMenuToTreeNode(menu);
-            subMenuList.add(subTreeNode);
-        }
-
-        for (DkmMenu menu : parentMenu) {
-            TreeMenuDTO parentTreeNode = castMenuToTreeNode(menu);
-            parentMenuList.add(parentTreeNode);
-        }
-        for (TreeMenuDTO parentTree : parentMenuList) {
-            parentTree.setChildren(new ArrayList<>());
-            for (TreeMenuDTO subTree : subMenuList) {
-                if (Objects.equals(subTree.getParentId().toString(), parentTree.getKey())) {
-                    parentTree.getChildren().add(subTree);
-                }
-
-            }
-        }
-        return PageResp.success("查询成功", parentMenuList);
+        List<TreeMenuDTO> treeMenuList = new ArrayList<>();
+        dkmMenus.forEach(menu -> treeMenuList.add(castMenuToTreeNode(menu)));
+        return PageResp.success("查询成功", generateTreeData(treeMenuList));
     }
 
     public PageResp selectMenuByRoleId(Integer id) {
