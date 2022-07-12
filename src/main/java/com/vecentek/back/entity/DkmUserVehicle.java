@@ -22,7 +22,7 @@ public class DkmUserVehicle extends BaseEntity {
     /**
      * 用户车辆表id
      */
-    private String id;
+    private Long id;
     /**
      * 车辆id
      */

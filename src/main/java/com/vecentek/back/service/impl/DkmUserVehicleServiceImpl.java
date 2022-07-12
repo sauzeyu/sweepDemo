@@ -52,9 +52,9 @@ public class DkmUserVehicleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
-        if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin(), userVehicle.getUsername())) {
-            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户姓名或用户手机号或车辆vin号未传递！");
-            return PageResp.fail("上传失败，用户姓名或用户手机号或车辆vin号未传递！");
+        if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin(), userVehicle.getUsername()) || userVehicle.getBindTime() == null) {
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN，用户名，购车时间等必要参数未传递！");
+            return PageResp.success("上传失败，用户ID，VIN，用户名，购车时间等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
 
@@ -71,23 +71,38 @@ public class DkmUserVehicleServiceImpl {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
             return PageResp.fail(2106, "系统不存在该车辆信息！");
         }
-        DkmUserVehicle dkmUserVehicle = new DkmUserVehicle();
-        dkmUserVehicle.setVehicleId(dkmVehicle.getId());
-        dkmUserVehicle.setUserId(dkmUser.getId());
-        dkmUserVehicle.setBindTime(userVehicle.getBindTime());
-        dkmUserVehicle.setBindStatus(1);
-        dkmUserVehicle.setLicense(userVehicle.getLicense());
-        dkmUserVehicle.setVehicleType(userVehicle.getVehicleType());
-        dkmUserVehicle.setVin(userVehicle.getVin());
-        dkmUserVehicle.setPhone(userVehicle.getUserId());
-        dkmUserVehicle.setCreateTime(new Date());
 
-        int insert = dkmUserVehicleMapper.insert(dkmUserVehicle);
+        // 检查用户和vin唯一性
+        LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        dkmUserVehicleLambdaQueryWrapper.eq(DkmUserVehicle::getVin,userVehicle.getVin());
+        DkmUserVehicle dkmUserVehicle1 = dkmUserVehicleMapper.selectOne(dkmUserVehicleLambdaQueryWrapper);
+        LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
+        dkmUserVehicleLambdaQueryWrapper1.eq(DkmUserVehicle::getUserId,userVehicle.getUserId());
+        DkmUserVehicle dkmUserVehicle2 = dkmUserVehicleMapper.selectOne(dkmUserVehicleLambdaQueryWrapper1);
+        if (dkmUserVehicle1 == null && dkmUserVehicle2 == null){
+            DkmUserVehicle dkmUserVehicle = new DkmUserVehicle();
+            dkmUserVehicle.setVehicleId(dkmVehicle.getId());
+            dkmUserVehicle.setUserId(dkmUser.getId());
+            dkmUserVehicle.setBindTime(userVehicle.getBindTime());
+            dkmUserVehicle.setBindStatus(1);
+            if (userVehicle.getLicense() != null){
+                dkmUserVehicle.setLicense(userVehicle.getLicense());
+            }
+            dkmUserVehicle.setVehicleType(userVehicle.getVehicleType());
+            dkmUserVehicle.setVin(userVehicle.getVin());
+            dkmUserVehicle.setPhone(userVehicle.getUserId());
+            dkmUserVehicle.setCreateTime(new Date());
+            int insert = dkmUserVehicleMapper.insert(dkmUserVehicle);
 
-        if (insert == 1) {
-            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-            return PageResp.success("上传成功");
+            if (insert == 1) {
+                log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
+                return PageResp.success("上传成功");
+            }
+        }else {
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统已存在此VIN号，请勿重复绑定！");
+            return PageResp.success("数据库已存在相同用户车辆关系！");
         }
+
         log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");
         return PageResp.fail("系统繁忙，请稍后再试！");
     }
