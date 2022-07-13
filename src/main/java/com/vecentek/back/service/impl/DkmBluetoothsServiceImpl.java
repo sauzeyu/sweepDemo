@@ -70,10 +70,10 @@ public class DkmBluetoothsServiceImpl {
         return PageResp.success("删除成功");
     }
 
-    public void downloadDkmBluetooths(String hwDeviceSn, String searchNumber, Integer flag, HttpServletResponse response) {
+    public void downloadDkmBluetooths(String hwDeviceSn, String searchNumber, Integer[] flag, HttpServletResponse response) {
 
         LambdaQueryWrapper<DkmBluetooths> queryWrapper = Wrappers.<DkmBluetooths>lambdaQuery()
-                .eq(flag != null, DkmBluetooths::getFlag, flag)
+                .in(flag != null, DkmBluetooths::getFlag, flag)
                 .like(StrUtil.isNotBlank(searchNumber), DkmBluetooths::getSearchNumber, searchNumber)
                 .like(StrUtil.isNotBlank(hwDeviceSn), DkmBluetooths::getHwDeviceSn, hwDeviceSn)
                 .orderByDesc(DkmBluetooths::getCreateTime);
@@ -89,7 +89,7 @@ public class DkmBluetoothsServiceImpl {
         });
         // 设置响应头信息
         try {
-            response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + URLEncoder.encode("蓝牙信息", "UTF-8") + ".xls");
+            response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + URLEncoder.encode("蓝牙信息", "UTF-8") + ".xlsx");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

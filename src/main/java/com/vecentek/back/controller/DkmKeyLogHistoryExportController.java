@@ -7,10 +7,14 @@ import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.service.DkmKeyLogHistoryExportService;
+import com.vecentek.back.service.impl.DkmAftermarketReplacementServiceImpl;
+import com.vecentek.back.service.impl.DkmKeyLogHistoryExportServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -22,6 +26,9 @@ import java.util.List;
 @RestController
 @RequestMapping("dkmKeyLogHistoryExport")
 public class DkmKeyLogHistoryExportController extends ApiController {
+    @Resource
+    private DkmKeyLogHistoryExportServiceImpl dkmKeyLogHistorysExportService;
+
     /**
      * 服务对象
      */
@@ -82,6 +89,11 @@ public class DkmKeyLogHistoryExportController extends ApiController {
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.dkmKeyLogHistoryExportService.removeByIds(idList));
+    }
+
+    @PostMapping(value = "/downloadExcel")
+    public void downloadExcel(String fileName, HttpServletResponse response) throws UnsupportedEncodingException {
+        this.dkmKeyLogHistorysExportService.downloadExcel(fileName, response);
     }
 }
 

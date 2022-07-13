@@ -61,18 +61,18 @@ public class DownLoadUtil {
         String endFileName = DateUtil.format(endName, "yyyy-MM-dd");
         String fileName = startFileName + "~" + endFileName;
 
-        String username = null;
-        if (CharSequenceUtil.isNotBlank(token)) {
-            try {
-                username  = TokenUtils.parseToken(JwtConstant.JWT_USER_INFO_KEY, token, String.class);
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InvalidKeySpecException e) {
-                e.printStackTrace();
-            }
-        }
+        String username = "";
+        //if (CharSequenceUtil.isNotBlank(token)) {
+        //    try {
+        //        username  = TokenUtils.parseToken(JwtConstant.JWT_USER_INFO_KEY, token, String.class);
+        //    } catch (NoSuchAlgorithmException e) {
+        //        e.printStackTrace();
+        //    } catch (IOException e) {
+        //        e.printStackTrace();
+        //    } catch (InvalidKeySpecException e) {
+        //        e.printStackTrace();
+        //    }
+        //}
 
 
         dateList.add(fileName);
