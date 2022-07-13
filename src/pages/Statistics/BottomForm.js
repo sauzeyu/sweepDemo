@@ -70,11 +70,11 @@ class BottomForm extends React.Component {
       tooltip: {
         trigger: 'item',
       },
-      legend: {
-        top: '15%',
-        orient: 'vertical',
-        left: 'right',
-      },
+      // legend: {
+      //   top: '15%',
+      //   orient: 'vertical',
+      //   left: 'right',
+      // },
       toolbox: {
         show: true,
         feature: {
