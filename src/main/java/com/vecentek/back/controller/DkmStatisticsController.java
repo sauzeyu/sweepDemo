@@ -3,7 +3,12 @@ package com.vecentek.back.controller;
 import com.vecentek.back.service.impl.DkmStatisticsServiceImpl;
 import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
@@ -22,10 +27,11 @@ public class DkmStatisticsController {
 
     /**
      * 面向TSP
+     *
      * @param timeQuantumVO
      * @return
      */
-    @PostMapping( "/selectTotal")
+    @PostMapping("/selectTotal")
     public PageResp selectUserTotal(@RequestBody TimeQuantumVO timeQuantumVO) {
         return echartsServiceImpl.selectTotal(timeQuantumVO.getStartTime(), timeQuantumVO.getEndTime());
     }
@@ -45,33 +51,35 @@ public class DkmStatisticsController {
         return echartsServiceImpl.selectKeyLogByMonth();
     }
 
-    @GetMapping( "/selectKeyUseLogByTime")
+    @GetMapping("/selectKeyUseLogByTime")
     public PageResp selectKeyUseLogByTime(@RequestParam String startTime, @RequestParam String endTime) {
         return echartsServiceImpl.selectKeyUseLogByTime(startTime, endTime);
     }
 
-    @GetMapping( "/selectKeyErrorLogByTime")
+    @GetMapping("/selectKeyErrorLogByTime")
     public PageResp selectKeyErrorLogByTime(@RequestParam String startTime, @RequestParam String endTime) {
         return echartsServiceImpl.selectKeyErrorLogByTime(startTime, endTime);
     }
 
     /**
      * 根据各手机品牌查询对应错误日志占比
+     *
      * @param
      * @return
      */
-    @RequestMapping(value = "/selectKeyErrorLogByAllPhoneBrand", method = RequestMethod.GET)
+    @GetMapping("/selectKeyErrorLogByAllPhoneBrand")
     public PageResp selectKeyErrorLogByAllPhoneBrand() {
         return echartsServiceImpl.selectKeyErrorLogByAllPhoneBrand();
     }
 
     /**
      * 根据手机品牌查询对应错误日志占比
+     *
      * @param phoneBrand
      * @return
      */
     @GetMapping("/selectKeyErrorLogByPhoneBrand")
-    public PageResp selectKeyErrorLogByPhoneBrand(@RequestParam String phoneBrand) {
+    public PageResp selectKeyErrorLogByPhoneBrand( String phoneBrand) {
         return echartsServiceImpl.selectKeyErrorLogByPhoneBrand(phoneBrand);
     }
 
@@ -79,6 +87,7 @@ public class DkmStatisticsController {
      * 车辆总数统计框
      * 按一年分成12个月查
      * 每日新增车辆数
+     *
      * @return
      */
     @GetMapping(value = "/vehicleStatistics")
@@ -100,6 +109,7 @@ public class DkmStatisticsController {
     /**
      * 钥匙使用次数
      * 子钥匙，车主钥匙，车主钥匙占比
+     *
      * @return
      */
     @GetMapping(value = "/keyUseTimeStatistics")
@@ -110,6 +120,7 @@ public class DkmStatisticsController {
     /**
      * 钥匙故障次数
      * 子钥匙，车主钥匙，车主钥匙占比
+     *
      * @return
      */
     @GetMapping(value = "/keyErrorTimeStatistics")
@@ -120,6 +131,7 @@ public class DkmStatisticsController {
     /**
      * 按照时间段统计不同型号手机失败率、不同车型失败率、不同模块失败率
      * 不同手机型号的故障率,不同车型的故障率,不同故障码的故障率
+     *
      * @return
      */
     @GetMapping(value = "/selectErrorStatusTotal")

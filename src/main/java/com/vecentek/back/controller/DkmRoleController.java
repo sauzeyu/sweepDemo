@@ -1,8 +1,11 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmRoleServiceImpl;
+import com.vecentek.back.vo.InsertAdminVO;
+import com.vecentek.back.vo.InsertRoleVO;
 import com.vecentek.back.vo.RoleDTO;
 import com.vecentek.common.response.PageResp;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,6 +69,12 @@ public class DkmRoleController {
     public PageResp deleteById(@RequestParam("id") Integer id) {
 
         return this.dkmRoleService.deleteById(id);
+    }
+
+
+    @PostMapping(value = "/insert")
+    public PageResp insert(@RequestBody InsertRoleVO roleVO) {
+        return this.dkmRoleService.insert(roleVO);
     }
 
 }

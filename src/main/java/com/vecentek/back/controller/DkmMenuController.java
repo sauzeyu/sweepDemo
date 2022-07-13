@@ -39,4 +39,10 @@ public class DkmMenuController {
     public PageResp selectMenuByRoleId(@RequestParam("id") Integer id) {
         return dkmMenuService.selectMenuByRoleId(id);
     }
+
+
+    @GetMapping(value = "/selectByParentId")
+    public PageResp selectByParentId(@RequestParam("parentId") Integer parentId) {
+        return dkmMenuService.selectByParentId(parentId);
+    }
 }

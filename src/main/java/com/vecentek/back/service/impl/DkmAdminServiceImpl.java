@@ -123,7 +123,7 @@ public class DkmAdminServiceImpl {
         BeanUtils.copyProperties(insertAdminVO, admin);
         DkmAdmin alreadyExistAdmin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery().eq(DkmAdmin::getUsername, admin.getUsername()));
         if (alreadyExistAdmin != null) {
-            return PageResp.fail(500, "用户名已存在");
+            return PageResp.fail(500, "用户已存在");
         }
         dkmAdminMapper.insert(admin);
         // 新建用户角色中间表

@@ -75,6 +75,9 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
     @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE (flag = 0 AND phone_brand = #{phoneBrand}) GROUP BY error_reason")
     List<CountDTO> selectKeyErrorLogByPhoneBrand(String phoneBrand);
 
+    @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE flag = 0  GROUP BY error_reason")
+    List<CountDTO> selectKeyErrorLog();
+
     @Select("select count(1) as count from dkm_key_log where day(create_time) = day(now()) and flag = 1")
     int countUseToday();
 

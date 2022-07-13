@@ -37,7 +37,6 @@ import java.util.Objects;
 @Slf4j
 public class DkmUserVehicleServiceImpl {
 
-    private static final int MAX_DATA_TOTAL = 50;
 
     @Resource
     private DkmUserVehicleMapper dkmUserVehicleMapper;
@@ -54,7 +53,7 @@ public class DkmUserVehicleServiceImpl {
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin(), userVehicle.getUsername()) || userVehicle.getBindTime() == null) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN，用户名，购车时间等必要参数未传递！");
-            return PageResp.success("上传失败，用户ID，VIN，用户名，购车时间等必要参数未传递！");
+            return PageResp.fail("上传失败，用户ID，VIN，用户名，购车时间等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
 
@@ -100,7 +99,7 @@ public class DkmUserVehicleServiceImpl {
             }
         }else {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统已存在此VIN号，请勿重复绑定！");
-            return PageResp.success("数据库已存在相同用户车辆关系！");
+            return PageResp.fail("数据库已存在相同用户车辆关系！");
         }
 
         log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");

@@ -26,7 +26,14 @@ public class DkmMenuServiceImpl {
     @Resource
     private DkmMenuMapper dkmMenuMapper;
 
-
+    /**
+     * 将菜单对象转换为树形控件节点所需对象
+     *
+     * @param menu 数据库中菜单对象
+     * @return {@link TreeMenuDTO}
+     * @author EdgeYu
+     * @date 2022-07-12 10:51
+     */
     private TreeMenuDTO castMenuToTreeNode(DkmMenu menu) {
         TreeMenuDTO treeNode = new TreeMenuDTO();
         treeNode.setKey(menu.getId().toString());
@@ -35,6 +42,14 @@ public class DkmMenuServiceImpl {
         return treeNode;
     }
 
+    /**
+     * 生成树形控件所需数据
+     *
+     * @param allNode 所有菜单节点
+     * @return {@link List<TreeMenuDTO>}
+     * @author EdgeYu
+     * @date 2022-07-12 10:51
+     */
     private List<TreeMenuDTO> generateTreeData(List<TreeMenuDTO> allNode) {
         return allNode.stream()
                 .filter(node -> node.getParentId() == null)
@@ -42,6 +57,15 @@ public class DkmMenuServiceImpl {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 获取父节点的子节点
+     *
+     * @param supperNode 父节点
+     * @param allNode    所有菜单节点
+     * @return {@link List<TreeMenuDTO>}
+     * @author EdgeYu
+     * @date 2022-07-12 10:52
+     */
     private List<TreeMenuDTO> getChildList(TreeMenuDTO supperNode, List<TreeMenuDTO> allNode) {
         return allNode.stream()
                 .filter(node -> Objects.equals(Integer.parseInt(supperNode.getKey()), node.getParentId()))
@@ -51,7 +75,6 @@ public class DkmMenuServiceImpl {
 
 
     public PageResp selectAll() {
-
 
         List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(null);
         List<TreeMenuDTO> treeMenuList = new ArrayList<>();
@@ -72,9 +95,15 @@ public class DkmMenuServiceImpl {
                 .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
                 .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
                 .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
+                .isNull(DkmMenu::getParentId)
                 .orderByAsc(DkmMenu::getDna)
         );
 
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
+    }
+
+    public PageResp selectByParentId(Integer parentId) {
+        List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(Wrappers.<DkmMenu>lambdaQuery().eq(DkmMenu::getParentId, parentId).orderByAsc(DkmMenu::getDna));
+        return PageResp.success("查询成功", dkmMenus);
     }
 }
