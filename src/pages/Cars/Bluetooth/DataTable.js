@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
 import { getBluetooth, delBluetooth } from '@/services/cars';
 import { overdue } from '@/constants/cars';
-
+import { exportBluetooth } from '@/services/exportBluetooth';
 @connect(({ carsType, loading }) => ({
   carsType,
 }))
@@ -130,7 +130,31 @@ class DataTable extends Component {
     this.editForm.resetFields();
     this.setState({ editFormVisible: false });
   };
-
+  exportExcel = () => {
+    let hwDeviceSn = this.props.searchFormValues[0];
+    let searchNumber = this.props.searchFormValues[1];
+    let flag = this.props.searchFormValues[2];
+    let fileName = '蓝牙信息.xlsx';
+    let param = new URLSearchParams();
+    if (hwDeviceSn && hwDeviceSn.value) {
+      param.append('hwDeviceSn', hwDeviceSn.value);
+    }
+    if (searchNumber && searchNumber.value) {
+      param.append('searchNumber', searchNumber.value);
+    }
+    // debugger;
+    if (flag && flag.value) {
+      param.append('flag', flag.value);
+    }
+    exportBluetooth(param).then((res) => {
+      let blob = new Blob([res.data]);
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  };
   render() {
     const { editFormVisible } = this.state;
     return (
@@ -143,6 +167,18 @@ class DataTable extends Component {
           rowKey={'id'}
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
+          extra={
+            <div className={'btn-group'}>
+              <Button
+                type={'ghost'}
+                size={'large'}
+                icon={<DownloadOutlined />}
+                onClick={() => this.exportExcel()}
+              >
+                导出蓝牙信息
+              </Button>
+            </div>
+          }
           // extra={
           //   <Button
           //     type={'primary'}

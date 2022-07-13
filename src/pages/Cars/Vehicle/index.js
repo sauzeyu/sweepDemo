@@ -8,14 +8,23 @@ import SeesawView from '@/components/SeesawView';
  * 车辆信息
  */
 class Index extends Component {
+  getFormValues = (values) => {
+    this.setState({
+      searchFormValues: values,
+    });
+  };
+  state = {
+    searchFormValues: {},
+  };
   render() {
+    const { searchFormValues } = this.state;
     return (
       <div className={'card-group'}>
         <Card bordered={false}>
-          <SearchForm />
+          <SearchForm getFormValues={this.getFormValues} />
         </Card>
         <Card bordered={false}>
-          <DataTable />
+          <DataTable searchFormValues={searchFormValues} />
         </Card>
       </div>
     );

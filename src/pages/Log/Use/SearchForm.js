@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Col, Form, Row, Select, Input, DatePicker } from 'antd';
 import EasyTable from '@/components/EasyTable';
 import { Permit } from '@/constants/keys';
-import moment from '_moment@2.29.1@moment';
+import moment from 'moment';
 import {
   DownOutlined,
   UpOutlined,
@@ -69,7 +69,14 @@ class SearchForm extends Component {
       icon = <UpOutlined />;
     }
     return (
-      <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
+      <Form
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        ref={this.form}
+        onFieldsChange={(changedFields, allFields) => {
+          this.props.getFormValues(allFields);
+        }}
+      >
         <Row type={'flex'} gutter={16}>
           <Col {...colSpan}>
             <Form.Item label={'车辆vin号'} name="vin">

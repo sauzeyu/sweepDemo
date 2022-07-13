@@ -1,5 +1,7 @@
+import { getDvaApp } from '@@/plugin-dva/exports';
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
+import moment from 'moment';
 import {
   Badge,
   Button,
@@ -12,11 +14,103 @@ import {
 } from 'antd';
 import { DownloadOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 import { connect } from 'dva';
-import { getKeysList, selectVehicleById } from '@/services/keys';
+import {
+  getKeysList,
+  selectVehicleById,
+  checkKeyUseLog,
+} from '@/services/keys';
 import { DKState, KeySource, KeyState, KeyType } from '@/constants/keys';
+import { exportStatus } from '@/constants/export';
 import { keyLifecycleList, keyUseListById } from '@/services/cars';
 import { useMemo } from 'react';
+import { exportKey } from '@/services/exportKey';
+import { downloadExcel } from '@/services/downloadExcel';
 
+const download = (col) => {
+  console.log(col);
+  let param = new URLSearchParams();
+  let fileName = col.missionName;
+  if (fileName) {
+    param.append('fileName', fileName);
+  }
+
+  downloadExcel(param).then((res) => {
+    let blob = new Blob([res.data]);
+    let link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName + '.xlsx';
+    link.click();
+    window.URL.revokeObjectURL(link.href);
+  });
+};
+
+const SubTable2 = () => {
+  const columns1 = [
+    // {
+    //   title: '序号',
+    //   width: 80,
+    //   render: (text, record, index) => {
+    //     let currentIndex = this.checkKeyUseLogTable?.state?.currentIndex;
+    //     let currentPageSize = this.checkKeyUseLogTable?.state?.currentPageSize;
+    //     return (currentIndex - 1) * currentPageSize + (index + 1);
+    //   },
+    // },
+    {
+      title: '导出状态',
+      dataIndex: 'exportStatus',
+      render: (text) => {
+        return exportStatus[text];
+      },
+    },
+    {
+      title: '任务名称',
+      dataIndex: 'missionName',
+    },
+    {
+      title: '任务创建时间',
+      dataIndex: 'createTime',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
+    },
+    {
+      title: '操作人',
+      dataIndex: 'creator',
+    },
+    {
+      title: '操作',
+      dataIndex: '',
+      render: (col) => {
+        return (
+          <div className={'link-group'}>
+            <Popover title="" trigger="click">
+              <a onClick={() => download(col)}>下载</a>
+            </Popover>
+          </div>
+        );
+      },
+    },
+  ];
+
+  // console.log("props ",props);
+  return (
+    <EasyTable
+      rowKey={'id'}
+      scroll={{ x: '800px' }}
+      autoFetch
+      source={checkKeyUseLog}
+      dataProp={'data'}
+      name={'checkKeyUseLogTable'}
+      columns={columns1}
+      // wrappedComponentRef={(ref) => (this?.checkKeyUseLogTable = ref)}
+    />
+  );
+};
 const SubTable = (props) => {
   const dataList = React.useRef();
   const columns = [
@@ -266,7 +360,107 @@ class DataTable extends Component {
       },
     });
   };
+  onCancel = () => {
+    this.setState({
+      showUserInfo: false,
+    });
+  };
+  openModalExport = () => {
+    this.setState({
+      showUserInfo: true,
+    });
+  };
 
+  exportExcel = () => {
+    let storage = window.localStorage;
+    let creator = getDvaApp()._store.getState().user.currentUser.username;
+
+    console.log('this.props.searchFormValues ', this.props.searchFormValues);
+    let obj = Object.keys(this.props.searchFormValues);
+    console.log('obj ', obj);
+
+    let userId = this.props.searchFormValues[0];
+    let vin = this.props.searchFormValues[1];
+    let periodMin = this.props.searchFormValues[2];
+    let periodMax = this.props.searchFormValues[3];
+    let periodUnit = this.props.searchFormValues[4];
+
+    let applyTime = this.props.searchFormValues[5];
+
+    let valFromTime = this.props.searchFormValues[6];
+
+    let valToTime = this.props.searchFormValues[7];
+
+    let keyType = this.props.searchFormValues[8];
+
+    let dkState = this.props.searchFormValues[9];
+
+    let fileName = '钥匙信息.xlsx';
+    let param = new URLSearchParams();
+
+    if (userId?.value) {
+      param.append('userId', userId);
+    }
+    if (vin?.value) {
+      param.append('vin', vin);
+    }
+    if (periodMin?.value) {
+      param.append('periodMin', periodMin);
+    }
+    if (periodMax?.value) {
+      param.append('periodMax', periodMax);
+    }
+    if (periodUnit?.value) {
+      param.append('periodUnit', periodUnit);
+    }
+    if (keyType?.value) {
+      param.append('keyType', keyType);
+    }
+    if (dkState?.value) {
+      param.append('dkState', dkState);
+    }
+
+    if (applyTime?.value) {
+      const applyStartTime = moment(applyTime?.value[0])?.format('YYYY-MM-DD');
+      param.append('applyStartTime', applyStartTime);
+
+      const applyEndTime = moment(applyTime?.value[1])?.format('YYYY-MM-DD');
+      param.append('applyEndTime', applyEndTime);
+    }
+    if (valFromTime?.value) {
+      const valFromStartTime = moment(valFromTime?.value[0])?.format(
+        'YYYY-MM-DD',
+      );
+      param.append('valFromStartTime', valFromStartTime);
+
+      const valFromEndTime = moment(valFromTime?.value[1])?.format(
+        'YYYY-MM-DD',
+      );
+      param.append('valFromEndTime', valFromEndTime);
+    }
+    if (valToTime?.value) {
+      const valToStartTime = moment(valToTime?.value[0])?.format('YYYY-MM-DD');
+      param.append('valToStartTime', valToStartTime);
+
+      const valToEndTime = moment(valToTime?.value[1])?.format('YYYY-MM-DD');
+      param.append('valToEndTime', valToEndTime);
+    }
+
+    if (creator) {
+      param.append('creator', creator);
+    }
+
+    exportKey(param).then((res) => {
+      let blob = new Blob([res.data]);
+
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      // link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+    message.info('正在导出');
+  };
   render() {
     return (
       <div>
@@ -280,9 +474,24 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <Button type={'ghost'} size={'large'} icon={<DownloadOutlined />}>
-              导出钥匙信息
-            </Button>
+            <div className={'btn-group'}>
+              <Button
+                type={'ghost'}
+                size={'large'}
+                icon={<DownloadOutlined />}
+                onClick={() => this.exportExcel()}
+              >
+                导出钥匙信息
+              </Button>
+              <Button
+                onClick={this.openModalExport}
+                type={'ghost'}
+                size={'large'}
+                icon={<DownloadOutlined />}
+              >
+                历史导出列表
+              </Button>
+            </div>
           }
           columnWidth={120}
           expandIconAsCell={false}
@@ -300,6 +509,16 @@ class DataTable extends Component {
             },
           }}
         />
+        <Modal
+          footer={null}
+          title={'历史导出列表'}
+          visible={this.state?.showUserInfo}
+          destroyOnClose={true}
+          onCancel={this.onCancel}
+          width={1000}
+        >
+          <SubTable2 />
+        </Modal>
       </div>
     );
   }

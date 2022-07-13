@@ -34,7 +34,14 @@ class SearchForm extends Component {
       sm: 6,
     };
     return (
-      <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
+      <Form
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        ref={this.form}
+        onFieldsChange={(changedFields, allFields) => {
+          this.props.getFormValues(allFields);
+        }}
+      >
         <Row type={'flex'} gutter={16}>
           <Col {...colSpan}>
             <Form.Item label={'设备序列号'} name="hwDeviceSn">

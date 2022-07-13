@@ -8,8 +8,8 @@ import { connect } from 'dva';
 import DescriptionList from '@/components/DescriptionList';
 import KeyTable from './KeyTable';
 import { windowType, sunroofType, color } from '@/constants/cars';
-
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { exportVehicle } from '@/services/exportVehicle';
+import { PlusCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const { Description } = DescriptionList;
 
@@ -162,6 +162,34 @@ class DataTable extends Component {
       showKeysInfo: false,
     });
   };
+  exportExcel = () => {
+    let hwDeviceSn = this.props.searchFormValues[0];
+    let vin = this.props.searchFormValues[1];
+    let vehicleModel = this.props.searchFormValues[2];
+    let vehicleBrand = this.props.searchFormValues[3];
+    let fileName = '车辆信息.xlsx';
+    let param = new URLSearchParams();
+    if (hwDeviceSn && hwDeviceSn.value) {
+      param.append('hwDeviceSn', hwDeviceSn.value);
+    }
+    if (vin && vin.value) {
+      param.append('vin', vin.value);
+    }
+    if (vehicleModel && vehicleModel.value) {
+      param.append('vehicleModel', vehicleModel.value);
+    }
+    if (vehicleBrand && vehicleBrand.value) {
+      param.append('vehicleBrand', vehicleBrand.value);
+    }
+    exportVehicle(param).then((res) => {
+      let blob = new Blob([res.data]);
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  };
 
   render() {
     const {
@@ -182,6 +210,18 @@ class DataTable extends Component {
           scroll={{ x: 1300 }}
           onChange={this.handleTableChange}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
+          extra={
+            <div className={'btn-group'}>
+              <Button
+                type={'ghost'}
+                size={'large'}
+                icon={<DownloadOutlined />}
+                onClick={() => this.exportExcel()}
+              >
+                导出车辆信息
+              </Button>
+            </div>
+          }
         />
         <Modal
           footer={null}

@@ -14,6 +14,7 @@ class SearchForm extends Component {
       .validateFields()
       .then((values) => {
         if (values.startTime) {
+          debugger;
           const startTime = values['startTime'];
           values.startTime = moment(startTime[0]).format('YYYY-MM-DD');
           values.endTime = moment(startTime[1])
@@ -42,7 +43,14 @@ class SearchForm extends Component {
       sm: 6,
     };
     return (
-      <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
+      <Form
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        ref={this.form}
+        onFieldsChange={(changedFields, allFields) => {
+          this.props.getFormValues(allFields);
+        }}
+      >
         <Row type={'flex'}>
           <Col {...colSpan}>
             <Form.Item label={'车架号'} name="vin">

@@ -19,7 +19,8 @@ import HistoryBluetooth from './HistoryBluetooth';
 import { selectVehicleByVin } from '@/services/aftermarketReplacement';
 import { getDvaApp } from '@@/plugin-dva/exports';
 import importExcel from '@/utils/importExcel';
-
+import { exportReplacement } from '@/services/exportReplacement';
+import moment from 'moment';
 const { Description } = DescriptionList;
 
 @connect(({ customer, loading }) => ({
@@ -107,7 +108,37 @@ class DataTable extends Component {
       historyAftermarketDataTableVisible: false,
     });
   };
+  exportExcel = () => {
+    let vin = this.props.searchFormValues[0];
+    let replacementTime = this.props.searchFormValues[1]?.value;
+    let fileName = '换件信息.xlsx';
+    let param = new URLSearchParams();
+    if (vin && vin.value) {
+      param.append('vin', vin.value);
+    }
 
+    if (replacementTime) {
+      let startTime = moment(replacementTime[0]).format('YYYY-MM-DD');
+      let endTime = moment(replacementTime[1])
+        .add(1, 'days')
+        .format('YYYY-MM-DD');
+      if (startTime && startTime.value) {
+        param.append('startTime', startTime.value);
+      }
+      if (endTime && endTime.value) {
+        param.append('endTime', endTime.value);
+      }
+    }
+
+    exportReplacement(param).then((res) => {
+      let blob = new Blob([res.data]);
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+      window.URL.revokeObjectURL(link.href);
+    });
+  };
   render() {
     const { carInfoVisible, carInfo = {} } = this.state;
     return (
@@ -122,7 +153,12 @@ class DataTable extends Component {
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
             <div className={'btn-group'}>
-              <Button type={'ghost'} size={'large'} icon={<DownloadOutlined />}>
+              <Button
+                type={'ghost'}
+                size={'large'}
+                icon={<DownloadOutlined />}
+                onClick={() => this.exportExcel()}
+              >
                 导出换件信息
               </Button>
             </div>

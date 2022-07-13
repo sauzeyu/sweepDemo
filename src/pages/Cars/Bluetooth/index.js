@@ -2,18 +2,29 @@ import React, { Component } from 'react';
 import { Card } from 'antd';
 import SearchForm from './SearchForm';
 import DataTable from './DataTable';
+import SeesawView from '@/components/SeesawView';
+@SeesawView()
 /**
  * 汽车类型
  */
 class Index extends Component {
+  getFormValues = (values) => {
+    this.setState({
+      searchFormValues: values,
+    });
+  };
+  state = {
+    searchFormValues: {},
+  };
   render() {
+    const { searchFormValues } = this.state;
     return (
       <div className={'card-group'}>
         <Card bordered={false}>
-          <SearchForm />
+          <SearchForm getFormValues={this.getFormValues} />
         </Card>
         <Card bordered={false}>
-          <DataTable />
+          <DataTable searchFormValues={searchFormValues} />
         </Card>
       </div>
     );
