@@ -24,3 +24,10 @@ export async function selectKeyUseLogByTime(params) {
 export async function selectKeyErrorLogByTime(params) {
   return request.get('dkmStatistics/selectKeyErrorLogByTime', { params });
 }
+
+export async function selectKeyErrorLogByAllPhoneBrand() {
+  return request.get('dkmStatistics/selectKeyErrorLogByAllPhoneBrand');
+}
+export async function selectKeyErrorLogByPhoneBrand(params) {
+  return request.get('dkmStatistics/selectKeyErrorLogByPhoneBrand', { params });
+}

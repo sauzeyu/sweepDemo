@@ -38,8 +38,8 @@ export default class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row gutter={16}>
           <Col {...colSpan}>
-            <Form.Item label={'菜单名'} name="title">
-              <Input placeholder={'请输入菜单名'} />
+            <Form.Item label={'菜单名称'} name="title">
+              <Input placeholder={'请输入菜单名称'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>

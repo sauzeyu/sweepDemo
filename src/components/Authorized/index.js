@@ -17,6 +17,7 @@ export function checkUserAuth(route) {
   const user = getCurrentUser();
   if (!user) return false;
   const authedRoutes = user.routeMap;
+
   if (!authedRoutes) return false;
   // 有权限
   if (typeof route === 'string') {

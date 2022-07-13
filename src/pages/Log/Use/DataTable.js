@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { connect } from 'dva';
-
+import Authorized from '@/components/Authorized';
 import { getKeyLogList } from '@/services/keys';
 import { Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { keyLogFlag, keyLogFlagBadge } from '@/constants/keys';
+import { LOG_USE_EXPORT } from '@/components/Authorized/AuthMap';
 
 @connect(({ keysManage, loading }) => ({
   keysManage,
@@ -79,11 +80,17 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <div className={'btn-group'}>
-              <Button type={'ghost'} size={'large'} icon={<DownloadOutlined />}>
-                导出钥匙使用记录
-              </Button>
-            </div>
+            <Authorized route={LOG_USE_EXPORT}>
+              <div className={'btn-group'}>
+                <Button
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<DownloadOutlined />}
+                >
+                  导出钥匙使用记录
+                </Button>
+              </div>
+            </Authorized>
           }
         />
       </div>

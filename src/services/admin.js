@@ -17,3 +17,6 @@ export async function updateAdminById(params) {
 export async function deleteById(id) {
   return request.post('dkmAdmin/deleteById?id=' + id);
 }
+export async function insertAdmin(params) {
+  return request.post('dkmAdmin/insert', params);
+}

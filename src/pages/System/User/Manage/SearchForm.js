@@ -55,11 +55,6 @@ export default class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'手机号'} name="phone">
-              <Input placeholder={'请输入手机号码'} />
-            </Form.Item>
-          </Col>
-          <Col {...colSpan}>
             <Form.Item label="注册时间" name={'startTime'}>
               <RangePicker />
             </Form.Item>

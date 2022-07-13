@@ -8,7 +8,9 @@ export async function getRoleList(params) {
 export async function updateRoleById(role) {
   return request.post('dkmRole/updateRoleById', role);
 }
-
+export async function insert(role) {
+  return request.post('dkmRole/insert', role);
+}
 export async function deleteById(id) {
   return request.post('dkmRole/deleteById?id=' + id);
 }
