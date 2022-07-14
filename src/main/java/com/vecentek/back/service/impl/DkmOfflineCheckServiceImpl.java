@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.HexUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.HMac;
 import cn.hutool.crypto.digest.HmacAlgorithm;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -98,6 +100,10 @@ public class DkmOfflineCheckServiceImpl {
                     vehicle.getHwDeviceProviderNo())) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
                 throw new VecentException(1001, "必填参数未传递！");
+            }
+            if (vehicle.getVin().length() != 17) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "VIN长度不正确！");
+                throw new VecentException(1001, "VIN长度不正确！");
             }
             if (vehicle.getHwDeviceSn().length() != 40) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙设备序列号长度不正确！");
@@ -171,7 +177,9 @@ public class DkmOfflineCheckServiceImpl {
                 dkmBluetoothsMapper.insert(bluetooth);
             });
         }
-        //当换件车辆存在时，更新换件车辆并插入蓝牙信息
+        // 新增一个map返回给前端作为测试结果，正式环境删除
+        ArrayList<Map> resList = new ArrayList<>();
+        // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
         if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
 
             aftermarketReplacementVehicleBluetoothList.forEach(vehicleBluetooth -> {
@@ -233,7 +241,7 @@ public class DkmOfflineCheckServiceImpl {
                         HashMap<String, Object> paramMap = new HashMap<>(16);
                         paramMap.put("vin", dkmKey.getVin());
                         paramMap.put("userList", userList);
-
+                        resList.add(paramMap);
                         String urlString = "http://localhost:8007/dkserver-icce/dkm/wechat/recv";
                         HttpRequest.post(urlString).form(paramMap).execute().body();
                         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台");
@@ -265,7 +273,7 @@ public class DkmOfflineCheckServiceImpl {
             });
         }
         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传成功");
-        return PageResp.success("上传成功");
+        return PageResp.success("上传成功",resList);
     }
 
     /**
@@ -339,12 +347,16 @@ public class DkmOfflineCheckServiceImpl {
 
     public PageResp getKeyLogDetail(KeyLogDetailVO keyLogDetailVO) {
         ArrayList<KeyLogDetailResVO> res = new ArrayList<>();
-        Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
-        // 入参检查
-        if(StrUtil.isBlank(keyLogDetailVO.getStartTime()) || StrUtil.isBlank(keyLogDetailVO.getEndTime())){
+        if(keyLogDetailVO.getPageIndex() == null || keyLogDetailVO.getPageSize() == null){
             log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
             return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
         }
+        Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
+        // 入参检查
+//        if(StrUtil.isBlank(keyLogDetailVO.getStartTime()) || StrUtil.isBlank(keyLogDetailVO.getEndTime())){
+//            log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
+//            return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
+//        }
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = new QueryWrapper<DkmKeyLog>().lambda()
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()),DkmKeyLog::getVin, keyLogDetailVO.getVin())
                 .ge(DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
@@ -370,8 +382,8 @@ public class DkmOfflineCheckServiceImpl {
 
     public PageResp getKeyData(KeyLogDataVO keyLogDataVO) {
         // 入参检查
-        if(StrUtil.isBlank(keyLogDataVO.getStartTime()) ||
-                StrUtil.isBlank(keyLogDataVO.getEndTime()) ||
+        if(ObjectUtil.isNull(keyLogDataVO.getStartTime()) ||
+                ObjectUtil.isNull(keyLogDataVO.getEndTime()) ||
                 Objects.isNull(keyLogDataVO.getPageIndex()) ||
                 Objects.isNull(keyLogDataVO.getPageSize())){
             log.info("response：" + "/api/offlineCheck/getKeyData " + "必填参数未传递或传入的参数格式不正确！");
