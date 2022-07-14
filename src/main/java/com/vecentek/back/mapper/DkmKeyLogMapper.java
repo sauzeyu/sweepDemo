@@ -6,6 +6,7 @@ import com.vecentek.back.dto.MonthCountDTO;
 import com.vecentek.back.entity.DkmKeyLog;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -87,7 +88,7 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
             "and operate_time >= #{startTime}\n " +
             "and operate_time <= #{endTime}\n" +
             "group by phone_brand")
-    List<CountDTO> selectPhoneErrorCountByTime(String startTime, String endTime);
+    List<CountDTO> selectPhoneErrorCountByTime(Date startTime, Date endTime);
 
     @Select("select count(1) as value , status_code as name \n" +
             "from dkm_key_log\n" +
@@ -95,7 +96,7 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
             "and operate_time >= #{startTime}\n " +
             "and operate_time <= #{endTime}\n" +
             "group by status_code")
-    List<CountDTO> selectStatusErrorCountByTime(String startTime, String endTime);
+    List<CountDTO> selectStatusErrorCountByTime(Date startTime, Date endTime);
 
     @Select("SELECT count(1) as value ,v.vehicle_model as name \n" +
             "FROM dkm_vehicle v LEFT JOIN dkm_key_log k \n" +
@@ -104,7 +105,7 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
             "and k.operate_time >= #{startTime}\n" +
             "and k.operate_time <= #{endTime}\n" +
             "group by v.vehicle_model")
-    List<CountDTO> selectVehicleErrorCountByTime(String startTime, String endTime);
+    List<CountDTO> selectVehicleErrorCountByTime(Date startTime, Date endTime);
 
     @Select("SELECT phone_brand as name,COUNT( 1 ) as value FROM dkm_key_log WHERE flag = 0 GROUP BY phone_brand")
     List<CountDTO> selectKeyErrorLogByAllPhoneBrand();

@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public PageResp httpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return errorResult("必填参数未传递或参数类型错误！", 1001, e);
+        return errorResult("必填参数未传递或传入的参数格式不正确！", 1001, e);
     }
 
     @ExceptionHandler(UnauthorizedAccessException.class)
