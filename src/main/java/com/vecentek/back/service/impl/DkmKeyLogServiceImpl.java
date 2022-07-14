@@ -123,6 +123,7 @@ public class DkmKeyLogServiceImpl {
                 .missionName(excelName)
                 .createTime(new Date())
                 .creator(creator)
+                .type(0)
                 .build();
 
         dkmKeyLogHistoryExportMapper.insert(build);
@@ -297,11 +298,11 @@ public class DkmKeyLogServiceImpl {
     }
 
 
-    public PageResp checkKeyUseLog(String creator) {
+    public PageResp checkKeyUseLog(String creator,Integer type) {
         LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
         dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator!=null,DkmKeyLogHistoryExport::getCreator,creator)
-        //.eq(type!=null,DkmKeyLogHistoryExport::getCreator,type)
-        .orderByDesc(Boolean.parseBoolean("create_time"));
+        .eq(type!=null,DkmKeyLogHistoryExport::getType,type)
+        .orderByAsc(Boolean.parseBoolean("create_time"));
         ;
         List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
