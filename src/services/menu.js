@@ -11,3 +11,6 @@ export async function selectMenuByRoleId(roleId) {
 export async function selectForPage(params) {
   return request.get('dkmMenu/selectForPage', { params });
 }
+export async function selectByParentId(params) {
+  return request.get('dkmMenu/selectByParentId', { params });
+}

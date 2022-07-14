@@ -2,24 +2,17 @@
 import React, { Component, useState } from 'react';
 import { Form, Input, Modal, Select, Spin, message, Tree } from 'antd';
 import { selectMenuTree, selectMenuByRoleId } from '@/services/menu';
-import { updateRoleById } from '@/services/role';
+import { insert } from '@/services/role';
 import { removeEmptyProperty } from '@/utils';
 import moment from 'moment';
 import { getDvaApp } from '@@/plugin-dva/exports';
 
-export default class EditForm extends Component {
+export default class AddForm extends Component {
   form = React.createRef();
   state = {
     menus: [],
     checkedKeys: [],
-    selectedKeys: [],
   };
-
-  componentWillReceiveProps(nextProps, nextContext) {
-    this.setState({
-      checkedKeys: nextProps.keyList,
-    });
-  }
 
   componentDidMount() {
     this.fetchMenus();
@@ -28,22 +21,22 @@ export default class EditForm extends Component {
 
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
-      values.updator =
-        getDvaApp()._store.getState()?.user?.currentUser?.username;
-      values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-      values.checkedKey = this.state.checkedKeys?.checked;
-      updateRoleById(values).then(
+      values.menuList = this.state.checkedKeys?.checked;
+      console.log('values  ', values);
+      insert(values).then(
         (res) => {
-          message.success(res.msg);
+          if (res.code === 200) {
+            message.success(res.msg);
+          } else {
+            message.error(res.msg);
+          }
+
           this.props.dataTableRef.refresh();
         },
         (res) => {
           message.error(res.msg);
         },
       );
-      this.setState({
-        selectedKeys: [],
-      });
     });
   };
 
@@ -83,9 +76,6 @@ export default class EditForm extends Component {
     const { menus } = this.state;
     return (
       <Form ref={this.form} {...formItemLayout} onFinish={this.handleSubmit}>
-        <Form.Item name="id" hidden>
-          <Input type="hidden" />
-        </Form.Item>
         <Form.Item
           label={'角色名称'}
           name="roleName"

@@ -7,6 +7,13 @@ import importExcel from '@/utils/importExcel';
 import { exportPhoneCalibration } from '@/services/upOrDownload';
 import { getPublicPath } from '@/utils';
 import {
+  CAR_PHONE_UPDATE,
+  CAR_PHONE_EXPORT,
+  CAR_PHONE_IMPORT,
+  CAR_PHONE_TEMPLATE,
+} from '@/components/Authorized/AuthMap';
+import Authorized from '@/components/Authorized';
+import {
   Button,
   message,
   Modal,
@@ -81,9 +88,11 @@ class DataTable extends Component {
       fixed: 'right',
       render: (row) => {
         return (
-          <div className={'link-group'}>
-            <a onClick={() => this.editRow(row)}>编辑</a>
-          </div>
+          <Authorized route={CAR_PHONE_UPDATE}>
+            <div className={'link-group'}>
+              <a onClick={() => this.editRow(row)}>编辑</a>
+            </div>
+          </Authorized>
         );
       },
     },
@@ -254,35 +263,41 @@ class DataTable extends Component {
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
             <div className={'btn-group'}>
-              <Button
-                onClick={() => this.openDownloadTemplate()}
-                type={'ghost'}
-                size={'large'}
-                icon={<CloudDownloadOutlined />}
-              >
-                导入模板
-              </Button>
-              <Button
-                onClick={() => this.openModalExport()}
-                type={'ghost'}
-                size={'large'}
-                icon={<DownloadOutlined />}
-              >
-                导出
-              </Button>
-              <Button
-                onClick={() =>
-                  importExcel(
-                    '/dkserver-back/dkmPhoneCalibrationData/importByExcel',
-                    this,
-                  )
-                }
-                type={'ghost'}
-                size={'large'}
-                icon={<CloudUploadOutlined />}
-              >
-                导入
-              </Button>
+              <Authorized route={CAR_PHONE_TEMPLATE}>
+                <Button
+                  onClick={() => this.openDownloadTemplate()}
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<CloudDownloadOutlined />}
+                >
+                  导入模板
+                </Button>
+              </Authorized>
+              <Authorized route={CAR_PHONE_EXPORT}>
+                <Button
+                  onClick={() => this.openModalExport()}
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<DownloadOutlined />}
+                >
+                  导出
+                </Button>
+              </Authorized>
+              <Authorized route={CAR_PHONE_IMPORT}>
+                <Button
+                  onClick={() =>
+                    importExcel(
+                      '/dkserver-back/dkmPhoneCalibrationData/importByExcel',
+                      this,
+                    )
+                  }
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<CloudUploadOutlined />}
+                >
+                  导入
+                </Button>
+              </Authorized>
             </div>
           }
         />

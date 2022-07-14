@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { Badge, Button, message, Modal, Tag, Select, notification } from 'antd';
-
+import Authorized from '@/components/Authorized';
 import {
   getAdminList,
   getAdminRoleNameById,
@@ -10,6 +10,11 @@ import {
 import EditForm from '@/pages/System/User/Manage/EditForm';
 import { UserAddOutlined } from '@ant-design/icons';
 import AddUserForm from '@/pages/System/User/Manage/AddUserForm';
+import {
+  SYSTEM_USER_DELETE,
+  SYSTEM_USER_INSERT,
+  SYSTEM_USER_UPDATE,
+} from '@/components/Authorized/AuthMap';
 
 export class DataTable extends Component {
   state = {
@@ -21,6 +26,15 @@ export class DataTable extends Component {
   };
 
   columns = [
+    {
+      title: '序号',
+      width: 80,
+      render: (text, record, index) => {
+        let currentIndex = this.dataTable?.state?.currentIndex;
+        let currentPageSize = this.dataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
+      },
+    },
     {
       title: '用户名',
       dataIndex: 'username',
@@ -45,45 +59,26 @@ export class DataTable extends Component {
       title: '操作',
       fixed: 'right',
       render: (col) => {
-        const editOrDeleteNotification = (type) => {
-          notification[type]({
-            message: '操作失败',
-            description: '没有操作权限，请联系超级管理员！',
-          });
-        };
-        const username = localStorage.getItem('last_username');
-        const isSelf = username === col.username;
         return (
           <>
-            <div className={'link-group'} hidden={isSelf}>
-              <a
-                onClick={() => {
-                  this.editUser(col);
-                }}
-              >
-                修改
-              </a>
-              <a
-                onClick={() => this.deleteUser(col)}
-                style={{ color: '#FF4D4F' }}
-              >
-                删除
-              </a>
-            </div>
-
-            <div className={'link-group'} hidden={!isSelf}>
-              <a
-                onClick={() => editOrDeleteNotification('warning')}
-                style={{ color: '#808080' }}
-              >
-                修改
-              </a>
-              <a
-                onClick={() => editOrDeleteNotification('warning')}
-                style={{ color: '#808080' }}
-              >
-                删除
-              </a>
+            <div className={'link-group'}>
+              <Authorized route={SYSTEM_USER_UPDATE}>
+                <a
+                  onClick={() => {
+                    this.editUser(col);
+                  }}
+                >
+                  修改
+                </a>
+              </Authorized>
+              <Authorized route={SYSTEM_USER_DELETE}>
+                <a
+                  onClick={() => this.deleteUser(col)}
+                  style={{ color: '#FF4D4F' }}
+                >
+                  删除
+                </a>
+              </Authorized>
             </div>
           </>
         );
@@ -115,6 +110,7 @@ export class DataTable extends Component {
   };
   addUserFormOk = () => {
     this.setState({ addUserVisible: false });
+    this.addForm.submit();
   };
   deleteUser = (user) => {
     const that = this.dataTable;
@@ -142,6 +138,7 @@ export class DataTable extends Component {
       addUserVisible: false,
     });
   };
+
   render() {
     return (
       <>
@@ -154,17 +151,19 @@ export class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <Button
-              type={'primary'}
-              icon={<UserAddOutlined />}
-              onClick={() => {
-                this.setState({
-                  addUserVisible: true,
-                });
-              }}
-            >
-              新增用户
-            </Button>
+            <Authorized route={SYSTEM_USER_INSERT}>
+              <Button
+                type={'primary'}
+                icon={<UserAddOutlined />}
+                onClick={() => {
+                  this.setState({
+                    addUserVisible: true,
+                  });
+                }}
+              >
+                新增用户
+              </Button>
+            </Authorized>
           }
         />
         <Modal

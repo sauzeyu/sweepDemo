@@ -1,6 +1,8 @@
 import { getDvaApp } from '@@/plugin-dva/exports';
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
+import Authorized from '@/components/Authorized';
+
 import moment from 'moment';
 import {
   Badge,
@@ -23,6 +25,12 @@ import { DKState, KeySource, KeyState, KeyType } from '@/constants/keys';
 import { exportStatus } from '@/constants/export';
 import { keyLifecycleList, keyUseListById } from '@/services/cars';
 import { useMemo } from 'react';
+import {
+  KEY_INFO_EXPORT,
+  KEY_INFO_FREEZE,
+  KEY_INFO_REVOKE,
+  KEY_INFO_THAW,
+} from '@/components/Authorized/AuthMap';
 import { exportKey } from '@/services/exportKey';
 import { downloadExcel } from '@/services/downloadExcel';
 
@@ -266,29 +274,35 @@ class DataTable extends Component {
             >
               <a onClick={() => this.carInfo(col)}>查看车辆</a>
             </Popover>
-            <a
-              onClick={() => this.enableKey(col, true)}
-              hidden={!isDisable}
-              {...disableStyle}
-            >
-              解冻
-            </a>
-            <a
-              className={'text-danger'}
-              onClick={() => this.enableKey(col, false)}
-              hidden={isDisable}
-              {...disableStyle}
-            >
-              冻结
-            </a>
-            <a
-              className={'text-danger'}
-              onClick={() => this.revokeKey(col)}
-              hidden={isDisable}
-              {...disableStyle}
-            >
-              吊销
-            </a>
+            <Authorized route={KEY_INFO_THAW}>
+              <a
+                onClick={() => this.enableKey(col, true)}
+                hidden={!isDisable}
+                {...disableStyle}
+              >
+                解冻
+              </a>
+            </Authorized>
+            <Authorized route={KEY_INFO_FREEZE}>
+              <a
+                className={'text-danger'}
+                onClick={() => this.enableKey(col, false)}
+                hidden={isDisable}
+                {...disableStyle}
+              >
+                冻结
+              </a>
+            </Authorized>
+            <Authorized route={KEY_INFO_REVOKE}>
+              <a
+                className={'text-danger'}
+                onClick={() => this.revokeKey(col)}
+                hidden={isDisable}
+                {...disableStyle}
+              >
+                吊销
+              </a>
+            </Authorized>
           </div>
         );
       },
@@ -474,24 +488,26 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <div className={'btn-group'}>
-              <Button
-                type={'ghost'}
-                size={'large'}
-                icon={<DownloadOutlined />}
-                onClick={() => this.exportExcel()}
-              >
-                导出钥匙信息
-              </Button>
-              <Button
-                onClick={this.openModalExport}
-                type={'ghost'}
-                size={'large'}
-                icon={<DownloadOutlined />}
-              >
-                历史导出列表
-              </Button>
-            </div>
+            <Authorized route={KEY_INFO_EXPORT}>
+              <div className={'btn-group'}>
+                <Button
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<DownloadOutlined />}
+                  onClick={() => this.exportExcel()}
+                >
+                  导出钥匙信息
+                </Button>
+                <Button
+                  onClick={this.openModalExport}
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<DownloadOutlined />}
+                >
+                  历史导出列表
+                </Button>
+              </div>
+            </Authorized>
           }
           columnWidth={120}
           expandIconAsCell={false}

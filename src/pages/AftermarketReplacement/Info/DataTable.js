@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
+import Authorized from '@/components/Authorized';
 import { Badge, Button, message, Modal, Tag } from 'antd';
 import {
   CloudUploadOutlined,
@@ -19,6 +20,8 @@ import HistoryBluetooth from './HistoryBluetooth';
 import { selectVehicleByVin } from '@/services/aftermarketReplacement';
 import { getDvaApp } from '@@/plugin-dva/exports';
 import importExcel from '@/utils/importExcel';
+import { AFTERMARKET_REPLACEMENT_INFO_EXPORT } from '@/components/Authorized/AuthMap';
+
 import { exportReplacement } from '@/services/exportReplacement';
 import moment from 'moment';
 const { Description } = DescriptionList;
@@ -152,16 +155,18 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <div className={'btn-group'}>
-              <Button
-                type={'ghost'}
-                size={'large'}
-                icon={<DownloadOutlined />}
-                onClick={() => this.exportExcel()}
-              >
-                导出换件信息
-              </Button>
-            </div>
+            <Authorized route={AFTERMARKET_REPLACEMENT_INFO_EXPORT}>
+              <div className={'btn-group'}>
+                <Button
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<DownloadOutlined />}
+                  onClick={() => this.exportExcel()}
+                >
+                  导出换件信息
+                </Button>
+              </div>
+            </Authorized>
           }
         />
         <Modal

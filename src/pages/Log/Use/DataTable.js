@@ -16,7 +16,12 @@ import {
   message,
 } from 'antd';
 import { DownloadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import Authorized from '@/components/Authorized';
+import { getKeyLogList } from '@/services/keys';
+import { Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import { keyLogFlag, keyLogFlagBadge } from '@/constants/keys';
+import { LOG_USE_EXPORT } from '@/components/Authorized/AuthMap';
 import DescriptionList from '@/components/DescriptionList';
 import { exportKeyUseLog } from '@/services/exportKeyUseLog';
 import { exportStatus } from '@/constants/export';
@@ -106,9 +111,6 @@ const SubTable = () => {
   keysManage,
 }))
 class DataTable extends Component {
-  state = {
-    showUserInfo: false,
-  };
   columns = [
     {
       title: '序号',
@@ -248,24 +250,26 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <div className={'btn-group'}>
-              <Button
-                type={'ghost'}
-                size={'large'}
-                icon={<DownloadOutlined />}
-                onClick={() => this.exportExcel()}
-              >
-                导出钥匙使用记录
-              </Button>
-              <Button
-                onClick={this.openModalExport}
-                type={'ghost'}
-                size={'large'}
-                icon={<DownloadOutlined />}
-              >
-                历史导出列表
-              </Button>
-            </div>
+            <Authorized route={LOG_USE_EXPORT}>
+              <div className={'btn-group'}>
+                <Button
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<DownloadOutlined />}
+                  onClick={() => this.exportExcel()}
+                >
+                  导出钥匙使用记录
+                </Button>
+                <Button
+                  onClick={this.openModalExport}
+                  type={'ghost'}
+                  size={'large'}
+                  icon={<DownloadOutlined />}
+                >
+                  历史导出列表
+                </Button>
+              </div>
+            </Authorized>
           }
         />
 

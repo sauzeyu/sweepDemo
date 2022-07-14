@@ -1,20 +1,36 @@
 'use strict';
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Select, Spin, message } from 'antd';
-import { getAllRole } from '@/services/admin';
+import { getAllRole, insertAdmin } from '@/services/admin';
+import { removeEmptyProperty } from '@/utils';
+import EasyTable from '@/components/EasyTable';
 
 export default class AddUserForm extends Component {
   form = React.createRef();
   state = {
     roles: [],
   };
+
   componentDidMount() {
     this.fetchRoles();
     this.props.addFormEef && this.props.addFormEef(this);
   }
 
   handleSubmit = () => {
-    this.form.current.validateFields().then((values) => {});
+    this.form.current.validateFields().then((values) => {
+      insertAdmin(values).then((res) => {
+        if (res.code === 200) {
+          message.success({
+            content: res.msg,
+          });
+        } else {
+          message.error({
+            content: res.msg,
+          });
+        }
+      });
+      this.form.current.resetFields();
+    });
   };
 
   fetchRoles() {
@@ -31,6 +47,7 @@ export default class AddUserForm extends Component {
         });
       });
   }
+
   render() {
     const { roles } = this.state;
     const loadingRoles = false;
@@ -63,13 +80,13 @@ export default class AddUserForm extends Component {
         <Spin spinning={loadingRoles}>
           <Form.Item
             label={'权限角色'}
-            name="roleList"
+            name="role"
             rules={[{ required: true, message: '权限角色不能为空' }]}
           >
             <Select mode={'multiple'} allowClear>
               {roles.map((role) => {
                 return (
-                  <Select.Option key={role.id} value={role.roleName}>
+                  <Select.Option key={role.id} value={role.id}>
                     {role.roleName}
                   </Select.Option>
                 );

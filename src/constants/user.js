@@ -19,7 +19,15 @@ export const isVaild = {
   1: '启用',
 };
 export const menuType = {
-  0: '菜单',
-  1: '动作',
-  2: '目录',
+  0: '页面',
+  1: '控件',
+  2: '菜单',
+};
+export const menuFlag = {
+  1: true,
+  4: true,
+  5: true,
+  10: true,
+  11: true,
+  26: true,
 };
