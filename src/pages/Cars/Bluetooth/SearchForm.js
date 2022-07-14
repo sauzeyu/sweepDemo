@@ -44,13 +44,13 @@ class SearchForm extends Component {
       >
         <Row type={'flex'} gutter={16}>
           <Col {...colSpan}>
-            <Form.Item label={'设备序列号'} name="hwDeviceSn">
-              <Input placeholder="请输入设备序列号" />
+            <Form.Item label={'蓝牙设备序列号'} name="hwDeviceSn">
+              <Input placeholder="请输入蓝牙设备序列号" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="设备检索号" name={'searchNumber'}>
-              <Input placeholder="请输入设备检索号" />
+            <Form.Item label="蓝牙检索号" name={'searchNumber'}>
+              <Input placeholder="请输入蓝牙检索号" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>

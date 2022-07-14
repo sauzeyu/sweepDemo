@@ -53,8 +53,8 @@ class SearchForm extends Component {
       >
         <Row type={'flex'}>
           <Col {...colSpan}>
-            <Form.Item label={'车架号'} name="vin">
-              <Input placeholder={'车架号'} />
+            <Form.Item label={'车辆vin号'} name="vin">
+              <Input placeholder={'车辆vin号'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>

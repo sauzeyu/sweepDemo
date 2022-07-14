@@ -4,7 +4,7 @@ import { selectAftermarketReplacementByVin } from '@/services/aftermarketReplace
 class HistoryBluetooth extends Component {
   columns = [
     {
-      title: '车架号',
+      title: '车辆vin号',
       dataIndex: 'vin',
       width: 150,
     },

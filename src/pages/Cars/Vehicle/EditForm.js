@@ -74,7 +74,7 @@ class EditForm extends Component {
             <RestrictiveInput trim disabled={isEdit} maxLength={17} />
           </Form.Item>
           <Form.Item
-            label={'蓝牙序列号'}
+            label={'蓝牙设备序列号'}
             name="hwDeviceSn"
             rules={[{ required: true, message: '蓝牙编号不能为空' }]}
           >

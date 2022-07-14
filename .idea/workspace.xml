@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dks_front.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/HistoryBluetooth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/HistoryBluetooth.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/SearchForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/SearchForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Vehicle/EditForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Vehicle/EditForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Vehicle/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Vehicle/SearchForm.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2Bt2CseP5pr3EDTwQM4jT7AjqaC" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="prettierjs.PrettierConfiguration.Package" value="D:\front_workspace\dks_front\node_modules\prettier" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="" />
+      <created>1657710937350</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1657710937350</updated>
+      <workItem from="1657710940540" duration="13000" />
+      <workItem from="1657711305419" duration="829000" />
+      <workItem from="1657761384535" duration="934000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
