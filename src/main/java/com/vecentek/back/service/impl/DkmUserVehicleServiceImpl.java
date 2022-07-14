@@ -52,9 +52,9 @@ public class DkmUserVehicleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
-        if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin(), userVehicle.getUsername()) || userVehicle.getBindTime() == null) {
-            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN，用户名，购车时间等必要参数未传递！");
-            return PageResp.success("上传失败，用户ID，VIN，用户名，购车时间等必要参数未传递！");
+        if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin()) || userVehicle.getBindTime() == null) {
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN，购车时间等必要参数未传递！");
+            return PageResp.fail(2106,"上传失败，用户ID，VIN，购车时间等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
 
@@ -62,7 +62,9 @@ public class DkmUserVehicleServiceImpl {
         if (dkmUser == null) {
             dkmUser = new DkmUser();
             dkmUser.setPhone(userVehicle.getUserId());
-            dkmUser.setUsername(userVehicle.getUsername());
+            if (userVehicle.getUsername() != null) {
+                dkmUser.setUsername(userVehicle.getUsername());
+            }
             dkmUserMapper.insert(dkmUser);
         }
         LambdaQueryWrapper<DkmVehicle> vehicleWrapper = Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, userVehicle.getVin());
@@ -100,7 +102,7 @@ public class DkmUserVehicleServiceImpl {
             }
         }else {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统已存在此VIN号，请勿重复绑定！");
-            return PageResp.success("数据库已存在相同用户车辆关系！");
+            return PageResp.fail(2106,"数据库已存在相同用户车辆关系！");
         }
 
         log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");
