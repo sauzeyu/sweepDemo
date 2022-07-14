@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Select, Spin, message } from 'antd';
 import { getAllRole, insertAdmin } from '@/services/admin';
-import { removeEmptyProperty } from '@/utils';
+import { md5, removeEmptyProperty } from '@/utils';
 import EasyTable from '@/components/EasyTable';
-
+import { getDvaApp } from '@@/plugin-dva/exports';
+import moment from 'moment';
 export default class AddUserForm extends Component {
   form = React.createRef();
   state = {
@@ -18,6 +19,10 @@ export default class AddUserForm extends Component {
 
   handleSubmit = () => {
     this.form.current.validateFields().then((values) => {
+      values.password = md5(values.password);
+      values.creator = getDvaApp()._store.getState().user.currentUser.username;
+      // values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      console.log(user);
       insertAdmin(values).then((res) => {
         if (res.code === 200) {
           message.success({

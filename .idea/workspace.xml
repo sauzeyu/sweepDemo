@@ -2,20 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dks_front.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/DataTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/HistoryBluetooth.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/HistoryBluetooth.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/AftermarketReplacement/Info/SearchForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/DataTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/SearchForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Vehicle/EditForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Vehicle/EditForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Vehicle/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Vehicle/SearchForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Keys/Info/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Keys/Info/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Log/Use/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Log/Use/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/System/User/Manage/AddUserForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/System/User/Manage/AddUserForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/System/User/Manage/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/System/User/Manage/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/User/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/User/Login.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,9 +30,14 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="prettierjs.PrettierConfiguration.Package" value="D:\front_workspace\dks_front\node_modules\prettier" />
+    <property name="settings.editor.selected.configurable" value="terminal" />
+    <property name="ts.external.directory.path" value="D:\front_workspace\dks_front\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="" />
@@ -50,10 +48,26 @@
       <workItem from="1657710940540" duration="13000" />
       <workItem from="1657711305419" duration="829000" />
       <workItem from="1657761384535" duration="934000" />
+      <workItem from="1657762344286" duration="15530000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

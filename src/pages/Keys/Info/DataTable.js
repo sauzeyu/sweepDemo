@@ -106,12 +106,14 @@ const SubTable2 = () => {
   ];
 
   // console.log("props ",props);
+  let creator = getDvaApp()._store.getState().user.currentUser.username;
   return (
     <EasyTable
       rowKey={'id'}
       scroll={{ x: '800px' }}
       autoFetch
       source={checkKeyUseLog}
+      fixedParams={{ creator: creator, type: 1 }}
       dataProp={'data'}
       name={'checkKeyUseLogTable'}
       columns={columns1}
@@ -473,15 +475,17 @@ class DataTable extends Component {
       // link.click();
       window.URL.revokeObjectURL(link.href);
     });
-    message.info('正在导出');
+    message.info('正在导出钥匙信息，详情在历史导出列表查看');
   };
   render() {
+    let creator = getDvaApp()._store.getState().user.currentUser.username;
     return (
       <div>
         <EasyTable
           scroll={{ x: '1200px' }}
           autoFetch
           source={getKeysList}
+          fixedParams={{ creator: creator, type: 1 }}
           dataProp={'data'}
           name={'keysDataTable'}
           rowKey={'id'}

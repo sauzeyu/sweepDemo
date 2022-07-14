@@ -111,6 +111,11 @@ export class DataTable extends Component {
   addUserFormOk = () => {
     this.setState({ addUserVisible: false });
     this.addForm.submit();
+    // location.reload();
+  };
+
+  reload = () => {
+    this.dataTable.reload();
   };
   deleteUser = (user) => {
     const that = this.dataTable;
@@ -186,6 +191,7 @@ export class DataTable extends Component {
           onCancel={this.onCancel}
           okText="确认"
           cancelText="取消"
+          afterClose={this.reload}
         >
           <AddUserForm
             dataTableRef={this.dataTable}

@@ -17,9 +17,6 @@ import {
 } from 'antd';
 import { DownloadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 import Authorized from '@/components/Authorized';
-import { getKeyLogList } from '@/services/keys';
-import { Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
 import { keyLogFlag, keyLogFlagBadge } from '@/constants/keys';
 import { LOG_USE_EXPORT } from '@/components/Authorized/AuthMap';
 import DescriptionList from '@/components/DescriptionList';
@@ -92,13 +89,14 @@ const SubTable = () => {
     },
   ];
 
-  // console.log("props ",props);
+  let creator = getDvaApp()._store.getState().user.currentUser.username;
   return (
     <EasyTable
       rowKey={'id'}
       scroll={{ x: '800px' }}
       autoFetch
       source={checkKeyUseLog}
+      fixedParams={{ creator: creator, type: 0 }}
       dataProp={'data'}
       name={'checkKeyUseLogTable'}
       columns={columns1}
@@ -234,7 +232,7 @@ class DataTable extends Component {
       // link.click();
       window.URL.revokeObjectURL(link.href);
     });
-    message.info('正在导出');
+    message.info('正在导出钥匙使用记录，详情在历史导出列表查看');
   };
 
   render() {
