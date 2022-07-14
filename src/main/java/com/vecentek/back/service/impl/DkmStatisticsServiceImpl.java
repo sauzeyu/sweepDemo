@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,20 +45,23 @@ public class DkmStatisticsServiceImpl {
     @Resource
     private DkmKeyLogMapper dkmKeyLogMapper;
 
-    public PageResp selectTotal(String startTime, String endTime) {
+    public PageResp selectTotal(Date startTime, Date endTime) {
+        if (ObjectUtil.isNull(startTime) || ObjectUtil.isNull(endTime)) {
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+        }
         int totalVehicles = dkmVehicleMapper.selectCount(Wrappers.<DkmVehicle>lambdaQuery()
-                .ge(StrUtil.isNotBlank(startTime), DkmVehicle::getCreateTime, startTime)
-                .le(StrUtil.isNotBlank(endTime), DkmVehicle::getCreateTime, endTime));
+                .ge(ObjectUtil.isNotNull(startTime), DkmVehicle::getCreateTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmVehicle::getCreateTime, endTime));
         int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
-                .ge(StrUtil.isNotBlank(startTime), DkmKey::getApplyTime, startTime)
-                .le(StrUtil.isNotBlank(endTime), DkmKey::getApplyTime, endTime));
+                .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime));
         int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
-                .ge(StrUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(StrUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
+                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
                 .eq(DkmKeyLog::getFlag, 0));
         int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
-                .ge(StrUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(StrUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
+                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
                 .eq(DkmKeyLog::getFlag, 1));
         StatisticsDTO statisticsDTO = new StatisticsDTO();
         statisticsDTO.setKeyErrorCount(totalKeyError);
@@ -218,8 +222,8 @@ public class DkmStatisticsServiceImpl {
         return PageResp.success("查询成功", res);
     }
 
-    public PageResp selectErrorStatusTotal(String startTime, String endTime) {
-        if (StrUtil.isBlank(startTime) || StrUtil.isBlank(endTime)) {
+    public PageResp selectErrorStatusTotal(Date startTime, Date endTime) {
+        if (ObjectUtil.isNull(startTime) || ObjectUtil.isNull(endTime)) {
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         HashMap<String, Object> phoneData;

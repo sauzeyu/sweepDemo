@@ -95,11 +95,11 @@ public class DkmKeyLogServiceImpl {
     @Async
     public void downloadKeyLogExcel(String vin, String userId, String startTime, String endTime,
                                     String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,
-                                    String vehicleModel,String token) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+                                    String vehicleModel,String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
 
 
-        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, token);
+        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
         startTime = objects.get(0);
         endTime = objects.get(1);
         String fileName = objects.get(2);
@@ -118,8 +118,14 @@ public class DkmKeyLogServiceImpl {
 
 
         // 2向历史导出记录新增一条状态为导出中的数据
+        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
+                .exportStatus(0)
+                .missionName(excelName)
+                .createTime(new Date())
+                .creator(creator)
+                .build();
 
-        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, username, null, new Date(), null));
+        dkmKeyLogHistoryExportMapper.insert(build);
 
 
         // 3.1所有数据量
@@ -293,7 +299,10 @@ public class DkmKeyLogServiceImpl {
 
     public PageResp checkKeyUseLog(String creator) {
         LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator!=null,DkmKeyLogHistoryExport::getCreator,creator);
+        dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator!=null,DkmKeyLogHistoryExport::getCreator,creator)
+        //.eq(type!=null,DkmKeyLogHistoryExport::getCreator,type)
+        .orderByDesc(Boolean.parseBoolean("create_time"));
+        ;
         List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
     }

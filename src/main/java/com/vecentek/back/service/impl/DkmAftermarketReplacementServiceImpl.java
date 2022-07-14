@@ -85,12 +85,12 @@ public class DkmAftermarketReplacementServiceImpl {
         return PageResp.success("查询成功", dkmVehicle);
     }
 
-    public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String token,HttpServletResponse response) throws UnsupportedEncodingException {
-        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, token);
-         startTime = objects.get(0);
-         endTime = objects.get(1);
+    public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String creator,HttpServletResponse response) throws UnsupportedEncodingException {
+        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
+        // startTime = objects.get(0);
+        // endTime = objects.get(1);
         String fileName = objects.get(2);
-        String username = objects.get(3);
+        //String username = objects.get(3);
         // 1.3形成文件名
         String excelName = fileName + "换件信息";
 
@@ -101,7 +101,7 @@ public class DkmAftermarketReplacementServiceImpl {
         List<DkmAftermarketReplacement> replacementDataList = dkmAftermarketReplacementMapper.selectList(queryWrapper);
         String suffix = null;
         if (isXls == null) {
-            isXls = true;
+            isXls = false;
         }
         else if(isXls){
              suffix = ExcelConstant.EXCEL_SUFFIX_XLS;
@@ -138,7 +138,7 @@ public class DkmAftermarketReplacementServiceImpl {
         CellStyle cellStyle = writer.getCellStyle();
         cellStyle.setFont(cellFont);
 
-        writer.setColumnWidth(0, 15);
+        writer.setColumnWidth(0, 25);
         writer.setColumnWidth(1, 15);
         writer.setColumnWidth(2, 15);
         writer.setColumnWidth(3, 15);
@@ -158,7 +158,13 @@ public class DkmAftermarketReplacementServiceImpl {
             writer.close();
         }
         // 2向历史导出记录新增一条状态为导出中的数据
-        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(1, excelName, null, username, null, new Date(), null));
+        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
+                .exportStatus(1)
+                .createTime(new Date())
+                .missionName(excelName)
+                .creator(creator)
+                .build();
+        dkmKeyLogHistoryExportMapper.insert(build);
 
     }
     public static String getFirstDayOfMonth(int month) {

@@ -125,7 +125,7 @@ public class DkmUserVehicleServiceImpl {
         if (StrUtil.hasBlank(userId, vin)) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
-            return PageResp.fail(1001, "必填参数未传递!");
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         if (logoutTime == null) {
             logoutTime = new Date();
@@ -193,7 +193,7 @@ public class DkmUserVehicleServiceImpl {
         String vin = getBluetoothVinVO.getVin();
         if (StrUtil.hasBlank(vin)) {
             log.info("response：" + "/api/userVehicle/getBluetoothVin " + "必填参数未传递!");
-            return PageResp.fail(1001, "必填参数未传递!");
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         // 根据vin查询车辆表 表查得到就是有蓝牙 查不到说明没有蓝牙
         DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, vin));
@@ -210,7 +210,7 @@ public class DkmUserVehicleServiceImpl {
         String userId = revokeKeyVO.getUserId();
         if (StrUtil.hasBlank(userId)) {
             log.info("response：" + "/api/userVehicle/revokeKey " + "必填参数未传递!");
-            return PageResp.fail(1001, "必填参数未传递!");
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).eq(DkmKey::getDkState, "1"));

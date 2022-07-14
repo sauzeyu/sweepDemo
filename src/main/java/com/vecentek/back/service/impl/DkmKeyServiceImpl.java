@@ -340,8 +340,8 @@ public class DkmKeyServiceImpl {
                                      String valFromEndTime,
                                      String valToStartTime,
                                      String valToEndTime,
-                                     Integer[] dkStates,String token)  {
-        List<String> objects = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, token);
+                                     Integer[] dkStates,String creator)  {
+        List<String> objects = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
         applyStartTime = objects.get(0);
         applyEndTime = objects.get(1);
         String fileName = objects.get(2);
@@ -360,7 +360,13 @@ public class DkmKeyServiceImpl {
 
 
         // 2向历史导出记录新增一条状态为导出中的数据
-        dkmKeyLogHistoryExportMapper.insert(new DkmKeyLogHistoryExport(0, excelName, null, username, null, new Date(), null));
+        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
+                .exportStatus(0)
+                .missionName(excelName)
+                .creator(creator)
+                .createTime(new Date())
+                .build();
+        dkmKeyLogHistoryExportMapper.insert(build);
 
 
         // 3.1所有数据量

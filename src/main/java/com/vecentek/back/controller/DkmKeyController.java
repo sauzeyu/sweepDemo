@@ -143,24 +143,25 @@ public class DkmKeyController {
 
     /**
      * 开始导出
+     *
      * @param
      * @return
      */
     @PostMapping(value = "/downloadKeyExcel")
-    public PageResp startLoadKeyLogExcel( String vin,
-                                          String userId,
-                                          Integer keyType,
-                                          String applyStartTime,
-                                          String applyEndTime,
-                                          Integer periodMax,
-                                          Integer periodMin,
-                                          String periodUnit,
-                                          String valFromStartTime,
-                                          String valFromEndTime,
-                                          String valToStartTime,
-                                          String valToEndTime,
-                                          Integer[] dkStates,
-                                          String token)  {
+    public PageResp startLoadKeyLogExcel(String vin,
+                                         String userId,
+                                         Integer keyType,
+                                         String applyStartTime,
+                                         String applyEndTime,
+                                         Integer periodMax,
+                                         Integer periodMin,
+                                         String periodUnit,
+                                         String valFromStartTime,
+                                         String valFromEndTime,
+                                         String valToStartTime,
+                                         String valToEndTime,
+                                         Integer[] dkStates,
+                                         String creator) {
         downloadKeyExcel(vin,
                 userId,
                 keyType,
@@ -173,30 +174,29 @@ public class DkmKeyController {
                 valFromEndTime,
                 valToStartTime,
                 valToEndTime
-                , dkStates,token);
+                , dkStates, creator);
         return PageResp.success("正在导出");
 
     }
 
     /**
      * 异步导出
-
      */
     @Async
-    public void downloadKeyExcel( String vin,
-                                  String userId,
-                                  Integer keyType,
-                                  String applyStartTime,
-                                  String applyEndTime,
-                                  Integer periodMax,
-                                  Integer periodMin,
-                                  String periodUnit,
-                                  String valFromStartTime,
-                                  String valFromEndTime,
-                                  String valToStartTime,
-                                  String valToEndTime,
-                                  Integer[] dkStates,
-                                  String token)  {
+    public void downloadKeyExcel(String vin,
+                                 String userId,
+                                 Integer keyType,
+                                 String applyStartTime,
+                                 String applyEndTime,
+                                 Integer periodMax,
+                                 Integer periodMin,
+                                 String periodUnit,
+                                 String valFromStartTime,
+                                 String valFromEndTime,
+                                 String valToStartTime,
+                                 String valToEndTime,
+                                 Integer[] dkStates,
+                                 String creator) {
         this.dkmKeyServiceImpl.downloadKeyLogExcel(
                 vin,
                 userId,
@@ -209,8 +209,9 @@ public class DkmKeyController {
                 valFromStartTime,
                 valFromEndTime,
                 valToStartTime,
-                valToEndTime
-                , dkStates,token);
+                valToEndTime,
+                dkStates,
+                creator);
     }
 
 }

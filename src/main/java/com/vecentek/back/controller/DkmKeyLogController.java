@@ -79,10 +79,10 @@ public class DkmKeyLogController {
                                          String vehicleBrand,
                                          String vehicleModel,
                                          Integer flag,
-                                         HttpServletRequest httpServletRequest
+                                         String creator
     ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        String token = httpServletRequest.getHeader("access-token");
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, token);
+        //String token = httpServletRequest.getHeader("access-token");
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel,  creator);
         return PageResp.success("正在导出");
 
     }
@@ -109,8 +109,9 @@ public class DkmKeyLogController {
                                     Integer flag,
                                     String vehicleBrand,
                                     String vehicleModel,
-                                    String token
+                                    String creator
     ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+
 
         this.dkmKeyUseLogService.downloadKeyLogExcel
                 (vin,
@@ -123,7 +124,7 @@ public class DkmKeyLogController {
                 flag,
                 vehicleBrand,
                 vehicleModel,
-                token);
+                creator);
 
     }
 
