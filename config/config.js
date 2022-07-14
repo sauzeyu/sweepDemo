@@ -11,9 +11,9 @@ export default defineConfig({
   proxy: {
     '/dkserver-back': {
       // target: 'https://cd.vecentek.com:20611',
-      target: 'http://172.16.6.107:9001/vecentek',
+      // target: 'http://172.16.6.107:9001/vecentek',
       // target: 'http://localhost:9001/vecentek',
-      // target: 'http://172.16.13.12:9001/vecentek',
+      target: 'http://172.16.13.12:9001/vecentek',
       changeOrigin: true,
       // pathRewrite: { '^/api': '' },
       logLevel: 'debug',
