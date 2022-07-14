@@ -60,7 +60,7 @@ public class DkmKeyLogHistoryExport extends BaseEntity implements Serializable {
      * 导出状态(0：钥匙记录；1：钥匙信息)
      */
 
-    private Integer type;
+    private int type;
 
 }
 
