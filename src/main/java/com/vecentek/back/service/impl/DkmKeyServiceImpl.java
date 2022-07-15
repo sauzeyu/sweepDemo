@@ -97,8 +97,10 @@ public class DkmKeyServiceImpl {
         Page<DkmKey> page = new Page<>(pageIndex, pageSize);
         page = dkmKeyMapper.selectPage(page, Wrappers.<DkmKey>lambdaQuery()
                 .eq(true, DkmKey::getVehicleId, vehicleId)
-                .orderByDesc(DkmKey::getApplyTime)
-                .orderByAsc(DkmKey::getParentId));
+                .orderByDesc(DkmKey::getVin)
+                .orderByAsc(DkmKey::getParentId)
+                .orderByAsc(DkmKey::getDkState)
+                .orderByDesc(DkmKey::getApplyTime));
 
         ArrayList<DkmKeyDTO> keyList = new ArrayList<>();
 
@@ -186,6 +188,7 @@ public class DkmKeyServiceImpl {
                 .ne(keyType == 2, DkmKey::getParentId, "0")
                 .orderByDesc(DkmKey::getVin)
                 .orderByAsc(DkmKey::getParentId)
+                .orderByAsc(DkmKey::getDkState)
                 .orderByDesc(DkmKey::getApplyTime)
         );
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());

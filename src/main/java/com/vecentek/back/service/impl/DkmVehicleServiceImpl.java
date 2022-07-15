@@ -114,7 +114,6 @@ public class DkmVehicleServiceImpl {
         dkmVehicle.setCreateTime(new Date());
         int insert = this.dkmVehicleMapper.insert(dkmVehicle);
         if (insert == 1) {
-
             return PageResp.success("新增成功");
         }
         return PageResp.fail("新增失败");

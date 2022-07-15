@@ -141,7 +141,7 @@ public class DkmOfflineCheckServiceImpl {
                 throw new VecentException(1001, "蓝牙公钥格式不正确！");
             }
 
-            // 存在重复参数校验 主键索引导致 dkmVehicleMapper dkmBluetoothsMapper
+            // 存在重复参数校验 主键索引重复导致插入失败 dkmVehicleMapper dkmBluetoothsMapper
             String vin = vehicle.getVin();
             List<DkmVehicle> dkmVehicles1 = dkmVehicleMapper.selectList(new QueryWrapper<DkmVehicle>().lambda().eq(DkmVehicle::getVin, vin));
             if ( dkmVehicles1.size() > 0){
@@ -153,6 +153,12 @@ public class DkmOfflineCheckServiceImpl {
             if ( dkmBluetooths.size() > 0){
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙设备号！");
                 throw new VecentException(1001, "存在重复的蓝牙设备号！");
+            }
+            String searchNumber = vehicle.getSearchNumber();
+            List<DkmBluetooths> dkmBluetooths1 = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getSearchNumber, searchNumber));
+            if ( dkmBluetooths1.size() > 0){
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙检索号！");
+                throw new VecentException(1001, "存在重复的蓝牙检索号！");
             }
 
         }
@@ -172,12 +178,6 @@ public class DkmOfflineCheckServiceImpl {
         verifyVehicleBluetoothVO(dkmVehicles);
         //划分换件车辆和新增车辆
         List<String> alreadyExistsVehicleVinList = dkmOfflineCheckMapper.selectVehicleByVin(dkmVehicles);
-
-        for (VehicleBluetoothVO dkmVehicle : dkmVehicles) {
-            String hwDeviceSn = dkmVehicle.getHwDeviceSn();
-            String vin = dkmVehicle.getVin();
-
-        }
         List<VehicleBluetoothVO> newVehicleBluetoothList = dkmVehicles.stream()
                 .filter(dkmVehicle -> !alreadyExistsVehicleVinList.contains(dkmVehicle.getVin()))
                 .collect(Collectors.toList());
@@ -191,6 +191,8 @@ public class DkmOfflineCheckServiceImpl {
                 DkmBluetooths bluetooth = new DkmBluetooths();
                 BeanUtil.copyProperties(vehicleBluetooth, vehicle);
                 vehicle.setCreateTime(new Date());
+                // 车辆品牌和车辆型号 结合为车型字段 福田-p4
+                vehicle.setVehicleModel(vehicle.getVehicleBrand() + "-" + vehicle.getVehicleModel());
                 dkmVehicleMapper.insert(vehicle);
                 BeanUtil.copyProperties(vehicleBluetooth, bluetooth);
                 bluetooth.setCreateTime(new Date());
