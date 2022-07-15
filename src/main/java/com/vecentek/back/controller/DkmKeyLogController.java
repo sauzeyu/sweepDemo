@@ -129,9 +129,9 @@ public class DkmKeyLogController {
     }
 
     @GetMapping("/checkKeyUseLog")
-    public PageResp checkKeyUseLog( String creator) {
+    public PageResp checkKeyUseLog( String creator,Integer type) {
         //查询历史导出记录表(倒排)
-        return this.dkmKeyUseLogService.checkKeyUseLog(creator);
+        return this.dkmKeyUseLogService.checkKeyUseLog(creator,type);
     }
 
 }

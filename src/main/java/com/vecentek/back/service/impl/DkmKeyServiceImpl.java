@@ -365,6 +365,7 @@ public class DkmKeyServiceImpl {
                 .missionName(excelName)
                 .creator(creator)
                 .createTime(new Date())
+                .type(1)
                 .build();
         dkmKeyLogHistoryExportMapper.insert(build);
 

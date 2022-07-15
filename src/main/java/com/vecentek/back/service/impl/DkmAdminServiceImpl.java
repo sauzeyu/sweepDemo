@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -125,6 +126,7 @@ public class DkmAdminServiceImpl {
         if (alreadyExistAdmin != null) {
             return PageResp.fail(500, "用户已存在");
         }
+        admin.setCreateTime(new Date());
         dkmAdminMapper.insert(admin);
         // 新建用户角色中间表
         Integer[] role = insertAdminVO.getRole();
