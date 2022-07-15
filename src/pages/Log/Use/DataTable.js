@@ -89,14 +89,13 @@ const SubTable = () => {
     },
   ];
 
-  let creator = getDvaApp()._store.getState().user.currentUser.username;
+  // console.log("props ",props);
   return (
     <EasyTable
       rowKey={'id'}
       scroll={{ x: '800px' }}
       autoFetch
       source={checkKeyUseLog}
-      fixedParams={{ creator: creator, type: 0 }}
       dataProp={'data'}
       name={'checkKeyUseLogTable'}
       columns={columns1}
@@ -135,12 +134,12 @@ class DataTable extends Component {
       title: '手机型号',
       dataIndex: 'phoneModel',
     },
+    // {
+    //   title: '车辆品牌',
+    //   dataIndex: 'vehicleBrand',
+    // },
     {
-      title: '车辆品牌',
-      dataIndex: 'vehicleBrand',
-    },
-    {
-      title: '车辆型号',
+      title: '品牌型号',
       dataIndex: 'vehicleModel',
     },
     {
@@ -176,16 +175,17 @@ class DataTable extends Component {
   };
 
   exportExcel = () => {
+    console.log(this.props);
     let creator = getDvaApp()._store.getState().user.currentUser.username;
-    let vin = this.props.searchFormValues[0];
+    let startTime = this.props.searchFormValues[0];
     let phoneBrand = this.props.searchFormValues[1];
     let phoneModel = this.props.searchFormValues[2];
     let statusCode = this.props.searchFormValues[3];
-    let startTime = this.props.searchFormValues[4];
+    let vin = this.props.searchFormValues[4];
     let flag = this.props.searchFormValues[5];
     let userId = this.props.searchFormValues[6];
-    let vehicleBrand = this.props.searchFormValues[7];
-    let vehicleModel = this.props.searchFormValues[8];
+    let vehicleModel = this.props.searchFormValues[7];
+    // let vehicleModel = this.props.searchFormValues[8];
     let fileName = '钥匙记录.xlsx';
     let param = new URLSearchParams();
 
@@ -216,9 +216,9 @@ class DataTable extends Component {
     if (vehicleModel && vehicleModel.value) {
       param.append('vehicleModel', vehicleModel.value);
     }
-    if (vehicleBrand && vehicleBrand.value) {
-      param.append('vehicleBrand', vehicleBrand.value);
-    }
+    // if (vehicleBrand && vehicleBrand.value) {
+    //   param.append('vehicleBrand', vehicleBrand.value);
+    // }
     if (creator) {
       param.append('creator', creator);
     }
@@ -232,7 +232,7 @@ class DataTable extends Component {
       // link.click();
       window.URL.revokeObjectURL(link.href);
     });
-    message.info('正在导出钥匙使用记录，详情在历史导出列表查看');
+    message.info('正在导出');
   };
 
   render() {

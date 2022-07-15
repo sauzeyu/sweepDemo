@@ -63,15 +63,15 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan2}>
-            <Form.Item label={'车辆型号'} name="vehicleModel">
-              <RestrictiveInput trim placeholder={'请输入车辆型号'} />
+            <Form.Item label={'品牌型号'} name="vehicleModel">
+              <RestrictiveInput trim placeholder={'请输入品牌型号'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan2}>
-            <Form.Item label={'车辆品牌'} name="vehicleBrand">
-              <RestrictiveInput trim placeholder={'请输入车辆品牌'} />
-            </Form.Item>
-          </Col>
+          {/*<Col {...colSpan2}>*/}
+          {/*  <Form.Item label={'车辆品牌'} name="vehicleBrand">*/}
+          {/*    <RestrictiveInput trim placeholder={'请输入车辆品牌'} />*/}
+          {/*  </Form.Item>*/}
+          {/*</Col>*/}
           <Col {...colSpan2} style={{ flex: 1 }}>
             <Button
               onClick={() => {

@@ -3,9 +3,21 @@
   <component name="ChangeListManager">
     <list default="true" id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/cars.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/cars.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/EditForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/EditForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Phone/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Phone/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Phone/EditForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Phone/EditForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Phone/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Phone/SearchForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Vehicle/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Vehicle/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Vehicle/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Vehicle/SearchForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Keys/Info/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Keys/Info/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Keys/Info/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Keys/Info/SearchForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Log/Use/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Log/Use/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Log/Use/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Log/Use/SearchForm.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/Statistics/BottomForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Statistics/BottomForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/System/User/Manage/AddUserForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/System/User/Manage/AddUserForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/System/User/Roles/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/System/User/Roles/DataTable.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Statistics/MiddleForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Statistics/MiddleForm.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +26,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="2Bt2CseP5pr3EDTwQM4jT7AjqaC" />
   <component name="ProjectViewState">
@@ -46,7 +66,7 @@
       <workItem from="1657711305419" duration="829000" />
       <workItem from="1657761384535" duration="934000" />
       <workItem from="1657762344286" duration="15530000" />
-      <workItem from="1657785510767" duration="9393000" />
+      <workItem from="1657785510767" duration="28377000" />
     </task>
     <servers />
   </component>

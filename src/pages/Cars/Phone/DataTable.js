@@ -59,7 +59,7 @@ class DataTable extends Component {
       },
     },
     {
-      title: '车辆型号',
+      title: '品牌型号',
       dataIndex: 'vehicleModel',
     },
     {

@@ -69,6 +69,10 @@ class BottomForm extends React.Component {
   };
   keyErrorTypeCountOption = () => {
     return {
+      title: {
+        show: false,
+        text: 'HUAWEI故障类型占比',
+      },
       tooltip: {
         trigger: 'item',
       },

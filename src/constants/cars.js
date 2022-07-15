@@ -54,6 +54,6 @@ export const color = {
   BG34: '古铜金',
 };
 export const overdue = {
-  0: <Badge color="red" text="正常" />,
-  1: <Badge color="green" text="报废" />,
+  0: <Badge color="green" text="正常" />,
+  1: <Badge color="red" text="报废" />,
 };

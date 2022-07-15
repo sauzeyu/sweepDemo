@@ -20,6 +20,7 @@ class MiddleForm extends React.Component {
     keyErrorLogCount: [],
     monthList: [],
     pickerTime: [moment(), moment().add(1, 'days')],
+    fileName: [],
   };
   keyUseLogTotalByMonth = () => {
     return {
@@ -82,18 +83,22 @@ class MiddleForm extends React.Component {
   getOptionByKeyUseLog = () => {
     return {
       title: {
-        text: '钥匙使用类型',
+        text: this.state.fileName,
         left: '20%',
         top: '2%',
+        show: false,
       },
       tooltip: {
         trigger: 'item',
+        // formatter: '{a} <br/>{b} : {c} ({d}%)'
       },
-      // legend: {
-      //   top: '15%',
-      //   orient: 'vertical',
-      //   left: 'right',
-      // },
+      legend: {
+        type: 'scroll',
+        orient: 'vertical',
+        right: 10,
+        top: 20,
+        bottom: 20,
+      },
       toolbox: {
         show: true,
         feature: {
@@ -115,7 +120,7 @@ class MiddleForm extends React.Component {
           selectedMode: 'multiple',
           radius: ['40%', '70%'],
           avoidLabelOverlap: false,
-          center: ['35%', '50%'],
+          center: ['30%', '50%'],
           itemStyle: {
             borderRadius: 10,
             borderColor: '#FFFFFF',
@@ -151,11 +156,13 @@ class MiddleForm extends React.Component {
       tooltip: {
         trigger: 'item',
       },
-      // legend: {
-      //   top: '15%',
-      //   orient: 'vertical',
-      //   left: 'right',
-      // },
+      legend: {
+        type: 'scroll',
+        orient: 'vertical',
+        right: 10,
+        top: 20,
+        bottom: 20,
+      },
       toolbox: {
         show: true,
         feature: {
@@ -177,7 +184,7 @@ class MiddleForm extends React.Component {
           selectedMode: 'multiple',
           radius: ['40%', '70%'],
           avoidLabelOverlap: false,
-          center: ['35%', '50%'],
+          center: ['30%', '50%'],
           itemStyle: {
             borderRadius: 10,
             borderColor: '#FFFFFF',
@@ -221,11 +228,16 @@ class MiddleForm extends React.Component {
 
   selectKeyLogCount = (times) => {
     let params = new URLSearchParams();
+    let startTime = moment(times[0]).format('YYYY-MM-DD');
+    let endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD');
+    let file = '钥匙使用类型';
+    this.state.fileName = startTime + '-' + endTime + file;
     params.append('startTime', moment(times[0]).format('YYYY-MM-DD'));
     params.append(
       'endTime',
       moment(times[1]).add(1, 'days').format('YYYY-MM-DD'),
     );
+
     selectKeyUseLogByTime(params).then((res) => {
       if (res.data) {
         this.setState({
@@ -336,29 +348,31 @@ class MiddleForm extends React.Component {
         >
           <TabPane tab="钥匙使用记录" key="use">
             <Row>
-              <Col span={18}>
+              <Col span={16}>
                 <ReactEcharts
                   option={this.keyUseLogTotalByMonth()}
                   notMerge={true}
                 />
               </Col>
-              <Col span={6}>
+              <Col span={8}>
+                {/*<Card title={'钥匙使用类型'}>*/}
                 <ReactEcharts
                   option={this.getOptionByKeyUseLog()}
                   notMerge={true}
                 />
+                {/*</Card>*/}
               </Col>
             </Row>
           </TabPane>
           <TabPane tab="钥匙故障记录" key="error">
             <Row>
-              <Col span={18}>
+              <Col span={16}>
                 <ReactEcharts
                   option={this.keyErrorLogTotalByMonth()}
                   notMerge={true}
                 />
               </Col>
-              <Col span={6}>
+              <Col span={8}>
                 <ReactEcharts
                   option={this.getOptionByKeyErrorLog()}
                   notMerge={true}

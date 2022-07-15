@@ -127,7 +127,7 @@ class SearchForm extends Component {
 
           <Col {...colSpan}>
             <div style={{ height: 56 }}>
-              <Form.Item label={'周期'}>
+              <Form.Item label={'周期时长'}>
                 <Input.Group compact>
                   <Form.Item name="periodMin">
                     <InputNumber
@@ -200,12 +200,12 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="生效时间" name={'valFromTime'}>
+            <Form.Item label="钥匙开始时间" name={'valFromTime'}>
               <RangePicker style={{ width: 275 }} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="失效时间" name={'valToTime'}>
+            <Form.Item label="钥匙结束时间" name={'valToTime'}>
               <RangePicker />
             </Form.Item>
           </Col>

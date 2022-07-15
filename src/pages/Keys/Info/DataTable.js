@@ -208,7 +208,7 @@ class DataTable extends Component {
       },
     },
     {
-      title: '生效时间',
+      title: '钥匙开始时间',
       dataIndex: 'valFrom',
       ellipsis: {
         showTitle: false,
@@ -220,7 +220,7 @@ class DataTable extends Component {
       ),
     },
     {
-      title: '失效时间',
+      title: '钥匙结束时间',
       dataIndex: 'valTo',
       ellipsis: {
         showTitle: false,
@@ -244,8 +244,9 @@ class DataTable extends Component {
       ),
     },
     {
-      title: '周期(分钟)',
+      title: '周期时长',
       dataIndex: 'period',
+      render: (col) => this.time(col),
     },
     {
       title: '操作',
@@ -267,7 +268,7 @@ class DataTable extends Component {
               content={
                 <>
                   <p>车辆vin号：{col?.vin}</p>
-                  <p>车辆型号：{this.state.carInfo?.vehicleModel}</p>
+                  <p>品牌型号：{this.state.carInfo?.vehicleModel}</p>
                   <p>车辆品牌：{this.state.carInfo?.vehicleBrand}</p>
                 </>
               }
@@ -310,6 +311,27 @@ class DataTable extends Component {
       },
     },
   ];
+
+  time = (value) => {
+    let zone = '';
+    let time = [];
+    let day = parseInt(value / 60 / 24);
+    let hour = parseInt((value / 60) % 24);
+    let min = parseInt(value % 60);
+    time[0] = day > 0 ? day : 0;
+    time[1] = hour > 0 ? hour : 0;
+    time[2] = min > 0 ? parseFloat(min) : 0;
+    if (time[0] != 0) {
+      zone += time[0] + '天';
+    }
+    if (time[1] != 0) {
+      zone += time[1] + '时';
+    }
+    if (time[2] != 0) {
+      zone += time[2] + '分';
+    }
+    return zone;
+  };
   carInfo = (col) => {
     this.setState({
       carInfo: {},
@@ -388,7 +410,6 @@ class DataTable extends Component {
   };
 
   exportExcel = () => {
-    let storage = window.localStorage;
     let creator = getDvaApp()._store.getState().user.currentUser.username;
 
     console.log('this.props.searchFormValues ', this.props.searchFormValues);

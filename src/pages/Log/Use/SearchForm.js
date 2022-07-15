@@ -8,7 +8,7 @@ import {
   UpOutlined,
 } from '_@ant-design_icons@4.7.0@@ant-design/icons';
 const { RangePicker } = DatePicker;
-
+const dateFormat = 'YYYY/MM/DD';
 @EasyTable.connect(({ keyErrorLogDataTable }) => ({
   keyErrorLogDataTable,
 }))
@@ -19,6 +19,8 @@ class SearchForm extends Component {
   };
   form = React.createRef();
   handleSubmit = (values) => {
+    console.log(values);
+    // debugger;
     this.form.current
       .validateFields()
       .then((values) => {
@@ -34,6 +36,7 @@ class SearchForm extends Component {
       .catch((errors) => {
         if (errors) return;
       });
+    // this.form.reload();
   };
 
   onClick = () => {
@@ -42,7 +45,21 @@ class SearchForm extends Component {
       buttonHidden: !this.state.buttonHidden,
     });
   };
+  defaultStartTime = () => {
+    let defaultTime = [];
 
+    let now = new Date(); //当前日期
+    let nowMonth = now.getMonth(); //当前月
+    let nowYear = now.getFullYear(); //当前年
+    //本月的开始时间
+    let monthStartDate = new Date(nowYear, nowMonth, 1);
+    //本月的结束时间
+    let monthEndDate = new Date(nowYear, nowMonth + 1, 0);
+
+    defaultTime[0] = monthStartDate;
+    defaultTime[1] = monthEndDate;
+    return defaultTime;
+  };
   render() {
     const formItemLayout = {
       labelCol: {
@@ -79,8 +96,16 @@ class SearchForm extends Component {
       >
         <Row type={'flex'} gutter={16}>
           <Col {...colSpan}>
-            <Form.Item label={'车辆vin号'} name="vin">
-              <Input placeholder="请输入车辆vin号" />
+            <Form.Item
+              label="操作时间"
+              name={'startTime'}
+              initialValue={[
+                moment(this.defaultStartTime()[0], dateFormat),
+                moment(this.defaultStartTime()[1], dateFormat),
+              ]}
+              format={dateFormat}
+            >
+              <RangePicker />
             </Form.Item>
           </Col>
 
@@ -129,10 +154,11 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="操作时间" name={'startTime'}>
-              <RangePicker />
+            <Form.Item label={'车辆vin号'} name="vin">
+              <Input placeholder="请输入车辆vin号" />
             </Form.Item>
           </Col>
+
           <Col {...colSpan}>
             <Form.Item label={'操作结果'} name="flag">
               <Select
@@ -158,15 +184,15 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
 
-          <Col {...colSpan}>
-            <Form.Item label={'车辆品牌'} name="vehicleBrand">
-              <Input placeholder="请输入车辆品牌" />
-            </Form.Item>
-          </Col>
+          {/*<Col {...colSpan}>*/}
+          {/*  <Form.Item label={'车辆品牌'} name="vehicleBrand">*/}
+          {/*    <Input placeholder="请输入车辆品牌" />*/}
+          {/*  </Form.Item>*/}
+          {/*</Col>*/}
 
           <Col {...colSpan}>
-            <Form.Item label={'车辆型号'} name="vehicleModel">
-              <Input placeholder="请输入车辆型号" />
+            <Form.Item label={'品牌型号'} name="vehicleModel">
+              <Input placeholder="请输入品牌型号" />
             </Form.Item>
           </Col>
         </Row>
