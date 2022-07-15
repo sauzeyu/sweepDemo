@@ -13,11 +13,13 @@ class BottomForm extends React.Component {
         phoneErrorData: res.data,
       });
     });
-    selectKeyErrorLogByPhoneBrand().then((res) => {
-      this.setState({
-        keyErrorCount: res.data,
-      });
-    });
+
+    // selectKeyErrorLogByPhoneBrand().then((res) => {
+    //   this.setState({
+    //     keyErrorCount: res.data,
+    //   });
+    //
+    // });
   }
 
   state = {
@@ -111,6 +113,7 @@ class BottomForm extends React.Component {
         const params = new URLSearchParams();
         params.append('phoneBrand', event?.data?.name);
         console.log('params ', params);
+
         selectKeyErrorLogByPhoneBrand(params).then((res) => {
           this.setState({
             keyErrorCount: res.data,

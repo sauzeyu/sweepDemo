@@ -212,6 +212,7 @@ export class DataTable extends Component {
         </Modal>
       </div>
     );
+    console.log(this.dataTable);
   }
 }
 

@@ -21,8 +21,6 @@ export default class AddUserForm extends Component {
     this.form.current.validateFields().then((values) => {
       values.password = md5(values.password);
       values.creator = getDvaApp()._store.getState().user.currentUser.username;
-      // values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-      console.log(user);
       insertAdmin(values).then((res) => {
         if (res.code === 200) {
           message.success({
