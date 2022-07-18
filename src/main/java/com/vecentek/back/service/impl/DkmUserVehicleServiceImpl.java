@@ -52,9 +52,9 @@ public class DkmUserVehicleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
-        if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin()) || userVehicle.getBindTime() == null) {
-            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN，购车时间等必要参数未传递！");
-            return PageResp.fail(2106,"上传失败，用户ID，VIN，购车时间等必要参数未传递！");
+        if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
+            return PageResp.fail(2106,"上传失败，用户ID，VIN等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
 
@@ -85,7 +85,11 @@ public class DkmUserVehicleServiceImpl {
             DkmUserVehicle dkmUserVehicle = new DkmUserVehicle();
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
             dkmUserVehicle.setUserId(dkmUser.getId());
-            dkmUserVehicle.setBindTime(userVehicle.getBindTime());
+            if(userVehicle.getBindTime() != null){
+                dkmUserVehicle.setBindTime(userVehicle.getBindTime());
+            }else{
+                dkmUserVehicle.setBindTime(new Date());
+            }
             dkmUserVehicle.setBindStatus(1);
             if (userVehicle.getLicense() != null){
                 dkmUserVehicle.setLicense(userVehicle.getLicense());
@@ -124,15 +128,18 @@ public class DkmUserVehicleServiceImpl {
     public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) {
         String userId = logoutUserVehicle.getUserId();
         String vin = logoutUserVehicle.getVin();
-        Date logoutTime = logoutUserVehicle.getLogoutTime();
+        Date logoutTime;
+        if (logoutUserVehicle.getLogoutTime() == null) {
+            logoutTime = new Date();
+        }else{
+            logoutTime = logoutUserVehicle.getLogoutTime();
+        }
         if (StrUtil.hasBlank(userId, vin)) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
-        if (logoutTime == null) {
-            logoutTime = new Date();
-        }
+
         // 根据userId和vin查询中间表
         DkmUserVehicle dkmUserVehicle = dkmUserVehicleMapper.selectOne(Wrappers.<DkmUserVehicle>lambdaQuery()
                 .eq(DkmUserVehicle::getVin, vin)
@@ -210,10 +217,16 @@ public class DkmUserVehicleServiceImpl {
 
 
     public PageResp revokeKey(RevokeKeyVO revokeKeyVO) {
-        String userId = revokeKeyVO.getUserId();
-        if (StrUtil.hasBlank(userId)) {
+        if (StrUtil.hasBlank(revokeKeyVO.getUserId())) {
             log.info("response：" + "/api/userVehicle/revokeKey " + "必填参数未传递!");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+        }
+        String userId = revokeKeyVO.getUserId();
+        // 查询有无此用户
+        DkmUser dkmUser = dkmUserMapper.selectById(userId);
+        if (dkmUser == null){
+            log.info("response：" + "/api/userVehicle/revokeKey " + "用户没有钥匙信息!");
+            return PageResp.fail(2106, "用户没有钥匙信息！");
         }
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).eq(DkmKey::getDkState, "1"));
