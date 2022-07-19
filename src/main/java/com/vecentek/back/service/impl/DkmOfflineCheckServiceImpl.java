@@ -214,7 +214,6 @@ public class DkmOfflineCheckServiceImpl {
                 //若换件车辆存在钥匙，则吊销钥匙，并记录钥匙生命周期
                 if (keyList.size() > 0) {
                     keyList.forEach(dkmKey -> {
-                        DkmUser dkmUser = dkmUserMapper.selectById(dkmKey.getUserId());
                         dkmKey.setDkState(5);
                         dkmKey.setUpdateTime(new Date());
                         dkmKeyMapper.updateById(dkmKey);
@@ -255,7 +254,7 @@ public class DkmOfflineCheckServiceImpl {
                         dkmKeyLifecycle.setKeyType(keyType);
                         dkmKeyLifecycle.setKeyStatus(5);
                         dkmKeyLifecycle.setKeySource(3);
-                        dkmKeyLifecycle.setUserId(dkmUser.getId().toString());
+                        dkmKeyLifecycle.setUserId(dkmKey.getUserId());
                         dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
                         // 2.6 发送用户消息（换件后） 钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台
                         // “vin“: “ ASDCSDASDADA1“,
