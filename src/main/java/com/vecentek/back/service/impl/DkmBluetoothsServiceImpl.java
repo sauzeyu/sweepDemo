@@ -100,7 +100,10 @@ public class DkmBluetoothsServiceImpl {
         response.setContentType("application/vnd.ms-excel");
 
 
-        ExcelWriter writer = ExcelUtil.getBigWriter();
+
+        Boolean isXlsx = true;
+        ExcelWriter writer = ExcelUtil.getWriter(isXlsx);
+
 
 
         writer.setOnlyAlias(true);
@@ -121,12 +124,12 @@ public class DkmBluetoothsServiceImpl {
         CellStyle cellStyle = writer.getCellStyle();
         cellStyle.setFont(cellFont);
 
-        writer.setColumnWidth(0, 20);
-        writer.setColumnWidth(1, 20);
+        writer.setColumnWidth(0, 40);
+        writer.setColumnWidth(1, 40);
         writer.setColumnWidth(2, 20);
         writer.setColumnWidth(3, 20);
-        writer.setColumnWidth(2, 20);
-        writer.setColumnWidth(3, 20);
+        writer.setColumnWidth(4, 40);
+        writer.setColumnWidth(5, 20);
 
 
         writer.addHeaderAlias("hwDeviceSn", "设备序列号");

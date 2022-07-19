@@ -159,8 +159,8 @@ public class DkmVehicleServiceImpl {
         response.setContentType("application/vnd.ms-excel");
 
 
-        ExcelWriter writer = ExcelUtil.getBigWriter();
-
+        Boolean isXlsx = true;
+        ExcelWriter writer = ExcelUtil.getWriter(isXlsx);
 
         writer.setOnlyAlias(true);
 
@@ -183,10 +183,10 @@ public class DkmVehicleServiceImpl {
         writer.setColumnWidth(0, 20);
         writer.setColumnWidth(1, 20);
         writer.setColumnWidth(2, 20);
-        writer.setColumnWidth(3, 20);
-        writer.setColumnWidth(2, 20);
-        writer.setColumnWidth(3, 20);
-        writer.setColumnWidth(3, 20);
+        writer.setColumnWidth(3, 70);
+        writer.setColumnWidth(4, 50);
+        writer.setColumnWidth(5, 20);
+        writer.setColumnWidth(6, 40);
 
         writer.addHeaderAlias("vin", "车辆vin号");
         writer.addHeaderAlias("vehicleBrand", "车辆品牌");
