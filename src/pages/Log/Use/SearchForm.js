@@ -36,7 +36,6 @@ class SearchForm extends Component {
       .catch((errors) => {
         if (errors) return;
       });
-    // this.form.reload();
   };
 
   onClick = () => {
@@ -162,7 +161,7 @@ class SearchForm extends Component {
           <Col {...colSpan}>
             <Form.Item label={'操作结果'} name="flag">
               <Select
-                mode={'multiple'}
+                // mode={'multiple'}
                 placeholder="请选择操作结果"
                 allowClear={true}
                 showArrow

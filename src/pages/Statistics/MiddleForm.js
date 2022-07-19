@@ -20,7 +20,8 @@ class MiddleForm extends React.Component {
     keyErrorLogCount: [],
     monthList: [],
     pickerTime: [moment(), moment().add(1, 'days')],
-    fileName: [],
+    fileUseName: [],
+    fileErrorName: [],
   };
   keyUseLogTotalByMonth = () => {
     return {
@@ -83,7 +84,7 @@ class MiddleForm extends React.Component {
   getOptionByKeyUseLog = () => {
     return {
       title: {
-        text: this.state.fileName,
+        text: this.state.fileUseName,
         left: '20%',
         top: '2%',
         show: false,
@@ -149,9 +150,10 @@ class MiddleForm extends React.Component {
   getOptionByKeyErrorLog = () => {
     return {
       title: {
-        text: '钥匙故障类型',
+        text: this.state.fileErrorName,
         left: '20%',
         top: '2%',
+        show: false,
       },
       tooltip: {
         trigger: 'item',
@@ -230,8 +232,10 @@ class MiddleForm extends React.Component {
     let params = new URLSearchParams();
     let startTime = moment(times[0]).format('YYYY-MM-DD');
     let endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD');
-    let file = '钥匙使用类型';
-    this.state.fileName = startTime + '-' + endTime + file;
+    let fileUse = '钥匙使用类型';
+    let fileError = '钥匙故障类型';
+    this.state.fileUseName = startTime + '~' + endTime + fileUse;
+    this.state.fileErrorName = startTime + '~' + endTime + fileError;
     params.append('startTime', moment(times[0]).format('YYYY-MM-DD'));
     params.append(
       'endTime',

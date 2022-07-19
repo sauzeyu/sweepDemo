@@ -56,7 +56,7 @@ class SearchForm extends Component {
           <Col {...colSpan}>
             <Form.Item label={'设备状态'} name="flag">
               <Select
-                mode={'multiple'}
+                // mode={'multiple'}
                 allowClear={true}
                 showArrow
                 placeholder="请选择设备状态"
@@ -64,9 +64,9 @@ class SearchForm extends Component {
                 <Select.Option key={1} value={1}>
                   正常
                 </Select.Option>
-                <Select.Option key={0} value={0}>
+                <Select key={2} value={2}>
                   报废
-                </Select.Option>
+                </Select>
               </Select>
             </Form.Item>
           </Col>

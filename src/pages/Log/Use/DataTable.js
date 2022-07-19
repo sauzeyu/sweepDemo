@@ -110,9 +110,9 @@ const SubTable = () => {
   );
 };
 
-// @connect(({ keysManage, loading }) => ({
-//   keysManage,
-// }))
+@connect(({ keysLog, loading }) => ({
+  keysLog,
+}))
 class DataTable extends Component {
   columns = [
     {
@@ -247,7 +247,7 @@ class DataTable extends Component {
     return (
       <div>
         <EasyTable
-          rowKey={'id'}
+          // rowKey={'id'}
           scroll={{ x: '1200px' }}
           autoFetch
           source={getKeyLogList}
