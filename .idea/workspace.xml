@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/pages/Log/Use/model.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/constants/cars.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/cars.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Cars/Bluetooth/SearchForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Log/Use/DataTable.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Log/Use/DataTable.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Log/Use/SearchForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Log/Use/SearchForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Statistics/MiddleForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Statistics/MiddleForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Statistics/BottomForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Statistics/BottomForm.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +61,7 @@
       <workItem from="1657881469973" duration="278000" />
       <workItem from="1657881785982" duration="5484000" />
       <workItem from="1658122276790" duration="11427000" />
-      <workItem from="1658194585455" duration="13802000" />
+      <workItem from="1658194585455" duration="16680000" />
     </task>
     <servers />
   </component>

@@ -98,6 +98,7 @@ class BottomForm extends React.Component {
       },
       series: [
         {
+          name: 'Access From',
           type: 'pie',
           radius: [25, 125],
           center: ['50%', '45%'],
@@ -105,6 +106,40 @@ class BottomForm extends React.Component {
           itemStyle: {
             borderRadius: 8,
           },
+
+          label: {
+            formatter: '{per|{d}%}  ',
+            backgroundColor: '#F6F8FC',
+            borderColor: '#8C8D8E',
+            // borderWidth: 1,
+            borderRadius: 4,
+            rich: {
+              a: {
+                color: '#6E7079',
+                lineHeight: 22,
+                align: 'center',
+              },
+              hr: {
+                borderColor: '#8C8D8E',
+                width: '100%',
+                borderWidth: 1,
+                height: 0,
+              },
+              b: {
+                color: '#4C5058',
+                fontSize: 14,
+                fontWeight: 'bold',
+                lineHeight: 33,
+              },
+              per: {
+                color: '#fff',
+                backgroundColor: '#4C5058',
+                padding: [3, 4],
+                borderRadius: 4,
+              },
+            },
+          },
+
           data: this.state.keyErrorCount,
         },
       ],
@@ -129,7 +164,7 @@ class BottomForm extends React.Component {
       <>
         <Row gutter={24}>
           <Col span={12}>
-            <Card title={'手机品牌故障率占比'}>
+            <Card title={'手机品牌故障数展示'}>
               <ReactEcharts
                 option={this.keyStateCountOption()}
                 notMerge={true}
