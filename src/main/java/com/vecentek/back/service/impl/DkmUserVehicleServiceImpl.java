@@ -172,9 +172,8 @@ public class DkmUserVehicleServiceImpl {
             // 钥匙生命周期
             // 封装生命周期对象
             // 根据用户id找到手机号
-            DkmUser dkmUser = dkmUserMapper.selectById(userId);
             DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
-            dkmKeyLifecycle.setUserId(dkmUser.getId().toString());
+            dkmKeyLifecycle.setUserId(key.getUserId());
             dkmKeyLifecycle.setKeyId(key.getId());
             dkmKeyLifecycle.setVin(vin);
             // 操作来源
