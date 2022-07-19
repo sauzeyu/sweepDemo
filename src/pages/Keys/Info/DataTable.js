@@ -2,7 +2,6 @@ import { getDvaApp } from '@@/plugin-dva/exports';
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import Authorized from '@/components/Authorized';
-
 import moment from 'moment';
 import {
   Badge,
@@ -14,7 +13,12 @@ import {
   Card,
   Tooltip,
 } from 'antd';
-import { DownloadOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
+import {
+  DownloadOutlined,
+  DownOutlined,
+  UpOutlined,
+  BarsOutlined,
+} from '@ant-design/icons';
 import { connect } from 'dva';
 import {
   getKeysList,
@@ -527,7 +531,7 @@ class DataTable extends Component {
                   onClick={this.openModalExport}
                   type={'ghost'}
                   size={'large'}
-                  icon={<DownloadOutlined />}
+                  icon={<BarsOutlined />}
                 >
                   历史导出列表
                 </Button>

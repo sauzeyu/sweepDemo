@@ -15,7 +15,13 @@ import {
   Popover,
   message,
 } from 'antd';
-import { DownloadOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import {
+  DownloadOutlined,
+  CloudDownloadOutlined,
+  UpOutlined,
+  DownOutlined,
+  BarsOutlined,
+} from '@ant-design/icons';
 import Authorized from '@/components/Authorized';
 import { keyLogFlag, keyLogFlagBadge } from '@/constants/keys';
 import { LOG_USE_EXPORT } from '@/components/Authorized/AuthMap';
@@ -104,9 +110,9 @@ const SubTable = () => {
   );
 };
 
-@connect(({ keysManage, loading }) => ({
-  keysManage,
-}))
+// @connect(({ keysManage, loading }) => ({
+//   keysManage,
+// }))
 class DataTable extends Component {
   columns = [
     {
@@ -234,7 +240,9 @@ class DataTable extends Component {
     });
     message.info('正在导出');
   };
-
+  reload = () => {
+    this.dataTable.reload();
+  };
   render() {
     return (
       <div>
@@ -262,7 +270,7 @@ class DataTable extends Component {
                   onClick={this.openModalExport}
                   type={'ghost'}
                   size={'large'}
-                  icon={<DownloadOutlined />}
+                  icon={<BarsOutlined />}
                 >
                   历史导出列表
                 </Button>
