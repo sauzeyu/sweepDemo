@@ -151,7 +151,7 @@ public class DkmVehicleServiceImpl {
         List<DkmVehicle> dkmVehicles = dkmVehicleMapper.selectList(queryWrapper);
         // 设置响应头信息
         try {
-            response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + URLEncoder.encode("车辆信息", "UTF-8") + ".xls");
+            response.setHeader("Content-Disposition", "attachment;filename*=utf-8''" + URLEncoder.encode("车辆信息", "UTF-8") + ".xlsx");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

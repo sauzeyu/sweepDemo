@@ -5,11 +5,17 @@ spring:
     active: test
   cloud:
     nacos:
-#      discovery:
-#        ip: 172.16.13.12
+      discovery:
+        server-addr: 172.16.13.13:8848 # 注册中心地址
+        #        本地测试
+        ip: 172.16.38.213
+        #        线上测试
+#        ip: 172.16.6.106
+        namespace: ${spring.profiles.active}
       config:
         server-addr: 172.16.13.13:8848  #  配置中心地址
         file-extension: yaml # 指定配置文件类型
+        group: liujz
         namespace: ${spring.profiles.active}
         shared-configs:
           - data-id: common.yaml

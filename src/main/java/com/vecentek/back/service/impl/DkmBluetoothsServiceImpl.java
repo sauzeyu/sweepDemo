@@ -1,5 +1,6 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -70,13 +71,15 @@ public class DkmBluetoothsServiceImpl {
         return PageResp.success("删除成功");
     }
 
-    public void downloadDkmBluetooths(String hwDeviceSn, String searchNumber, Integer[] flag, HttpServletResponse response) {
+    public void downloadDkmBluetooths(String hwDeviceSn, String searchNumber, Integer flag, HttpServletResponse response) {
 
         LambdaQueryWrapper<DkmBluetooths> queryWrapper = Wrappers.<DkmBluetooths>lambdaQuery()
-                .in(flag != null, DkmBluetooths::getFlag, flag)
+                //.in(flag != null, DkmBluetooths::getFlag, flag)
+                .eq(ObjectUtil.isNotNull(flag),DkmBluetooths::getFlag,flag)
                 .like(StrUtil.isNotBlank(searchNumber), DkmBluetooths::getSearchNumber, searchNumber)
                 .like(StrUtil.isNotBlank(hwDeviceSn), DkmBluetooths::getHwDeviceSn, hwDeviceSn)
                 .orderByDesc(DkmBluetooths::getCreateTime);
+
         List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(queryWrapper);
         dkmBluetooths.stream().forEach(DkmBluetooths ->{
             if (DkmBluetooths.getFlag()!=null){

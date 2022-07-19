@@ -55,7 +55,7 @@ public class DkmBluetoothsController {
     }
 
     @PostMapping(value = "/downloadDkmBluetooths")
-    public void downloadDkmBluetooths(String hwDeviceSn,String searchNumber,Integer[] flag,HttpServletResponse response)  {
+    public void downloadDkmBluetooths(String hwDeviceSn,String searchNumber,Integer flag,HttpServletResponse response)  {
         this.dkmBluetoothsServiceImpl.downloadDkmBluetooths(hwDeviceSn, searchNumber, flag,response);
     }
 }
