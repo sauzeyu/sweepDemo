@@ -35,6 +35,9 @@ function createDefaultRequest() {
       return response.data;
     },
     (r) => {
+      message.config({
+        maxCount: 1,
+      });
       let resultError = { response: r };
       if (r.response) {
         const response = r.response;

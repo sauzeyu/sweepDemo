@@ -12,4 +12,5 @@ export default {
   'Validator.incompleteAddress': '地址项输入不全',
   'Validator.incomplete': '{name} 不完整',
   'Validator.tel': '手机号不正确',
+  'Validator.notequals': '{a} 和 {b} 输入一致',
 };

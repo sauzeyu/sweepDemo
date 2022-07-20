@@ -25,6 +25,7 @@ class BottomForm extends React.Component {
   state = {
     phoneErrorData: [],
     keyErrorCount: [],
+    fileName: [],
   };
   keyStateCountOption = () => {
     return {
@@ -71,7 +72,7 @@ class BottomForm extends React.Component {
     return {
       title: {
         show: false,
-        text: 'HUAWEI故障类型占比',
+        text: this.state.fileName,
       },
       tooltip: {
         trigger: 'item',
@@ -98,7 +99,7 @@ class BottomForm extends React.Component {
       },
       series: [
         {
-          name: 'Access From',
+          // name: 'Access From',
           type: 'pie',
           radius: [25, 125],
           center: ['50%', '45%'],
@@ -108,7 +109,7 @@ class BottomForm extends React.Component {
           },
 
           label: {
-            formatter: '{per|{d}%}  ',
+            formatter: '{b|{b}：}{c}  {per|{d}%}',
             backgroundColor: '#F6F8FC',
             borderColor: '#8C8D8E',
             // borderWidth: 1,
@@ -152,7 +153,7 @@ class BottomForm extends React.Component {
         const params = new URLSearchParams();
         params.append('phoneBrand', event?.data?.name);
         console.log('params ', params);
-
+        this.state.fileName = params.get('phoneBrand') + '故障类型占比';
         selectKeyErrorLogByPhoneBrand(params).then((res) => {
           this.setState({
             keyErrorCount: res.data,
