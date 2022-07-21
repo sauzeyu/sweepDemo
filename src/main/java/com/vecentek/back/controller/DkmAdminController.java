@@ -32,8 +32,7 @@ public class DkmAdminController {
      *
      * @param pageIndex 起始位置
      * @param pageSize  起始页
-     * @param username  管理员姓名
-     * @param phone     管理员电话号码
+     * @param userName  管理员姓名
      * @param startTime 开始时间
      * @param endTime   结束时间
      * @return 管理员列表
@@ -41,11 +40,10 @@ public class DkmAdminController {
     @GetMapping(value = "/selectForPage")
     public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
                                   @RequestParam(name = "pageSize") int pageSize,
-                                  String username,
-                                  String phone,
+                                  String userName,
                                   String startTime,
                                   String endTime) {
-        return this.dkmAdminService.selectForPage(pageIndex, pageSize, username, phone, startTime, endTime);
+        return this.dkmAdminService.selectForPage(pageIndex, pageSize, userName, startTime, endTime);
     }
 
     /**
