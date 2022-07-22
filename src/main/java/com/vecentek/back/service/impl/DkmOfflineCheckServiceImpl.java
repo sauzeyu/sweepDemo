@@ -191,8 +191,6 @@ public class DkmOfflineCheckServiceImpl {
                 DkmBluetooths bluetooth = new DkmBluetooths();
                 BeanUtil.copyProperties(vehicleBluetooth, vehicle);
                 vehicle.setCreateTime(new Date());
-                // 车辆品牌和车辆型号 结合为车型字段 福田-p4
-                vehicle.setVehicleModel(vehicle.getVehicleBrand() + "-" + vehicle.getVehicleModel());
                 dkmVehicleMapper.insert(vehicle);
                 BeanUtil.copyProperties(vehicleBluetooth, bluetooth);
                 bluetooth.setCreateTime(new Date());
