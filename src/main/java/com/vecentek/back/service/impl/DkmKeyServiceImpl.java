@@ -11,6 +11,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -31,6 +32,7 @@ import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.util.DownLoadUtil;
+import com.vecentek.back.util.PathUtil;
 import com.vecentek.back.util.TokenUtils;
 import com.vecentek.back.vo.DkmKeyVO;
 import com.vecentek.common.response.PageResp;
@@ -354,12 +356,16 @@ public class DkmKeyServiceImpl {
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        String filePath = ("d:/test/" +  excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        System.out.println("filePath:"+filePath);
+
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
             FileUtil.del(filePath);
         }
-        BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
+
+        //BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
+        ExcelWriter writer = ExcelUtil.getWriter(filePath);
 
 
         // 2向历史导出记录新增一条状态为导出中的数据
@@ -429,7 +435,7 @@ public class DkmKeyServiceImpl {
 
 
         // 3.2每次分页数据量50W (SXXSF 最大分页100W)
-        Integer end = 500000;
+        Integer end = 100000;
 
         List<DkmKey> dkmKeys;
 
@@ -482,7 +488,7 @@ public class DkmKeyServiceImpl {
      * BigExcelWriter设置单元格样式
      * @param writer
      */
-    private void extracted(BigExcelWriter writer) {
+    private void extracted(ExcelWriter writer) {
         // 4.3.1表头只显示取别名的字段
         writer.setOnlyAlias(true);
 
