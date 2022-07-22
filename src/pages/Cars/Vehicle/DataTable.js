@@ -46,12 +46,12 @@ class DataTable extends Component {
       dataIndex: 'vin',
       width: 200,
     },
-    // {
-    //   title: '车辆品牌',
-    //   dataIndex: 'vehicleBrand',
-    // },
     {
-      title: '品牌型号',
+      title: '车辆品牌',
+      dataIndex: 'vehicleBrand',
+    },
+    {
+      title: '车辆型号',
       dataIndex: 'vehicleModel',
     },
     {

@@ -140,12 +140,12 @@ class DataTable extends Component {
       title: '手机型号',
       dataIndex: 'phoneModel',
     },
-    // {
-    //   title: '车辆品牌',
-    //   dataIndex: 'vehicleBrand',
-    // },
     {
-      title: '品牌型号',
+      title: '车辆型号',
+      dataIndex: 'vehicleBrand',
+    },
+    {
+      title: '车辆型号',
       dataIndex: 'vehicleModel',
     },
     {
@@ -165,6 +165,10 @@ class DataTable extends Component {
     },
     {
       title: '失败原因',
+      dataIndex: 'errorReason',
+    },
+    {
+      title: '展示故障码',
       dataIndex: 'errorReason',
     },
   ];

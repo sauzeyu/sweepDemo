@@ -183,15 +183,15 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
 
-          {/*<Col {...colSpan}>*/}
-          {/*  <Form.Item label={'车辆品牌'} name="vehicleBrand">*/}
-          {/*    <Input placeholder="请输入车辆品牌" />*/}
-          {/*  </Form.Item>*/}
-          {/*</Col>*/}
+          <Col {...colSpan}>
+            <Form.Item label={'车辆品牌'} name="vehicleBrand">
+              <Input placeholder="请输入车辆品牌" />
+            </Form.Item>
+          </Col>
 
           <Col {...colSpan}>
-            <Form.Item label={'品牌型号'} name="vehicleModel">
-              <Input placeholder="请输入品牌型号" />
+            <Form.Item label={'车辆型号'} name="vehicleModel">
+              <Input placeholder="请输入车辆型号" />
             </Form.Item>
           </Col>
         </Row>

@@ -35,9 +35,9 @@ class EditForm extends Component {
             <Input type={'hidden'} />
           </Form.Item>
           <Form.Item
-            label={'品牌型号'}
+            label={'车辆型号'}
             name="modelId"
-            rules={[{ required: true, message: '品牌型号不能为空' }]}
+            rules={[{ required: true, message: '车辆型号不能为空' }]}
           >
             <CarTypesSelect
               labelInValue
