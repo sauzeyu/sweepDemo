@@ -191,8 +191,6 @@ public class DkmOfflineCheckServiceImpl {
                 DkmBluetooths bluetooth = new DkmBluetooths();
                 BeanUtil.copyProperties(vehicleBluetooth, vehicle);
                 vehicle.setCreateTime(new Date());
-                // 车辆品牌和车辆型号 结合为车型字段 福田-p4
-                vehicle.setVehicleModel(vehicle.getVehicleBrand() + "-" + vehicle.getVehicleModel());
                 dkmVehicleMapper.insert(vehicle);
                 BeanUtil.copyProperties(vehicleBluetooth, bluetooth);
                 bluetooth.setCreateTime(new Date());
@@ -273,16 +271,16 @@ public class DkmOfflineCheckServiceImpl {
                 DkmBluetooths newBluetooth = new DkmBluetooths();
                 DkmBluetooths oldBluetooth = new DkmBluetooths();
                 BeanUtil.copyProperties(vehicleBluetooth, vehicle);
+                BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
                 vehicle.setUpdateTime(new Date());
                 newBluetooth.setCreateTime(new Date());
-                newBluetooth.setFlag(1);
+                newBluetooth.setFlag(1); // 启用
                 oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
-                oldBluetooth.setFlag(1);
+                oldBluetooth.setFlag(0); // 报废
                 oldBluetooth.setUpdateTime(new Date());
                 dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
                         .eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
                 dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
-                BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
                 dkmBluetoothsMapper.insert(newBluetooth);
                 DkmAftermarketReplacement dkmAftermarketReplacement = new DkmAftermarketReplacement();
                 dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
@@ -290,7 +288,6 @@ public class DkmOfflineCheckServiceImpl {
                 dkmAftermarketReplacement.setNewBluetoothSn(vehicleBluetooth.getHwDeviceSn());
                 dkmAftermarketReplacement.setReplacementTime(new Date());
                 dkmAftermarketReplacement.setCreateTime(new Date());
-                newBluetooth.setFlag(0);
                 dkmAftermarketReplacementMapper.insert(dkmAftermarketReplacement);
             });
         }

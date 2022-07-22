@@ -40,18 +40,14 @@ public class DkmAdminServiceImpl {
     @Resource
     private DkmAdminRoleMapper dkmAdminRoleMapper;
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String username, String phone, String startTime, String endTime) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String userName, String startTime, String endTime) {
         Page<DkmAdmin> page = new Page<>(pageIndex, pageSize);
-
-
         LambdaQueryWrapper<DkmAdmin> queryWrapper = Wrappers.<DkmAdmin>lambdaQuery()
-                .like(StrUtil.isNotBlank(username), DkmAdmin::getUsername, username)
+                .like(StrUtil.isNotBlank(userName), DkmAdmin::getUsername, userName)
                 .ge(StrUtil.isNotBlank(startTime), DkmAdmin::getCreateTime, startTime)
                 .le(StrUtil.isNotBlank(endTime), DkmAdmin::getCreateTime, endTime);
-
         Page<DkmAdmin> dkmAdminPage = dkmAdminMapper.selectPage(page, queryWrapper);
         dkmAdminPage.getRecords().forEach(admin -> admin.setPassword(null));
-
         return PageResp.success("查询成功", page.getTotal(), dkmAdminPage.getRecords());
     }
 
