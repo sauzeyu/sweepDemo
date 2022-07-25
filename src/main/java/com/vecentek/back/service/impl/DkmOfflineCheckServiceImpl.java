@@ -141,14 +141,16 @@ public class DkmOfflineCheckServiceImpl {
                 throw new VecentException(1001, "蓝牙公钥格式不正确！");
             }
 
-            // 存在重复参数校验 主键索引重复导致插入失败 dkmVehicleMapper dkmBluetoothsMapper
+//             存在重复参数校验 主键索引重复导致插入失败 dkmVehicleMapper dkmBluetoothsMapper
             String vin = vehicle.getVin();
-            List<DkmVehicle> dkmVehicles1 = dkmVehicleMapper.selectList(new QueryWrapper<DkmVehicle>().lambda().eq(DkmVehicle::getVin, vin));
+            String hwDeviceSn = vehicle.getHwDeviceSn();
+            List<DkmVehicle> dkmVehicles1 = dkmVehicleMapper.selectList(new QueryWrapper<DkmVehicle>().lambda()
+                    .eq(ObjectUtil.isNotNull(vin),DkmVehicle::getVin, vin)
+                    .eq(ObjectUtil.isNotNull(hwDeviceSn),DkmVehicle::getHwDeviceSn, hwDeviceSn));
             if ( dkmVehicles1.size() > 0){
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的VIN号！");
-                throw new VecentException(1001, "存在重复的VIN号！");
+                throw new VecentException(1001, "存在重复成对的VIN号和蓝牙序列号，请勿重复插入！");
             }
-            String hwDeviceSn = vehicle.getHwDeviceSn();
             List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getHwDeviceSn, hwDeviceSn));
             if ( dkmBluetooths.size() > 0){
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙设备号！");
