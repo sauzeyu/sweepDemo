@@ -66,7 +66,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "http://172.16.10.118:17990/scm/web/dks_front.git"
+    "url": "http://cd.vecentek.com:57990/scm/web/dks_front.git"
   },
   "keywords": [],
   "author": "",
