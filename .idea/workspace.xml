@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="">
+    <list default="true" id="638f15ac-32a5-4c64-a495-e0f6ab54eeb3" name="Changes" comment="优化权限管理，改造资源管理页面树形展示">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2022_7_14_16_11_[Default_Changelist]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/config.js" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Dashboard/Admin/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Dashboard/Admin/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Dashboard/Zipkin/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Dashboard/Zipkin/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/constants/cars.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/constants/cars.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Less File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -23,48 +31,264 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
-  <component name="ProjectId" id="2Bt2CseP5pr3EDTwQM4jT7AjqaC" />
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/pages/Statistics/TopForm.js" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/pages/Statistics/BottomForm.js" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectId" id="23DxeB1FFHXDRQSVF0CD7tCDFoN" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/pages/Log/Use" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/pages/System/User/Resource" />
+    <property name="list.type.of.created.stylesheet" value="Less" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="prettierjs.PrettierConfiguration.Package" value="D:\front_workspace\dks_front\node_modules\prettier" />
-    <property name="settings.editor.selected.configurable" value="terminal" />
-    <property name="ts.external.directory.path" value="D:\front_workspace\dks_front\node_modules\typescript\lib" />
+    <property name="prettierjs.PrettierConfiguration.Package" value="G:\Company\Dk\Dev\dks_front\node_modules\prettier" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="ts.external.directory.path" value="G:\Company\Dk\Dev\dks_front\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\front_workspace\dks_front\src\pages\Log\Use" />
+      <recent name="G:\Company\Dk\Dev\dks_front\src\pages\System\User\Resource" />
+      <recent name="G:\Company\Dk\Dev\dks_front\public" />
+      <recent name="G:\Company\Dk\Dev\dks_front\public\img" />
+      <recent name="G:\Company\Dk\Dev\dks_front\src\assets" />
+      <recent name="G:\Company\Dk\Dev\dks_front\src\pages\Keys\Error" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="G:\Company\Dk\Dev\dks_front\src\assets" />
+      <recent name="G:\Company\Dk\Dev\dks_front\src\pages\Log" />
     </key>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
-  <component name="SvnConfiguration">
-    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+  <component name="RunManager" selected="Node.js.test.js (3)">
+    <configuration name="keys.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/constants/keys.js" working-dir="$PROJECT_DIR$/src/constants">
+      <method v="2" />
+    </configuration>
+    <configuration name="test.js (1)" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/System/User/Manage/test.js" working-dir="$PROJECT_DIR$/src/pages/System/User/Manage">
+      <method v="2" />
+    </configuration>
+    <configuration name="test.js (2)" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/constants/test.js" working-dir="$PROJECT_DIR$/src/constants">
+      <method v="2" />
+    </configuration>
+    <configuration name="test.js (3)" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/Keys/Info/test.js" working-dir="$PROJECT_DIR$/src/pages/Keys/Info">
+      <method v="2" />
+    </configuration>
+    <configuration name="test.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/models/test.js" working-dir="$PROJECT_DIR$/src/models">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.test.js (3)" />
+        <item itemvalue="Node.js.keys.js" />
+        <item itemvalue="Node.js.test.js (2)" />
+        <item itemvalue="Node.js.test.js (1)" />
+        <item itemvalue="Node.js.test.js" />
+      </list>
+    </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="24dd6b98-89d2-43be-8956-7d3cc8e2b2c2" name="Default Changelist" comment="" />
-      <created>1657710937350</created>
+      <changelist id="638f15ac-32a5-4c64-a495-e0f6ab54eeb3" name="Changes" comment="" />
+      <created>1641282554481</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1657710937350</updated>
-      <workItem from="1657710940540" duration="13000" />
-      <workItem from="1657711305419" duration="829000" />
-      <workItem from="1657761384535" duration="934000" />
-      <workItem from="1657762344286" duration="15530000" />
-      <workItem from="1657785510767" duration="28601000" />
-      <workItem from="1657881469973" duration="278000" />
-      <workItem from="1657881785982" duration="5484000" />
-      <workItem from="1658122276790" duration="11427000" />
-      <workItem from="1658194585455" duration="39513000" />
+      <updated>1641282554481</updated>
+      <workItem from="1641282556781" duration="5900000" />
+      <workItem from="1641347111418" duration="7145000" />
+      <workItem from="1641431662215" duration="4466000" />
+      <workItem from="1641454150234" duration="6040000" />
+      <workItem from="1641475031714" duration="594000" />
+      <workItem from="1641517361541" duration="9946000" />
+      <workItem from="1641777816531" duration="17604000" />
+      <workItem from="1641863754617" duration="12425000" />
+      <workItem from="1641949743403" duration="35000" />
+      <workItem from="1642038247222" duration="558000" />
+      <workItem from="1642124525980" duration="595000" />
+      <workItem from="1642383365993" duration="1785000" />
+      <workItem from="1642470287059" duration="5360000" />
+      <workItem from="1642554473976" duration="2764000" />
+      <workItem from="1642747062038" duration="375000" />
+      <workItem from="1642747602923" duration="139000" />
+      <workItem from="1644196459996" duration="1224000" />
+      <workItem from="1644385755611" duration="6877000" />
+      <workItem from="1644457956566" duration="54000" />
+      <workItem from="1644458027427" duration="12816000" />
+      <workItem from="1644483568606" duration="4312000" />
+      <workItem from="1644542786973" duration="17425000" />
+      <workItem from="1644802743813" duration="9977000" />
+      <workItem from="1644888734548" duration="12088000" />
+      <workItem from="1644975673947" duration="6498000" />
+      <workItem from="1645407577536" duration="5370000" />
+      <workItem from="1645494092934" duration="7225000" />
+      <workItem from="1645582839764" duration="11632000" />
+      <workItem from="1645666930385" duration="5968000" />
+      <workItem from="1646012556168" duration="122000" />
+      <workItem from="1646012690286" duration="4034000" />
+      <workItem from="1646098995098" duration="5863000" />
+      <workItem from="1646184809870" duration="807000" />
+      <workItem from="1646272797752" duration="9515000" />
+      <workItem from="1646299687728" duration="2143000" />
+      <workItem from="1646358623215" duration="11685000" />
+      <workItem from="1646616751792" duration="6651000" />
+      <workItem from="1646804847638" duration="741000" />
+      <workItem from="1646805605578" duration="9575000" />
+      <workItem from="1646876413227" duration="7543000" />
+      <workItem from="1646962636396" duration="26075000" />
+      <workItem from="1647309417282" duration="17776000" />
+      <workItem from="1647394702259" duration="12497000" />
+      <workItem from="1647480639774" duration="59525000" />
+      <workItem from="1647942717559" duration="146000" />
+      <workItem from="1647942873373" duration="162000" />
+      <workItem from="1648450665215" duration="512000" />
+      <workItem from="1648540368943" duration="2185000" />
+      <workItem from="1648547774645" duration="7694000" />
+      <workItem from="1648609736087" duration="1537000" />
+      <workItem from="1648694366409" duration="2680000" />
+      <workItem from="1648778603172" duration="2413000" />
+      <workItem from="1649050134748" duration="1373000" />
+      <workItem from="1649397788740" duration="29000" />
+      <workItem from="1649398139654" duration="241000" />
+      <workItem from="1649398396102" duration="2211000" />
+      <workItem from="1649664649666" duration="11308000" />
+      <workItem from="1650248749168" duration="3286000" />
+      <workItem from="1650331900900" duration="1385000" />
+      <workItem from="1650421489474" duration="11552000" />
+      <workItem from="1650503568962" duration="3790000" />
+      <workItem from="1650524191212" duration="105000" />
+      <workItem from="1650524310886" duration="118000" />
+      <workItem from="1650524443669" duration="7524000" />
+      <workItem from="1650591101793" duration="17544000" />
+      <workItem from="1650765504957" duration="651000" />
+      <workItem from="1650849817761" duration="19139000" />
+      <workItem from="1650935132913" duration="3807000" />
+      <workItem from="1650965683511" duration="754000" />
+      <workItem from="1651038191547" duration="1823000" />
+      <workItem from="1651129458037" duration="1648000" />
+      <workItem from="1651202564698" duration="1582000" />
+      <workItem from="1651711227200" duration="2465000" />
+      <workItem from="1652063114146" duration="4589000" />
+      <workItem from="1652166654264" duration="8885000" />
+      <workItem from="1652248177839" duration="32907000" />
+      <workItem from="1652666101793" duration="56705000" />
+      <workItem from="1653011113899" duration="1790000" />
+      <workItem from="1653028172077" duration="7735000" />
+      <workItem from="1653269950392" duration="66755000" />
+      <workItem from="1654076545179" duration="70541000" />
+      <workItem from="1655083537863" duration="8431000" />
+      <workItem from="1655171143668" duration="11357000" />
+      <workItem from="1655199984591" duration="10280000" />
+      <workItem from="1655343245369" duration="6338000" />
+      <workItem from="1655357700132" duration="15212000" />
+      <workItem from="1655688985019" duration="28985000" />
+      <workItem from="1655861129851" duration="26694000" />
+      <workItem from="1656033668495" duration="18999000" />
+      <workItem from="1656396482323" duration="17420000" />
+      <workItem from="1656557247695" duration="35306000" />
+      <workItem from="1657157800959" duration="19745000" />
+      <workItem from="1657503616272" duration="34992000" />
+      <workItem from="1657779223396" duration="423000" />
+      <workItem from="1657784072562" duration="636000" />
+      <workItem from="1657849125416" duration="107000" />
+      <workItem from="1657849245487" duration="2416000" />
+      <workItem from="1658133811251" duration="1153000" />
+      <workItem from="1658191080714" duration="1563000" />
+      <workItem from="1658452816285" duration="3631000" />
+      <workItem from="1658717321785" duration="523000" />
+      <workItem from="1658717867183" duration="318000" />
     </task>
+    <task id="LOCAL-00001" summary="新增蓝牙 移除车型">
+      <created>1641949803279</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1641949803279</updated>
+    </task>
+    <task id="LOCAL-00002" summary="修复蓝牙页面删除Bug">
+      <created>1648778982545</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1648778982545</updated>
+    </task>
+    <task id="LOCAL-00003" summary="blank">
+      <created>1648783128168</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1648783128168</updated>
+    </task>
+    <task id="LOCAL-00004" summary="excel">
+      <created>1651129961863</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1651129961863</updated>
+    </task>
+    <task id="LOCAL-00005" summary="excel template">
+      <created>1651203532022</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1651203532022</updated>
+    </task>
+    <task id="LOCAL-00006" summary="钥匙故障记录，钥匙使用记录">
+      <created>1653890763848</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1653890763848</updated>
+    </task>
+    <task id="LOCAL-00007" summary="首页">
+      <created>1654144840917</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1654144840917</updated>
+    </task>
+    <task id="LOCAL-00008" summary="首页">
+      <created>1655272114299</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1655272114299</updated>
+    </task>
+    <task id="LOCAL-00009" summary="首页优化，列表加入序号，增加搜索条件">
+      <created>1655705763788</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1655705763788</updated>
+    </task>
+    <task id="LOCAL-00010" summary="首页优化，列表加入序号，增加搜索条件">
+      <created>1655706375037</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1655706375037</updated>
+    </task>
+    <task id="LOCAL-00011" summary="新增资源管理页面">
+      <created>1657100216092</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1657100216092</updated>
+    </task>
+    <task id="LOCAL-00012" summary="优化权限管理，改造资源管理页面树形展示">
+      <created>1657709178224</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1657709178224</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -81,6 +305,20 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="新增蓝牙 移除车型" />
+    <MESSAGE value="Changes" />
+    <MESSAGE value="修复蓝牙页面删除Bug" />
+    <MESSAGE value="blank" />
+    <MESSAGE value="excel" />
+    <MESSAGE value="excel template" />
+    <MESSAGE value="钥匙故障记录，钥匙使用记录" />
+    <MESSAGE value="首页" />
+    <MESSAGE value="首页优化，列表加入序号，增加搜索条件" />
+    <MESSAGE value="新增资源管理页面" />
+    <MESSAGE value="优化权限管理，改造资源管理页面树形展示" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化权限管理，改造资源管理页面树形展示" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
