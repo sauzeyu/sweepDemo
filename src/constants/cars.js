@@ -55,5 +55,5 @@ export const color = {
 };
 export const overdue = {
   1: <Badge color="green" text="正常" />,
-  2: <Badge color="red" text="报废" />,
+  0: <Badge color="red" text="报废" />,
 };

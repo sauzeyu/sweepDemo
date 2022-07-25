@@ -272,7 +272,7 @@ class DataTable extends Component {
               content={
                 <>
                   <p>车辆vin号：{col?.vin}</p>
-                  <p>品牌型号：{this.state.carInfo?.vehicleModel}</p>
+                  <p>车辆型号：{this.state.carInfo?.vehicleModel}</p>
                   <p>车辆品牌：{this.state.carInfo?.vehicleBrand}</p>
                 </>
               }

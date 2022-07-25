@@ -190,7 +190,7 @@ class DataTable extends Component {
           // }
         />
         <DrawerConfirm
-          title={'品牌型号'}
+          title={'车辆型号'}
           width={600}
           visible={editFormVisible}
           onOk={this.onOk}
