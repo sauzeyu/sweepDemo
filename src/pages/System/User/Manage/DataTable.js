@@ -17,7 +17,6 @@ import {
 } from '@/components/Authorized/AuthMap';
 
 export class DataTable extends Component {
-  form = React.createRef();
   state = {
     userInfoVisible: false,
     addUserVisible: false,
@@ -109,18 +108,12 @@ export class DataTable extends Component {
       },
     );
   };
-  // form = React.createRef();
-  addUserFormOk = async () => {
-    // const fieldsValue = await this.form.current.validateFields();
-    // fieldsValue即为表单内的值
-    // console.log("okHandle -> fieldsValue", fieldsValue)
 
-    this.addForm.submit();
-    console.log(AddUserForm);
-
+  addUserFormOk = () => {
     // let addUserVisible = AddUserForm.prototype.state.addUserVisible;
-    await this.setState({ addUserVisible: false });
-    // location.reload();
+    //   this.setState({ addUserVisible: addUserVisible });
+    this.addForm.submit();
+    this.setState({ addUserVisible: false });
   };
 
   reload = () => {
@@ -154,6 +147,7 @@ export class DataTable extends Component {
   };
 
   render() {
+    const { searchFormValue } = this.state.addUserVisible;
     return (
       <>
         <EasyTable
@@ -198,12 +192,15 @@ export class DataTable extends Component {
           title="新增用户"
           visible={this.state.addUserVisible}
           onOk={this.addUserFormOk}
+          // footer={null}
           onCancel={this.onCancel}
           okText="确认"
           cancelText="取消"
           afterClose={this.reload}
         >
           <AddUserForm
+            // toChildren={this.state.addUserVisible}
+            // searchFormValue={searchFormValue}
             dataTableRef={this.dataTable}
             addFormEef={(ref) => (this.addForm = ref.form.current)}
           />

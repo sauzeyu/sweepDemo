@@ -1,16 +1,27 @@
 'use strict';
 import React, { Component } from 'react';
-import { Button, Col, Form, Input, Modal, Select, Spin, message } from 'antd';
+import {
+  Button,
+  Col,
+  Row,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  message,
+} from 'antd';
 import { getAllRole, insertAdmin } from '@/services/admin';
 import { md5, removeEmptyProperty } from '@/utils';
 import EasyTable from '@/components/EasyTable';
 import { getDvaApp } from '@@/plugin-dva/exports';
 import moment from 'moment';
+import DataTable from '@/pages/System/User/Manage/DataTable';
 export default class AddUserForm extends Component {
   form = React.createRef();
   state = {
     roles: [],
-    addUserVisible: false,
+    // addUserVisible: false,
   };
 
   componentDidMount() {
@@ -25,11 +36,17 @@ export default class AddUserForm extends Component {
 
       insertAdmin(values).then((res) => {
         if (res.code === 200) {
-          this.setState({ addUserVisible: false });
+          debugger;
+          // console.log('this.props'+this.props.searchFormValue);
+          // DataTable.prototype.setState({addUserVisible: false});
+          // this.setState({ addUserVisible: false });
           message.success({
             content: res.msg,
           });
         } else {
+          // console.log('this.props'+this.props.searchFormValue);
+          // DataTable.prototype.setState({addUserVisible: true});
+          // this.setState({ addUserVisible: true });
           message.error({
             content: res.msg,
           });
@@ -37,6 +54,15 @@ export default class AddUserForm extends Component {
       });
       this.form.current.resetFields();
     });
+  };
+
+  changeSubmit = () => {
+    // debugger;
+    // console.log('this.props'+this.props.searchFormValue);
+    // DataTable.prototype.setState({addUserVisible: true});
+    // this.setState({ addUserVisible: true });
+    // console.log(this.state.addUserVisible);
+    // this.state.addUserVisible;
   };
 
   fetchRoles() {
@@ -68,7 +94,12 @@ export default class AddUserForm extends Component {
       },
     };
     return (
-      <Form ref={this.form} {...formItemLayout} onFinish={this.handleSubmit}>
+      <Form
+        ref={this.form}
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        onFinishFailed={this.changeSubmit}
+      >
         <Form.Item
           label={'用户名'}
           name="username"
@@ -104,6 +135,21 @@ export default class AddUserForm extends Component {
         <Form.Item {...formItemLayout} label={'描述'} name="extraInfo">
           <Input.TextArea maxLength={200} />
         </Form.Item>
+
+        {/*<Form.Item >*/}
+        {/*  <Row>*/}
+        {/*    <Col span={12}>*/}
+        {/*      <Button type="primary" htmlType="submit">*/}
+        {/*        确认*/}
+        {/*      </Button>*/}
+        {/*    </Col>*/}
+        {/*    /!*<Col span={12}>*!/*/}
+        {/*    /!*  <Button onClick={this.changeSubmit()}>*!/*/}
+        {/*    /!*    取消*!/*/}
+        {/*    /!*  </Button>*!/*/}
+        {/*    /!*</Col>*!/*/}
+        {/*  </Row>*/}
+        {/*</Form.Item>*/}
       </Form>
     );
   }
