@@ -68,6 +68,7 @@ public class DkmAdminServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateAdminById(AdminVO adminVO) {
+        //TODO 需要将校验失败信息传入到message中 如修改用户名占用 需将错误信息放入catch中传入message
         DkmAdmin admin = new DkmAdmin();
 
         BeanUtils.copyProperties(adminVO, admin);
