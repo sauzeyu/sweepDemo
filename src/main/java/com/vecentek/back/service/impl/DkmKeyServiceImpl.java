@@ -234,7 +234,7 @@ public class DkmKeyServiceImpl {
             DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
             dkmKeyLifecycle.setKeyId(keyId);
             dkmKeyLifecycle.setCreateTime(new Date());
-            dkmKeyLifecycle.setKeySource(3);
+//            dkmKeyLifecycle.setKeySource(3); 冻结解冻没有来源字段
             if (Objects.equals(key.getParentId(), "0")) {
                 dkmKeyLifecycle.setKeyType(1);
             } else {
@@ -268,7 +268,7 @@ public class DkmKeyServiceImpl {
                 DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
                 dkmKeyLifecycle.setKeyId(keyId);
                 dkmKeyLifecycle.setCreateTime(new Date());
-                dkmKeyLifecycle.setKeySource(3);
+                //            dkmKeyLifecycle.setKeySource(3); 冻结解冻没有来源字段
                 if (Objects.equals(dkmKey.getParentId(), "0")) {
                     dkmKeyLifecycle.setKeyType(1);
                 } else {
@@ -304,6 +304,20 @@ public class DkmKeyServiceImpl {
                     .or()
                     .eq(dkmKey.getParentId() == null, DkmKey::getParentId, id));
             if (update > 0) {
+                // 生命周期
+                DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
+                dkmKeyLifecycle.setKeyId(id);
+                dkmKeyLifecycle.setCreateTime(new Date());
+                dkmKeyLifecycle.setKeySource(1); // WEB页面
+                if (Objects.equals(dkmKey.getParentId(), "0")) {
+                    dkmKeyLifecycle.setKeyType(1);
+                } else {
+                    dkmKeyLifecycle.setKeyType(2);
+                }
+                dkmKeyLifecycle.setVin(dkmKey.getVin());
+                // 吊销
+                dkmKeyLifecycle.setKeyStatus(5);
+                dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
                 return PageResp.success("吊销成功");
             }
         }
