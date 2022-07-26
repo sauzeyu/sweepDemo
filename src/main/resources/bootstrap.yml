@@ -2,25 +2,14 @@ spring:
   application:
     name: @project.artifactId@
   profiles:
-#    active: foton
     active: test
   cloud:
     nacos:
       discovery:
-        server-addr: 172.16.13.13:8848 # 注册中心地址
-#        server-addr: 10.108.33.137:8888 # 北京注册中心地址
-        #        本地测试
-#        ip: 172.16.38.213
-        #        本地测试
-        ip: 172.16.13.13
-        #        线上测试
-#        ip: 172.16.6.106
-        #        北京
-#        ip: 10.108.33.50
+        ip: 172.16.38.213
         namespace: ${spring.profiles.active}
       config:
         server-addr: 172.16.13.13:8848  #  配置中心地址
-#        server-addr: 10.108.33.137:8888 # 北京注册中心地址
         file-extension: yaml # 指定配置文件类型
         group: liujz
         namespace: ${spring.profiles.active}
