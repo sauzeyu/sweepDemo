@@ -40,6 +40,7 @@ public enum KeyErrorReasonEnum {
     ERROR_REASON_45("45", "随机数校验失败"),
     ERROR_REASON_4B("4B", "钥匙已过期"),
     ERROR_REASON_4A("4A", "钥匙未开启"),
+    ERROR_REASON_18("18", "连接数已满"),
     ERROR_REASON_01("01", "认证超时"),
     ERROR_REASON_02("02", "认证失败"),
     ERROR_REASON_03("03", "版本协商失败,请升级APP版本"),
@@ -76,7 +77,14 @@ public enum KeyErrorReasonEnum {
      *  Android特有
      *
      */
-    ERROR_REASON_D1("D1", "异常断开");
+    ERROR_REASON_E1("E1", "未知错误"),
+    ERROR_REASON_E2("E2", "蓝牙连接超时"),
+    ERROR_REASON_E3("E3", "对等用户中止连接"),
+    ERROR_REASON_E4("E4", "本地主机连接中止"),
+    ERROR_REASON_E5("E5", "链接无法建立"),
+    ERROR_REASON_E6("E6", "LPM响应超时"),
+    ERROR_REASON_E7("E7", "取消链接"),
+    ERROR_REASON_E8("E8", "无链接");
 
 
     /**

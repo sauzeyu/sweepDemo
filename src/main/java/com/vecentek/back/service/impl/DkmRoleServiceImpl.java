@@ -49,7 +49,7 @@ public class DkmRoleServiceImpl {
 
 
         LambdaQueryWrapper<DkmRole> queryWrapper = Wrappers.<DkmRole>lambdaQuery()
-                .like(code != null, DkmRole::getCode, code)
+                .eq(code != null, DkmRole::getCode, code)
                 .like(StringUtils.isNotBlank(roleName), DkmRole::getRoleName, roleName)
                 .ge(StringUtils.isNotBlank(startTime), DkmRole::getCreateTime, startTime)
                 .le(StringUtils.isNotBlank(endTime), DkmRole::getCreateTime, endTime);
