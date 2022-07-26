@@ -17,7 +17,9 @@ export default class EditForm extends Component {
   }
 
   handleSubmit = () => {
+    debugger;
     this.form.current.validateFields().then((values) => {
+      console.log(values);
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');

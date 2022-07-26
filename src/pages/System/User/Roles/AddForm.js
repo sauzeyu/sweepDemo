@@ -62,6 +62,10 @@ export default class AddForm extends Component {
   };
   onLoad = (loadedKeys, tree) => {};
 
+  onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+  };
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -95,11 +99,12 @@ export default class AddForm extends Component {
             <Tree
               onLoad={this.onLoad}
               checkable
-              checkStrictly
+              // checkStrictly
               autoExpandParent={false}
               onCheck={this.onCheck}
               treeData={menus}
               checkedKeys={this.state.checkedKeys}
+              onSelect={this.onSelect}
             />
           )}
         </Form.Item>

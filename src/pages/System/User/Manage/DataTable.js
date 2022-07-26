@@ -17,6 +17,7 @@ import {
 } from '@/components/Authorized/AuthMap';
 
 export class DataTable extends Component {
+  form = React.createRef();
   state = {
     userInfoVisible: false,
     addUserVisible: false,
@@ -108,9 +109,17 @@ export class DataTable extends Component {
       },
     );
   };
-  addUserFormOk = () => {
-    this.setState({ addUserVisible: false });
+  // form = React.createRef();
+  addUserFormOk = async () => {
+    // const fieldsValue = await this.form.current.validateFields();
+    // fieldsValue即为表单内的值
+    // console.log("okHandle -> fieldsValue", fieldsValue)
+
     this.addForm.submit();
+    console.log(AddUserForm);
+
+    // let addUserVisible = AddUserForm.prototype.state.addUserVisible;
+    await this.setState({ addUserVisible: false });
     // location.reload();
   };
 
@@ -184,6 +193,7 @@ export class DataTable extends Component {
             editFormRef={(ref) => (this.editForm = ref.form.current)}
           />
         </Modal>
+
         <Modal
           title="新增用户"
           visible={this.state.addUserVisible}
