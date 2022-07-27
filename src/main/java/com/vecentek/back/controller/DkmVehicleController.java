@@ -64,8 +64,9 @@ public class DkmVehicleController {
                                   String vin,
                                   String hwDeviceSn,
                                   String vehicleModel,
-                                  String vehicleBrand) {
-        return this.dkmVehicleServiceImpl.selectForPage(pageIndex, pageSize, vin, hwDeviceSn,vehicleModel,vehicleBrand);
+                                  String vehicleBrand,
+                                  String vehicleType) {
+        return this.dkmVehicleServiceImpl.selectForPage(pageIndex, pageSize, vin, hwDeviceSn,vehicleModel,vehicleBrand,vehicleType);
     }
 
     /**
@@ -99,10 +100,11 @@ public class DkmVehicleController {
 
     @PostMapping(value = "/downloadDkmVehicle")
     public void downloadDkmVehicle(String vin,
-                                               String hwDeviceSn,
-                                               String vehicleModel,
-                                               String vehicleBrand,
-                                               HttpServletResponse response)  {
-        this.dkmVehicleServiceImpl.downloadDkmVehicle(vin, hwDeviceSn, vehicleModel,vehicleBrand,response);
+                                   String hwDeviceSn,
+                                   String vehicleModel,
+                                   String vehicleBrand,
+                                   String vehicleType,
+                                   HttpServletResponse response)  {
+        this.dkmVehicleServiceImpl.downloadDkmVehicle(vin, hwDeviceSn, vehicleModel,vehicleBrand,vehicleType,response);
     }
 }

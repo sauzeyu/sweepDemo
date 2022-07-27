@@ -76,13 +76,14 @@ public class DkmVehicleServiceImpl {
      * @author EdgeYu
      * @date 2022-06-10 14:09
      */
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand,String vehicleType) {
         Page<DkmVehicle> page = new Page<>(pageIndex, pageSize);
         page = dkmVehicleMapper.selectPage(page, Wrappers.<DkmVehicle>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmVehicle::getVin, vin)
                 .like(StrUtil.isNotBlank(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmVehicle::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmVehicle::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleType), DkmVehicle::getVehicleType, vehicleType)
                 .orderByDesc(DkmVehicle::getCreateTime));
 
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
@@ -140,13 +141,14 @@ public class DkmVehicleServiceImpl {
         return PageResp.fail("查询失败");
     }
 
-    public void downloadDkmVehicle(String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand, HttpServletResponse response) {
+    public void downloadDkmVehicle(String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand,String vehicleType, HttpServletResponse response) {
 
                 LambdaQueryWrapper< DkmVehicle > queryWrapper = Wrappers.<DkmVehicle>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmVehicle::getVin, vin)
                 .like(StrUtil.isNotBlank(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmVehicle::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmVehicle::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleType), DkmVehicle::getVehicleType, vehicleType)
                 .orderByDesc(DkmVehicle::getCreateTime);
         List<DkmVehicle> dkmVehicles = dkmVehicleMapper.selectList(queryWrapper);
         // 设置响应头信息
@@ -183,14 +185,16 @@ public class DkmVehicleServiceImpl {
         writer.setColumnWidth(0, 20);
         writer.setColumnWidth(1, 20);
         writer.setColumnWidth(2, 20);
-        writer.setColumnWidth(3, 70);
-        writer.setColumnWidth(4, 50);
-        writer.setColumnWidth(5, 20);
-        writer.setColumnWidth(6, 40);
+        writer.setColumnWidth(3, 20);
+        writer.setColumnWidth(4, 70);
+        writer.setColumnWidth(5, 50);
+        writer.setColumnWidth(6, 20);
+        writer.setColumnWidth(7, 40);
 
         writer.addHeaderAlias("vin", "车辆vin号");
         writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleModel", "车辆型号");
+        writer.addHeaderAlias("vehicleType", "车型");
         writer.addHeaderAlias("hwDeviceSn", "蓝牙设备序列号");
         writer.addHeaderAlias("searchNumber", "蓝牙检索号");
         writer.addHeaderAlias("hwDeviceProviderNo", "蓝牙供应商编号");

@@ -51,5 +51,13 @@ public class DkmPhoneCalibrationData extends BaseEntity {
      * 备注
      */
     private String remarks;
+    /**
+     * 车型
+     */
+    private String vehicleType;
+    /**
+     * 车辆品牌
+     */
+    private String vehicleBrand;
 
 }

@@ -61,13 +61,14 @@ public class DkmKeyLogServiceImpl {
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,String vehicleModel) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,String vehicleModel,String vehicleType) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
 
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
+                .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
                 .like(StrUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
                 .like(StrUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(StrUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
@@ -97,7 +98,7 @@ public class DkmKeyLogServiceImpl {
     @Async
     public void downloadKeyLogExcel(String vin, String userId, String startTime, String endTime,
                                     String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,
-                                    String vehicleModel,String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+                                    String vehicleModel,String vehicleType,String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
 
 
@@ -142,6 +143,7 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
+                .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
                 .eq(flag!= null, DkmKeyLog::getFlag, flag)
                 .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
@@ -169,6 +171,7 @@ public class DkmKeyLogServiceImpl {
                     flag,
                     vehicleBrand,
                     vehicleModel,
+                    vehicleType,
                     start,
                     end);
 
@@ -265,6 +268,7 @@ public class DkmKeyLogServiceImpl {
                                           Integer flag,
                                           String vehicleBrand,
                                           String vehicleModel,
+                                          String vehicleType,
                                           Integer start,
                                           Integer end) {
 
@@ -276,6 +280,7 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
+                .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
                 .eq(flag!= null, DkmKeyLog::getFlag, flag)
                 .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)

@@ -41,7 +41,8 @@ public class DkmKeyLogController {
                                   String statusCode,
                                   Integer flag,
                                   String vehicleBrand,
-                                  String vehicleModel) {
+                                  String vehicleModel,
+                                  String vehicleType) {
         return dkmKeyUseLogService.selectForPage(pageIndex,
                 pageSize,
                 vin,
@@ -53,7 +54,8 @@ public class DkmKeyLogController {
                 statusCode,
                 flag,
                 vehicleBrand,
-                vehicleModel);
+                vehicleModel,
+                vehicleType);
     }
     /**
      * 查询所有code
@@ -86,11 +88,12 @@ public class DkmKeyLogController {
                                          String statusCode,
                                          String vehicleBrand,
                                          String vehicleModel,
+                                         String vehicleType,
                                          Integer flag,
                                          String creator
     ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         //String token = httpServletRequest.getHeader("access-token");
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel,  creator);
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode,flag, vehicleBrand, vehicleModel,  vehicleType,creator);
         return PageResp.success("正在导出");
 
     }
@@ -117,6 +120,7 @@ public class DkmKeyLogController {
                                     Integer flag,
                                     String vehicleBrand,
                                     String vehicleModel,
+                                    String vehicleType,
                                     String creator
     ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
@@ -132,6 +136,7 @@ public class DkmKeyLogController {
                 flag,
                 vehicleBrand,
                 vehicleModel,
+                vehicleType,
                 creator);
 
     }

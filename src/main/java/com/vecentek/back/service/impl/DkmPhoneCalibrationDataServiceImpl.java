@@ -57,12 +57,14 @@ public class DkmPhoneCalibrationDataServiceImpl {
      *
      * @return 对象列表
      */
-    public PageResp selectForPage(int pageIndex, int pageSize, String phoneBrand, String vehicleModel) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String phoneBrand, String vehicleModel,String vehicleType,String vehicleBrand) {
         // 获取当前表中的总记录
         Page<DkmPhoneCalibrationData> page = new Page<>(pageIndex, pageSize);
 
         LambdaQueryWrapper<DkmPhoneCalibrationData> queryWrapper = Wrappers.<DkmPhoneCalibrationData>lambdaQuery()
                 .like(StrUtil.isNotBlank(vehicleModel), DkmPhoneCalibrationData::getVehicleModel, vehicleModel)
+                .like(StrUtil.isNotBlank(vehicleBrand), DkmPhoneCalibrationData::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleType), DkmPhoneCalibrationData::getVehicleType, vehicleType)
                 .like(StrUtil.isNotBlank(phoneBrand), DkmPhoneCalibrationData::getPhoneBrand, phoneBrand);
         page = dkmPhoneCalibrationDataMapper.selectPage(page, queryWrapper);
 
@@ -115,6 +117,8 @@ public class DkmPhoneCalibrationDataServiceImpl {
             reader.addHeaderAlias("车型", "vehicleModel");
             reader.addHeaderAlias("手机品牌", "phoneBrand");
             reader.addHeaderAlias("手机型号", "phoneModel");
+            reader.addHeaderAlias("车辆品牌", "vehicleBrand");
+            reader.addHeaderAlias("车型", "vehicleType");
             reader.addHeaderAlias("标定数据", "personalAndCalibrationString");
             List<DkmPhoneCalibrationData> calibrationList = reader.readAll(DkmPhoneCalibrationData.class);
             reader.close();
@@ -146,6 +150,8 @@ public class DkmPhoneCalibrationDataServiceImpl {
                 // 查询已经存在的手机标定数据
                 LambdaQueryWrapper<DkmPhoneCalibrationData> queryWrapper = Wrappers.<DkmPhoneCalibrationData>lambdaQuery()
                         .eq(DkmPhoneCalibrationData::getVehicleModel, calibrationData.getVehicleModel())
+                        .eq(DkmPhoneCalibrationData::getVehicleBrand, calibrationData.getVehicleBrand())
+                        .eq(DkmPhoneCalibrationData::getVehicleType, calibrationData.getVehicleType())
                         .eq(DkmPhoneCalibrationData::getPhoneModel, calibrationData.getPhoneModel());
 
                 DkmPhoneCalibrationData alreadyExist = dkmPhoneCalibrationDataMapper.selectOne(queryWrapper);
@@ -157,12 +163,16 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     redisUtils.setCacheObject("default",calibrationData.getPersonalAndCalibrationString());
                     DkmPhoneCalibrationData dkmPhoneCalibrationData = dkmPhoneCalibrationDataMapper.selectOne(new QueryWrapper<DkmPhoneCalibrationData>().lambda()
                             .eq(DkmPhoneCalibrationData::getPhoneModel, "default")
+                            .eq(DkmPhoneCalibrationData::getVehicleBrand, "default")
+                            .eq(DkmPhoneCalibrationData::getVehicleType, "default")
                             .eq(DkmPhoneCalibrationData::getPhoneBrand, "default"));
                     if (dkmPhoneCalibrationData == null){
                         // 插入一行
                         DkmPhoneCalibrationData phoneCalibrationData = new DkmPhoneCalibrationData();
                         phoneCalibrationData.setPhoneBrand("default");
                         phoneCalibrationData.setPhoneModel("default");
+                        phoneCalibrationData.setVehicleBrand("default");
+                        phoneCalibrationData.setVehicleType("default");
                         phoneCalibrationData.setPersonalAndCalibrationString(calibrationData.getPersonalAndCalibrationString());
                         phoneCalibrationData.setCreateTime(new Date());
                         dkmPhoneCalibrationDataMapper.insert(phoneCalibrationData);
@@ -212,10 +222,12 @@ public class DkmPhoneCalibrationDataServiceImpl {
         return result.toString();
     }
 
-    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
+    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel,String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
 
         LambdaQueryWrapper<DkmPhoneCalibrationData> queryWrapper = Wrappers.<DkmPhoneCalibrationData>lambdaQuery()
                 .like(StrUtil.isNotBlank(vehicleModel), DkmPhoneCalibrationData::getVehicleModel, vehicleModel)
+                .like(StrUtil.isNotBlank(vehicleBrand), DkmPhoneCalibrationData::getVehicleBrand, vehicleBrand)
+                .like(StrUtil.isNotBlank(vehicleType), DkmPhoneCalibrationData::getVehicleType, vehicleType)
                 .like(StrUtil.isNotBlank(phoneBrand), DkmPhoneCalibrationData::getPhoneBrand, phoneBrand);
         List<DkmPhoneCalibrationData> calibrationDataList = dkmPhoneCalibrationDataMapper.selectList(queryWrapper);
 
@@ -255,11 +267,15 @@ public class DkmPhoneCalibrationDataServiceImpl {
         writer.setColumnWidth(0, 20);
         writer.setColumnWidth(1, 20);
         writer.setColumnWidth(2, 30);
-        writer.setColumnWidth(3, 150);
+        writer.setColumnWidth(3, 30);
+        writer.setColumnWidth(4, 30);
+        writer.setColumnWidth(5, 150);
 
-        writer.addHeaderAlias("vehicleModel", "车型");
+        writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
         writer.addHeaderAlias("phoneModel", "手机型号");
+        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        writer.addHeaderAlias("vehicleType", "车型");
         writer.addHeaderAlias("personalAndCalibrationString", "标定数据");
 
         writer.write(calibrationDataList, true);
