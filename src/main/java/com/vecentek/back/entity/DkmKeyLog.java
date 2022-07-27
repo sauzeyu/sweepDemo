@@ -76,4 +76,7 @@ public class DkmKeyLog implements Serializable {
      */
     @ApiModelProperty(name = "vehicle_model", notes = "车辆型号", dataType = "String", required = true)
     private String vehicleModel;
+    /**车型
+     */
+    private String vehicleType;
 }

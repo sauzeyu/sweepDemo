@@ -22,6 +22,10 @@ public class VehicleBluetoothVO {
      */
     private String vehicleBrand;
     /**
+     * 车型
+     */
+    private String vehicleType;
+    /**
      * 蓝牙模块序列号
      */
     private String hwDeviceSn;

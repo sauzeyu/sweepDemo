@@ -39,8 +39,8 @@ public class DkmPhoneCalibrationDataController {
      * @return 单条数据
      */
     @GetMapping(value = "/selectForPage")
-    public PageResp selectForPage(@RequestParam(name = "pageIndex") int index, @RequestParam(name = "pageSize") int limit, String phoneBrand, String vehicleModel) {
-        return this.dkmPhoneCalibrationDataServiceImpl.selectForPage(index, limit, phoneBrand, vehicleModel);
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int index, @RequestParam(name = "pageSize") int limit, String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand) {
+        return this.dkmPhoneCalibrationDataServiceImpl.selectForPage(index, limit, phoneBrand, vehicleModel,vehicleType,vehicleBrand);
     }
 
     /**
@@ -64,8 +64,8 @@ public class DkmPhoneCalibrationDataController {
     // }
 
     @PostMapping(value = "/downloadCalibrationExcel")
-    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
-        this.dkmPhoneCalibrationDataServiceImpl.downloadCalibrationExcel(phoneBrand, vehicleModel, isXlsx, response);
+    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel,String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
+        this.dkmPhoneCalibrationDataServiceImpl.downloadCalibrationExcel(phoneBrand, vehicleModel,vehicleType, vehicleBrand,isXlsx, response);
     }
 
 
