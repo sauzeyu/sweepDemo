@@ -21,6 +21,7 @@ import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.constant.TokenConstant;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
+import com.vecentek.back.entity.DkmRole;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.util.DownLoadUtil;
@@ -310,5 +311,14 @@ public class DkmKeyLogServiceImpl {
         ;
         List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
+    }
+
+    public PageResp selectAllCode() {
+        List<String> codeList = new ArrayList<>();
+        for (KeyStatusCodeEnum statusCode : KeyStatusCodeEnum.values()) {
+            codeList.add(statusCode.getCode());
+        }
+        KeyStatusCodeEnum[] values = KeyStatusCodeEnum.values();
+        return PageResp.success("查询成功", codeList);
     }
 }

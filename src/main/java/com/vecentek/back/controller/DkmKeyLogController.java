@@ -55,7 +55,15 @@ public class DkmKeyLogController {
                 vehicleBrand,
                 vehicleModel);
     }
-
+    /**
+     * 查询所有code
+     *
+     * @return 角色列表
+     */
+    @GetMapping(value = "/selectAllCode")
+    public PageResp selectAllCode() {
+        return this.dkmKeyUseLogService.selectAllCode();
+    }
     /**
      * 开始导出
      * @param vin
