@@ -270,6 +270,8 @@ public class DkmOfflineCheckServiceImpl {
                     });
                 }
                 //更新旧蓝牙设备，插入新蓝牙设备，插入售后换件表
+                DkmAftermarketReplacement dkmAftermarketReplacement = new DkmAftermarketReplacement();
+                dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
                 DkmBluetooths newBluetooth = new DkmBluetooths();
                 DkmBluetooths oldBluetooth = new DkmBluetooths();
                 BeanUtil.copyProperties(vehicleBluetooth, vehicle);
@@ -282,11 +284,10 @@ public class DkmOfflineCheckServiceImpl {
                 oldBluetooth.setUpdateTime(new Date());
                 dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
                         .eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
-                dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
+
                 dkmBluetoothsMapper.insert(newBluetooth);
-                DkmAftermarketReplacement dkmAftermarketReplacement = new DkmAftermarketReplacement();
                 dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
-                dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
+                dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
                 dkmAftermarketReplacement.setNewBluetoothSn(vehicleBluetooth.getHwDeviceSn());
                 dkmAftermarketReplacement.setReplacementTime(new Date());
                 dkmAftermarketReplacement.setCreateTime(new Date());

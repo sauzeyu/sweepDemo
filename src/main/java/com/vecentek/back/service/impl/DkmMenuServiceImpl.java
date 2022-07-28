@@ -95,7 +95,7 @@ public class DkmMenuServiceImpl {
                 .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
                 .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
                 .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
-                .isNull(DkmMenu::getParentId)
+//                .isNull(DkmMenu::getParentId)
                 .orderByAsc(DkmMenu::getDna)
         );
 
