@@ -1,7 +1,10 @@
 package com.vecentek.back;
 
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.vecentek.back.entity.DkmAdmin;
 import com.vecentek.back.entity.DkmKey;
+import com.vecentek.back.mapper.DkmAdminMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +16,8 @@ import java.util.Date;
 public class FakeDataTest {
     @Resource
     private  DkmKeyMapper dkmKeyMapper;
+    @Resource
+    private DkmAdminMapper dkmAdminMapper;
 
     @Test
     public void insert(){
@@ -34,4 +39,11 @@ public class FakeDataTest {
         }
 
     }
+
+    @Test
+    public void select(){
+        DkmAdmin admin = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().eq("username", "ADMIN"));
+        System.out.println(admin);
+    }
+
 }

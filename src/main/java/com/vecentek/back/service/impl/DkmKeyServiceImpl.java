@@ -619,7 +619,7 @@ public class DkmKeyServiceImpl {
         if (!keyList.isEmpty()) {
 
             keyList.forEach(key -> {
-                if (key.getParentId() == "0") {
+                if (Objects.equals(key.getParentId(),"0")) {
                     key.setParentId("车主钥匙");
                 } else {
                     key.setParentId("分享钥匙");

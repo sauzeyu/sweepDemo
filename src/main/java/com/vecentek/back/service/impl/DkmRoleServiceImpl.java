@@ -1,12 +1,16 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.dto.RoleMenuDTO;
+import com.vecentek.back.entity.DkmAdmin;
+import com.vecentek.back.entity.DkmAdminRole;
 import com.vecentek.back.entity.DkmRole;
 import com.vecentek.back.entity.DkmRoleMenu;
+import com.vecentek.back.mapper.DkmAdminMapper;
 import com.vecentek.back.mapper.DkmAdminRoleMapper;
 import com.vecentek.back.mapper.DkmMenuMapper;
 import com.vecentek.back.mapper.DkmRoleMapper;
@@ -16,6 +20,7 @@ import com.vecentek.back.vo.RoleDTO;
 import com.vecentek.common.response.PageResp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +28,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author ：EdgeYu
@@ -32,7 +38,8 @@ import java.util.List;
 @Service
 public class DkmRoleServiceImpl {
 
-
+    @Resource
+    private DkmAdminMapper dkmAdminMapper;
     @Resource
     private DkmRoleMapper dkmRoleMapper;
     @Resource
@@ -41,6 +48,8 @@ public class DkmRoleServiceImpl {
     private DkmRoleMenuMapper dkmRoleMenuMapper;
     @Resource
     private DkmAdminRoleMapper dkmAdminRoleMapper;
+    @Resource
+    private RedisTemplate redisTemplate;
 
 
     public PageResp selectForPage(int pageIndex, int pageSize, String roleName, Integer code, String startTime, String endTime) {
@@ -79,13 +88,36 @@ public class DkmRoleServiceImpl {
         DkmRole dkmRole = new DkmRole();
         BeanUtils.copyProperties(role, dkmRole);
         dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, role.getId()));
-        dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId()));
-        for (String menuId : role.getCheckedKey()) {
-            DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();
-            dkmRoleMenu.setRoleId(role.getId());
-            dkmRoleMenu.setMenuId(Integer.parseInt(menuId));
-            dkmRoleMenuMapper.insert(dkmRoleMenu);
+        if (Objects.isNull(role.getCheckedKey())){
+            return PageResp.success("操作成功");
+        }else {
+            dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId()));
+            for (String menuId : role.getCheckedKey()) {
+                DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();
+                dkmRoleMenu.setRoleId(role.getId());
+                dkmRoleMenu.setMenuId(Integer.parseInt(menuId));
+                dkmRoleMenuMapper.insert(dkmRoleMenu);
+            }
+            // 修改了角色权限后删除该角色对应所有账号的token
+            List<DkmAdminRole> dkmAdminRoles = dkmAdminRoleMapper.selectList(new LambdaQueryWrapper<DkmAdminRole>().eq(DkmAdminRole::getRoleId, role.getId()));
+            if (Objects.isNull(dkmAdminRoles)){ // 角色没有对应用户
+                return PageResp.success("操作成功");
+            }else {
+                for (DkmAdminRole dkmAdminRole : dkmAdminRoles) {
+                    Integer adminId = dkmAdminRole.getAdminId();
+                    DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminId);
+                    if (Objects.isNull(dkmAdmin)){
+                        continue;
+                    }else {
+                        String username = dkmAdmin.getUsername();
+                        // 根据用户名找到token 然后删除
+                        Boolean delete = redisTemplate.delete(username);
+                        System.out.println("用户token删除是否成功：" + delete);
+                    }
+                }
+            }
         }
+
         return PageResp.success("操作成功");
     }
 
