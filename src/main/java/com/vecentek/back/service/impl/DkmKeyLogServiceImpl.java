@@ -101,19 +101,18 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleModel,String vehicleType,String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
 
-
+        //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
         startTime = objects.get(0);
         endTime = objects.get(1);
         String fileName = objects.get(2);
-        String username = objects.get(3);
-        // 1.3形成文件名
+        //String username = objects.get(3);
+        // 1.1 形成文件名
         String excelName = fileName + "钥匙使用记录";
 
-
-        // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
+        // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
         String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
-        System.out.println("filePath:"+filePath);
+
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
             FileUtil.del(filePath);
@@ -123,7 +122,7 @@ public class DkmKeyLogServiceImpl {
         ExcelWriter writer = ExcelUtil.getWriter(filePath);
 
 
-        // 2向历史导出记录新增一条状态为导出中的数据
+        // 2 向历史导出记录新增一条状态为导出中的数据
         DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
                 .exportStatus(0)
                 .missionName(excelName)
@@ -149,14 +148,13 @@ public class DkmKeyLogServiceImpl {
                 .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
                 .le(CharSequenceUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime);
         Integer sum = dkmKeyLogMapper.selectCount(queryWrapper);
-        // 3.2每次分页数据量50W (SXXSF 最大分页100W)
+        // 3.2每次分页数据量10W (SXXSF 最大分页100W)
         Integer end = 100000;
 
         List<DkmKeyLog> dkmKeyLogs;
 
 
-        // 4将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
-        // TODO stream流
+        // 4 将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
         for (int i = 0; i <= sum / end; i++) {
             int start = (i * end);
 
@@ -318,12 +316,4 @@ public class DkmKeyLogServiceImpl {
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
     }
 
-    public PageResp selectAllCode() {
-        List<String> codeList = new ArrayList<>();
-        for (KeyStatusCodeEnum statusCode : KeyStatusCodeEnum.values()) {
-            codeList.add(statusCode.getCode());
-        }
-        KeyStatusCodeEnum[] values = KeyStatusCodeEnum.values();
-        return PageResp.success("查询成功", codeList);
-    }
 }

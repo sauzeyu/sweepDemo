@@ -201,7 +201,7 @@
 
                     <!-- 切换到容器工作目录-->
                     <workdir>/</workdir>
-
+                    <cmd>["java", "-Dfile.encoding=UTF-8","-Duser.timezone=GMT+8", "-jar", "${project.build.finalName}.jar"]</cmd>
                     <entryPoint>["java","-jar","${project.build.finalName}.jar"]</entryPoint>
 
                     <!-- 指定远程 Docker API地址  -->
