@@ -32,7 +32,15 @@ class SearchForm extends Component {
     };
     const colSpan = {
       xs: 24,
-      sm: 6,
+      sm: 5,
+    };
+    const colSpan2 = {
+      xs: 24,
+      sm: 4,
+    };
+    const colSpan1 = {
+      xs: 24,
+      sm: 7,
     };
     return (
       <Form
@@ -44,17 +52,27 @@ class SearchForm extends Component {
         }}
       >
         <Row type={'flex'} gutter={16}>
-          <Col {...colSpan}>
-            <Form.Item label={'车辆型号'} name="vehicleModel">
+          <Col {...colSpan1}>
+            <Form.Item label={'车型'} name="vehicleType">
               <Input placeholder={'请输入车辆型号'} />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
+            <Form.Item label={'车辆品牌'} name="vehicleBrand">
+              <Input placeholder={'请输入手机品牌'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan2}>
+            <Form.Item label={'车辆型号'} name="vehicleModel">
+              <Input placeholder={'请输入车辆型号'} />
+            </Form.Item>
+          </Col>
+          <Col {...colSpan2}>
             <Form.Item label={'手机品牌'} name="phoneBrand">
               <Input placeholder={'请输入手机品牌'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan} style={{ flex: 1 }}>
+          <Col {...colSpan2} style={{ flex: 1 }}>
             <Button
               onClick={() => {
                 this.form.current.resetFields();

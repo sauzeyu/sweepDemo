@@ -68,7 +68,9 @@ export default class EditForm extends Component {
     });
   };
   onLoad = (loadedKeys, tree) => {};
-
+  changeSubmit = () => {
+    this.props.finish(true);
+  };
   render() {
     const formItemLayout = {
       labelCol: {
@@ -82,7 +84,12 @@ export default class EditForm extends Component {
     };
     const { menus } = this.state;
     return (
-      <Form ref={this.form} {...formItemLayout} onFinish={this.handleSubmit}>
+      <Form
+        ref={this.form}
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        onFinishFailed={this.changeSubmit}
+      >
         <Form.Item name="id" hidden>
           <Input type="hidden" />
         </Form.Item>

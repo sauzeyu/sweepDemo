@@ -1,6 +1,15 @@
 'use strict';
 import React, { Component, useState } from 'react';
-import { Form, Input, Modal, Select, Spin, message, Tree } from 'antd';
+import {
+  Form,
+  Input,
+  Modal,
+  Select,
+  Spin,
+  message,
+  Tree,
+  InputNumber,
+} from 'antd';
 import { selectMenuTree, selectMenuByRoleId } from '@/services/menu';
 import { insert } from '@/services/role';
 import { removeEmptyProperty } from '@/utils';
@@ -65,6 +74,9 @@ export default class AddForm extends Component {
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
   };
+  changeSubmit = () => {
+    this.props.finish(true);
+  };
 
   render() {
     const formItemLayout = {
@@ -79,7 +91,12 @@ export default class AddForm extends Component {
     };
     const { menus } = this.state;
     return (
-      <Form ref={this.form} {...formItemLayout} onFinish={this.handleSubmit}>
+      <Form
+        ref={this.form}
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        onFinishFailed={this.changeSubmit}
+      >
         <Form.Item
           label={'角色名称'}
           name="roleName"
@@ -92,7 +109,11 @@ export default class AddForm extends Component {
           name="code"
           rules={[{ required: true, message: '角色代码不能为空' }]}
         >
-          <Input maxLength={5} placeholder={'角色代码'} />
+          <InputNumber
+            style={{ width: 200 }}
+            maxLength={5}
+            placeholder={'角色代码'}
+          />
         </Form.Item>
         <Form.Item label={'菜单权限'}>
           {menus.length > 0 && (

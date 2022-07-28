@@ -31,6 +31,7 @@ export default class AddUserForm extends Component {
 
   handleSubmit = () => {
     this.form.current.validateFields().then((values) => {
+      console.log('title', this.props.title);
       values.password = md5(values.password);
       values.creator = getDvaApp()._store.getState().user.currentUser.username;
 
@@ -57,14 +58,11 @@ export default class AddUserForm extends Component {
   };
 
   changeSubmit = () => {
-    // debugger;
-    // console.log('this.props'+this.props.searchFormValue);
-    // DataTable.prototype.setState({addUserVisible: true});
-    // this.setState({ addUserVisible: true });
-    // console.log(this.state.addUserVisible);
-    // this.state.addUserVisible;
+    this.props.finish(true);
   };
-
+  handleClick = (value) => {
+    this.props.click(value);
+  };
   fetchRoles() {
     getAllRole()
       .then((res) => {
@@ -94,63 +92,69 @@ export default class AddUserForm extends Component {
       },
     };
     return (
-      <Form
-        ref={this.form}
-        {...formItemLayout}
-        onFinish={this.handleSubmit}
-        onFinishFailed={this.changeSubmit}
+      <div
+        onClick={() => {
+          this.handleClick(1);
+        }}
       >
-        <Form.Item
-          label={'用户名'}
-          name="username"
-          rules={[{ required: true, message: '姓名不能为空' }]}
+        <Form
+          ref={this.form}
+          {...formItemLayout}
+          onFinish={this.handleSubmit}
+          onFinishFailed={this.changeSubmit}
         >
-          <Input maxLength={40} placeholder={'请输入用户姓名'} />
-        </Form.Item>
-        <Form.Item
-          label={'密码'}
-          name="password"
-          rules={[{ required: true, message: '密码不能为空' }]}
-        >
-          <Input.Password maxLength={40} placeholder={'请输入密码'} />
-        </Form.Item>
-        <Spin spinning={loadingRoles}>
           <Form.Item
-            label={'权限角色'}
-            name="role"
-            rules={[{ required: true, message: '权限角色不能为空' }]}
+            label={'用户名'}
+            name="username"
+            rules={[{ required: true, message: '姓名不能为空' }]}
           >
-            <Select mode={'multiple'} allowClear>
-              {roles.map((role) => {
-                return (
-                  <Select.Option key={role.id} value={role.id}>
-                    {role.roleName}
-                  </Select.Option>
-                );
-              })}
-            </Select>
+            <Input maxLength={40} placeholder={'请输入用户姓名'} />
           </Form.Item>
-        </Spin>
+          <Form.Item
+            label={'密码'}
+            name="password"
+            rules={[{ required: true, message: '密码不能为空' }]}
+          >
+            <Input.Password maxLength={40} placeholder={'请输入密码'} />
+          </Form.Item>
+          <Spin spinning={loadingRoles}>
+            <Form.Item
+              label={'权限角色'}
+              name="role"
+              rules={[{ required: true, message: '权限角色不能为空' }]}
+            >
+              <Select allowClear>
+                {roles.map((role) => {
+                  return (
+                    <Select.Option key={role.id} value={role.id}>
+                      {role.roleName}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </Spin>
 
-        <Form.Item {...formItemLayout} label={'描述'} name="extraInfo">
-          <Input.TextArea maxLength={200} />
-        </Form.Item>
+          <Form.Item {...formItemLayout} label={'描述'} name="extraInfo">
+            <Input.TextArea maxLength={200} />
+          </Form.Item>
 
-        {/*<Form.Item >*/}
-        {/*  <Row>*/}
-        {/*    <Col span={12}>*/}
-        {/*      <Button type="primary" htmlType="submit">*/}
-        {/*        确认*/}
-        {/*      </Button>*/}
-        {/*    </Col>*/}
-        {/*    /!*<Col span={12}>*!/*/}
-        {/*    /!*  <Button onClick={this.changeSubmit()}>*!/*/}
-        {/*    /!*    取消*!/*/}
-        {/*    /!*  </Button>*!/*/}
-        {/*    /!*</Col>*!/*/}
-        {/*  </Row>*/}
-        {/*</Form.Item>*/}
-      </Form>
+          {/*<Form.Item >*/}
+          {/*  <Row>*/}
+          {/*    <Col span={12}>*/}
+          {/*      <Button type="primary" htmlType="submit">*/}
+          {/*        确认*/}
+          {/*      </Button>*/}
+          {/*    </Col>*/}
+          {/*    /!*<Col span={12}>*!/*/}
+          {/*    /!*  <Button onClick={this.changeSubmit()}>*!/*/}
+          {/*    /!*    取消*!/*/}
+          {/*    /!*  </Button>*!/*/}
+          {/*    /!*</Col>*!/*/}
+          {/*  </Row>*/}
+          {/*</Form.Item>*/}
+        </Form>
+      </div>
     );
   }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Row, Select, Input, DatePicker } from 'antd';
+import { Button, Col, Form, Row, Select, Input, DatePicker, Modal } from 'antd';
 import EasyTable from '@/components/EasyTable';
 import { Permit } from '@/constants/keys';
 import moment from 'moment';
@@ -7,8 +7,11 @@ import {
   DownOutlined,
   UpOutlined,
 } from '_@ant-design_icons@4.7.0@@ant-design/icons';
+import { Code } from '@/constants/statusCode';
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
+const { Option } = Select;
+const children = [];
 @EasyTable.connect(({ keyErrorLogDataTable }) => ({
   keyErrorLogDataTable,
 }))
@@ -17,10 +20,12 @@ class SearchForm extends Component {
     isExpand: true,
     buttonHidden: true,
   };
+  // componentDidMount() {
+  //   this.fetchRoles();
+  // }
+
   form = React.createRef();
   handleSubmit = (values) => {
-    console.log(values);
-    // debugger;
     this.form.current
       .validateFields()
       .then((values) => {
@@ -31,6 +36,7 @@ class SearchForm extends Component {
             .add(1, 'days')
             .format('YYYY-MM-DD');
         }
+
         this.props.keyErrorLogDataTable.fetch(values);
       })
       .catch((errors) => {
@@ -59,7 +65,9 @@ class SearchForm extends Component {
     defaultTime[1] = monthEndDate;
     return defaultTime;
   };
+
   render() {
+    // debugger;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -84,6 +92,12 @@ class SearchForm extends Component {
       buttonName = '收起';
       icon = <UpOutlined />;
     }
+    for (let i = 0; i < Code.length; i++) {
+      children.push(<Option key={Code[i][0]}> {Code[i][1]}</Option>);
+    }
+    const handleChange = (value) => {
+      console.log(`selected ${value}`);
+    };
     return (
       <Form
         {...formItemLayout}
@@ -149,7 +163,18 @@ class SearchForm extends Component {
         <Row type={'flex'} gutter={16} hidden={buttonHidden}>
           <Col {...colSpan}>
             <Form.Item label="操作类型" name={'statusCode'}>
-              <Input placeholder="请输入操作类型" />
+              {/*<Input placeholder="请输入操作类型" />*/}
+              <Select
+                mode="multiple"
+                allowClear
+                style={{
+                  width: '100%',
+                }}
+                placeholder="请输入操作类型"
+                onChange={handleChange}
+              >
+                {children}
+              </Select>
             </Form.Item>
           </Col>
           <Col {...colSpan}>
@@ -192,6 +217,14 @@ class SearchForm extends Component {
           <Col {...colSpan}>
             <Form.Item label={'车辆型号'} name="vehicleModel">
               <Input placeholder="请输入车辆型号" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row type={'flex'} gutter={16} hidden={buttonHidden}>
+          <Col {...colSpan}>
+            <Form.Item label={'车型'} name="vehicleType">
+              <Input placeholder="请输入车型" />
             </Form.Item>
           </Col>
         </Row>

@@ -141,7 +141,11 @@ class DataTable extends Component {
       dataIndex: 'phoneModel',
     },
     {
-      title: '车辆型号',
+      title: '车型',
+      dataIndex: 'vehicleType',
+    },
+    {
+      title: '车辆品牌',
       dataIndex: 'vehicleBrand',
     },
     {
@@ -195,7 +199,7 @@ class DataTable extends Component {
     let flag = this.props.searchFormValues[5];
     let userId = this.props.searchFormValues[6];
     let vehicleModel = this.props.searchFormValues[7];
-    // let vehicleModel = this.props.searchFormValues[8];
+    let vehicleType = this.props.searchFormValues[9];
     let fileName = '钥匙记录.xlsx';
     let param = new URLSearchParams();
 
@@ -226,9 +230,12 @@ class DataTable extends Component {
     if (vehicleModel && vehicleModel.value) {
       param.append('vehicleModel', vehicleModel.value);
     }
-    // if (vehicleBrand && vehicleBrand.value) {
-    //   param.append('vehicleBrand', vehicleBrand.value);
-    // }
+    if (vehicleBrand && vehicleBrand.value) {
+      param.append('vehicleBrand', vehicleBrand.value);
+    }
+    if (vehicleType && vehicleType.value) {
+      param.append('vehicleType', vehicleType.value);
+    }
     if (creator) {
       param.append('creator', creator);
     }

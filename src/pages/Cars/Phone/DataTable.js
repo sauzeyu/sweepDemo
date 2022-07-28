@@ -59,6 +59,14 @@ class DataTable extends Component {
       },
     },
     {
+      title: '车型',
+      dataIndex: 'vehicleType',
+    },
+    {
+      title: '车辆品牌',
+      dataIndex: 'vehicleBrand',
+    },
+    {
       title: '车辆型号',
       dataIndex: 'vehicleModel',
     },
@@ -99,10 +107,18 @@ class DataTable extends Component {
   ];
 
   exportExcel = (isXlsx) => {
-    let vehicleModel = this.props.searchFormValues[0];
-    let phoneBrand = this.props.searchFormValues[1];
+    let vehicleType = this.props.searchFormValues[0];
+    let vehicleBrand = this.props.searchFormValues[1];
+    let vehicleModel = this.props.searchFormValues[2];
+    let phoneBrand = this.props.searchFormValues[3];
     let fileName;
     let param = new URLSearchParams();
+    if (vehicleType && vehicleType.value) {
+      param.append('vehicleType', vehicleType.value);
+    }
+    if (vehicleBrand && vehicleBrand.value) {
+      param.append('vehicleBrand', vehicleBrand.value);
+    }
     if (vehicleModel && vehicleModel.value) {
       param.append('vehicleModel', vehicleModel.value);
     }

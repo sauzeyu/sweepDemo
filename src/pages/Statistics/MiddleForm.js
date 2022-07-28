@@ -230,8 +230,19 @@ class MiddleForm extends React.Component {
 
   selectKeyLogCount = (times) => {
     let params = new URLSearchParams();
-    let startTime = moment(times[0]).format('YYYY-MM-DD');
-    let endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD');
+    let startTime1 = moment(times[0]).format('YYYY-MM-DD');
+    let endTime1 = moment(times[1]).format('YYYY-MM-DD');
+    let startTime;
+    let endTime;
+
+    if (startTime1 == endTime1) {
+      startTime = startTime1;
+      endTime = endTime1;
+    } else {
+      startTime = startTime1;
+      endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD');
+    }
+
     let fileUse = '钥匙使用类型';
     let fileError = '钥匙故障类型';
     this.state.fileUseName = startTime + '~' + endTime + fileUse;
@@ -276,7 +287,8 @@ class MiddleForm extends React.Component {
   };
 
   todayOnClick = () => {
-    const timeString = [moment().startOf('days'), moment().endOf('days')];
+    const timeString = [moment().startOf('days'), moment().startOf('days')];
+    debugger;
     this.setState({
       pickerTime: timeString,
     });

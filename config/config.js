@@ -10,6 +10,7 @@ export default defineConfig({
   // 代理请求
   proxy: {
     '/dkserver-back': {
+      // target: 'http://172.16.11.210:8008/',
       // target: 'https://cd.vecentek.com:20611',
       // target: 'http://172.16.6.107:9001/vecentek',
       target: 'http://localhost:9001/vecentek',

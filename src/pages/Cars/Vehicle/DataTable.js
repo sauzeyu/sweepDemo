@@ -47,6 +47,10 @@ class DataTable extends Component {
       width: 200,
     },
     {
+      title: '车型',
+      dataIndex: 'vehicleType',
+    },
+    {
       title: '车辆品牌',
       dataIndex: 'vehicleBrand',
     },
@@ -167,7 +171,8 @@ class DataTable extends Component {
     let hwDeviceSn = this.props.searchFormValues[0];
     let vin = this.props.searchFormValues[1];
     let vehicleModel = this.props.searchFormValues[2];
-    // let vehicleBrand = this.props.searchFormValues[3];
+    let vehicleBrand = this.props.searchFormValues[3];
+    let vehicleType = this.props.searchFormValues[4];
     let fileName = '车辆信息.xlsx';
     let param = new URLSearchParams();
     if (hwDeviceSn && hwDeviceSn.value) {
@@ -179,9 +184,12 @@ class DataTable extends Component {
     if (vehicleModel && vehicleModel.value) {
       param.append('vehicleModel', vehicleModel.value);
     }
-    // if (vehicleBrand && vehicleBrand.value) {
-    //   param.append('vehicleBrand', vehicleBrand.value);
-    // }
+    if (vehicleBrand && vehicleBrand.value) {
+      param.append('vehicleBrand', vehicleBrand.value);
+    }
+    if (vehicleType && vehicleType.value) {
+      param.append('vehicleType', vehicleType.value);
+    }
     exportVehicle(param).then((res) => {
       let blob = new Blob([res.data]);
       let link = document.createElement('a');

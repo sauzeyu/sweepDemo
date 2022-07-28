@@ -82,6 +82,7 @@ export class DataTable extends Component {
     });
     this.addForm?.resetFields();
   };
+
   columns = [
     {
       title: '序号',
@@ -153,6 +154,14 @@ export class DataTable extends Component {
   ];
 
   render() {
+    const onFinishFailed = (value) => {
+      this.setState({ addRoleVisible: value });
+      console.log(value, '点击了');
+    };
+    const editFinishFailed = (value) => {
+      this.setState({ editRoleVisible: value });
+      console.log(value, '点击了');
+    };
     return (
       <div>
         <EasyTable
@@ -194,6 +203,7 @@ export class DataTable extends Component {
             keyList={this.state.selectKeys}
             dataTableRef={this.dataTable}
             editFormRef={(ref) => (this.editForm = ref.form.current)}
+            finish={editFinishFailed}
           />
         </Modal>
         <Modal
@@ -208,6 +218,7 @@ export class DataTable extends Component {
           <AddForm
             dataTableRef={this.dataTable}
             editFormRef={(ref) => (this.addForm = ref.form.current)}
+            finish={onFinishFailed}
           />
         </Modal>
       </div>

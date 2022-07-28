@@ -49,7 +49,9 @@ export default class EditForm extends Component {
         });
       });
   }
-
+  changeSubmit = () => {
+    this.props.finish(true);
+  };
   render() {
     const { roles } = this.state;
     const loadingRoles = false;
@@ -65,7 +67,12 @@ export default class EditForm extends Component {
     };
     return (
       // <Spin spinning={loadingDetail}>
-      <Form ref={this.form} {...formItemLayout} onFinish={this.handleSubmit}>
+      <Form
+        ref={this.form}
+        {...formItemLayout}
+        onFinish={this.handleSubmit}
+        onFinishFailed={this.changeSubmit}
+      >
         <Form.Item name="id" hidden>
           <Input type="hidden" />
         </Form.Item>

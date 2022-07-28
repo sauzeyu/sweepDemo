@@ -23,6 +23,7 @@ export class DataTable extends Component {
     userId: '',
     userInfo: {},
     roleList: [],
+    click: {},
   };
 
   columns = [
@@ -148,6 +149,18 @@ export class DataTable extends Component {
 
   render() {
     const { searchFormValue } = this.state.addUserVisible;
+    const onClick = (value) => {
+      console.log(value, '点击了');
+    };
+
+    const onFinishFailed = (value) => {
+      this.setState({ addUserVisible: value });
+      console.log(value, '点击了');
+    };
+    const editFinishFailed = (value) => {
+      this.setState({ userInfoVisible: value });
+      console.log(value, '点击了');
+    };
     return (
       <>
         <EasyTable
@@ -185,6 +198,7 @@ export class DataTable extends Component {
           <EditForm
             dataTableRef={this.dataTable}
             editFormRef={(ref) => (this.editForm = ref.form.current)}
+            finish={editFinishFailed}
           />
         </Modal>
 
@@ -201,6 +215,9 @@ export class DataTable extends Component {
           <AddUserForm
             // toChildren={this.state.addUserVisible}
             // searchFormValue={searchFormValue}
+            title="测试组件"
+            click={onClick}
+            finish={onFinishFailed}
             dataTableRef={this.dataTable}
             addFormEef={(ref) => (this.addForm = ref.form.current)}
           />
