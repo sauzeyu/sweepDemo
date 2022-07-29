@@ -1,7 +1,9 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.dto.RoleMenuDTO;
@@ -86,12 +88,21 @@ public class DkmRoleServiceImpl {
     public PageResp updateRoleById(RoleDTO role) {
         DkmRole dkmRole = new DkmRole();
         BeanUtils.copyProperties(role, dkmRole);
-        dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, role.getId()));
-        if (Objects.isNull(role.getCheckedKey())) {
+        // 重复性校验 code 和 name 不能重复 否则数据库报错
+        Integer countCode = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getCode, dkmRole.getCode()));
+        if (countCode.intValue() >= 2){
+            return PageResp.fail("权限代号重复");
+        }
+        Integer countName = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, dkmRole.getRoleName()));
+        if (countName.intValue() >= 2){
+            return PageResp.fail("角色名重复");
+        }
+        dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, dkmRole.getId()));
+        dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId()));
+        if (CollUtil.isEmpty(role.getMenuList())) {
             return PageResp.success("操作成功");
         } else {
-            dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId()));
-            for (String menuId : role.getCheckedKey()) {
+            for (String menuId : role.getMenuList()) {
                 DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();
                 dkmRoleMenu.setRoleId(role.getId());
                 dkmRoleMenu.setMenuId(Integer.parseInt(menuId));

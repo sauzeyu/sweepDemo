@@ -19,6 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 public class RoleDTO extends DkmRole {
 
-    private List<String> checkedKey;
+    /**
+     * 菜单列表
+     */
+    private List<String> menuList;
 }
 
