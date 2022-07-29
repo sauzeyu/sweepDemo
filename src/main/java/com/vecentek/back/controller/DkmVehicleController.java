@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.UnsupportedEncodingException;
 
 /**
  * 车辆(DkmVehicle)表控制层
@@ -66,7 +65,7 @@ public class DkmVehicleController {
                                   String vehicleModel,
                                   String vehicleBrand,
                                   String vehicleType) {
-        return this.dkmVehicleServiceImpl.selectForPage(pageIndex, pageSize, vin, hwDeviceSn,vehicleModel,vehicleBrand,vehicleType);
+        return this.dkmVehicleServiceImpl.selectForPage(pageIndex, pageSize, vin, hwDeviceSn, vehicleModel, vehicleBrand, vehicleType);
     }
 
     /**
@@ -104,7 +103,7 @@ public class DkmVehicleController {
                                    String vehicleModel,
                                    String vehicleBrand,
                                    String vehicleType,
-                                   HttpServletResponse response)  {
-        this.dkmVehicleServiceImpl.downloadDkmVehicle(vin, hwDeviceSn, vehicleModel,vehicleBrand,vehicleType,response);
+                                   HttpServletResponse response) {
+        this.dkmVehicleServiceImpl.downloadDkmVehicle(vin, hwDeviceSn, vehicleModel, vehicleBrand, vehicleType, response);
     }
 }

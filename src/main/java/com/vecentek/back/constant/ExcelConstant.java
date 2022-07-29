@@ -7,12 +7,11 @@ package com.vecentek.back.constant;
  */
 
 public class ExcelConstant {
-    private ExcelConstant() {
-    }
-
     public static final String EXCEL_SUFFIX_XLS = ".xls";
     public static final String EXCEL_SUFFIX_XLSX = ".xlsx";
     public static final Integer CALIBRATION_MAX = 255;
     public static final Integer CALIBRATION_LENGTH = 64;
+    private ExcelConstant() {
+    }
 
 }

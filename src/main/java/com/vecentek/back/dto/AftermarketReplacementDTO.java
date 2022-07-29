@@ -62,7 +62,7 @@ public class AftermarketReplacementDTO extends BaseEntity {
      */
     private String bleHardwareVersion;
     /**
-     *蓝牙厂商
+     * 蓝牙厂商
      */
     private String bleManufacturer;
     /**

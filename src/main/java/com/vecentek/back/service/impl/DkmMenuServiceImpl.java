@@ -92,11 +92,11 @@ public class DkmMenuServiceImpl {
         LambdaQueryWrapper<DkmMenu> lambdaQuery = Wrappers.lambdaQuery();
         Page<DkmMenu> page = new Page<>(pageIndex, pageSize);
         page = dkmMenuMapper.selectPage(page, lambdaQuery
-                .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
-                .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
-                .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
+                        .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
+                        .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
+                        .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
 //                .isNull(DkmMenu::getParentId)
-                .orderByAsc(DkmMenu::getDna)
+                        .orderByAsc(DkmMenu::getDna)
         );
 
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());

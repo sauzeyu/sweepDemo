@@ -185,14 +185,6 @@ public enum KeyStatusCodeEnum {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     /**
      * 根据CMD操作码找到对应操作
      *
@@ -209,6 +201,14 @@ public enum KeyStatusCodeEnum {
             }
         }
         return "未知操作";
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

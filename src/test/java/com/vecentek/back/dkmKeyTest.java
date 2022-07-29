@@ -1,13 +1,11 @@
 package com.vecentek.back;
 
-import com.vecentek.back.controller.DkmKeyLogHistoryExportController;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -26,9 +24,9 @@ public class dkmKeyTest {
     }
 
     @Test
-    public static void testInsert(){
+    public static void testInsert() {
 
-        for(int i = 0 ; i < 100000 ;  i++) {
+        for (int i = 0; i < 100000; i++) {
             Date randomDate = randomDate("2020-09-20", "2022-09-22");
             DkmKey dkmKey = new DkmKey();
             dkmKey.setVehicleId(getRandom2(10));
@@ -38,23 +36,25 @@ public class dkmKeyTest {
             dkmKeyMapper.insert(dkmKey);
         }
     }
+
     public static Integer getRandom2(int len) {
         Random r = new Random();
         StringBuilder rs = new StringBuilder();
         for (int i = 0; i < len; i++) {
             rs.append(r.nextInt(10));
         }
-        return Integer.parseInt( rs.toString());
+        return Integer.parseInt(rs.toString());
 
     }
 
     /**
      * 3.org.apache.commons.lang包下有一个RandomStringUtils类，
      * 其中有一个randomAlphanumeric(int length)函数，可以随机生成一个长度为length的字符串。
+     *
      * @param length
      * @return
      */
-    public static String createRandomStr3(int length){
+    public static String createRandomStr3(int length) {
         return RandomStringUtils.randomAlphanumeric(length);
     }
 

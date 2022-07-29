@@ -40,7 +40,7 @@ public class DkmPhoneCalibrationDataController {
      */
     @GetMapping(value = "/selectForPage")
     public PageResp selectForPage(@RequestParam(name = "pageIndex") int index, @RequestParam(name = "pageSize") int limit, String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand) {
-        return this.dkmPhoneCalibrationDataServiceImpl.selectForPage(index, limit, phoneBrand, vehicleModel,vehicleType,vehicleBrand);
+        return this.dkmPhoneCalibrationDataServiceImpl.selectForPage(index, limit, phoneBrand, vehicleModel, vehicleType, vehicleBrand);
     }
 
     /**
@@ -54,7 +54,7 @@ public class DkmPhoneCalibrationDataController {
     }
 
     @PostMapping(value = "/importByExcel")
-    public PageResp importByExcel(MultipartFile file)  {
+    public PageResp importByExcel(MultipartFile file) {
         return this.dkmPhoneCalibrationDataServiceImpl.importByExcel(file);
     }
 
@@ -64,8 +64,8 @@ public class DkmPhoneCalibrationDataController {
     // }
 
     @PostMapping(value = "/downloadCalibrationExcel")
-    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel,String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
-        this.dkmPhoneCalibrationDataServiceImpl.downloadCalibrationExcel(phoneBrand, vehicleModel,vehicleType, vehicleBrand,isXlsx, response);
+    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
+        this.dkmPhoneCalibrationDataServiceImpl.downloadCalibrationExcel(phoneBrand, vehicleModel, vehicleType, vehicleBrand, isXlsx, response);
     }
 
 

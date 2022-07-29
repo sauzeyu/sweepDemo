@@ -17,9 +17,9 @@ import java.util.Objects;
  */
 @Data
 public class MonthCountDTO {
+    private static final String[] MYSQL_MONTHS = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
     private String month;
     private Integer count;
-    private static final String[] MYSQL_MONTHS = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"};
 
     public static List<Integer> countToList(List<MonthCountDTO> checkList) {
         ArrayList<Integer> result = new ArrayList<>();
@@ -32,14 +32,13 @@ public class MonthCountDTO {
     public static List<String> generateMonthList() {
         ArrayList<String> result = new ArrayList<>();
         Date date = new Date();
-        for (int i = MYSQL_MONTHS.length-1; i >=0; i--) {
+        for (int i = MYSQL_MONTHS.length - 1; i >= 0; i--) {
             DateTime offset = DateUtil.offset(date, DateField.MONTH, -i);
             String format = DateUtil.format(offset, "yyyy-MM");
             result.add(format);
         }
         return result;
     }
-
 
 
     public static List<MonthCountDTO> checkMonthCount(List<MonthCountDTO> checkList) {
@@ -62,7 +61,7 @@ public class MonthCountDTO {
         return monthCountList;
     }
 
-    public static List<MonthCountDTO> checkMonthCount(List<MonthCountDTO> checkList,List<String> monthList) {
+    public static List<MonthCountDTO> checkMonthCount(List<MonthCountDTO> checkList, List<String> monthList) {
 
         List<MonthCountDTO> monthCountList = new ArrayList<>();
 

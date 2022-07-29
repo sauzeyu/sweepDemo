@@ -32,7 +32,7 @@ public class DkmMenuController {
                                   String title,
                                   String icon,
                                   String href) {
-        return dkmMenuService.selectForPage(pageIndex,pageSize,title,icon,href);
+        return dkmMenuService.selectForPage(pageIndex, pageSize, title, icon, href);
     }
 
     @GetMapping(value = "/selectMenuByRoleId")

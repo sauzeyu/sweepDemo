@@ -54,14 +54,6 @@ public enum BluetoothErrorReasonEnum {
         this.reason = reason;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
     /**
      * 根据CMD操作码找到对应原因
      *
@@ -78,6 +70,14 @@ public enum BluetoothErrorReasonEnum {
             }
         }
         return "未知原因";
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getReason() {
+        return reason;
     }
 
 }

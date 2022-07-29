@@ -78,7 +78,7 @@ public class DkmAdminServiceImpl {
         if (admin1 == null) {
             return PageResp.fail("用户不存在");
         }
-        if (Objects.equals(admin1.getUsername(), adminVO.getUsername())){
+        if (Objects.equals(admin1.getUsername(), adminVO.getUsername())) {
             return PageResp.fail("用户名重复");
         }
         DkmAdmin admin = new DkmAdmin();
@@ -88,9 +88,9 @@ public class DkmAdminServiceImpl {
         dkmAdminRoleMapper.deleteByAdminId(adminVO.getId());
         DkmAdminRole dkmAdminRole = new DkmAdminRole();
         dkmAdminRole.setAdminId(adminVO.getId());
-        if (Objects.isNull(adminVO.getRoleList()) ){
+        if (Objects.isNull(adminVO.getRoleList())) {
             return PageResp.success("更新成功");
-        }else {
+        } else {
             adminVO.getRoleList().forEach(roleName -> {
                 //根据角色名称查询id,插入中间表
                 dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, roleName)).getId());
@@ -108,13 +108,13 @@ public class DkmAdminServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp deleteById(int id) {
-        if (Objects.isNull(id)){
+        if (Objects.isNull(id)) {
             return PageResp.fail("传参为空");
         }
         DkmAdmin dkmAdmin = dkmAdminMapper.selectById(id);
         dkmAdminMapper.deleteById(id);
         dkmAdminRoleMapper.delete(Wrappers.<DkmAdminRole>lambdaQuery().eq(DkmAdminRole::getAdminId, id));
-        if (Objects.isNull(dkmAdmin)){
+        if (Objects.isNull(dkmAdmin)) {
             return PageResp.fail("用户不存在");
         }
         // 删除tokon
@@ -137,7 +137,7 @@ public class DkmAdminServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insert(InsertAdminVO insertAdminVO) {
-        if (StrUtil.hasBlank(insertAdminVO.getUsername(),insertAdminVO.getPassword())) {
+        if (StrUtil.hasBlank(insertAdminVO.getUsername(), insertAdminVO.getPassword())) {
             return PageResp.fail(9001, "必填参数未传递");
         }
         DkmAdmin admin = new DkmAdmin();

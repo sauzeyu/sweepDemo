@@ -11,10 +11,10 @@ import java.util.concurrent.TimeUnit;
  * 该模式可以保证程序中只创建一个线程池
  */
 public class ThreadPoolUtils {
+    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(1, 1, 2, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(20));
+
     private ThreadPoolUtils() {
     }
-
-    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(1, 1, 2, TimeUnit.HOURS, new ArrayBlockingQueue<Runnable>(20));
 
     public static ExecutorService getThreadPool() {
         return threadPool;

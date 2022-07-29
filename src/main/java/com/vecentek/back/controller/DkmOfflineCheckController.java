@@ -10,7 +10,10 @@ import com.vecentek.back.vo.KeyLogDetailVO;
 import com.vecentek.back.vo.VehicleBluetoothVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -44,6 +47,7 @@ public class DkmOfflineCheckController {
 
     /**
      * 根据时间段和车辆VIN号等信息获取钥匙的使用记录
+     *
      * @param keyLogDetailVO
      * @return
      */
@@ -56,6 +60,7 @@ public class DkmOfflineCheckController {
     /**
      * 按照时间段统计不同型号手机失败率、不同车型失败率、不同模块失败率
      * 不同手机型号的故障率,不同车型的故障率,不同故障码的故障率
+     *
      * @return
      */
     @RequestMapping(value = "/getKeyData", method = RequestMethod.POST)

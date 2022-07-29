@@ -1,26 +1,17 @@
 package com.vecentek.back.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.constant.JwtConstant;
-import com.vecentek.back.constant.KeyErrorReasonEnum;
-import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.DkmKeyDTO;
 import com.vecentek.back.entity.DkmKey;
@@ -32,9 +23,6 @@ import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.util.DownLoadUtil;
-import com.vecentek.back.util.PathUtil;
-import com.vecentek.back.util.TokenUtils;
-import com.vecentek.back.vo.DkmKeyVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -47,9 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,6 +61,26 @@ public class DkmKeyServiceImpl {
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
     @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+
+    /**
+     * 获取当前月第一天
+     *
+     * @param month
+     * @return
+     */
+    public static String getFirstDayOfMonth(int month) {
+        Calendar calendar = Calendar.getInstance();
+        // 设置月份
+        calendar.set(Calendar.MONTH, month - 1);
+        // 获取某月最小天数
+        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+        // 设置日历中月份的最小天数
+        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
+        // 格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        return sdf.format(calendar.getTime()) + " 00:00:00";
+    }
 
     /**
      * 通过ID查询单条数据
@@ -347,19 +352,19 @@ public class DkmKeyServiceImpl {
     }
 
     @Async
-    public void downloadKeyLogExcel( String vin,
-                                     String userId,
-                                     Integer keyType,
-                                     String applyStartTime,
-                                     String applyEndTime,
-                                     Integer periodMax,
-                                     Integer periodMin,
-                                     String periodUnit,
-                                     String valFromStartTime,
-                                     String valFromEndTime,
-                                     String valToStartTime,
-                                     String valToEndTime,
-                                     Integer[] dkStates,String creator)  {
+    public void downloadKeyLogExcel(String vin,
+                                    String userId,
+                                    Integer keyType,
+                                    String applyStartTime,
+                                    String applyEndTime,
+                                    Integer periodMax,
+                                    Integer periodMin,
+                                    String periodUnit,
+                                    String valFromStartTime,
+                                    String valFromEndTime,
+                                    String valToStartTime,
+                                    String valToEndTime,
+                                    Integer[] dkStates, String creator) {
         List<String> objects = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
         applyStartTime = objects.get(0);
         applyEndTime = objects.get(1);
@@ -370,8 +375,8 @@ public class DkmKeyServiceImpl {
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
-        System.out.println("filePath:"+filePath);
+        String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        System.out.println("filePath:" + filePath);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
@@ -402,15 +407,15 @@ public class DkmKeyServiceImpl {
         boolean periodBool = false;
         int periodMaxFormat = 0;
         int periodMinFormat = 0;
-        if (periodMax != null && periodMin != null && periodUnit != null){
+        if (periodMax != null && periodMin != null && periodUnit != null) {
             // 根据单元转换时间周期
-            if (Objects.equals(periodUnit,"minute")){ // 分钟
+            if (Objects.equals(periodUnit, "minute")) { // 分钟
                 periodMaxFormat = periodMax;
                 periodMinFormat = periodMin;
-            }else if (Objects.equals(periodUnit,"hour")){
+            } else if (Objects.equals(periodUnit, "hour")) {
                 periodMaxFormat = periodMax * 60;
                 periodMinFormat = periodMin * 60;
-            }else if (Objects.equals(periodUnit,"day")){
+            } else if (Objects.equals(periodUnit, "day")) {
                 periodMaxFormat = periodMax * 60 * 24;
                 periodMinFormat = periodMin * 60 * 24;
             }
@@ -419,11 +424,11 @@ public class DkmKeyServiceImpl {
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery();
 
         // 是否需要dkStates条件
-        if (dkStates != null && dkStates.length > 0){
+        if (dkStates != null && dkStates.length > 0) {
             queryWrapper.eq(DkmKey::getDkState, dkStates[0]);
             if (dkStates.length > 1) {
                 for (int i = 1; i < dkStates.length; i++) {
-                    queryWrapper.or(). eq(DkmKey::getDkState,dkStates[i]);
+                    queryWrapper.or().eq(DkmKey::getDkState, dkStates[i]);
                 }
             }
         }
@@ -460,7 +465,7 @@ public class DkmKeyServiceImpl {
             int start = (i * end);
 
             // 4.1分页查询数据 否则会OOM
-            dkmKeys = getDkmKeyLogs( vin,
+            dkmKeys = getDkmKeyLogs(vin,
                     userId,
                     keyType,
                     applyStartTime,
@@ -472,7 +477,7 @@ public class DkmKeyServiceImpl {
                     valFromEndTime,
                     valToStartTime,
                     valToEndTime,
-                     dkStates,
+                    dkStates,
                     start,
                     end);
 
@@ -500,6 +505,7 @@ public class DkmKeyServiceImpl {
 
     /**
      * BigExcelWriter设置单元格样式
+     *
      * @param writer
      */
     private void extracted(ExcelWriter writer) {
@@ -545,7 +551,7 @@ public class DkmKeyServiceImpl {
 
     /**
      * 根据分页条件去查询钥匙记录
-
+     *
      * @return
      */
     private List<DkmKey> getDkmKeyLogs(String vin,
@@ -561,8 +567,8 @@ public class DkmKeyServiceImpl {
                                        String valToStartTime,
                                        String valToEndTime,
                                        Integer[] dkStates,
-                                          Integer start,
-                                          Integer end) {
+                                       Integer start,
+                                       Integer end) {
         if (keyType == null) {
             keyType = 3;
         }
@@ -570,15 +576,15 @@ public class DkmKeyServiceImpl {
         boolean periodBool = false;
         int periodMaxFormat = 0;
         int periodMinFormat = 0;
-        if (periodMax != null && periodMin != null && periodUnit != null){
+        if (periodMax != null && periodMin != null && periodUnit != null) {
             // 根据单元转换时间周期
-            if (Objects.equals(periodUnit,"minute")){ // 分钟
+            if (Objects.equals(periodUnit, "minute")) { // 分钟
                 periodMaxFormat = periodMax;
                 periodMinFormat = periodMin;
-            }else if (Objects.equals(periodUnit,"hour")){
+            } else if (Objects.equals(periodUnit, "hour")) {
                 periodMaxFormat = periodMax * 60;
                 periodMinFormat = periodMin * 60;
-            }else if (Objects.equals(periodUnit,"day")){
+            } else if (Objects.equals(periodUnit, "day")) {
                 periodMaxFormat = periodMax * 60 * 24;
                 periodMinFormat = periodMin * 60 * 24;
             }
@@ -587,11 +593,11 @@ public class DkmKeyServiceImpl {
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery();
 
         // 是否需要dkStates条件
-        if (dkStates != null && dkStates.length > 0){
+        if (dkStates != null && dkStates.length > 0) {
             queryWrapper.eq(DkmKey::getDkState, dkStates[0]);
             if (dkStates.length > 1) {
                 for (int i = 1; i < dkStates.length; i++) {
-                    queryWrapper.or(). eq(DkmKey::getDkState,dkStates[i]);
+                    queryWrapper.or().eq(DkmKey::getDkState, dkStates[i]);
                 }
             }
         }
@@ -619,7 +625,7 @@ public class DkmKeyServiceImpl {
         if (!keyList.isEmpty()) {
 
             keyList.forEach(key -> {
-                if (Objects.equals(key.getParentId(),"0")) {
+                if (Objects.equals(key.getParentId(), "0")) {
                     key.setParentId("车主钥匙");
                 } else {
                     key.setParentId("分享钥匙");
@@ -634,24 +640,6 @@ public class DkmKeyServiceImpl {
         return keyList;
     }
 
-    /**
-     * 获取当前月第一天
-     * @param month
-     * @return
-     */
-    public static String getFirstDayOfMonth(int month) {
-        Calendar calendar = Calendar.getInstance();
-        // 设置月份
-        calendar.set(Calendar.MONTH, month - 1);
-        // 获取某月最小天数
-        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-        // 设置日历中月份的最小天数
-        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
-        // 格式化日期
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        return sdf.format(calendar.getTime())+" 00:00:00";
-    }
     public PageResp checkKeyUseLog() {
         List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(null);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);

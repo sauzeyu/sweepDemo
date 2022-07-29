@@ -33,18 +33,6 @@ import java.util.List;
 @SpringBootTest
 public class JmeterTest {
 
-    @Test
-    public void test() {
-
-        dkmKeyMapper.selectList(null).forEach(key -> {
-            DkmVehicle dkmVehicle = dkmVehicleMapper.selectById(key.getVehicleId());
-            if (dkmVehicle != null) {
-                key.setVin(dkmVehicle.getVin());
-            }
-            dkmKeyMapper.updateById(key);
-        });
-    }
-
     @Resource
     private DkmUserMapper dkmUserMapper;
     @Resource
@@ -72,10 +60,22 @@ public class JmeterTest {
 
         byte[] bytes = new byte[str.length() / 2];
         for (int i = 0; i < str.length() / 2; i++) {
-            String subStr = str.substring(i * 2, i * 2 + 2) ;
+            String subStr = str.substring(i * 2, i * 2 + 2);
             bytes[i] = (byte) Integer.parseInt(subStr, 16);
         }
         return bytes;
+    }
+
+    @Test
+    public void test() {
+
+        dkmKeyMapper.selectList(null).forEach(key -> {
+            DkmVehicle dkmVehicle = dkmVehicleMapper.selectById(key.getVehicleId());
+            if (dkmVehicle != null) {
+                key.setVin(dkmVehicle.getVin());
+            }
+            dkmKeyMapper.updateById(key);
+        });
     }
 
     @Test

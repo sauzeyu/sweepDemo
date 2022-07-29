@@ -1,10 +1,5 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -12,18 +7,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.constant.JwtConstant;
 import com.vecentek.back.entity.DkmAftermarketReplacement;
-import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
-import com.vecentek.back.entity.DkmPhoneCalibrationData;
 import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.mapper.DkmAftermarketReplacementMapper;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.back.util.DownLoadUtil;
-import com.vecentek.back.util.TokenUtils;
 import com.vecentek.common.response.PageResp;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -37,8 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -60,6 +49,20 @@ public class DkmAftermarketReplacementServiceImpl {
     @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
+    public static String getFirstDayOfMonth(int month) {
+        Calendar calendar = Calendar.getInstance();
+        // 设置月份
+        calendar.set(Calendar.MONTH, month - 1);
+        // 获取某月最小天数
+        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+        // 设置日历中月份的最小天数
+        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
+        // 格式化日期
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        return sdf.format(calendar.getTime()) + " 00:00:00";
+    }
+
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String startTime, String endTime) {
         Page<DkmAftermarketReplacement> page = new Page<>(pageIndex, pageSize);
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()
@@ -70,6 +73,7 @@ public class DkmAftermarketReplacementServiceImpl {
         page = dkmAftermarketReplacementMapper.selectPage(page, queryWrapper);
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
+
     public PageResp selectByVin(int pageIndex, int pageSize, String vin) {
         Page<DkmAftermarketReplacement> page = new Page<>(pageIndex, pageSize);
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()
@@ -85,7 +89,7 @@ public class DkmAftermarketReplacementServiceImpl {
         return PageResp.success("查询成功", dkmVehicle);
     }
 
-    public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String creator,HttpServletResponse response) throws UnsupportedEncodingException {
+    public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String creator, HttpServletResponse response) throws UnsupportedEncodingException {
         List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
         // startTime = objects.get(0);
         // endTime = objects.get(1);
@@ -96,19 +100,17 @@ public class DkmAftermarketReplacementServiceImpl {
 
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmAftermarketReplacement::getVin, vin)
-                .ge(startTime!=null, DkmAftermarketReplacement::getReplacementTime , startTime)
-                .le(endTime !=null, DkmAftermarketReplacement::getReplacementTime, endTime);
+                .ge(startTime != null, DkmAftermarketReplacement::getReplacementTime, startTime)
+                .le(endTime != null, DkmAftermarketReplacement::getReplacementTime, endTime);
         List<DkmAftermarketReplacement> replacementDataList = dkmAftermarketReplacementMapper.selectList(queryWrapper);
         String suffix = null;
         if (isXls == null) {
             isXls = false;
-        }
-        else if(isXls){
-             suffix = ExcelConstant.EXCEL_SUFFIX_XLS;
-        } else if(!isXls){
+        } else if (isXls) {
+            suffix = ExcelConstant.EXCEL_SUFFIX_XLS;
+        } else if (!isXls) {
             suffix = ExcelConstant.EXCEL_SUFFIX_XLSX;
         }
-
 
 
         // 设置响应头信息
@@ -166,18 +168,5 @@ public class DkmAftermarketReplacementServiceImpl {
                 .build();
         dkmKeyLogHistoryExportMapper.insert(build);
 
-    }
-    public static String getFirstDayOfMonth(int month) {
-        Calendar calendar = Calendar.getInstance();
-        // 设置月份
-        calendar.set(Calendar.MONTH, month - 1);
-        // 获取某月最小天数
-        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-        // 设置日历中月份的最小天数
-        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
-        // 格式化日期
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        return sdf.format(calendar.getTime())+" 00:00:00";
     }
 }

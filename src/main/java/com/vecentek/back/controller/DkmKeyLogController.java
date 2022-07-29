@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -57,8 +55,10 @@ public class DkmKeyLogController {
                 vehicleModel,
                 vehicleType);
     }
+
     /**
      * 开始导出
+     *
      * @param vin
      * @param userId
      * @param startTime
@@ -84,13 +84,14 @@ public class DkmKeyLogController {
                                          String creator
     ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
         //String token = httpServletRequest.getHeader("access-token");
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode,flag, vehicleBrand, vehicleModel,  vehicleType,creator);
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator);
         return PageResp.success("正在导出");
 
     }
 
     /**
      * 异步导出
+     *
      * @param vin
      * @param userId
      * @param startTime
@@ -118,24 +119,24 @@ public class DkmKeyLogController {
 
         this.dkmKeyUseLogService.downloadKeyLogExcel
                 (vin,
-                userId,
-                startTime,
-                endTime,
-                phoneBrand,
-                phoneModel,
-                statusCode,
-                flag,
-                vehicleBrand,
-                vehicleModel,
-                vehicleType,
-                creator);
+                        userId,
+                        startTime,
+                        endTime,
+                        phoneBrand,
+                        phoneModel,
+                        statusCode,
+                        flag,
+                        vehicleBrand,
+                        vehicleModel,
+                        vehicleType,
+                        creator);
 
     }
 
     @GetMapping("/checkKeyUseLog")
-    public PageResp checkKeyUseLog( String creator,Integer type) {
+    public PageResp checkKeyUseLog(String creator, Integer type) {
         //查询历史导出记录表(倒排)
-        return this.dkmKeyUseLogService.checkKeyUseLog(creator,type);
+        return this.dkmKeyUseLogService.checkKeyUseLog(creator, type);
     }
 
 }

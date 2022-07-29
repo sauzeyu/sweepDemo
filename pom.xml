@@ -165,7 +165,6 @@
         </dependency>
 
 
-
     </dependencies>
 
     <build>
@@ -201,7 +200,9 @@
 
                     <!-- 切换到容器工作目录-->
                     <workdir>/</workdir>
-                    <cmd>["java", "-Dfile.encoding=UTF-8","-Duser.timezone=GMT+8", "-jar", "${project.build.finalName}.jar"]</cmd>
+                    <cmd>["java", "-Dfile.encoding=UTF-8","-Duser.timezone=GMT+8", "-jar",
+                        "${project.build.finalName}.jar"]
+                    </cmd>
                     <entryPoint>["java","-jar","${project.build.finalName}.jar"]</entryPoint>
 
                     <!-- 指定远程 Docker API地址  -->
@@ -209,10 +210,10 @@
                     <!-- 指定tls证书的目录 -->
                     <dockerCertPath>D:\docker-ca\为辰-13-13</dockerCertPath>
 
-<!--                    &lt;!&ndash; 指定远程 Docker API地址  &ndash;&gt;-->
-<!--                    <dockerHost>https://172.16.6.106:2376</dockerHost>-->
-<!--                    &lt;!&ndash; 指定tls证书的目录 &ndash;&gt;-->
-<!--                    <dockerCertPath>D:\docker-ca\为辰-6-106</dockerCertPath>-->
+                    <!--                    &lt;!&ndash; 指定远程 Docker API地址  &ndash;&gt;-->
+                    <!--                    <dockerHost>https://172.16.6.106:2376</dockerHost>-->
+                    <!--                    &lt;!&ndash; 指定tls证书的目录 &ndash;&gt;-->
+                    <!--                    <dockerCertPath>D:\docker-ca\为辰-6-106</dockerCertPath>-->
 
                     <!-- 复制 jar包到docker容器指定目录-->
                     <resources>

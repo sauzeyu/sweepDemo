@@ -57,7 +57,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
      *
      * @return 对象列表
      */
-    public PageResp selectForPage(int pageIndex, int pageSize, String phoneBrand, String vehicleModel,String vehicleType,String vehicleBrand) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand) {
         // 获取当前表中的总记录
         Page<DkmPhoneCalibrationData> page = new Page<>(pageIndex, pageSize);
 
@@ -159,14 +159,14 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     dkmPhoneCalibrationDataMapper.delete(queryWrapper);
                 }
                 // 如果手机品牌和手机型号为default则为默认标定数据，需要放redis，再放数据库
-                if (Objects.equals("default",calibrationData.getPhoneBrand()) && Objects.equals("default",calibrationData.getPhoneModel())){
-                    redisUtils.setCacheObject("default",calibrationData.getPersonalAndCalibrationString());
+                if (Objects.equals("default", calibrationData.getPhoneBrand()) && Objects.equals("default", calibrationData.getPhoneModel())) {
+                    redisUtils.setCacheObject("default", calibrationData.getPersonalAndCalibrationString());
                     DkmPhoneCalibrationData dkmPhoneCalibrationData = dkmPhoneCalibrationDataMapper.selectOne(new QueryWrapper<DkmPhoneCalibrationData>().lambda()
                             .eq(DkmPhoneCalibrationData::getPhoneModel, "default")
                             .eq(DkmPhoneCalibrationData::getVehicleBrand, "default")
                             .eq(DkmPhoneCalibrationData::getVehicleType, "default")
                             .eq(DkmPhoneCalibrationData::getPhoneBrand, "default"));
-                    if (dkmPhoneCalibrationData == null){
+                    if (dkmPhoneCalibrationData == null) {
                         // 插入一行
                         DkmPhoneCalibrationData phoneCalibrationData = new DkmPhoneCalibrationData();
                         phoneCalibrationData.setPhoneBrand("default");
@@ -176,7 +176,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
                         phoneCalibrationData.setPersonalAndCalibrationString(calibrationData.getPersonalAndCalibrationString());
                         phoneCalibrationData.setCreateTime(new Date());
                         dkmPhoneCalibrationDataMapper.insert(phoneCalibrationData);
-                    }else {
+                    } else {
                         // 更新
                         dkmPhoneCalibrationData.setPersonalAndCalibrationString(calibrationData.getPersonalAndCalibrationString());
                         dkmPhoneCalibrationData.setUpdateTime(new Date());
@@ -222,7 +222,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
         return result.toString();
     }
 
-    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel,String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
+    public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
 
         LambdaQueryWrapper<DkmPhoneCalibrationData> queryWrapper = Wrappers.<DkmPhoneCalibrationData>lambdaQuery()
                 .like(StrUtil.isNotBlank(vehicleModel), DkmPhoneCalibrationData::getVehicleModel, vehicleModel)

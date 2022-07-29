@@ -1,7 +1,6 @@
 package com.vecentek.back.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.vecentek.back.dto.CountDTO;
 import com.vecentek.back.dto.DkmVehicleDTO;
 import com.vecentek.back.dto.MonthCountDTO;
 import com.vecentek.back.entity.DkmVehicle;

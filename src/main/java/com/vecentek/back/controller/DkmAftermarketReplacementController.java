@@ -51,11 +51,11 @@ public class DkmAftermarketReplacementController {
 
     @PostMapping(value = "/downloadAftermarketReplacement")
     public void downloadAftermarketReplacement(String vin,
-                                         String startTime,
-                                         String endTime,
-                                         Boolean isXls,
-                                         String creator,
-                                         HttpServletResponse response) throws UnsupportedEncodingException {
-        this.dkmAftermarketReplacementService.downloadAftermarketReplacement(vin, startTime, endTime,isXls, creator,response);
+                                               String startTime,
+                                               String endTime,
+                                               Boolean isXls,
+                                               String creator,
+                                               HttpServletResponse response) throws UnsupportedEncodingException {
+        this.dkmAftermarketReplacementService.downloadAftermarketReplacement(vin, startTime, endTime, isXls, creator, response);
     }
 }

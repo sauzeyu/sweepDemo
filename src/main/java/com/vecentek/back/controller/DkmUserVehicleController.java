@@ -12,11 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * @author ：EdgeYu
@@ -31,7 +29,7 @@ public class DkmUserVehicleController {
     private DkmUserVehicleServiceImpl dkmUserVehicleService;
 
     @RequestMapping(value = "/insertUserVehicle", method = RequestMethod.POST)
-    public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle)  {
+    public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle) {
         log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         return dkmUserVehicleService.insertUserVehicle(userVehicle);
     }
@@ -44,11 +42,12 @@ public class DkmUserVehicleController {
     /**
      * 车主注销(解除人车绑定关系)
      * 用于钥匙平台从APP后台获取车辆变更车主数据。
+     *
      * @param logoutUserVehicle
      * @return
      */
     @RequestMapping(value = "/logoutUserVehicle", method = RequestMethod.POST)
-    public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle)  {
+    public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle) {
         log.info("request：" + "/api/userVehicle/logoutUserVehicle " + logoutUserVehicle.toString());
         return dkmUserVehicleService.logoutUserVehicle(logoutUserVehicle);
     }
@@ -56,11 +55,12 @@ public class DkmUserVehicleController {
     /**
      * 获取车辆是否具有蓝牙钥匙功能
      * 用于APP后台从数字钥匙平台获取车辆是否具有蓝牙钥匙功能。
+     *
      * @param getBluetoothVinVO
      * @return
      */
     @RequestMapping(value = "/getBluetoothVin", method = RequestMethod.POST)
-    public PageResp getBluetoothVin(@RequestBody GetBluetoothVinVO getBluetoothVinVO)  {
+    public PageResp getBluetoothVin(@RequestBody GetBluetoothVinVO getBluetoothVinVO) {
         log.info("request：" + "/api/userVehicle/getBluetoothVin " + getBluetoothVinVO.toString());
         return dkmUserVehicleService.getBluetoothVin(getBluetoothVinVO);
     }
@@ -68,11 +68,12 @@ public class DkmUserVehicleController {
     /**
      * 吊销钥匙
      * APP识别到用户更换手机之后，主动调用钥匙平台接口，吊销用户的所有钥匙信息（适用于车主用户和非车主用户）
+     *
      * @param revokeKeyVO
      * @return
      */
     @RequestMapping(value = "/revokeKey", method = RequestMethod.POST)
-    public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO)  {
+    public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) {
         log.info("request：" + "/api/userVehicle/revokeKey " + revokeKeyVO.toString());
         return dkmUserVehicleService.revokeKey(revokeKeyVO);
     }

@@ -1,7 +1,5 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
@@ -11,11 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.FileInputStream;
-
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -52,7 +47,7 @@ public class DkmKeyLogHistoryExportServiceImpl extends ServiceImpl<DkmKeyLogHist
             int len = 0;
             byte[] buffer = new byte[1024];
             while ((len = input.read(buffer)) > 0) {
-                out.write(buffer,0,len);
+                out.write(buffer, 0, len);
             }
             out.flush();
         } catch (Exception e) {

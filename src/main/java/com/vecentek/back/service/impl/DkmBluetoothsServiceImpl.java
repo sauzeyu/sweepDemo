@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmBluetooths;
-import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.common.response.PageResp;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -41,10 +40,10 @@ public class DkmBluetoothsServiceImpl {
     /**
      * 蓝牙信息分页查询
      *
-     * @param pageIndex  页码
-     * @param pageSize   每页数量
-     * @param hwDeviceSn 设备序列号
-     * @param flag 设备状态
+     * @param pageIndex    页码
+     * @param pageSize     每页数量
+     * @param hwDeviceSn   设备序列号
+     * @param flag         设备状态
      * @param searchNumber 设备检索号
      * @return 分页结果
      */
@@ -75,19 +74,19 @@ public class DkmBluetoothsServiceImpl {
 
         LambdaQueryWrapper<DkmBluetooths> queryWrapper = Wrappers.<DkmBluetooths>lambdaQuery()
                 //.in(flag != null, DkmBluetooths::getFlag, flag)
-                .eq(ObjectUtil.isNotNull(flag),DkmBluetooths::getFlag,flag)
+                .eq(ObjectUtil.isNotNull(flag), DkmBluetooths::getFlag, flag)
                 .like(StrUtil.isNotBlank(searchNumber), DkmBluetooths::getSearchNumber, searchNumber)
                 .like(StrUtil.isNotBlank(hwDeviceSn), DkmBluetooths::getHwDeviceSn, hwDeviceSn)
                 .orderByDesc(DkmBluetooths::getCreateTime);
 
         List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(queryWrapper);
-        dkmBluetooths.stream().forEach(DkmBluetooths ->{
-            if (DkmBluetooths.getFlag()!=null){
-            if (1 == DkmBluetooths.getFlag()){
-                DkmBluetooths.setDkSdkVersion("正常");
-            } else {
-                DkmBluetooths.setDkSdkVersion("报废");
-            }
+        dkmBluetooths.stream().forEach(DkmBluetooths -> {
+            if (DkmBluetooths.getFlag() != null) {
+                if (1 == DkmBluetooths.getFlag()) {
+                    DkmBluetooths.setDkSdkVersion("正常");
+                } else {
+                    DkmBluetooths.setDkSdkVersion("报废");
+                }
             }
         });
         // 设置响应头信息
@@ -100,10 +99,8 @@ public class DkmBluetoothsServiceImpl {
         response.setContentType("application/vnd.ms-excel");
 
 
-
         Boolean isXlsx = true;
         ExcelWriter writer = ExcelUtil.getWriter(isXlsx);
-
 
 
         writer.setOnlyAlias(true);
@@ -138,7 +135,6 @@ public class DkmBluetoothsServiceImpl {
         writer.addHeaderAlias("bleMacAddress", "蓝牙MAC地址");
         writer.addHeaderAlias("dkSecUnitId", "安全芯片SEID");
         writer.addHeaderAlias("dkSdkVersion", "设备状态");
-
 
 
         writer.write(dkmBluetooths, true);

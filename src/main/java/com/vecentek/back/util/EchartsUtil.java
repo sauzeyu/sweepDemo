@@ -23,7 +23,6 @@ public class EchartsUtil {
     }
 
 
-
     /**
      * 检查最近七日数据，如当日无新增数据，置0
      *

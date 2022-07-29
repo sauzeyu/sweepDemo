@@ -14,7 +14,11 @@ import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.mapper.DkmUserVehicleMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
-import com.vecentek.back.vo.*;
+import com.vecentek.back.vo.GetBluetoothVinVO;
+import com.vecentek.back.vo.LogoutUserVehicleVO;
+import com.vecentek.back.vo.RevokeKeyVO;
+import com.vecentek.back.vo.UserChangeVO;
+import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +58,7 @@ public class DkmUserVehicleServiceImpl {
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
-            return PageResp.fail(2106,"上传失败，用户ID，VIN等必要参数未传递！");
+            return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
 
@@ -76,22 +80,22 @@ public class DkmUserVehicleServiceImpl {
 
         // 检查用户和vin唯一性
         LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        dkmUserVehicleLambdaQueryWrapper.eq(DkmUserVehicle::getVin,userVehicle.getVin());
+        dkmUserVehicleLambdaQueryWrapper.eq(DkmUserVehicle::getVin, userVehicle.getVin());
         DkmUserVehicle dkmUserVehicle1 = dkmUserVehicleMapper.selectOne(dkmUserVehicleLambdaQueryWrapper);
         LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
-        dkmUserVehicleLambdaQueryWrapper1.eq(DkmUserVehicle::getUserId,userVehicle.getUserId());
+        dkmUserVehicleLambdaQueryWrapper1.eq(DkmUserVehicle::getUserId, userVehicle.getUserId());
         DkmUserVehicle dkmUserVehicle2 = dkmUserVehicleMapper.selectOne(dkmUserVehicleLambdaQueryWrapper1);
-        if (dkmUserVehicle1 == null && dkmUserVehicle2 == null){
+        if (dkmUserVehicle1 == null && dkmUserVehicle2 == null) {
             DkmUserVehicle dkmUserVehicle = new DkmUserVehicle();
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
             dkmUserVehicle.setUserId(dkmUser.getId());
-            if(userVehicle.getBindTime() != null){
+            if (userVehicle.getBindTime() != null) {
                 dkmUserVehicle.setBindTime(userVehicle.getBindTime());
-            }else{
+            } else {
                 dkmUserVehicle.setBindTime(new Date());
             }
             dkmUserVehicle.setBindStatus(1);
-            if (userVehicle.getLicense() != null){
+            if (userVehicle.getLicense() != null) {
                 dkmUserVehicle.setLicense(userVehicle.getLicense());
             }
             dkmUserVehicle.setVehicleType(userVehicle.getVehicleType());
@@ -104,9 +108,9 @@ public class DkmUserVehicleServiceImpl {
                 log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
                 return PageResp.success("上传成功");
             }
-        }else {
+        } else {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统已存在此VIN号，请勿重复绑定！");
-            return PageResp.fail(2106,"数据库已存在相同用户车辆关系！");
+            return PageResp.fail(2106, "数据库已存在相同用户车辆关系！");
         }
 
         log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");
@@ -131,7 +135,7 @@ public class DkmUserVehicleServiceImpl {
         Date logoutTime;
         if (logoutUserVehicle.getLogoutTime() == null) {
             logoutTime = new Date();
-        }else{
+        } else {
             logoutTime = logoutUserVehicle.getLogoutTime();
         }
         if (StrUtil.hasBlank(userId, vin)) {
@@ -223,7 +227,7 @@ public class DkmUserVehicleServiceImpl {
         String userId = revokeKeyVO.getUserId();
         // 查询有无此用户
         DkmUser dkmUser = dkmUserMapper.selectById(userId);
-        if (dkmUser == null){
+        if (dkmUser == null) {
             log.info("response：" + "/api/userVehicle/revokeKey " + "用户没有钥匙信息!");
             return PageResp.fail(2106, "用户没有钥匙信息！");
         }

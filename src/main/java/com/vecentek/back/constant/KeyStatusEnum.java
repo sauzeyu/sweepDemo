@@ -1,7 +1,5 @@
 package com.vecentek.back.constant;
 
-import cn.hutool.core.util.StrUtil;
-
 /**
  * @author ：EdgeYu
  * @version ：1.0
@@ -37,14 +35,6 @@ public enum KeyStatusEnum {
         this.name = name;
     }
 
-    public Integer getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     /**
      * 根据CMD操作码找到对应操作
      *
@@ -61,6 +51,14 @@ public enum KeyStatusEnum {
             }
         }
         return "未知操作";
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

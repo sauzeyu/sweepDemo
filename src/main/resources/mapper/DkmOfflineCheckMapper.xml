@@ -26,7 +26,6 @@
     </insert>
 
 
-
     <select id="selectVehicleByVin" resultType="java.lang.String">
         select vin
         from dkm_vehicle

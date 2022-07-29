@@ -1,8 +1,5 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -10,7 +7,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.dto.DkmVehicleDTO;
-import com.vecentek.back.entity.DkmAftermarketReplacement;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.entity.DkmUserVehicle;
 import com.vecentek.back.entity.DkmVehicle;
@@ -30,8 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -76,7 +70,7 @@ public class DkmVehicleServiceImpl {
      * @author EdgeYu
      * @date 2022-06-10 14:09
      */
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand,String vehicleType) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand, String vehicleType) {
         Page<DkmVehicle> page = new Page<>(pageIndex, pageSize);
         page = dkmVehicleMapper.selectPage(page, Wrappers.<DkmVehicle>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmVehicle::getVin, vin)
@@ -141,9 +135,9 @@ public class DkmVehicleServiceImpl {
         return PageResp.fail("查询失败");
     }
 
-    public void downloadDkmVehicle(String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand,String vehicleType, HttpServletResponse response) {
+    public void downloadDkmVehicle(String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand, String vehicleType, HttpServletResponse response) {
 
-                LambdaQueryWrapper< DkmVehicle > queryWrapper = Wrappers.<DkmVehicle>lambdaQuery()
+        LambdaQueryWrapper<DkmVehicle> queryWrapper = Wrappers.<DkmVehicle>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmVehicle::getVin, vin)
                 .like(StrUtil.isNotBlank(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmVehicle::getVehicleModel, vehicleModel)
