@@ -34,8 +34,9 @@ export default class AddUserForm extends Component {
       console.log('title', this.props.title);
       values.password = md5(values.password);
       values.creator = getDvaApp()._store.getState().user.currentUser.username;
-
+      debugger;
       insertAdmin(values).then((res) => {
+        console.log('res', res);
         if (res.code === 200) {
           debugger;
           // console.log('this.props'+this.props.searchFormValue);
@@ -48,6 +49,7 @@ export default class AddUserForm extends Component {
           // console.log('this.props'+this.props.searchFormValue);
           // DataTable.prototype.setState({addUserVisible: true});
           // this.setState({ addUserVisible: true });
+          debugger;
           message.error({
             content: res.msg,
           });

@@ -215,12 +215,12 @@ class DataTable extends Component {
     if (statusCode && statusCode.value) {
       param.append('statusCode', statusCode.value);
     }
-
-    if (startTime && startTime.value[0]) {
+    // debugger;
+    if (startTime && startTime.value && startTime.value[0]) {
       const beginTime = moment(startTime.value[0]).format('YYYY-MM-DD');
       param.append('startTime', beginTime);
     }
-    if (startTime && startTime.value[1]) {
+    if (startTime && startTime.value && startTime.value[1]) {
       const endTime = moment(startTime.value[1]).format('YYYY-MM-DD');
       param.append('endTime', endTime);
     }

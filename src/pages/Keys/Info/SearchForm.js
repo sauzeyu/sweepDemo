@@ -83,15 +83,24 @@ class SearchForm extends Component {
       labelCol: {
         xs: { span: 24 },
         sm: { span: 8 },
+        // md: { span: 4 },
+        // lg: { span: 2 },
+        // xl: { span: 1 },
       },
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 16 },
+        // md: { span: 4 },
+        // lg: { span: 2 },
+        // xl: { span: 1 },
       },
     };
     const colSpan = {
-      xs: 24,
+      xs: 12,
       sm: 6,
+      // md: 6,
+      // lg: 6,
+      // xl: 1
     };
     const { buttonHidden, isExpand } = this.state;
     let buttonName;

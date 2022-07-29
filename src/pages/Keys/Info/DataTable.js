@@ -350,7 +350,7 @@ class DataTable extends Component {
     );
   };
   enableKey = (col, isEnableKey) => {
-    let txt = isEnableKey ? '冻结' : '解冻';
+    let txt = isEnableKey ? '解冻' : '冻结';
     Modal.confirm({
       title: txt + '钥匙',
       content: `确定${txt}钥匙？`,
@@ -439,6 +439,15 @@ class DataTable extends Component {
     let fileName = '钥匙信息.xlsx';
     let param = new URLSearchParams();
 
+    if (keyType?.value && keyType.value.length > 0) {
+      keyType.value = keyType.value.reduce((prev, current) => prev + current);
+    }
+    if (dkState?.value && dkState.value.length > 0) {
+      dkState.value = dkState.value.toString();
+    }
+    console.log('periodMin', periodMin);
+    console.log('periodMax', periodMax);
+    debugger;
     if (userId?.value) {
       param.append('userId', userId);
     }
@@ -446,19 +455,19 @@ class DataTable extends Component {
       param.append('vin', vin);
     }
     if (periodMin?.value) {
-      param.append('periodMin', periodMin);
+      param.append('periodMin', periodMin.value);
     }
     if (periodMax?.value) {
-      param.append('periodMax', periodMax);
+      param.append('periodMax', periodMax.value);
     }
     if (periodUnit?.value) {
-      param.append('periodUnit', periodUnit);
+      param.append('periodUnit', periodUnit.value);
     }
     if (keyType?.value) {
-      param.append('keyType', keyType);
+      param.append('keyType', keyType.value);
     }
     if (dkState?.value) {
-      param.append('dkState', dkState);
+      param.append('dkState', dkState.value);
     }
 
     if (applyTime?.value) {

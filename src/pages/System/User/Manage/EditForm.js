@@ -89,7 +89,7 @@ export default class EditForm extends Component {
             name="roleList"
             rules={[{ required: true, message: '权限角色不能为空' }]}
           >
-            <Select mode={'multiple'} allowClear>
+            <Select allowClear>
               {roles.map((role) => {
                 return (
                   <Select.Option key={role.id} value={role.roleName}>

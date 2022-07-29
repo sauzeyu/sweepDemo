@@ -235,7 +235,7 @@ class MiddleForm extends React.Component {
     let startTime;
     let endTime;
 
-    if (startTime1 == endTime1) {
+    if (startTime1 == endTime1 || moment(times[1]) - moment(times[0]) > 1) {
       startTime = startTime1;
       endTime = endTime1;
     } else {
@@ -288,7 +288,6 @@ class MiddleForm extends React.Component {
 
   todayOnClick = () => {
     const timeString = [moment().startOf('days'), moment().startOf('days')];
-    debugger;
     this.setState({
       pickerTime: timeString,
     });

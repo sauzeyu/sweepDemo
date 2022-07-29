@@ -30,8 +30,8 @@ export default class AddForm extends Component {
 
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
-      values.menuList = this.state.checkedKeys?.checked;
-      console.log('values  ', values);
+      values.menuList = this.state.keys;
+
       insert(values).then(
         (res) => {
           if (res.code === 200) {
@@ -65,8 +65,16 @@ export default class AddForm extends Component {
   }
 
   onCheck = (checkedKey, event) => {
+    console.log(
+      'checkedKey',
+      checkedKey,
+      'event.halfCheckedKeys ',
+      event.halfCheckedKeys,
+    );
+    let checkedKeysResult = [...checkedKey, ...event.halfCheckedKeys];
     this.setState({
       checkedKeys: checkedKey,
+      keys: checkedKeysResult,
     });
   };
   onLoad = (loadedKeys, tree) => {};
@@ -115,7 +123,7 @@ export default class AddForm extends Component {
             placeholder={'角色代码'}
           />
         </Form.Item>
-        <Form.Item label={'菜单权限'}>
+        <Form.Item label={'菜单权限'} name={'menuList'}>
           {menus.length > 0 && (
             <Tree
               onLoad={this.onLoad}

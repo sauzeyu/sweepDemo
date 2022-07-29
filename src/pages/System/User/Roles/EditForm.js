@@ -28,6 +28,9 @@ export default class EditForm extends Component {
 
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
+      values.menuList = this.state.keys;
+      console.log('values', values);
+
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -62,11 +65,27 @@ export default class EditForm extends Component {
       });
   }
 
-  onCheck = (checkedKey, event) => {
+  onCheck = (checkedKeys, info) => {
+    let checkedKeysResult = [...checkedKeys, ...info.halfCheckedKeys];
+
     this.setState({
-      checkedKeys: checkedKey,
+      checkedKeys: checkedKeys,
+      keys: checkedKeysResult,
     });
   };
+
+  onSelect = (checkedKeys, info) => {
+    let checkedKeysResult = [...checkedKeys, ...info.halfCheckedKeys];
+    console.log('info', info);
+    console.log('checkedKeysResult', checkedKeysResult);
+    // debugger;
+    this.setState({
+      checkedKeys: checkedKeysResult,
+    });
+    this.state.selectedKeys = checkedKeysResult;
+    console.log('this.state.checkedKeys', this.state.checkedKeys);
+  };
+
   onLoad = (loadedKeys, tree) => {};
   changeSubmit = () => {
     this.props.finish(true);
@@ -107,14 +126,16 @@ export default class EditForm extends Component {
         >
           <Input maxLength={5} placeholder={'角色代码'} />
         </Form.Item>
-        <Form.Item label={'菜单权限'}>
+        <Form.Item label={'菜单权限'} name={'menuList'}>
           {menus.length > 0 && (
             <Tree
               onLoad={this.onLoad}
               checkable
-              checkStrictly
+              // checkStrictly
+
               autoExpandParent={false}
               onCheck={this.onCheck}
+              onSelect={this.onSelect}
               treeData={menus}
               checkedKeys={this.state.checkedKeys}
             />
