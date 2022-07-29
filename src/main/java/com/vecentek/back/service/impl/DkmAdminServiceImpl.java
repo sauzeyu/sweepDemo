@@ -149,13 +149,13 @@ public class DkmAdminServiceImpl {
         admin.setCreateTime(new Date());
         dkmAdminMapper.insert(admin);
         // 新建用户角色中间表
-        Integer[] role = insertAdminVO.getRole();
-        for (Integer integer : role) {
+        Integer role = insertAdminVO.getRole();
+        //for (Integer integer : role) {
             DkmAdminRole dkmAdminRole = new DkmAdminRole();
             dkmAdminRole.setAdminId(admin.getId());
-            dkmAdminRole.setRoleId(integer);
+            dkmAdminRole.setRoleId(role);
             dkmAdminRoleMapper.insert(dkmAdminRole);
-        }
+        //}
         return PageResp.success("新增成功");
     }
 }

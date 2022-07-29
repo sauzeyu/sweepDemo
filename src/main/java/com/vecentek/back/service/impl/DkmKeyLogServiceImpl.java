@@ -63,7 +63,12 @@ public class DkmKeyLogServiceImpl {
 
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,String vehicleModel,String vehicleType) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
-
+        //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
+        if (ObjectUtil.isNull(startTime) && ObjectUtil.isNull(endTime) ){
+            List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, null);
+            startTime = timeList.get(0);
+            endTime = timeList.get(1);
+        }
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
@@ -111,7 +116,8 @@ public class DkmKeyLogServiceImpl {
         String excelName = fileName + "钥匙使用记录";
 
         // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        //String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = ("D:\\test\\"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
