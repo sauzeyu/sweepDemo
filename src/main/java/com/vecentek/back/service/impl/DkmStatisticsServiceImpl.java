@@ -106,6 +106,7 @@ public class DkmStatisticsServiceImpl {
     }
 
 
+    // TODO List重复代码抽取常量
     public PageResp selectKeyUseLogByTime(String startTime, String endTime) {
         List<CountDTO> keyLogCount = dkmKeyLogMapper.selectUseCountByTime(startTime, endTime);
         // 数据简化处理 四位状态码的日志只返回开启和关闭两大类 不显示具体开启情况
@@ -242,6 +243,7 @@ public class DkmStatisticsServiceImpl {
         return PageResp.success("查询成功", res);
     }
 
+    // TODO 注释
     private HashMap<String, Object> count(List<CountDTO> list) {
         HashMap<String, Object> map = new HashMap<>();
         if (list.size() > 0) {

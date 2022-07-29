@@ -79,7 +79,7 @@ public class DkmStatisticsController {
      * @return
      */
     @GetMapping("/selectKeyErrorLogByPhoneBrand")
-    public PageResp selectKeyErrorLogByPhoneBrand( String phoneBrand) {
+    public PageResp selectKeyErrorLogByPhoneBrand(String phoneBrand) {
         return echartsServiceImpl.selectKeyErrorLogByPhoneBrand(phoneBrand);
     }
 

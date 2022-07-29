@@ -29,14 +29,17 @@ public class GlobalExceptionHandler {
     public PageResp sqlException(SQLException e) {
         return errorResult("SQL语句异常！", e);
     }
+
     @ExceptionHandler(FileSizeLimitExceededException.class)
     public PageResp fileSizeLimitExceededException(FileSizeLimitExceededException e) {
         return errorResult("上传文件过大!请勿超过100MB", e);
     }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public PageResp maxUploadSizeExceededException(MaxUploadSizeExceededException e) {
         return errorResult("上传文件过大!请勿超过100MB", e);
     }
+
     @ExceptionHandler(SizeLimitExceededException.class)
     public PageResp sizeLimitExceededException(SizeLimitExceededException e) {
         return errorResult("上传文件过大!请勿超过100MB", e);

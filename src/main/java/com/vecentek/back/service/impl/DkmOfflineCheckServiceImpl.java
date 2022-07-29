@@ -17,12 +17,28 @@ import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.UploadBluetoothsErrorDTO;
 import com.vecentek.back.dto.UploadDTO;
-import com.vecentek.back.entity.*;
+import com.vecentek.back.entity.DkmAftermarketReplacement;
+import com.vecentek.back.entity.DkmBluetooths;
+import com.vecentek.back.entity.DkmKey;
+import com.vecentek.back.entity.DkmKeyLifecycle;
+import com.vecentek.back.entity.DkmKeyLog;
+import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.exception.UploadOverMaximumException;
 import com.vecentek.back.exception.VecentException;
-import com.vecentek.back.mapper.*;
-import com.vecentek.back.vo.*;
+import com.vecentek.back.mapper.DkmAftermarketReplacementMapper;
+import com.vecentek.back.mapper.DkmBluetoothsMapper;
+import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
+import com.vecentek.back.mapper.DkmKeyLogMapper;
+import com.vecentek.back.mapper.DkmKeyMapper;
+import com.vecentek.back.mapper.DkmOfflineCheckMapper;
+import com.vecentek.back.mapper.DkmUserMapper;
+import com.vecentek.back.mapper.DkmVehicleMapper;
+import com.vecentek.back.vo.KeyLogDataResVO;
+import com.vecentek.back.vo.KeyLogDataVO;
+import com.vecentek.back.vo.KeyLogDetailResVO;
+import com.vecentek.back.vo.KeyLogDetailVO;
+import com.vecentek.back.vo.VehicleBluetoothVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -145,20 +161,20 @@ public class DkmOfflineCheckServiceImpl {
             String vin = vehicle.getVin();
             String hwDeviceSn = vehicle.getHwDeviceSn();
             List<DkmVehicle> dkmVehicles1 = dkmVehicleMapper.selectList(new QueryWrapper<DkmVehicle>().lambda()
-                    .eq(ObjectUtil.isNotNull(vin),DkmVehicle::getVin, vin)
-                    .eq(ObjectUtil.isNotNull(hwDeviceSn),DkmVehicle::getHwDeviceSn, hwDeviceSn));
-            if ( dkmVehicles1.size() > 0){
+                    .eq(ObjectUtil.isNotNull(vin), DkmVehicle::getVin, vin)
+                    .eq(ObjectUtil.isNotNull(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn));
+            if (dkmVehicles1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的VIN号！");
                 throw new VecentException(1001, "存在重复成对的VIN号和蓝牙序列号，请勿重复插入！");
             }
             List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getHwDeviceSn, hwDeviceSn));
-            if ( dkmBluetooths.size() > 0){
+            if (dkmBluetooths.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙设备号！");
                 throw new VecentException(1001, "存在重复的蓝牙设备号！");
             }
             String searchNumber = vehicle.getSearchNumber();
             List<DkmBluetooths> dkmBluetooths1 = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getSearchNumber, searchNumber));
-            if ( dkmBluetooths1.size() > 0){
+            if (dkmBluetooths1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙检索号！");
                 throw new VecentException(1001, "存在重复的蓝牙检索号！");
             }
@@ -201,6 +217,7 @@ public class DkmOfflineCheckServiceImpl {
             });
         }
         // 新增一个map返回给前端作为测试结果，正式环境删除
+        // TODO 上线删除
         ArrayList<Map> resList = new ArrayList<>();
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
         if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
@@ -295,7 +312,7 @@ public class DkmOfflineCheckServiceImpl {
             });
         }
         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传成功");
-        return PageResp.success("上传成功",resList);
+        return PageResp.success("上传成功", resList);
     }
 
     /**
@@ -369,18 +386,14 @@ public class DkmOfflineCheckServiceImpl {
 
     public PageResp getKeyLogDetail(KeyLogDetailVO keyLogDetailVO) {
         ArrayList<KeyLogDetailResVO> res = new ArrayList<>();
-        if(keyLogDetailVO.getPageIndex() == null || keyLogDetailVO.getPageSize() == null){
+        if (keyLogDetailVO.getPageIndex() == null || keyLogDetailVO.getPageSize() == null) {
             log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
-            return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
-        // 入参检查
-//        if(StrUtil.isBlank(keyLogDetailVO.getStartTime()) || StrUtil.isBlank(keyLogDetailVO.getEndTime())){
-//            log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
-//            return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
-//        }
+        // TODO 排除警告
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = new QueryWrapper<DkmKeyLog>().lambda()
-                .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()),DkmKeyLog::getVin, keyLogDetailVO.getVin())
+                .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()), DkmKeyLog::getVin, keyLogDetailVO.getVin())
                 .ge(DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
                 .le(DkmKeyLog::getOperateTime, keyLogDetailVO.getEndTime())
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getUserId()), DkmKeyLog::getUserId, keyLogDetailVO.getUserId())
@@ -399,39 +412,39 @@ public class DkmOfflineCheckServiceImpl {
             res.add(keyLogDetailResVO);
         }
         log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "查询成功" + res);
-        return PageResp.success("查询成功",page.getTotal(),res);
+        return PageResp.success("查询成功", page.getTotal(), res);
     }
 
     public PageResp getKeyData(KeyLogDataVO keyLogDataVO) {
         // 入参检查
-        if(ObjectUtil.isNull(keyLogDataVO.getStartTime()) ||
+        if (ObjectUtil.isNull(keyLogDataVO.getStartTime()) ||
                 ObjectUtil.isNull(keyLogDataVO.getEndTime()) ||
                 Objects.isNull(keyLogDataVO.getPageIndex()) ||
-                Objects.isNull(keyLogDataVO.getPageSize())){
+                Objects.isNull(keyLogDataVO.getPageSize())) {
             log.info("response：" + "/api/offlineCheck/getKeyData " + "必填参数未传递或传入的参数格式不正确！");
-            return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         Page<DkmKey> page = new Page<>(keyLogDataVO.getPageIndex(), keyLogDataVO.getPageSize());
         boolean parentId = false;
-        if (keyLogDataVO.getStatus() != null){
-            parentId = keyLogDataVO.getStatus() == 1 ? true:false;
+        if (keyLogDataVO.getStatus() != null) {
+            parentId = keyLogDataVO.getStatus() == 1;
         }
         LambdaQueryWrapper<DkmKey> wrapper = new QueryWrapper<DkmKey>().lambda()
                 .ge(DkmKey::getValFrom, keyLogDataVO.getStartTime())
                 .le(DkmKey::getValTo, keyLogDataVO.getEndTime())
-                .eq(StrUtil.isNotBlank(keyLogDataVO.getVin()),DkmKey::getVin, keyLogDataVO.getVin())
+                .eq(StrUtil.isNotBlank(keyLogDataVO.getVin()), DkmKey::getVin, keyLogDataVO.getVin())
                 .eq(StrUtil.isNotBlank(keyLogDataVO.getUserId()), DkmKey::getUserId, keyLogDataVO.getUserId())
                 .eq(keyLogDataVO.getDkState() != null, DkmKey::getDkState, keyLogDataVO.getDkState())
                 .eq(parentId, DkmKey::getDkState, "0");
-        page = dkmKeyMapper.selectPage(page,wrapper);
+        page = dkmKeyMapper.selectPage(page, wrapper);
         ArrayList<KeyLogDataResVO> res = new ArrayList<>();
         for (DkmKey dkmKey : page.getRecords()) {
             KeyLogDataResVO keyLogDataResVO = new KeyLogDataResVO();
-            BeanUtil.copyProperties(dkmKey,keyLogDataResVO);
+            BeanUtil.copyProperties(dkmKey, keyLogDataResVO);
             keyLogDataResVO.setKeyId(dkmKey.getId());
             res.add(keyLogDataResVO);
         }
         log.info("response：" + "/api/offlineCheck/getKeyData " + res);
-        return PageResp.success("查询成功",page.getTotal(),res);
+        return PageResp.success("查询成功", page.getTotal(), res);
     }
 }

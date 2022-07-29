@@ -95,7 +95,6 @@ public class DkmMenuServiceImpl {
                 .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
                 .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
                 .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
-//                .isNull(DkmMenu::getParentId)
                 .orderByAsc(DkmMenu::getDna)
         );
 
@@ -103,7 +102,9 @@ public class DkmMenuServiceImpl {
     }
 
     public PageResp selectByParentId(Integer parentId) {
-        List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(Wrappers.<DkmMenu>lambdaQuery().eq(DkmMenu::getParentId, parentId).orderByAsc(DkmMenu::getDna));
+        List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(Wrappers.<DkmMenu>lambdaQuery()
+                .eq(DkmMenu::getParentId, parentId)
+                .orderByAsc(DkmMenu::getDna));
         return PageResp.success("查询成功", dkmMenus);
     }
 }

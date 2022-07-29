@@ -18,7 +18,7 @@ public class VecentException extends Exception {
         this.code = code;
     }
 
-    public VecentException( int code,String msg) {
+    public VecentException(int code, String msg) {
         super(msg);
         this.code = code;
     }

@@ -72,7 +72,7 @@ public class DkmOfflineCheckDTO extends BaseEntity {
      */
     private String bleHardwareVersion;
     /**
-     *蓝牙厂商
+     * 蓝牙厂商
      */
     private String bleManufacturer;
     /**

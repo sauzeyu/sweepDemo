@@ -34,7 +34,7 @@ public enum KeyErrorReasonEnum {
 //    REASON_FEATURE_REQUESTED_NOT_SUPPORTED("FF", "功能不支持");
 
     /**
-     *  车端SDK定义
+     * 车端SDK定义
      */
     ERROR_REASON_42("42", "验证KR失败"),
     ERROR_REASON_45("45", "随机数校验失败"),
@@ -57,8 +57,7 @@ public enum KeyErrorReasonEnum {
     ERROR_REASON_0F("0F", "车端连接数已满,有车主接入"),
 
     /**
-     *  IOS特有
-     *
+     * IOS特有
      */
     ERROR_REASON_C2("C2", "无效操作"),
     ERROR_REASON_C3("C3", "未连接"),
@@ -74,8 +73,7 @@ public enum KeyErrorReasonEnum {
     ERROR_REASON_D0("D0", "LE配对设备过多"),
 
     /**
-     *  Android特有
-     *
+     * Android特有
      */
     ERROR_REASON_E1("E1", "未知错误"),
     ERROR_REASON_E2("E2", "蓝牙连接超时"),
@@ -101,14 +99,6 @@ public enum KeyErrorReasonEnum {
         this.name = name;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     /**
      * 根据CMD操作码找到对应原因
      *
@@ -125,5 +115,13 @@ public enum KeyErrorReasonEnum {
             }
         }
         return "未知原因";
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
     }
 }

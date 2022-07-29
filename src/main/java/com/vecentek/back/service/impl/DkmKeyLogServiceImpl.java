@@ -1,13 +1,9 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.core.date.DatePattern;
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.poi.excel.BigExcelWriter;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -15,20 +11,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.constant.JwtConstant;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
-import com.vecentek.back.constant.TokenConstant;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
-import com.vecentek.back.entity.DkmRole;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.util.DownLoadUtil;
-import com.vecentek.back.util.TokenUtils;
 import com.vecentek.common.response.PageResp;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -38,13 +28,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +47,7 @@ public class DkmKeyLogServiceImpl {
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,String vehicleModel,String vehicleType) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag, String vehicleBrand, String vehicleModel, String vehicleType) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         if (ObjectUtil.isNull(startTime) && ObjectUtil.isNull(endTime) ){
@@ -78,7 +64,7 @@ public class DkmKeyLogServiceImpl {
                 .like(StrUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(StrUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .like(StrUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
-                .eq(ObjectUtil.isNotNull(flag),DkmKeyLog::getFlag,flag)
+                .eq(ObjectUtil.isNotNull(flag), DkmKeyLog::getFlag, flag)
                 .ge(StrUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
                 .le(StrUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
                 .orderByDesc(DkmKeyLog::getOperateTime);
@@ -102,8 +88,8 @@ public class DkmKeyLogServiceImpl {
 
     @Async
     public void downloadKeyLogExcel(String vin, String userId, String startTime, String endTime,
-                                    String phoneBrand, String phoneModel, String statusCode, Integer flag,String vehicleBrand,
-                                    String vehicleModel,String vehicleType,String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+                                    String phoneBrand, String phoneModel, String statusCode, Integer flag, String vehicleBrand,
+                                    String vehicleModel, String vehicleType, String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
 
 
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
@@ -116,8 +102,7 @@ public class DkmKeyLogServiceImpl {
         String excelName = fileName + "钥匙使用记录";
 
         // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        //String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
-        String filePath = ("D:\\test\\"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
@@ -149,7 +134,7 @@ public class DkmKeyLogServiceImpl {
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
-                .eq(flag!= null, DkmKeyLog::getFlag, flag)
+                .eq(flag != null, DkmKeyLog::getFlag, flag)
                 .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
                 .le(CharSequenceUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime);
@@ -285,7 +270,7 @@ public class DkmKeyLogServiceImpl {
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
-                .eq(flag!= null, DkmKeyLog::getFlag, flag)
+                .eq(flag != null, DkmKeyLog::getFlag, flag)
                 .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
                 .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
                 .le(CharSequenceUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
@@ -312,11 +297,12 @@ public class DkmKeyLogServiceImpl {
     }
 
 
-    public PageResp checkKeyUseLog(String creator,Integer type) {
+    public PageResp checkKeyUseLog(String creator, Integer type) {
+        // TODO 排序永远为 true
         LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator!=null,DkmKeyLogHistoryExport::getCreator,creator)
-        .eq(type!=null,DkmKeyLogHistoryExport::getType,type)
-        .orderByAsc(Boolean.parseBoolean("create_time"));
+        dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator != null, DkmKeyLogHistoryExport::getCreator, creator)
+                .eq(type != null, DkmKeyLogHistoryExport::getType, type)
+                .orderByAsc(Boolean.parseBoolean("create_time"));
         ;
         List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);

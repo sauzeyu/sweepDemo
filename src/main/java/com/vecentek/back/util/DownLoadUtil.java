@@ -4,12 +4,7 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.CharSequenceUtil;
-import com.vecentek.back.constant.JwtConstant;
-import com.vecentek.back.dto.LastWeekTotalDTO;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,25 +17,26 @@ import java.util.List;
  */
 public class DownLoadUtil {
 
-
+    // TODO 注释优化
     /**
      * Excel 文件名 文件格式 文件路径的提前处理
+     *
      * @param startTime
      * @param endTime
      * @param token
      * @return 文件名，用户名
      */
-    public static List<String> checkLastWeekTotal(String startTime, String endTime,String token) {
+    public static List<String> checkLastWeekTotal(String startTime, String endTime, String token) {
         List<String> dateList = new ArrayList<>();
-        if (CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)){
+        if (CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)) {
             String now = DateUtil.now();
             DateTime dateTime = new DateTime(now, DatePattern.NORM_DATETIME_FORMAT);
             int month = dateTime.getMonth() + 1;
             int nextMonth;
-            if(month == 12){
+            if (month == 12) {
                 nextMonth = 1;
             } else {
-                nextMonth = month + 1 ;
+                nextMonth = month + 1;
             }
 
             startTime = getFirstDayOfMonth(month);
@@ -82,10 +78,9 @@ public class DownLoadUtil {
     }
 
 
-
-
     /**
      * 获取当前月第一天
+     *
      * @param month
      * @return
      */
@@ -100,6 +95,6 @@ public class DownLoadUtil {
         // 格式化日期
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        return sdf.format(calendar.getTime())+" 00:00:00";
+        return sdf.format(calendar.getTime()) + " 00:00:00";
     }
 }

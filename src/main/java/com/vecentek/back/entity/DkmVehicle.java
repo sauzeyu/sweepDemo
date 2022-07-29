@@ -49,7 +49,6 @@ public class DkmVehicle extends BaseEntity implements Serializable {
      * 车型
      */
     private String vehicleType;
-
     /**
      * 蓝牙编号
      */

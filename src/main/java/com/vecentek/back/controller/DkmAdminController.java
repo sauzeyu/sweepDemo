@@ -84,11 +84,12 @@ public class DkmAdminController {
 
     /**
      * 删除用户
-     * @param id
-     * @return
+     *
+     * @param id 用户id
+     * @return 删除是否成功
      */
     @PostMapping(value = "/deleteById")
-    public PageResp deleteById(@RequestParam("id") int id) {
+    public PageResp deleteById(@RequestParam("id") Integer id) {
         return this.dkmAdminService.deleteById(id);
     }
 

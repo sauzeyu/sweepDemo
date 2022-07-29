@@ -7,14 +7,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- *  导出钥匙信息分页查询条件
+ * 导出钥匙信息分页查询条件
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class DkmKeyVO extends BaseEntity {
-
 
 
     /**

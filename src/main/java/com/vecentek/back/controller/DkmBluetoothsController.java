@@ -31,16 +31,16 @@ public class DkmBluetoothsController {
     /**
      * 蓝牙信息分页查询
      *
-     * @param pageIndex  页码
-     * @param pageSize   每页数量
-     * @param hwDeviceSn 设备序列号
-     * @param flag 设备状态
+     * @param pageIndex    页码
+     * @param pageSize     每页数量
+     * @param hwDeviceSn   设备序列号
+     * @param flag         设备状态
      * @param searchNumber 设备检索号
      * @return 分页结果
      */
     @GetMapping(value = "/selectForPage")
-    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String hwDeviceSn,String searchNumber,Integer flag) {
-        return this.dkmBluetoothsServiceImpl.selectForPage(pageIndex, pageSize, hwDeviceSn,searchNumber,flag);
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String hwDeviceSn, String searchNumber, Integer flag) {
+        return this.dkmBluetoothsServiceImpl.selectForPage(pageIndex, pageSize, hwDeviceSn, searchNumber, flag);
     }
 
     /**
@@ -55,7 +55,7 @@ public class DkmBluetoothsController {
     }
 
     @PostMapping(value = "/downloadDkmBluetooths")
-    public void downloadDkmBluetooths(String hwDeviceSn,String searchNumber,Integer flag,HttpServletResponse response)  {
-        this.dkmBluetoothsServiceImpl.downloadDkmBluetooths(hwDeviceSn, searchNumber, flag,response);
+    public void downloadDkmBluetooths(String hwDeviceSn, String searchNumber, Integer flag, HttpServletResponse response) {
+        this.dkmBluetoothsServiceImpl.downloadDkmBluetooths(hwDeviceSn, searchNumber, flag, response);
     }
 }
