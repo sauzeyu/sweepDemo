@@ -38,7 +38,7 @@ public class DkmOfflineCheckController {
     public PageResp insertBluetoothBatch(@RequestBody List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException {
         return dkmOfflineCheckServiceImpl.insertBluetoothBatch(dkmBluetooths);
     }
-
+    // TODO 日志放到 Service 层
     @RequestMapping(value = "/insertOrUpdateVehicleBatch", method = RequestMethod.POST)
     public PageResp insertOrUpdateVehicleBatch(@RequestBody List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
         log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());

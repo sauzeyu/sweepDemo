@@ -28,6 +28,7 @@ public class DkmUserVehicleController {
     @Resource
     private DkmUserVehicleServiceImpl dkmUserVehicleService;
 
+    // TODO log 放到 Service 层
     @RequestMapping(value = "/insertUserVehicle", method = RequestMethod.POST)
     public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle) {
         log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());

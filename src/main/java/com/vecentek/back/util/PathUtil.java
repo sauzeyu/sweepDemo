@@ -5,6 +5,7 @@ import java.io.File;
 /**
  * 在windows和linux系统下均可正常使用
  */
+// TODO 删除未使用代码
 public class PathUtil {
     //获取项目的根路径
     public final static String classPath;
@@ -35,7 +36,6 @@ public class PathUtil {
         String rootPath = "";
         //windows下
         if ("\\".equals(File.separator)) {
-            //System.out.println(classPath);
             rootPath = classPath + u_path;
             rootPath = rootPath.replaceAll("/", "\\\\");
             if (rootPath.substring(0, 1).equals("\\")) {
@@ -44,7 +44,6 @@ public class PathUtil {
         }
         //linux下
         if ("/".equals(File.separator)) {
-            //System.out.println(classPath);
             rootPath = classPath + u_path;
             rootPath = rootPath.replaceAll("\\\\", "/");
         }

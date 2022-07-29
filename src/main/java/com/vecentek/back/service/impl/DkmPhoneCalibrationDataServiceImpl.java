@@ -84,14 +84,11 @@ public class DkmPhoneCalibrationDataServiceImpl {
         if (dkmPhoneCalibrationData.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
             return PageResp.fail("标定数据必须是32字节");
         }
-//        String personalAndCalibrationString = dkmPhoneCalibrationData.getPersonalAndCalibrationString().replace(" ", "");
         try {
             byte[] bytes = HexUtil.parseHex(dkmPhoneCalibrationData.getPersonalAndCalibrationString());
         } catch (Exception e) {
             return PageResp.fail("标定数据解析错误！请检查数据是否正常");
         }
-//        dkmPhoneCalibrationData.setPersonalAndCalibrationString(personalAndCalibrationString);
-//        dkmPhoneCalibrationData.setPersonalAndCalibrationAsci(parseCalibrationToHexString(personalAndCalibrationString));
         dkmPhoneCalibrationDataMapper.updateById(dkmPhoneCalibrationData);
 
         return PageResp.success("更新成功");
@@ -128,10 +125,8 @@ public class DkmPhoneCalibrationDataServiceImpl {
             int rowIndex = 1;
             for (DkmPhoneCalibrationData calibration : calibrationList) {
                 rowIndex++;
-                // 去除标定数据中的空格
                 String personalAndCalibrationString = calibration.getPersonalAndCalibrationString().replace(" ", "");
                 calibration.setPersonalAndCalibrationString(personalAndCalibrationString);
-//            calibration.setPersonalAndCalibrationAsci(parseCalibrationToHexString(personalAndCalibrationString));
                 calibration.setCreateTime(new Date());
                 if (StringUtils.isBlank(calibration.getVehicleModel())) {
                     return PageResp.fail("第 " + rowIndex + " 行导入的车型数据不能为空！");
@@ -159,6 +154,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     dkmPhoneCalibrationDataMapper.delete(queryWrapper);
                 }
                 // 如果手机品牌和手机型号为default则为默认标定数据，需要放redis，再放数据库
+                // TODO  重复 default 抽取
                 if (Objects.equals("default", calibrationData.getPhoneBrand()) && Objects.equals("default", calibrationData.getPhoneModel())) {
                     redisUtils.setCacheObject("default", calibrationData.getPersonalAndCalibrationString());
                     DkmPhoneCalibrationData dkmPhoneCalibrationData = dkmPhoneCalibrationDataMapper.selectOne(new QueryWrapper<DkmPhoneCalibrationData>().lambda()

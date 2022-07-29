@@ -105,13 +105,10 @@ public class DkmRoleServiceImpl {
                 for (DkmAdminRole dkmAdminRole : dkmAdminRoles) {
                     Integer adminId = dkmAdminRole.getAdminId();
                     DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminId);
-                    if (Objects.isNull(dkmAdmin)) {
-                        continue;
-                    } else {
+                    if (dkmAdmin != null) {
                         String username = dkmAdmin.getUsername();
                         // 根据用户名找到token 然后删除
                         Boolean delete = redisTemplate.delete(username);
-                        System.out.println("用户token删除是否成功：" + delete);
                     }
                 }
             }

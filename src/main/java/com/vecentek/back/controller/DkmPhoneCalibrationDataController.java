@@ -58,10 +58,6 @@ public class DkmPhoneCalibrationDataController {
         return this.dkmPhoneCalibrationDataServiceImpl.importByExcel(file);
     }
 
-    // @PostMapping(value = "/downloadTemplate")
-    // public PageResp downloadTemplate(MultipartFile file) throws VecentException, IOException {
-    //     return this.dkmPhoneCalibrationDataServiceImpl.importByExcel(file);
-    // }
 
     @PostMapping(value = "/downloadCalibrationExcel")
     public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {

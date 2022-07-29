@@ -49,19 +49,6 @@ public class DkmAftermarketReplacementServiceImpl {
     @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
-    public static String getFirstDayOfMonth(int month) {
-        Calendar calendar = Calendar.getInstance();
-        // 设置月份
-        calendar.set(Calendar.MONTH, month - 1);
-        // 获取某月最小天数
-        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-        // 设置日历中月份的最小天数
-        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
-        // 格式化日期
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        return sdf.format(calendar.getTime()) + " 00:00:00";
-    }
 
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String startTime, String endTime) {
         Page<DkmAftermarketReplacement> page = new Page<>(pageIndex, pageSize);
@@ -88,7 +75,7 @@ public class DkmAftermarketReplacementServiceImpl {
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(wrapper);
         return PageResp.success("查询成功", dkmVehicle);
     }
-
+    // TODO 插入失败回滚
     public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String creator, HttpServletResponse response) throws UnsupportedEncodingException {
         List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
         // startTime = objects.get(0);
@@ -108,7 +95,7 @@ public class DkmAftermarketReplacementServiceImpl {
             isXls = false;
         } else if (isXls) {
             suffix = ExcelConstant.EXCEL_SUFFIX_XLS;
-        } else if (!isXls) {
+        } else {
             suffix = ExcelConstant.EXCEL_SUFFIX_XLSX;
         }
 

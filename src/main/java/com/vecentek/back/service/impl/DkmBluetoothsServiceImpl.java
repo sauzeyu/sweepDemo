@@ -80,12 +80,12 @@ public class DkmBluetoothsServiceImpl {
                 .orderByDesc(DkmBluetooths::getCreateTime);
 
         List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(queryWrapper);
-        dkmBluetooths.stream().forEach(DkmBluetooths -> {
-            if (DkmBluetooths.getFlag() != null) {
-                if (1 == DkmBluetooths.getFlag()) {
-                    DkmBluetooths.setDkSdkVersion("正常");
+        dkmBluetooths.forEach(bluetooths -> {
+            if (bluetooths.getFlag() != null) {
+                if (1 == bluetooths.getFlag()) {
+                    bluetooths.setDkSdkVersion("正常");
                 } else {
-                    DkmBluetooths.setDkSdkVersion("报废");
+                    bluetooths.setDkSdkVersion("报废");
                 }
             }
         });
@@ -99,7 +99,7 @@ public class DkmBluetoothsServiceImpl {
         response.setContentType("application/vnd.ms-excel");
 
 
-        Boolean isXlsx = true;
+        boolean isXlsx = true;
         ExcelWriter writer = ExcelUtil.getWriter(isXlsx);
 
 

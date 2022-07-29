@@ -35,9 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -61,26 +59,6 @@ public class DkmKeyServiceImpl {
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
     @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
-
-    /**
-     * 获取当前月第一天
-     *
-     * @param month
-     * @return
-     */
-    public static String getFirstDayOfMonth(int month) {
-        Calendar calendar = Calendar.getInstance();
-        // 设置月份
-        calendar.set(Calendar.MONTH, month - 1);
-        // 获取某月最小天数
-        int firstDay = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-        // 设置日历中月份的最小天数
-        calendar.set(Calendar.DAY_OF_MONTH, firstDay);
-        // 格式化日期
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-        return sdf.format(calendar.getTime()) + " 00:00:00";
-    }
 
     /**
      * 通过ID查询单条数据
@@ -125,6 +103,7 @@ public class DkmKeyServiceImpl {
     }
 
     private int checkTimeUnit(Integer time, String timeUnit) {
+        // TODO 缺少 default 值
         switch (timeUnit) {
             case "minute":
                 break;
@@ -229,6 +208,7 @@ public class DkmKeyServiceImpl {
             return PageResp.fail(500, "钥匙状态未传递");
         }
         // 冻结
+        // TODO 插入生命周期抽取为方法
         if (dkState == 3) {
             // 更新状态
             DkmKey key = dkmKeyMapper.selectById(keyId);
@@ -366,6 +346,7 @@ public class DkmKeyServiceImpl {
                                     String valToEndTime,
                                     Integer[] dkStates, String creator) {
         List<String> objects = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
+        // TODO 命名不采用 123 object 等方式
         applyStartTime = objects.get(0);
         applyEndTime = objects.get(1);
         String fileName = objects.get(2);
@@ -376,7 +357,6 @@ public class DkmKeyServiceImpl {
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
         String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
-        System.out.println("filePath:" + filePath);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
@@ -407,6 +387,7 @@ public class DkmKeyServiceImpl {
         boolean periodBool = false;
         int periodMaxFormat = 0;
         int periodMinFormat = 0;
+        // TODO 抽取时间转换方法
         if (periodMax != null && periodMin != null && periodUnit != null) {
             // 根据单元转换时间周期
             if (Objects.equals(periodUnit, "minute")) { // 分钟
@@ -433,8 +414,7 @@ public class DkmKeyServiceImpl {
             }
         }
 
-        queryWrapper
-                .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
+        queryWrapper.like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
                 .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
                 .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
                 .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
@@ -494,7 +474,7 @@ public class DkmKeyServiceImpl {
             extracted(writer);
             writer.write(dkmKeys, true);
         }
-
+        // TODO 关闭流之前 flush
         writer.close();
 
         // 5将历史记录中该条数据记录根据导出情况进行修改
@@ -602,8 +582,7 @@ public class DkmKeyServiceImpl {
             }
         }
 
-        queryWrapper
-                .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
+        queryWrapper.like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
                 .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
                 .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
                 .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
@@ -640,8 +619,4 @@ public class DkmKeyServiceImpl {
         return keyList;
     }
 
-    public PageResp checkKeyUseLog() {
-        List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(null);
-        return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
-    }
 }

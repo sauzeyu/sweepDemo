@@ -107,9 +107,9 @@ public class DkmAdminServiceImpl {
      * @param id 账号id
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp deleteById(int id) {
+    public PageResp deleteById(Integer id) {
         if (Objects.isNull(id)) {
-            return PageResp.fail("传参为空");
+            return PageResp.fail("用户id不能为空");
         }
         DkmAdmin dkmAdmin = dkmAdminMapper.selectById(id);
         dkmAdminMapper.deleteById(id);
@@ -121,15 +121,17 @@ public class DkmAdminServiceImpl {
         String username = dkmAdmin.getUsername();
         // 根据用户名找到token 然后删除
         Boolean delete = redisTemplate.delete(username);
-        System.out.println("用户token删除是否成功：" + delete);
         return PageResp.success("删除成功");
     }
 
     public PageResp modifyPassword(String username, String password, String newPassword) {
 
-        DkmAdmin admin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery().eq(DkmAdmin::getUsername, username));
+        DkmAdmin admin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery()
+                .eq(DkmAdmin::getUsername, username));
         if (admin != null && Objects.equals(admin.getPassword(), password)) {
-            dkmAdminMapper.update(null, Wrappers.<DkmAdmin>lambdaUpdate().set(DkmAdmin::getPassword, newPassword).eq(DkmAdmin::getUsername, username));
+            dkmAdminMapper.update(null, Wrappers.<DkmAdmin>lambdaUpdate()
+                    .set(DkmAdmin::getPassword, newPassword)
+                    .eq(DkmAdmin::getUsername, username));
             return PageResp.success("修改成功");
         }
         return PageResp.fail("修改失败");
@@ -142,7 +144,8 @@ public class DkmAdminServiceImpl {
         }
         DkmAdmin admin = new DkmAdmin();
         BeanUtils.copyProperties(insertAdminVO, admin);
-        DkmAdmin alreadyExistAdmin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery().eq(DkmAdmin::getUsername, admin.getUsername()));
+        DkmAdmin alreadyExistAdmin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery()
+                .eq(DkmAdmin::getUsername, admin.getUsername()));
         if (alreadyExistAdmin != null) {
             return PageResp.fail(500, "用户已存在");
         }

@@ -217,6 +217,7 @@ public class DkmOfflineCheckServiceImpl {
             });
         }
         // 新增一个map返回给前端作为测试结果，正式环境删除
+        // TODO 上线删除
         ArrayList<Map> resList = new ArrayList<>();
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
         if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
@@ -390,11 +391,7 @@ public class DkmOfflineCheckServiceImpl {
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
-        // 入参检查
-//        if(StrUtil.isBlank(keyLogDetailVO.getStartTime()) || StrUtil.isBlank(keyLogDetailVO.getEndTime())){
-//            log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
-//            return PageResp.fail(1001,"必填参数未传递或传入的参数格式不正确！");
-//        }
+        // TODO 排除警告
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = new QueryWrapper<DkmKeyLog>().lambda()
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()), DkmKeyLog::getVin, keyLogDetailVO.getVin())
                 .ge(DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
@@ -430,7 +427,7 @@ public class DkmOfflineCheckServiceImpl {
         Page<DkmKey> page = new Page<>(keyLogDataVO.getPageIndex(), keyLogDataVO.getPageSize());
         boolean parentId = false;
         if (keyLogDataVO.getStatus() != null) {
-            parentId = keyLogDataVO.getStatus() == 1 ? true : false;
+            parentId = keyLogDataVO.getStatus() == 1;
         }
         LambdaQueryWrapper<DkmKey> wrapper = new QueryWrapper<DkmKey>().lambda()
                 .ge(DkmKey::getValFrom, keyLogDataVO.getStartTime())

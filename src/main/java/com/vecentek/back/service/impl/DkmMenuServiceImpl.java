@@ -92,18 +92,19 @@ public class DkmMenuServiceImpl {
         LambdaQueryWrapper<DkmMenu> lambdaQuery = Wrappers.lambdaQuery();
         Page<DkmMenu> page = new Page<>(pageIndex, pageSize);
         page = dkmMenuMapper.selectPage(page, lambdaQuery
-                        .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
-                        .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
-                        .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
-//                .isNull(DkmMenu::getParentId)
-                        .orderByAsc(DkmMenu::getDna)
+                .like(StrUtil.isNotBlank(title), DkmMenu::getTitle, title)
+                .like(StrUtil.isNotBlank(icon), DkmMenu::getIcon, icon)
+                .like(StrUtil.isNotBlank(href), DkmMenu::getHref, href)
+                .orderByAsc(DkmMenu::getDna)
         );
 
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
     public PageResp selectByParentId(Integer parentId) {
-        List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(Wrappers.<DkmMenu>lambdaQuery().eq(DkmMenu::getParentId, parentId).orderByAsc(DkmMenu::getDna));
+        List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(Wrappers.<DkmMenu>lambdaQuery()
+                .eq(DkmMenu::getParentId, parentId)
+                .orderByAsc(DkmMenu::getDna));
         return PageResp.success("查询成功", dkmMenus);
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
  * @version 1.0
  * @since 2022-01-14 17:26:35
  */
-
+// TODO 清理未使用代码
 public interface DkmUserVehicleMapper extends BaseMapper<DkmUserVehicle> {
 
     /**

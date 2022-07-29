@@ -79,6 +79,7 @@ public class DkmUserVehicleServiceImpl {
         }
 
         // 检查用户和vin唯一性
+        // TODO 命名优化，区分 减少查询
         LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         dkmUserVehicleLambdaQueryWrapper.eq(DkmUserVehicle::getVin, userVehicle.getVin());
         DkmUserVehicle dkmUserVehicle1 = dkmUserVehicleMapper.selectOne(dkmUserVehicleLambdaQueryWrapper);
