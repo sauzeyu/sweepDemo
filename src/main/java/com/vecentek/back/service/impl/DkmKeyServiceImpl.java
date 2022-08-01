@@ -1,9 +1,11 @@
 package com.vecentek.back.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -372,25 +374,24 @@ public class DkmKeyServiceImpl {
                                     String creator) {
         List<String> timeList = new ArrayList<>();
         String fileName = "";
-        if (StringUtils.isBlank(vin)
-                && CharSequenceUtil.isBlank(userId)
-                && keyType == null
-                && CharSequenceUtil.isBlank(applyStartTime)
-                && CharSequenceUtil.isBlank(applyEndTime)
-                && periodMax == null
-                && periodMin == null
-                && CharSequenceUtil.isBlank(valFromStartTime)
-                && CharSequenceUtil.isBlank(valFromEndTime)
-                && CharSequenceUtil.isBlank(valToStartTime)
-                && CharSequenceUtil.isBlank(valToEndTime)
-                && dkStates.length == 0
-                && CharSequenceUtil.isNotBlank(creator)){
+        if (StrUtil.isBlank(vin)
+                && StrUtil.isBlank(userId)
+                && Objects.isNull(keyType)
+                && StrUtil.isBlank(applyStartTime)
+                && StrUtil.isBlank(applyEndTime)
+                && Objects.isNull(periodMax)
+                && Objects.isNull(periodMin)
+                && StrUtil.isBlank(valFromStartTime)
+                && StrUtil.isBlank(valFromEndTime)
+                && StrUtil.isBlank(valToStartTime)
+                && StrUtil.isBlank(valToEndTime)
+                && ArrayUtil.isEmpty(dkStates)
+                && StrUtil.isNotBlank(creator)){
             timeList    = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
             // TODO 命名不采用 123 object 等方式
             applyStartTime = timeList.get(0);
             applyEndTime = timeList.get(1);
             fileName = timeList.get(2);
-            String username = timeList.get(3);
         }
 
         // 1.3形成文件名
