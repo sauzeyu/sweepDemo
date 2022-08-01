@@ -1,6 +1,7 @@
 package com.vecentek.back.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.DesensitizedUtil;
@@ -393,7 +394,7 @@ public class DkmKeyServiceImpl {
         }
 
         // 1.3形成文件名
-        String excelName = fileName + "钥匙信息记录";
+        String excelName = fileName + "钥匙信息记录" + "-" + System.currentTimeMillis();
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径

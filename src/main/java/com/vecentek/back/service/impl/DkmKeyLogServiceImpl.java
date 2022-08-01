@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
@@ -33,6 +34,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author ：EdgeYu
@@ -91,16 +93,31 @@ public class DkmKeyLogServiceImpl {
     public void downloadKeyLogExcel(String vin, String userId, String startTime, String endTime,
                                     String phoneBrand, String phoneModel, String statusCode, Integer flag, String vehicleBrand,
                                     String vehicleModel, String vehicleType, String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        String fileName= "";
+        // 传参除了creator以外全部为空，则使用当前月+文件+时间戳.xlsx的命名
+        if (StrUtil.isBlank(vin)
+                && StrUtil.isBlank(userId)
+                && StrUtil.isBlank(startTime)
+                && StrUtil.isBlank(endTime)
+                && StrUtil.isBlank(phoneBrand)
+                && StrUtil.isBlank(phoneModel)
+                && StrUtil.isBlank(statusCode)
+                && Objects.isNull(flag)
+                && StrUtil.isBlank(vehicleBrand)
+                && StrUtil.isBlank(vehicleModel)
+                && StrUtil.isBlank(vehicleType)
+                && StrUtil.isNotBlank(creator)){
+            // TODO 命名不采用 123 object 等方式
+            //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
+            List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
+            startTime = objects.get(0);
+            endTime = objects.get(1);
+            fileName = objects.get(2);
+        }
 
-
-        //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
-        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
-        startTime = objects.get(0);
-        endTime = objects.get(1);
-        String fileName = objects.get(2);
         //String username = objects.get(3);
         // 1.1 形成文件名
-        String excelName = fileName + "钥匙使用记录";
+        String excelName = fileName + "钥匙使用记录" + "-" + System.currentTimeMillis();;
 
         // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
         String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
