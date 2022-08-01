@@ -412,7 +412,6 @@ public class DkmKeyServiceImpl {
             applyStartTime = timeList.get(0);
             applyEndTime = timeList.get(1);
             fileName = timeList.get(2);
-            String username = timeList.get(3);
         }
 
         // 1.3形成文件名

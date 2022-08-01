@@ -7,7 +7,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
@@ -140,7 +139,6 @@ public class DkmKeyLogServiceImpl {
         String excelName = fileName + "钥匙使用记录-" + System.currentTimeMillis();
 
         // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        //String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
         String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
