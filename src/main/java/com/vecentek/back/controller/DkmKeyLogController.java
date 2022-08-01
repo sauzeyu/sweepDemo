@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 /**
  * @author ：EdgeYu
@@ -36,7 +37,7 @@ public class DkmKeyLogController {
                                   String endTime,
                                   String phoneBrand,
                                   String phoneModel,
-                                  String statusCode,
+                                  @RequestParam(value = "statusCode",required=false) List<String> statusCode,
                                   Integer flag,
                                   String vehicleBrand,
                                   String vehicleModel,

@@ -47,7 +47,7 @@ public class DkmKeyLogServiceImpl {
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, String statusCode, Integer flag, String vehicleBrand, String vehicleModel, String vehicleType) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, List<String> statusCode, Integer flag, String vehicleBrand, String vehicleModel, String vehicleType) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         if (ObjectUtil.isNull(startTime) && ObjectUtil.isNull(endTime) ){
@@ -56,7 +56,8 @@ public class DkmKeyLogServiceImpl {
             endTime = timeList.get(1);
         }
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
-                .like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
+                //.like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
+                .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)

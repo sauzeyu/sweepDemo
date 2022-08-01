@@ -2,6 +2,7 @@ package com.vecentek.back.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -9,6 +10,7 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
@@ -344,19 +346,38 @@ public class DkmKeyServiceImpl {
                                     String valFromEndTime,
                                     String valToStartTime,
                                     String valToEndTime,
-                                    Integer[] dkStates, String creator) {
-        List<String> objects = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
-        // TODO 命名不采用 123 object 等方式
-        applyStartTime = objects.get(0);
-        applyEndTime = objects.get(1);
-        String fileName = objects.get(2);
-        String username = objects.get(3);
+                                    Integer[] dkStates,
+                                    String creator) {
+        List<String> timeList = new ArrayList<>();
+        String fileName = "";
+        if (StringUtils.isBlank(vin)
+                && CharSequenceUtil.isBlank(userId)
+                && keyType == null
+                && CharSequenceUtil.isBlank(applyStartTime)
+                && CharSequenceUtil.isBlank(applyEndTime)
+                && periodMax == null
+                && periodMin == null
+                && CharSequenceUtil.isBlank(valFromStartTime)
+                && CharSequenceUtil.isBlank(valFromEndTime)
+                && CharSequenceUtil.isBlank(valToStartTime)
+                && CharSequenceUtil.isBlank(valToEndTime)
+                && dkStates.length == 0
+                && CharSequenceUtil.isNotBlank(creator)){
+            timeList    = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
+            // TODO 命名不采用 123 object 等方式
+            applyStartTime = timeList.get(0);
+            applyEndTime = timeList.get(1);
+            fileName = timeList.get(2);
+            String username = timeList.get(3);
+        }
+
         // 1.3形成文件名
         String excelName = fileName + "钥匙信息记录";
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        //String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = ("d:/test/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
