@@ -80,7 +80,12 @@ class SearchForm extends Component {
     };
     const colSpan = {
       xs: 24,
-      sm: 6,
+      sm: 24,
+      md: 24,
+      lg: 6,
+
+      // xs: 24,
+      // sm: 6,
     };
     const { buttonHidden, isExpand } = this.state;
     let buttonName;
@@ -107,7 +112,7 @@ class SearchForm extends Component {
           this.props.getFormValues(allFields);
         }}
       >
-        <Row type={'flex'} gutter={16}>
+        <Row type={'flex'} gutter={16} wrap={true}>
           <Col {...colSpan}>
             <Form.Item
               label="操作时间"
@@ -134,7 +139,7 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Row gutter={16}>
+            <Row gutter={16} wrap={true}>
               <Col>
                 <Button
                   onClick={() => {
@@ -160,7 +165,7 @@ class SearchForm extends Component {
             </Row>
           </Col>
         </Row>
-        <Row type={'flex'} gutter={16} hidden={buttonHidden}>
+        <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
           <Col {...colSpan}>
             <Form.Item label="操作类型" name={'statusCode'}>
               {/*<Input placeholder="请输入操作类型" />*/}
@@ -201,7 +206,7 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
         </Row>
-        <Row type={'flex'} gutter={16} hidden={buttonHidden}>
+        <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
           <Col {...colSpan}>
             <Form.Item label={'用户id'} name="userId">
               <Input placeholder="请输入用户id" />
@@ -221,7 +226,7 @@ class SearchForm extends Component {
           </Col>
         </Row>
 
-        <Row type={'flex'} gutter={16} hidden={buttonHidden}>
+        <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
           <Col {...colSpan}>
             <Form.Item label={'车型'} name="vehicleType">
               <Input placeholder="请输入车型" />

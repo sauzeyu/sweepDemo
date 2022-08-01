@@ -15,7 +15,7 @@ import { Permit } from '@/constants/keys';
 import moment from 'moment';
 
 const { RangePicker } = DatePicker;
-
+const dateFormat = 'YYYY/MM/DD';
 @EasyTable.connect(({ keysDataTable }) => ({
   keysDataTable,
 }))
@@ -77,6 +77,21 @@ class SearchForm extends Component {
       buttonHidden: !this.state.buttonHidden,
     });
   };
+  defaultStartTime = () => {
+    let defaultTime = [];
+
+    let now = new Date(); //当前日期
+    let nowMonth = now.getMonth(); //当前月
+    let nowYear = now.getFullYear(); //当前年
+    //本月的开始时间
+    let monthStartDate = new Date(nowYear, nowMonth, 1);
+    //本月的结束时间
+    let monthEndDate = new Date(nowYear, nowMonth + 1, 0);
+
+    defaultTime[0] = monthStartDate;
+    defaultTime[1] = monthEndDate;
+    return defaultTime;
+  };
 
   render() {
     const formItemLayout = {
@@ -97,10 +112,11 @@ class SearchForm extends Component {
     };
     const colSpan = {
       xs: 12,
-      sm: 6,
-      // md: 6,
-      // lg: 6,
-      // xl: 1
+      sm: 24,
+      md: 24,
+      lg: 24,
+      xl: 24,
+      xxl: 6,
     };
     const { buttonHidden, isExpand } = this.state;
     let buttonName;
@@ -121,10 +137,18 @@ class SearchForm extends Component {
           this.props.getFormValues(allFields);
         }}
       >
-        <Row type={'flex'} gutter={16}>
+        <Row type={'flex'} gutter={16} wrap={true}>
           <Col {...colSpan}>
-            <Form.Item label={'用户id'} name="userId">
-              <Input placeholder="请输入用户id" />
+            <Form.Item
+              label="申请时间"
+              name={'applyTime'}
+              initialValue={[
+                moment(this.defaultStartTime()[0], dateFormat),
+                moment(this.defaultStartTime()[1], dateFormat),
+              ]}
+              format={dateFormat}
+            >
+              <RangePicker />
             </Form.Item>
           </Col>
 
@@ -135,7 +159,7 @@ class SearchForm extends Component {
           </Col>
 
           <Col {...colSpan}>
-            <div style={{ height: 56 }}>
+            <div style={{ height: 56 }} wrap={true}>
               <Form.Item label={'周期时长'}>
                 <Input.Group compact>
                   <Form.Item name="periodMin">
@@ -175,7 +199,7 @@ class SearchForm extends Component {
           </Col>
 
           <Col {...colSpan}>
-            <Row gutter={16} type={'flex'}>
+            <Row gutter={16} type={'flex'} wrap={true}>
               <Col>
                 <Button
                   onClick={() => {
@@ -202,10 +226,10 @@ class SearchForm extends Component {
           </Col>
         </Row>
 
-        <Row hidden={buttonHidden} type={'flex'} gutter={16}>
+        <Row hidden={buttonHidden} type={'flex'} gutter={16} wrap={true}>
           <Col {...colSpan}>
-            <Form.Item label="申请时间" name={'applyTime'}>
-              <RangePicker />
+            <Form.Item label={'用户id'} name="userId">
+              <Input placeholder="请输入用户id" />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
@@ -219,7 +243,7 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
         </Row>
-        <Row hidden={buttonHidden} type={'flex'} gutter={16}>
+        <Row hidden={buttonHidden} type={'flex'} gutter={16} wrap={true}>
           <Col {...colSpan}>
             <Form.Item label={'钥匙类型'} name="keyType">
               <Select

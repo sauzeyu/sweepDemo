@@ -77,13 +77,12 @@ const SubTable2 = () => {
     {
       title: '任务名称',
       dataIndex: 'missionName',
+      ellipsis: true,
     },
     {
       title: '任务创建时间',
       dataIndex: 'createTime',
-      ellipsis: {
-        showTitle: false,
-      },
+      ellipsis: true,
       render: (text) => (
         <Tooltip placement="topLeft" title={text}>
           {text}
@@ -420,13 +419,13 @@ class DataTable extends Component {
     let obj = Object.keys(this.props.searchFormValues);
     console.log('obj ', obj);
 
-    let userId = this.props.searchFormValues[0];
+    let applyTime = this.props.searchFormValues[0];
     let vin = this.props.searchFormValues[1];
     let periodMin = this.props.searchFormValues[2];
     let periodMax = this.props.searchFormValues[3];
     let periodUnit = this.props.searchFormValues[4];
 
-    let applyTime = this.props.searchFormValues[5];
+    let userId = this.props.searchFormValues[5];
 
     let valFromTime = this.props.searchFormValues[6];
 
@@ -447,12 +446,12 @@ class DataTable extends Component {
     }
     console.log('periodMin', periodMin);
     console.log('periodMax', periodMax);
-    debugger;
+
     if (userId?.value) {
-      param.append('userId', userId);
+      param.append('userId', userId.value);
     }
     if (vin?.value) {
-      param.append('vin', vin);
+      param.append('vin', vin.value);
     }
     if (periodMin?.value) {
       param.append('periodMin', periodMin.value);
@@ -460,6 +459,7 @@ class DataTable extends Component {
     if (periodMax?.value) {
       param.append('periodMax', periodMax.value);
     }
+
     if (periodUnit?.value) {
       param.append('periodUnit', periodUnit.value);
     }
@@ -474,7 +474,9 @@ class DataTable extends Component {
       const applyStartTime = moment(applyTime?.value[0])?.format('YYYY-MM-DD');
       param.append('applyStartTime', applyStartTime);
 
-      const applyEndTime = moment(applyTime?.value[1])?.format('YYYY-MM-DD');
+      const applyEndTime = moment(applyTime?.value[1])
+        ?.add(1, 'days')
+        .format('YYYY-MM-DD');
       param.append('applyEndTime', applyEndTime);
     }
     if (valFromTime?.value) {
@@ -483,16 +485,18 @@ class DataTable extends Component {
       );
       param.append('valFromStartTime', valFromStartTime);
 
-      const valFromEndTime = moment(valFromTime?.value[1])?.format(
-        'YYYY-MM-DD',
-      );
+      const valFromEndTime = moment(valFromTime?.value[1])
+        ?.add(1, 'days')
+        .format('YYYY-MM-DD');
       param.append('valFromEndTime', valFromEndTime);
     }
     if (valToTime?.value) {
       const valToStartTime = moment(valToTime?.value[0])?.format('YYYY-MM-DD');
       param.append('valToStartTime', valToStartTime);
 
-      const valToEndTime = moment(valToTime?.value[1])?.format('YYYY-MM-DD');
+      const valToEndTime = moment(valToTime?.value[1])
+        ?.add(1, 'days')
+        .format('YYYY-MM-DD');
       param.append('valToEndTime', valToEndTime);
     }
 
@@ -501,6 +505,7 @@ class DataTable extends Component {
     }
 
     exportKey(param).then((res) => {
+      console.log('res.data', res.data);
       let blob = new Blob([res.data]);
 
       let link = document.createElement('a');

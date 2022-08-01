@@ -32,6 +32,7 @@ import { getDvaApp } from '@@/plugin-dva/exports';
 import moment from 'moment';
 import { downloadExcel } from '@/services/downloadExcel';
 const { Description } = DescriptionList;
+const dateFormat = 'YYYY/MM/DD';
 const download = (col) => {
   // debugger;
   console.log(col);
@@ -71,6 +72,7 @@ const SubTable = () => {
     {
       title: '任务名称',
       dataIndex: 'missionName',
+      ellipsis: true,
     },
     {
       title: '任务创建时间',
@@ -221,11 +223,16 @@ class DataTable extends Component {
       param.append('startTime', beginTime);
     }
     if (startTime && startTime.value && startTime.value[1]) {
-      const endTime = moment(startTime.value[1]).format('YYYY-MM-DD');
+      const endTime = moment(startTime.value[1])
+        .add(1, 'days')
+        .format('YYYY-MM-DD');
       param.append('endTime', endTime);
     }
     if (flag && flag.value) {
       param.append('flag', flag.value);
+    }
+    if (userId && userId.value) {
+      param.append('userId', userId.value);
     }
     if (vehicleModel && vehicleModel.value) {
       param.append('vehicleModel', vehicleModel.value);
@@ -254,17 +261,40 @@ class DataTable extends Component {
   reload = () => {
     this.dataTable.reload();
   };
+  defaultStartTime = () => {
+    let defaultTime = [];
+
+    let now = new Date(); //当前日期
+    let nowMonth = now.getMonth(); //当前月
+    let nowYear = now.getFullYear(); //当前年
+    //本月的开始时间
+    let monthStartDate = new Date(nowYear, nowMonth, 1);
+    //本月的结束时间
+    let monthEndDate = new Date(nowYear, nowMonth + 1, 0);
+
+    defaultTime[0] = monthStartDate;
+    defaultTime[1] = monthEndDate;
+    return defaultTime;
+  };
   render() {
+    console.log('this.props', this.props);
+    let startTime = moment(this.defaultStartTime()[0], 'YYYY/MM/DD');
+    let endTime = moment(this.defaultStartTime()[1], 'YYYY/MM/DD');
+    console.log('startTime', startTime);
+    console.log('endTime', endTime);
+    // debugger;
     return (
       <div>
         <EasyTable
           // rowKey={'id'}
+
           scroll={{ x: '1200px' }}
           autoFetch
           source={getKeyLogList}
           dataProp={'data'}
           name={'keyErrorLogDataTable'}
           columns={this.columns}
+          // fixedParams={{ startTime: moment(this.defaultStartTime()[0], dateFormat) }}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
             <Authorized route={LOG_USE_EXPORT}>
