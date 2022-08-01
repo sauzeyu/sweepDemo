@@ -135,7 +135,27 @@ public class DkmKeyServiceImpl {
                                   String valToEndTime,
                                   Integer keyType,
                                   Integer[] dkState
-    ) {
+    )
+
+    {
+
+        if (StringUtils.isBlank(vin)
+                && CharSequenceUtil.isBlank(userId)
+                && keyType == null
+                && CharSequenceUtil.isBlank(applyStartTime)
+                && CharSequenceUtil.isBlank(applyEndTime)
+                && periodMax == null
+                && periodMin == null
+                && CharSequenceUtil.isBlank(valFromStartTime)
+                && CharSequenceUtil.isBlank(valFromEndTime)
+                && CharSequenceUtil.isBlank(valToStartTime)
+                && CharSequenceUtil.isBlank(valToEndTime)
+                && dkState == null
+                ){
+            List<String> timeList = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, null);
+            applyStartTime = timeList.get(0);
+            applyEndTime = timeList.get(1);
+        }
         if (keyType == null) {
             keyType = 3;
         }
@@ -367,23 +387,26 @@ public class DkmKeyServiceImpl {
                                     String valFromEndTime,
                                     String valToStartTime,
                                     String valToEndTime,
-                                    Integer[] dkStates,
+                                    Integer[] dkState,
                                     String creator) {
         List<String> timeList = new ArrayList<>();
         String fileName = "";
-        if (StringUtils.isBlank(vin)
+        if (
+                (StringUtils.isBlank(vin)
                 && CharSequenceUtil.isBlank(userId)
                 && keyType == null
-                && CharSequenceUtil.isBlank(applyStartTime)
-                && CharSequenceUtil.isBlank(applyEndTime)
+
                 && periodMax == null
                 && periodMin == null
                 && CharSequenceUtil.isBlank(valFromStartTime)
                 && CharSequenceUtil.isBlank(valFromEndTime)
                 && CharSequenceUtil.isBlank(valToStartTime)
                 && CharSequenceUtil.isBlank(valToEndTime)
-                && dkStates.length == 0
-                && CharSequenceUtil.isNotBlank(creator)){
+                && dkState == null
+                && CharSequenceUtil.isNotBlank(creator))
+                ||
+                ( CharSequenceUtil.isNotBlank(applyStartTime) || CharSequenceUtil.isNotBlank(applyEndTime))
+        ){
             timeList    = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
             // TODO 命名不采用 123 object 等方式
             applyStartTime = timeList.get(0);
@@ -393,12 +416,12 @@ public class DkmKeyServiceImpl {
         }
 
         // 1.3形成文件名
-        String excelName = fileName + "钥匙信息记录";
+        String excelName = fileName + "钥匙信息记录-"+ System.currentTimeMillis();
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
         //String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
-        String filePath = ("d:/test/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
@@ -447,11 +470,11 @@ public class DkmKeyServiceImpl {
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery();
 
         // 是否需要dkStates条件
-        if (dkStates != null && dkStates.length > 0) {
-            queryWrapper.eq(DkmKey::getDkState, dkStates[0]);
-            if (dkStates.length > 1) {
-                for (int i = 1; i < dkStates.length; i++) {
-                    queryWrapper.or().eq(DkmKey::getDkState, dkStates[i]);
+        if (dkState != null && dkState.length > 0) {
+            queryWrapper.eq(DkmKey::getDkState, dkState[0]);
+            if (dkState.length > 1) {
+                for (int i = 1; i < dkState.length; i++) {
+                    queryWrapper.or().eq(DkmKey::getDkState, dkState[i]);
                 }
             }
         }
@@ -499,7 +522,7 @@ public class DkmKeyServiceImpl {
                     valFromEndTime,
                     valToStartTime,
                     valToEndTime,
-                    dkStates,
+                    dkState,
                     start,
                     end);
 

@@ -43,6 +43,12 @@ public class DownLoadUtil {
             endTime = getFirstDayOfMonth(nextMonth);
 
         }
+        if (CharSequenceUtil.isBlank(startTime)) {
+            startTime = "";
+        }
+        if (CharSequenceUtil.isBlank(endTime)) {
+            endTime = "";
+        }
         dateList.add(startTime);
         dateList.add(endTime);
 

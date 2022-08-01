@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
@@ -26,11 +27,13 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +53,17 @@ public class DkmKeyLogServiceImpl {
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, List<String> statusCode, Integer flag, String vehicleBrand, String vehicleModel, String vehicleType) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
-        if (ObjectUtil.isNull(startTime) && ObjectUtil.isNull(endTime) ){
+        if (CharSequenceUtil.isBlank(vin)
+                && CharSequenceUtil.isBlank(userId)
+                && CharSequenceUtil.isBlank(startTime)
+                && CharSequenceUtil.isBlank(endTime)
+                && CharSequenceUtil.isBlank(phoneBrand)
+                && CharSequenceUtil.isBlank(phoneModel)
+                && ObjectUtil.isNull(statusCode)
+                && flag == null
+                && CharSequenceUtil.isBlank(vehicleBrand)
+                && CharSequenceUtil.isBlank(vehicleModel)
+                && CharSequenceUtil.isBlank(vehicleType)){
             List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, null);
             startTime = timeList.get(0);
             endTime = timeList.get(1);
@@ -88,22 +101,47 @@ public class DkmKeyLogServiceImpl {
     }
 
     @Async
-    public void downloadKeyLogExcel(String vin, String userId, String startTime, String endTime,
-                                    String phoneBrand, String phoneModel, String statusCode, Integer flag, String vehicleBrand,
-                                    String vehicleModel, String vehicleType, String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    public void downloadKeyLogExcel(String vin,
+                                    String userId,
+                                    String startTime,
+                                    String endTime,
+                                    String phoneBrand,
+                                    String phoneModel,
+                                    List<String> statusCode,
+                                    Integer flag,
+                                    String vehicleBrand,
+                                    String vehicleModel,
+                                    String vehicleType,
+                                    String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+        List<String> timeList = new ArrayList<>();
+        String fileName = "";
+        if (
+                (CharSequenceUtil.isBlank(vin)
+                && CharSequenceUtil.isBlank(userId)
+                && CharSequenceUtil.isBlank(phoneBrand)
+                && CharSequenceUtil.isBlank(phoneModel)
+                && ObjectUtil.isNull(statusCode)
+                && flag == null
+                && CharSequenceUtil.isBlank(vehicleBrand)
+                && CharSequenceUtil.isBlank(vehicleModel)
+                && CharSequenceUtil.isBlank(vehicleType)
+                && CharSequenceUtil.isNotBlank(creator))
+                ||  ( CharSequenceUtil.isNotBlank(startTime)| CharSequenceUtil.isNotBlank(endTime))
+        ){
+            //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
+            timeList  = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
+            startTime = timeList.get(0);
+            endTime = timeList.get(1);
+            fileName = timeList.get(2);
+        }
 
-
-        //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
-        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
-        startTime = objects.get(0);
-        endTime = objects.get(1);
-        String fileName = objects.get(2);
         //String username = objects.get(3);
         // 1.1 形成文件名
-        String excelName = fileName + "钥匙使用记录";
+        String excelName = fileName + "钥匙使用记录-" + System.currentTimeMillis();
 
         // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        //String filePath = ("/excel/"+excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {
@@ -131,7 +169,7 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
                 .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
-                .like(CharSequenceUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
+                .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
@@ -254,7 +292,7 @@ public class DkmKeyLogServiceImpl {
                                           String endTime,
                                           String phoneBrand,
                                           String phoneModel,
-                                          String statusCode,
+                                          @RequestParam(value = "statusCode",required=false) List<String> statusCode,
                                           Integer flag,
                                           String vehicleBrand,
                                           String vehicleModel,
@@ -267,7 +305,7 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
                 .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
-                .like(CharSequenceUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
+                .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
@@ -303,7 +341,8 @@ public class DkmKeyLogServiceImpl {
         LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
         dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator != null, DkmKeyLogHistoryExport::getCreator, creator)
                 .eq(type != null, DkmKeyLogHistoryExport::getType, type)
-                .orderByAsc(Boolean.parseBoolean("create_time"));
+                .orderByDesc(DkmKeyLogHistoryExport::getCreateTime)
+                //.orderByAsc(Boolean.parseBoolean("create_time"));
         ;
         List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);

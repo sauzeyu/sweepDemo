@@ -160,7 +160,7 @@ public class DkmKeyController {
                                          String valFromEndTime,
                                          String valToStartTime,
                                          String valToEndTime,
-                                         Integer[] dkStates,
+                                         Integer[] dkState,
                                          String creator) {
         downloadKeyExcel(vin,
                 userId,
@@ -174,7 +174,7 @@ public class DkmKeyController {
                 valFromEndTime,
                 valToStartTime,
                 valToEndTime
-                , dkStates, creator);
+                , dkState, creator);
         return PageResp.success("正在导出");
 
     }
