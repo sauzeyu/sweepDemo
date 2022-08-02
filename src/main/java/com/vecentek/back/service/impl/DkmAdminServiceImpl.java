@@ -87,11 +87,9 @@ public class DkmAdminServiceImpl {
             if (Objects.isNull(adminVO.getRoleList())) {
                 return PageResp.success("更新成功");
             } else {
-                adminVO.getRoleList().forEach(roleName -> {
                     //根据角色名称查询id,插入中间表
-                    dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, roleName)).getId());
+                    dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, adminVO.getRoleList())).getId());
                     dkmAdminRoleMapper.insert(dkmAdminRole);
-                });
                 return PageResp.success("更新成功");
             }
         }else {

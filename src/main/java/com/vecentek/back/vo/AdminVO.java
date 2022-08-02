@@ -18,5 +18,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminVO extends DkmAdmin {
-    private List<String> roleList;
+    private String roleList;
 }
