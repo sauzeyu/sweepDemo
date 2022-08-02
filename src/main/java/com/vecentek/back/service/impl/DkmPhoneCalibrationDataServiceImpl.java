@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.payneteasy.tlv.HexUtil;
+import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
 import com.vecentek.back.exception.VecentException;
@@ -105,11 +106,9 @@ public class DkmPhoneCalibrationDataServiceImpl {
     public PageResp importByExcel(MultipartFile file) {
         try {
             PageResp pageResp = UploadUtil.checkFile(file);
-
             if (pageResp != null) {
                 return pageResp;
             }
-
             ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
             reader.addHeaderAlias("车型", "vehicleModel");
             reader.addHeaderAlias("手机品牌", "phoneBrand");
@@ -154,21 +153,20 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     dkmPhoneCalibrationDataMapper.delete(queryWrapper);
                 }
                 // 如果手机品牌和手机型号为default则为默认标定数据，需要放redis，再放数据库
-                // TODO  重复 default 抽取
-                if (Objects.equals("default", calibrationData.getPhoneBrand()) && Objects.equals("default", calibrationData.getPhoneModel())) {
-                    redisUtils.setCacheObject("default", calibrationData.getPersonalAndCalibrationString());
+                if (Objects.equals(CalibrationDataConstant.DEFAULT, calibrationData.getPhoneBrand()) && Objects.equals(CalibrationDataConstant.DEFAULT, calibrationData.getPhoneModel())) {
+                    redisUtils.setCacheObject(CalibrationDataConstant.DEFAULT, calibrationData.getPersonalAndCalibrationString());
                     DkmPhoneCalibrationData dkmPhoneCalibrationData = dkmPhoneCalibrationDataMapper.selectOne(new QueryWrapper<DkmPhoneCalibrationData>().lambda()
-                            .eq(DkmPhoneCalibrationData::getPhoneModel, "default")
-                            .eq(DkmPhoneCalibrationData::getVehicleBrand, "default")
-                            .eq(DkmPhoneCalibrationData::getVehicleType, "default")
-                            .eq(DkmPhoneCalibrationData::getPhoneBrand, "default"));
+                            .eq(DkmPhoneCalibrationData::getPhoneModel, CalibrationDataConstant.DEFAULT)
+                            .eq(DkmPhoneCalibrationData::getVehicleBrand, CalibrationDataConstant.DEFAULT)
+                            .eq(DkmPhoneCalibrationData::getVehicleType, CalibrationDataConstant.DEFAULT)
+                            .eq(DkmPhoneCalibrationData::getPhoneBrand, CalibrationDataConstant.DEFAULT));
                     if (dkmPhoneCalibrationData == null) {
                         // 插入一行
                         DkmPhoneCalibrationData phoneCalibrationData = new DkmPhoneCalibrationData();
-                        phoneCalibrationData.setPhoneBrand("default");
-                        phoneCalibrationData.setPhoneModel("default");
-                        phoneCalibrationData.setVehicleBrand("default");
-                        phoneCalibrationData.setVehicleType("default");
+                        phoneCalibrationData.setPhoneBrand(CalibrationDataConstant.DEFAULT);
+                        phoneCalibrationData.setPhoneModel(CalibrationDataConstant.DEFAULT);
+                        phoneCalibrationData.setVehicleBrand(CalibrationDataConstant.DEFAULT);
+                        phoneCalibrationData.setVehicleType(CalibrationDataConstant.DEFAULT);
                         phoneCalibrationData.setPersonalAndCalibrationString(calibrationData.getPersonalAndCalibrationString());
                         phoneCalibrationData.setCreateTime(new Date());
                         dkmPhoneCalibrationDataMapper.insert(phoneCalibrationData);
@@ -180,14 +178,10 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     }
                 }
             }
-
             int successInsert = dkmPhoneCalibrationDataMapper.insertPhoneCalibrationDataBatch(calibrationList);
-
-
             if (successInsert != calibrationList.size()) {
                 return PageResp.fail("导入失败，请检查数据是否正确！");
             }
-
             return PageResp.success("导入成功");
         } catch (Exception e) {
             return PageResp.fail("导入失败，请检查excel文件！");

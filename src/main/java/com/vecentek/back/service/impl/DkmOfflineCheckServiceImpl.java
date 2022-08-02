@@ -192,6 +192,7 @@ public class DkmOfflineCheckServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertOrUpdateVehicleBatch(List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
+        log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());
         //校验车辆蓝牙信息
         verifyVehicleBluetoothVO(dkmVehicles);
         //划分换件车辆和新增车辆
@@ -323,6 +324,7 @@ public class DkmOfflineCheckServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertBluetoothBatch(List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException {
+        log.info("request：" + "/api/offlineCheck/insertBluetoothBatch " + dkmBluetooths.toString());
         List<String> insertDeviceSnList = new ArrayList<>();
         List<String> insertMacList = new ArrayList<>();
         List<UploadBluetoothsErrorDTO> errorList = new ArrayList<>();
@@ -385,20 +387,20 @@ public class DkmOfflineCheckServiceImpl {
     }
 
     public PageResp getKeyLogDetail(KeyLogDetailVO keyLogDetailVO) {
+        log.info("request：" + "/api/offlineCheck/getKeyLogDetail " + keyLogDetailVO.toString());
         ArrayList<KeyLogDetailResVO> res = new ArrayList<>();
         if (keyLogDetailVO.getPageIndex() == null || keyLogDetailVO.getPageSize() == null) {
             log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
-        // TODO 排除警告
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = new QueryWrapper<DkmKeyLog>().lambda()
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()), DkmKeyLog::getVin, keyLogDetailVO.getVin())
-                .ge(DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
-                .le(DkmKeyLog::getOperateTime, keyLogDetailVO.getEndTime())
+                .ge(ObjectUtil.isNotNull(keyLogDetailVO.getStartTime()),DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
+                .le(ObjectUtil.isNotNull(keyLogDetailVO.getEndTime()),DkmKeyLog::getOperateTime, keyLogDetailVO.getEndTime())
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getUserId()), DkmKeyLog::getUserId, keyLogDetailVO.getUserId())
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getStatusCode()), DkmKeyLog::getStatusCode, keyLogDetailVO.getStatusCode())
-                .orderBy(true, true, DkmKeyLog::getOperateTime);
+                .orderByAsc(DkmKeyLog::getOperateTime);
         // 查询
         page = dkmKeyLogMapper.selectPage(page, dkmKeyLogLambdaQueryWrapper);
         // 转为结果对象
@@ -416,6 +418,7 @@ public class DkmOfflineCheckServiceImpl {
     }
 
     public PageResp getKeyData(KeyLogDataVO keyLogDataVO) {
+        log.info("request：" + "/api/offlineCheck/getKeyData " + keyLogDataVO.toString());
         // 入参检查
         if (ObjectUtil.isNull(keyLogDataVO.getStartTime()) ||
                 ObjectUtil.isNull(keyLogDataVO.getEndTime()) ||

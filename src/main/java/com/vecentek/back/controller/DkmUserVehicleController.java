@@ -28,10 +28,8 @@ public class DkmUserVehicleController {
     @Resource
     private DkmUserVehicleServiceImpl dkmUserVehicleService;
 
-    // TODO log 放到 Service 层
     @RequestMapping(value = "/insertUserVehicle", method = RequestMethod.POST)
     public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle) {
-        log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         return dkmUserVehicleService.insertUserVehicle(userVehicle);
     }
 
@@ -49,7 +47,6 @@ public class DkmUserVehicleController {
      */
     @RequestMapping(value = "/logoutUserVehicle", method = RequestMethod.POST)
     public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle) {
-        log.info("request：" + "/api/userVehicle/logoutUserVehicle " + logoutUserVehicle.toString());
         return dkmUserVehicleService.logoutUserVehicle(logoutUserVehicle);
     }
 
@@ -62,7 +59,6 @@ public class DkmUserVehicleController {
      */
     @RequestMapping(value = "/getBluetoothVin", method = RequestMethod.POST)
     public PageResp getBluetoothVin(@RequestBody GetBluetoothVinVO getBluetoothVinVO) {
-        log.info("request：" + "/api/userVehicle/getBluetoothVin " + getBluetoothVinVO.toString());
         return dkmUserVehicleService.getBluetoothVin(getBluetoothVinVO);
     }
 
@@ -75,7 +71,6 @@ public class DkmUserVehicleController {
      */
     @RequestMapping(value = "/revokeKey", method = RequestMethod.POST)
     public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) {
-        log.info("request：" + "/api/userVehicle/revokeKey " + revokeKeyVO.toString());
         return dkmUserVehicleService.revokeKey(revokeKeyVO);
     }
 }

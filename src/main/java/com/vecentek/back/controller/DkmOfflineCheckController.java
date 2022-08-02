@@ -38,10 +38,8 @@ public class DkmOfflineCheckController {
     public PageResp insertBluetoothBatch(@RequestBody List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException {
         return dkmOfflineCheckServiceImpl.insertBluetoothBatch(dkmBluetooths);
     }
-    // TODO 日志放到 Service 层
     @RequestMapping(value = "/insertOrUpdateVehicleBatch", method = RequestMethod.POST)
     public PageResp insertOrUpdateVehicleBatch(@RequestBody List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
-        log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());
         return dkmOfflineCheckServiceImpl.insertOrUpdateVehicleBatch(dkmVehicles);
     }
 
@@ -53,7 +51,6 @@ public class DkmOfflineCheckController {
      */
     @RequestMapping(value = "/getKeyLogDetail", method = RequestMethod.POST)
     public PageResp getKeyLogDetail(@RequestBody KeyLogDetailVO keyLogDetailVO) {
-        log.info("request：" + "/api/offlineCheck/getKeyLogDetail " + keyLogDetailVO.toString());
         return dkmOfflineCheckServiceImpl.getKeyLogDetail(keyLogDetailVO);
     }
 
@@ -65,7 +62,6 @@ public class DkmOfflineCheckController {
      */
     @RequestMapping(value = "/getKeyData", method = RequestMethod.POST)
     public PageResp getKeyData(@RequestBody KeyLogDataVO keyLogDataVO) {
-        log.info("request：" + "/api/offlineCheck/getKeyData " + keyLogDataVO.toString());
         return dkmOfflineCheckServiceImpl.getKeyData(keyLogDataVO);
     }
 }

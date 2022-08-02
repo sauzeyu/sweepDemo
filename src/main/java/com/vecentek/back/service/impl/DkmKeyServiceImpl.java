@@ -26,6 +26,7 @@ import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.util.DownLoadUtil;
+import com.vecentek.back.util.KeyLifecycleUtil;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -62,6 +63,8 @@ public class DkmKeyServiceImpl {
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
     @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+    @Resource
+    private KeyLifecycleUtil keyLifecycleUtil;
 
     /**
      * 通过ID查询单条数据
@@ -211,27 +214,17 @@ public class DkmKeyServiceImpl {
             return PageResp.fail(500, "钥匙状态未传递");
         }
         // 冻结
-        // TODO 插入生命周期抽取为方法
         if (dkState == 3) {
             // 更新状态
             DkmKey key = dkmKeyMapper.selectById(keyId);
             key.setDkState(dkState);
             key.setUpdateTime(new Date());
             int isSuccess = dkmKeyMapper.updateById(key);
-            // 生命周期
-            DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
-            dkmKeyLifecycle.setKeyId(keyId);
-            dkmKeyLifecycle.setCreateTime(new Date());
-//            dkmKeyLifecycle.setKeySource(3); 冻结解冻没有来源字段
-            if (Objects.equals(key.getParentId(), "0")) {
-                dkmKeyLifecycle.setKeyType(1);
-            } else {
-                dkmKeyLifecycle.setKeyType(2);
+            if (Objects.equals("0", key.getParentId())) { // 冻结解冻没有来源字段
+                keyLifecycleUtil.insert(key,1,0,2);
+            }else {
+                keyLifecycleUtil.insert(key,2,0,2);
             }
-            dkmKeyLifecycle.setVin(key.getVin());
-            // 冻结
-            dkmKeyLifecycle.setKeyStatus(2);
-            dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
             if (isSuccess == 1) {
                 return PageResp.success("更新成功");
             }
@@ -252,20 +245,11 @@ public class DkmKeyServiceImpl {
                 dkmKey.setDkState(dkState);
                 dkmKey.setUpdateTime(new Date());
                 int isSuccess = dkmKeyMapper.updateById(dkmKey);
-                // 生命周期
-                DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
-                dkmKeyLifecycle.setKeyId(keyId);
-                dkmKeyLifecycle.setCreateTime(new Date());
-                //            dkmKeyLifecycle.setKeySource(3); 冻结解冻没有来源字段
-                if (Objects.equals(dkmKey.getParentId(), "0")) {
-                    dkmKeyLifecycle.setKeyType(1);
-                } else {
-                    dkmKeyLifecycle.setKeyType(2);
+                if (Objects.equals("0", dkmKey.getParentId())) { // 冻结解冻没有来源字段
+                    keyLifecycleUtil.insert(dkmKey,1,0,3);
+                }else {
+                    keyLifecycleUtil.insert(dkmKey,2,0,3);
                 }
-                dkmKeyLifecycle.setVin(dkmKey.getVin());
-                // 解冻
-                dkmKeyLifecycle.setKeyStatus(3);
-                dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
                 if (isSuccess == 1) {
                     return PageResp.success("更新成功");
                 }
