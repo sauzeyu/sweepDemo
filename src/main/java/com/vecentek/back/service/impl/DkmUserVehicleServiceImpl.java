@@ -1,5 +1,7 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -14,6 +16,7 @@ import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.mapper.DkmUserVehicleMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
+import com.vecentek.back.util.KeyLifecycleUtil;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
@@ -53,11 +56,15 @@ public class DkmUserVehicleServiceImpl {
     private DkmKeyMapper dkmKeyMapper;
     @Resource
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
+    @Resource
+    private KeyLifecycleUtil keyLifecycleUtil;
+
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
+        log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
-            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
+            log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
             return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getPhone, userVehicle.getUserId());
@@ -81,12 +88,11 @@ public class DkmUserVehicleServiceImpl {
         // 检查用户和vin唯一性
         // TODO 命名优化，区分 减少查询
         LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        dkmUserVehicleLambdaQueryWrapper.eq(DkmUserVehicle::getVin, userVehicle.getVin());
-        DkmUserVehicle dkmUserVehicle1 = dkmUserVehicleMapper.selectOne(dkmUserVehicleLambdaQueryWrapper);
-        LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper1 = new LambdaQueryWrapper<>();
-        dkmUserVehicleLambdaQueryWrapper1.eq(DkmUserVehicle::getUserId, userVehicle.getUserId());
-        DkmUserVehicle dkmUserVehicle2 = dkmUserVehicleMapper.selectOne(dkmUserVehicleLambdaQueryWrapper1);
-        if (dkmUserVehicle1 == null && dkmUserVehicle2 == null) {
+        dkmUserVehicleLambdaQueryWrapper.eq(DkmUserVehicle::getVin, userVehicle.getVin())
+                .eq(DkmUserVehicle::getUserId, userVehicle.getUserId())
+                .eq(DkmUserVehicle::getBindStatus,1);
+        List<DkmUserVehicle> dkmUserVehicles = dkmUserVehicleMapper.selectList(dkmUserVehicleLambdaQueryWrapper);
+        if (CollUtil.isEmpty(dkmUserVehicles)) {
             DkmUserVehicle dkmUserVehicle = new DkmUserVehicle();
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
             dkmUserVehicle.setUserId(dkmUser.getId());
@@ -119,6 +125,7 @@ public class DkmUserVehicleServiceImpl {
     }
 
     public PageResp updateUserVehicle(UserChangeVO userChange) throws ParameterValidationException {
+        log.info("request：" + "/api/userVehicle/updateUserVehicle " + userChange.toString());
         if (userChange == null || StringUtils.isBlank(userChange.getVin())) {
             throw new ParameterValidationException();
         }
@@ -131,6 +138,7 @@ public class DkmUserVehicleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) {
+        log.info("request：" + "/api/userVehicle/logoutUserVehicle " + logoutUserVehicle.toString());
         String userId = logoutUserVehicle.getUserId();
         String vin = logoutUserVehicle.getVin();
         Date logoutTime;
@@ -144,7 +152,6 @@ public class DkmUserVehicleServiceImpl {
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
-
         // 根据userId和vin查询中间表
         DkmUserVehicle dkmUserVehicle = dkmUserVehicleMapper.selectOne(Wrappers.<DkmUserVehicle>lambdaQuery()
                 .eq(DkmUserVehicle::getVin, vin)
@@ -168,7 +175,6 @@ public class DkmUserVehicleServiceImpl {
         dkmUserVehicleMapper.updateById(dkmUserVehicle);
         // 根据vin吊销车辆所有钥匙
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getVin, vin).ne(DkmKey::getDkState, 5));
-
         ArrayList<String> userList = new ArrayList<>();
         for (DkmKey key : keys) {
             key.setDkState(5);
@@ -176,26 +182,11 @@ public class DkmUserVehicleServiceImpl {
             dkmKeyMapper.updateById(key);
             // 钥匙生命周期
             // 封装生命周期对象
-            // 根据用户id找到手机号
-            DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
-            dkmKeyLifecycle.setUserId(key.getUserId());
-            dkmKeyLifecycle.setKeyId(key.getId());
-            dkmKeyLifecycle.setVin(vin);
-            // 操作来源
-            dkmKeyLifecycle.setKeySource(3);
-            String parentId = key.getParentId();
-            int keyType;
-            // 车主钥匙
-            if (Objects.equals("0", parentId)) {
-                keyType = 1;
-            } else { // 分享钥匙
-                keyType = 2;
+            if (Objects.equals("0", key.getParentId())) {
+                keyLifecycleUtil.insert(key,1,3,5);
+            }else {
+                keyLifecycleUtil.insert(key,2,3,5);
             }
-            dkmKeyLifecycle.setKeyType(keyType);
-            // 吊销
-            dkmKeyLifecycle.setKeyStatus(5);
-            dkmKeyLifecycle.setCreateTime(new Date());
-            dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
             // 返回钥匙用户id
             userList.add(key.getUserId());
         }
@@ -204,6 +195,7 @@ public class DkmUserVehicleServiceImpl {
     }
 
     public PageResp getBluetoothVin(GetBluetoothVinVO getBluetoothVinVO) {
+        log.info("request：" + "/api/userVehicle/getBluetoothVin " + getBluetoothVinVO.toString());
         String vin = getBluetoothVinVO.getVin();
         if (StrUtil.hasBlank(vin)) {
             log.info("response：" + "/api/userVehicle/getBluetoothVin " + "必填参数未传递!");
@@ -221,6 +213,7 @@ public class DkmUserVehicleServiceImpl {
 
 
     public PageResp revokeKey(RevokeKeyVO revokeKeyVO) {
+        log.info("request：" + "/api/userVehicle/revokeKey " + revokeKeyVO.toString());
         if (StrUtil.hasBlank(revokeKeyVO.getUserId())) {
             log.info("response：" + "/api/userVehicle/revokeKey " + "必填参数未传递!");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
