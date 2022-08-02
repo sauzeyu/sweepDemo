@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class DownLoadUtil {
 
-    // TODO 注释优化
+
     /**
      * Excel 文件名 文件格式 文件路径的提前处理
      *
@@ -28,7 +28,9 @@ public class DownLoadUtil {
      */
     public static List<String> checkLastWeekTotal(String startTime, String endTime, String token) {
         List<String> dateList = new ArrayList<>();
+        //对时间参数进行校验
         if (CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)) {
+            //获取当前月和下一个月
             String now = DateUtil.now();
             DateTime dateTime = new DateTime(now, DatePattern.NORM_DATETIME_FORMAT);
             int month = dateTime.getMonth() + 1;
@@ -38,7 +40,7 @@ public class DownLoadUtil {
             } else {
                 nextMonth = month + 1;
             }
-
+            //获取月份的第一天
             startTime = getFirstDayOfMonth(month);
             endTime = getFirstDayOfMonth(nextMonth);
 
@@ -52,10 +54,8 @@ public class DownLoadUtil {
         dateList.add(startTime);
         dateList.add(endTime);
 
-        // 1.1时间格式化格式
 
-
-        // 1.2导出的excel按月份以时间命名 如2022-6-1~2022-7-1钥匙使用记录
+        //导出的excel按月份以时间命名 如2022-6-1~2022-7-1钥匙使用记录
         DateTime startName = DateUtil.parse(startTime);
         String startFileName = DateUtil.format(startName, "yyyy-MM-dd");
 
@@ -64,17 +64,6 @@ public class DownLoadUtil {
         String fileName = startFileName + "~" + endFileName;
 
         String username = "";
-        //if (CharSequenceUtil.isNotBlank(token)) {
-        //    try {
-        //        username  = TokenUtils.parseToken(JwtConstant.JWT_USER_INFO_KEY, token, String.class);
-        //    } catch (NoSuchAlgorithmException e) {
-        //        e.printStackTrace();
-        //    } catch (IOException e) {
-        //        e.printStackTrace();
-        //    } catch (InvalidKeySpecException e) {
-        //        e.printStackTrace();
-        //    }
-        //}
 
 
         dateList.add(fileName);

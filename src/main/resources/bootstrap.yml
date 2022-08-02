@@ -2,16 +2,16 @@ spring:
   application:
     name: @project.artifactId@
   profiles:
-    active: test
+    active: foton
   cloud:
     nacos:
       discovery:
-        ip: 172.16.38.213
+        server-addr: 10.108.33.137:8888
+        ip: 10.108.33.50
         namespace: ${spring.profiles.active}
       config:
-        server-addr: 172.16.13.13:8848  #  配置中心地址
-        file-extension: yaml # 指定配置文件类型
-        group: liujz
+        server-addr: 10.108.33.137:8888
+        file-extension: yaml
         namespace: ${spring.profiles.active}
         shared-configs:
           - data-id: common.yaml
@@ -19,4 +19,4 @@ spring:
             group: common
 mybatis-plus:
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

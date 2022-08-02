@@ -49,6 +49,16 @@ public class DkmAftermarketReplacementController {
         return dkmAftermarketReplacementService.selectVehicleByVin(vin);
     }
 
+    /**
+     * 下载换件信息excel
+     * @param vin
+     * @param startTime
+     * @param endTime
+     * @param isXls
+     * @param creator
+     * @param response
+     * @throws UnsupportedEncodingException
+     */
     @PostMapping(value = "/downloadAftermarketReplacement")
     public void downloadAftermarketReplacement(String vin,
                                                String startTime,

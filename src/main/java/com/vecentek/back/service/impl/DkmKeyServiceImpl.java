@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.FileConstant;
 import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.DkmKeyDTO;
 import com.vecentek.back.entity.DkmKey;
@@ -135,27 +136,7 @@ public class DkmKeyServiceImpl {
                                   String valToEndTime,
                                   Integer keyType,
                                   Integer[] dkState
-    )
-
-    {
-
-        if (StringUtils.isBlank(vin)
-                && CharSequenceUtil.isBlank(userId)
-                && keyType == null
-                && CharSequenceUtil.isBlank(applyStartTime)
-                && CharSequenceUtil.isBlank(applyEndTime)
-                && periodMax == null
-                && periodMin == null
-                && CharSequenceUtil.isBlank(valFromStartTime)
-                && CharSequenceUtil.isBlank(valFromEndTime)
-                && CharSequenceUtil.isBlank(valToStartTime)
-                && CharSequenceUtil.isBlank(valToEndTime)
-                && dkState == null
-                ){
-            List<String> timeList = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, null);
-            applyStartTime = timeList.get(0);
-            applyEndTime = timeList.get(1);
-        }
+    ) {
         if (keyType == null) {
             keyType = 3;
         }
@@ -374,7 +355,25 @@ public class DkmKeyServiceImpl {
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
+    /**
+     * 单表excel分页导出
+     * @param vin
+     * @param userId
+     * @param keyType
+     * @param applyStartTime
+     * @param applyEndTime
+     * @param periodMax
+     * @param periodMin
+     * @param periodUnit
+     * @param valFromStartTime
+     * @param valFromEndTime
+     * @param valToStartTime
+     * @param valToEndTime
+     * @param dkState
+     * @param creator
+     */
     @Async
+    @Transactional(rollbackFor = Exception.class)
     public void downloadKeyLogExcel(String vin,
                                     String userId,
                                     Integer keyType,
@@ -408,10 +407,10 @@ public class DkmKeyServiceImpl {
                 ( CharSequenceUtil.isNotBlank(applyStartTime) || CharSequenceUtil.isNotBlank(applyEndTime))
         ){
             timeList    = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
-            // TODO 命名不采用 123 object 等方式
-            applyStartTime = timeList.get(0);
-            applyEndTime = timeList.get(1);
-            fileName = timeList.get(2);
+
+            applyStartTime = timeList.get(FileConstant.STARTTIME);
+            applyEndTime = timeList.get(FileConstant.ENDTIME);
+            fileName = timeList.get(FileConstant.FILENAME);
         }
 
         // 1.3形成文件名
@@ -419,7 +418,6 @@ public class DkmKeyServiceImpl {
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
-        //String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
         String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
@@ -427,7 +425,6 @@ public class DkmKeyServiceImpl {
             FileUtil.del(filePath);
         }
 
-        //BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
         ExcelWriter writer = ExcelUtil.getWriter(filePath);
 
 
@@ -451,7 +448,7 @@ public class DkmKeyServiceImpl {
         boolean periodBool = false;
         int periodMaxFormat = 0;
         int periodMinFormat = 0;
-        // TODO 抽取时间转换方法
+
         if (periodMax != null && periodMin != null && periodUnit != null) {
             // 根据单元转换时间周期
             if (Objects.equals(periodUnit, "minute")) { // 分钟
@@ -502,14 +499,14 @@ public class DkmKeyServiceImpl {
 
         List<DkmKey> dkmKeys;
 
-
         // 4将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
-        // TODO stream流
+        try {
+
         for (int i = 0; i <= sum / end; i++) {
             int start = (i * end);
 
             // 4.1分页查询数据 否则会OOM
-            dkmKeys = getDkmKeyLogs(vin,
+            dkmKeys = selectDkmKeyLogs(vin,
                     userId,
                     keyType,
                     applyStartTime,
@@ -538,8 +535,13 @@ public class DkmKeyServiceImpl {
             extracted(writer);
             writer.write(dkmKeys, true);
         }
-        // TODO 关闭流之前 flush
-        writer.close();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            writer.close();
+        }
 
         // 5将历史记录中该条数据记录根据导出情况进行修改
         dkmKeyLogHistoryExportMapper.update(null,
@@ -598,7 +600,7 @@ public class DkmKeyServiceImpl {
      *
      * @return
      */
-    private List<DkmKey> getDkmKeyLogs(String vin,
+    private List<DkmKey> selectDkmKeyLogs(String vin,
                                        String userId,
                                        Integer keyType,
                                        String applyStartTime,

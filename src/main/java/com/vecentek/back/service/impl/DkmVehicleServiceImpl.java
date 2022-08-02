@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -135,6 +136,15 @@ public class DkmVehicleServiceImpl {
         return PageResp.fail("查询失败");
     }
 
+    /**
+     * 下载车辆信息excel
+     * @param vin
+     * @param hwDeviceSn
+     * @param vehicleModel
+     * @param vehicleBrand
+     * @param vehicleType
+     * @param response
+     */
     public void downloadDkmVehicle(String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand, String vehicleType, HttpServletResponse response) {
 
         LambdaQueryWrapper<DkmVehicle> queryWrapper = Wrappers.<DkmVehicle>lambdaQuery()

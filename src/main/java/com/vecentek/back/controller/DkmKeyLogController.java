@@ -58,8 +58,7 @@ public class DkmKeyLogController {
     }
 
     /**
-     * 开始导出
-     *
+     * 开始导出钥匙记录excel
      * @param vin
      * @param userId
      * @param startTime
@@ -67,8 +66,15 @@ public class DkmKeyLogController {
      * @param phoneBrand
      * @param phoneModel
      * @param statusCode
+     * @param vehicleBrand
+     * @param vehicleModel
+     * @param vehicleType
      * @param flag
+     * @param creator
      * @return
+     * @throws NoSuchAlgorithmException
+     * @throws IOException
+     * @throws InvalidKeySpecException
      */
     @PostMapping(value = "/downloadKeyLogExcel")
     public PageResp startLoadKeyLogExcel(String vin,
@@ -83,16 +89,15 @@ public class DkmKeyLogController {
                                          String vehicleType,
                                          Integer flag,
                                          String creator
-    ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        //String token = httpServletRequest.getHeader("access-token");
+    )  {
+
         downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator);
         return PageResp.success("正在导出");
 
     }
 
     /**
-     * 异步导出
-     *
+     * 开启其他线程异步导出钥匙记录excel
      * @param vin
      * @param userId
      * @param startTime
@@ -101,6 +106,10 @@ public class DkmKeyLogController {
      * @param phoneModel
      * @param statusCode
      * @param flag
+     * @param vehicleBrand
+     * @param vehicleModel
+     * @param vehicleType
+     * @param creator
      */
     @Async
     public void downloadKeyLogExcel(String vin,
@@ -115,7 +124,7 @@ public class DkmKeyLogController {
                                     String vehicleModel,
                                     String vehicleType,
                                     String creator
-    ) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+    )  {
 
 
         this.dkmKeyUseLogService.downloadKeyLogExcel
@@ -134,6 +143,12 @@ public class DkmKeyLogController {
 
     }
 
+    /**
+     * 查询历史导出记录表
+     * @param creator
+     * @param type
+     * @return
+     */
     @GetMapping("/checkKeyUseLog")
     public PageResp checkKeyUseLog(String creator, Integer type) {
         //查询历史导出记录表(倒排)

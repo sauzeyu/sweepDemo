@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.FileConstant;
 import com.vecentek.back.entity.DkmAftermarketReplacement;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.entity.DkmVehicle;
@@ -22,6 +23,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -75,13 +77,22 @@ public class DkmAftermarketReplacementServiceImpl {
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(wrapper);
         return PageResp.success("查询成功", dkmVehicle);
     }
-    // TODO 插入失败回滚
+
+    /**
+     * 下载换件信息excel
+     * @param vin
+     * @param startTime
+     * @param endTime
+     * @param isXls
+     * @param creator
+     * @param response
+     * @throws UnsupportedEncodingException
+     */
+    @Transactional(rollbackFor = Exception.class)
     public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String creator, HttpServletResponse response) throws UnsupportedEncodingException {
-        List<String> objects = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
-        // startTime = objects.get(0);
-        // endTime = objects.get(1);
-        String fileName = objects.get(2);
-        //String username = objects.get(3);
+        //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
+        List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
+        String fileName = timeList.get(FileConstant.FILENAME);
         // 1.3形成文件名
         String excelName = fileName + "换件信息";
 

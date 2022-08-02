@@ -16,6 +16,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -70,10 +71,17 @@ public class DkmBluetoothsServiceImpl {
         return PageResp.success("删除成功");
     }
 
+    /**
+     * 下载蓝牙信息excel
+     * @param hwDeviceSn
+     * @param searchNumber
+     * @param flag
+     * @param response
+     */
+    @Transactional(rollbackFor = Exception.class)
     public void downloadDkmBluetooths(String hwDeviceSn, String searchNumber, Integer flag, HttpServletResponse response) {
 
         LambdaQueryWrapper<DkmBluetooths> queryWrapper = Wrappers.<DkmBluetooths>lambdaQuery()
-                //.in(flag != null, DkmBluetooths::getFlag, flag)
                 .eq(ObjectUtil.isNotNull(flag), DkmBluetooths::getFlag, flag)
                 .like(StrUtil.isNotBlank(searchNumber), DkmBluetooths::getSearchNumber, searchNumber)
                 .like(StrUtil.isNotBlank(hwDeviceSn), DkmBluetooths::getHwDeviceSn, hwDeviceSn)

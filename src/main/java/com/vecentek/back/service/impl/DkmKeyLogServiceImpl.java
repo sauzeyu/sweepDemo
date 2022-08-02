@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.FileConstant;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
@@ -26,12 +27,11 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,8 +64,8 @@ public class DkmKeyLogServiceImpl {
                 && CharSequenceUtil.isBlank(vehicleModel)
                 && CharSequenceUtil.isBlank(vehicleType)){
             List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, null);
-            startTime = timeList.get(0);
-            endTime = timeList.get(1);
+            startTime = timeList.get(FileConstant.STARTTIME);
+            endTime = timeList.get(FileConstant.ENDTIME);
         }
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 //.like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
@@ -99,7 +99,23 @@ public class DkmKeyLogServiceImpl {
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
+    /**
+     * 异步下载单表分页钥匙记录信息
+     * @param vin
+     * @param userId
+     * @param startTime
+     * @param endTime
+     * @param phoneBrand
+     * @param phoneModel
+     * @param statusCode
+     * @param flag
+     * @param vehicleBrand
+     * @param vehicleModel
+     * @param vehicleType
+     * @param creator
+     */
     @Async
+    @Transactional(rollbackFor = Exception.class)
     public void downloadKeyLogExcel(String vin,
                                     String userId,
                                     String startTime,
@@ -111,30 +127,28 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator) throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
+                                    String creator)  {
         List<String> timeList = new ArrayList<>();
         String fileName = "";
         if (
-                (CharSequenceUtil.isBlank(vin)
-                && CharSequenceUtil.isBlank(userId)
-                && CharSequenceUtil.isBlank(phoneBrand)
-                && CharSequenceUtil.isBlank(phoneModel)
-                && ObjectUtil.isNull(statusCode)
-                && flag == null
-                && CharSequenceUtil.isBlank(vehicleBrand)
-                && CharSequenceUtil.isBlank(vehicleModel)
-                && CharSequenceUtil.isBlank(vehicleType)
-                && CharSequenceUtil.isNotBlank(creator))
-                ||  ( CharSequenceUtil.isNotBlank(startTime)| CharSequenceUtil.isNotBlank(endTime))
+                !(!(CharSequenceUtil.isBlank(vin)
+                        && CharSequenceUtil.isBlank(userId)
+                        && CharSequenceUtil.isBlank(phoneBrand)
+                        && CharSequenceUtil.isBlank(phoneModel)
+                        && ObjectUtil.isNull(statusCode)
+                        && flag == null
+                        && CharSequenceUtil.isBlank(vehicleBrand)
+                        && CharSequenceUtil.isBlank(vehicleModel)
+                        && CharSequenceUtil.isBlank(vehicleType)
+                        && CharSequenceUtil.isNotBlank(creator))
+                        && !(CharSequenceUtil.isNotBlank(startTime) | CharSequenceUtil.isNotBlank(endTime)))
         ){
             //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
             timeList  = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
-            startTime = timeList.get(0);
-            endTime = timeList.get(1);
-            fileName = timeList.get(2);
+            startTime = timeList.get(FileConstant.STARTTIME);
+            endTime = timeList.get(FileConstant.ENDTIME);
+            fileName = timeList.get(FileConstant.FILENAME);
         }
-
-        //String username = objects.get(3);
         // 1.1 形成文件名
         String excelName = fileName + "钥匙使用记录-" + System.currentTimeMillis();
 
@@ -183,6 +197,7 @@ public class DkmKeyLogServiceImpl {
 
 
         // 4 将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
+        try {
         for (int i = 0; i <= sum / end; i++) {
             int start = (i * end);
 
@@ -215,7 +230,11 @@ public class DkmKeyLogServiceImpl {
             writer.write(dkmKeyLogs, true);
         }
 
-        writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            writer.close();
+        }
 
         // 5将历史记录中该条数据记录根据导出情况进行修改
         dkmKeyLogHistoryExportMapper.update(null,
@@ -280,6 +299,9 @@ public class DkmKeyLogServiceImpl {
      * @param phoneModel
      * @param statusCode
      * @param flag
+     * @param vehicleBrand
+     * @param vehicleModel
+     * @param vehicleType
      * @param start
      * @param end
      * @return
@@ -333,14 +355,17 @@ public class DkmKeyLogServiceImpl {
         return keyLogList;
     }
 
-
+    /**
+     * 根据具体用户和excel类型查询历史下载记录列表
+     * @param creator
+     * @param type
+     * @return
+     */
     public PageResp checkKeyUseLog(String creator, Integer type) {
-        // TODO 排序永远为 true
         LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
         dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator != null, DkmKeyLogHistoryExport::getCreator, creator)
                 .eq(type != null, DkmKeyLogHistoryExport::getType, type)
                 .orderByDesc(DkmKeyLogHistoryExport::getCreateTime)
-                //.orderByAsc(Boolean.parseBoolean("create_time"));
         ;
         List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
         return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);

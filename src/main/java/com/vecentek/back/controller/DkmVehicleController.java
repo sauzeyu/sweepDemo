@@ -97,6 +97,15 @@ public class DkmVehicleController {
         return this.dkmVehicleServiceImpl.updateById(dkmVehicle);
     }
 
+    /**
+     * 导出车辆信息excel
+     * @param vin
+     * @param hwDeviceSn
+     * @param vehicleModel
+     * @param vehicleBrand
+     * @param vehicleType
+     * @param response
+     */
     @PostMapping(value = "/downloadDkmVehicle")
     public void downloadDkmVehicle(String vin,
                                    String hwDeviceSn,

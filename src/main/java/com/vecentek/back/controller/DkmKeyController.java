@@ -142,9 +142,21 @@ public class DkmKeyController {
     }
 
     /**
-     * 开始导出
-     *
-     * @param
+     * 开始导出钥匙信息excel
+     * @param vin
+     * @param userId
+     * @param keyType
+     * @param applyStartTime
+     * @param applyEndTime
+     * @param periodMax
+     * @param periodMin
+     * @param periodUnit
+     * @param valFromStartTime
+     * @param valFromEndTime
+     * @param valToStartTime
+     * @param valToEndTime
+     * @param dkState
+     * @param creator
      * @return
      */
     @PostMapping(value = "/downloadKeyExcel")
@@ -180,7 +192,21 @@ public class DkmKeyController {
     }
 
     /**
-     * 异步导出
+     * 开启其他线程异步导出钥匙信息excel
+     * @param vin
+     * @param userId
+     * @param keyType
+     * @param applyStartTime
+     * @param applyEndTime
+     * @param periodMax
+     * @param periodMin
+     * @param periodUnit
+     * @param valFromStartTime
+     * @param valFromEndTime
+     * @param valToStartTime
+     * @param valToEndTime
+     * @param dkStates
+     * @param creator
      */
     @Async
     public void downloadKeyExcel(String vin,

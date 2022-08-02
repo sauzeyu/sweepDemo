@@ -54,6 +54,13 @@ public class DkmBluetoothsController {
         return this.dkmBluetoothsServiceImpl.deleteById(hwDeviceSn);
     }
 
+    /**
+     * 下载蓝牙信息excel
+     * @param hwDeviceSn
+     * @param searchNumber
+     * @param flag
+     * @param response
+     */
     @PostMapping(value = "/downloadDkmBluetooths")
     public void downloadDkmBluetooths(String hwDeviceSn, String searchNumber, Integer flag, HttpServletResponse response) {
         this.dkmBluetoothsServiceImpl.downloadDkmBluetooths(hwDeviceSn, searchNumber, flag, response);
