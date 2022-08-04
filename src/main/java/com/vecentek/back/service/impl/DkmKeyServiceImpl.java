@@ -372,30 +372,7 @@ public class DkmKeyServiceImpl {
                                     String valToEndTime,
                                     Integer[] dkState,
                                     String creator) {
-        List<String> timeList = new ArrayList<>();
         String fileName = "";
-        if (
-                (StringUtils.isBlank(vin)
-                && CharSequenceUtil.isBlank(userId)
-                && keyType == null
-
-                && periodMax == null
-                && periodMin == null
-                && CharSequenceUtil.isBlank(valFromStartTime)
-                && CharSequenceUtil.isBlank(valFromEndTime)
-                && CharSequenceUtil.isBlank(valToStartTime)
-                && CharSequenceUtil.isBlank(valToEndTime)
-                && dkState == null
-                && CharSequenceUtil.isNotBlank(creator))
-                ||
-                ( CharSequenceUtil.isNotBlank(applyStartTime) || CharSequenceUtil.isNotBlank(applyEndTime))
-        ){
-            timeList    = DownLoadUtil.checkLastWeekTotal(applyStartTime, applyEndTime, creator);
-
-            applyStartTime = timeList.get(FileConstant.STARTTIME);
-            applyEndTime = timeList.get(FileConstant.ENDTIME);
-            fileName = timeList.get(FileConstant.FILENAME);
-        }
 
         // 1.3形成文件名
         String excelName = fileName + "钥匙信息记录-"+ System.currentTimeMillis();

@@ -89,14 +89,16 @@ public class DkmRoleServiceImpl {
         DkmRole dkmRole = new DkmRole();
         BeanUtils.copyProperties(role, dkmRole);
         // 重复性校验 code 和 name 不能重复 否则数据库报错
-        Integer countCode = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getCode, dkmRole.getCode()));
-        if (countCode.intValue() >= 2){
-            return PageResp.fail("权限代号重复");
+        Integer countCode = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getCode, dkmRole.getCode())
+                .or()
+                .eq(DkmRole::getRoleName, dkmRole.getRoleName()));
+        if (countCode.intValue() != 0){
+            return PageResp.fail("权限代号或角色名重复");
         }
-        Integer countName = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, dkmRole.getRoleName()));
-        if (countName.intValue() >= 2){
-            return PageResp.fail("角色名重复");
-        }
+//        Integer countName = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, dkmRole.getRoleName()));
+//        if (countName.intValue() == 1){
+//            return PageResp.fail("角色名重复");
+//        }
         dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, dkmRole.getId()));
         dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId()));
         if (CollUtil.isEmpty(role.getMenuList())) {

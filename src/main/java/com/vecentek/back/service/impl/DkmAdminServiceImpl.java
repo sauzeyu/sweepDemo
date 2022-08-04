@@ -87,9 +87,12 @@ public class DkmAdminServiceImpl {
             if (Objects.isNull(adminVO.getRoleList())) {
                 return PageResp.success("更新成功");
             } else {
-                    //根据角色名称查询id,插入中间表
-                    dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, adminVO.getRoleList())).getId());
-                    dkmAdminRoleMapper.insert(dkmAdminRole);
+                //根据角色名称查询id,插入中间表
+                dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, adminVO.getRoleList())).getId());
+                dkmAdminRoleMapper.insert(dkmAdminRole);
+                // 涉及到权限需要清除redis中的token
+                // 根据用户名找到token 然后删除
+                Boolean delete = redisTemplate.delete(adminVO.getUsername());
                 return PageResp.success("更新成功");
             }
         }else {

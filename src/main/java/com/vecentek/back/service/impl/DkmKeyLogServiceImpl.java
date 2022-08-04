@@ -128,29 +128,9 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleModel,
                                     String vehicleType,
                                     String creator)  {
-        List<String> timeList = new ArrayList<>();
-        String fileName = "";
-        if (
-                !(!(CharSequenceUtil.isBlank(vin)
-                        && CharSequenceUtil.isBlank(userId)
-                        && CharSequenceUtil.isBlank(phoneBrand)
-                        && CharSequenceUtil.isBlank(phoneModel)
-                        && ObjectUtil.isNull(statusCode)
-                        && flag == null
-                        && CharSequenceUtil.isBlank(vehicleBrand)
-                        && CharSequenceUtil.isBlank(vehicleModel)
-                        && CharSequenceUtil.isBlank(vehicleType)
-                        && CharSequenceUtil.isNotBlank(creator))
-                        && !(CharSequenceUtil.isNotBlank(startTime) | CharSequenceUtil.isNotBlank(endTime)))
-        ){
-            //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
-            timeList  = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
-            startTime = timeList.get(FileConstant.STARTTIME);
-            endTime = timeList.get(FileConstant.ENDTIME);
-            fileName = timeList.get(FileConstant.FILENAME);
-        }
+
         // 1.1 形成文件名
-        String excelName = fileName + "钥匙使用记录-" + System.currentTimeMillis();
+        String excelName = "钥匙使用记录-" + System.currentTimeMillis();
 
         // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
         String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);

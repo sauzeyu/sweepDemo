@@ -68,7 +68,7 @@ public class DkmAdminController {
     }
 
     /**
-     * 查询所有角色
+     * 更新
      *
      * @return 角色列表
      */
