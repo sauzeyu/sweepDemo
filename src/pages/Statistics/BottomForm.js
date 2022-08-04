@@ -91,7 +91,7 @@ class BottomForm extends React.Component {
             title: '保存为图片',
           },
           restore: {
-            show: true,
+            show: false,
             title: '重置',
           },
         },

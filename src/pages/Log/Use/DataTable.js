@@ -116,6 +116,9 @@ const SubTable = () => {
   keysLog,
 }))
 class DataTable extends Component {
+  state = {
+    endTime: null,
+  };
   columns = [
     {
       title: '序号',
@@ -217,7 +220,7 @@ class DataTable extends Component {
     if (statusCode && statusCode.value) {
       param.append('statusCode', statusCode.value);
     }
-    // debugger;
+    debugger;
     if (startTime && startTime.value && startTime.value[0]) {
       const beginTime = moment(startTime.value[0]).format('YYYY-MM-DD');
       param.append('startTime', beginTime);
@@ -276,26 +279,41 @@ class DataTable extends Component {
     defaultTime[1] = monthEndDate;
     return defaultTime;
   };
+  formatDateTime(date) {
+    if (date == '' || !date) {
+      return '';
+    }
+    // var date = new Date(date);
+    let y = date.getFullYear();
+    let m = date.getMonth() + 1;
+    m = m < 10 ? '0' + m : m;
+    let d = date.getDate();
+    d = d < 10 ? '0' + d : d;
+
+    return y + '/' + m + '/' + d;
+  }
+  clearEndTime = () => {
+    console.log();
+    this.state.endTime = null;
+    debugger;
+  };
   render() {
-    console.log('this.props', this.props);
-    let startTime = moment(this.defaultStartTime()[0], 'YYYY/MM/DD');
-    let endTime = moment(this.defaultStartTime()[1], 'YYYY/MM/DD');
-    console.log('startTime', startTime);
-    console.log('endTime', endTime);
-    // debugger;
+    let startTime = this.formatDateTime(this.defaultStartTime()[0]);
+    let endTime = this.formatDateTime(this.defaultStartTime()[1]);
+    debugger;
     return (
       <div>
         <EasyTable
           // rowKey={'id'}
-
           scroll={{ x: '1200px' }}
           autoFetch
           source={getKeyLogList}
           dataProp={'data'}
           name={'keyErrorLogDataTable'}
           columns={this.columns}
-          // fixedParams={{ startTime: moment(this.defaultStartTime()[0], dateFormat) }}
+          fixedParams={{ startTime: startTime, endTime: endTime }}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
+          onDataLoaded={this.clearEndTime(this.fixedParams)}
           extra={
             <Authorized route={LOG_USE_EXPORT}>
               <div className={'btn-group'}>

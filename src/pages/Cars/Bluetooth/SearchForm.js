@@ -19,6 +19,12 @@ class SearchForm extends Component {
       });
   };
   render() {
+    // const bodyScale = () => {
+    //   let clientWidth = document.documentElement.clientWidth;
+    //   let scale = clientWidth
+    //   document.body.style.zoom = scale;
+    // }
+    // bodyScale();
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },

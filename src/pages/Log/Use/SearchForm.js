@@ -31,6 +31,7 @@ class SearchForm extends Component {
       .then((values) => {
         if (values.startTime) {
           const startTime = values['startTime'];
+          debugger;
           values.startTime = moment(startTime[0]).format('YYYY-MM-DD');
           values.endTime = moment(startTime[1])
             .add(1, 'days')
@@ -67,7 +68,6 @@ class SearchForm extends Component {
   };
 
   render() {
-    // debugger;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },

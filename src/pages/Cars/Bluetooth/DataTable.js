@@ -156,6 +156,12 @@ class DataTable extends Component {
     });
   };
   render() {
+    // const bodyScale = () => {
+    //   let clientWidth = document.documentElement.clientWidth;
+    //   let scale = clientWidth
+    //   document.body.style.zoom = scale;
+    // }
+    // bodyScale();
     const { editFormVisible } = this.state;
     return (
       <div>

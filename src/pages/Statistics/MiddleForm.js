@@ -19,7 +19,7 @@ class MiddleForm extends React.Component {
     keyUseLogCount: [],
     keyErrorLogCount: [],
     monthList: [],
-    pickerTime: [moment(), moment().add(1, 'days')],
+    pickerTime: [moment(), moment()],
     fileUseName: [],
     fileErrorName: [],
   };
@@ -109,7 +109,7 @@ class MiddleForm extends React.Component {
             title: '保存为图片',
           },
           restore: {
-            show: true,
+            show: false,
             title: '重置',
           },
         },
@@ -174,7 +174,7 @@ class MiddleForm extends React.Component {
             title: '保存为图片',
           },
           restore: {
-            show: true,
+            show: false,
             title: '重置',
           },
         },
