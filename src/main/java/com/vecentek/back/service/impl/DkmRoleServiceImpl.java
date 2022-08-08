@@ -53,13 +53,11 @@ public class DkmRoleServiceImpl {
     private RedisTemplate redisTemplate;
 
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String roleName, Integer code, String startTime, String endTime) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String roleName, String code, String startTime, String endTime) {
         Page<DkmRole> page = new Page<>(pageIndex, pageSize);
         List<RoleMenuDTO> rolesMenu = new ArrayList<>();
-
-
         LambdaQueryWrapper<DkmRole> queryWrapper = Wrappers.<DkmRole>lambdaQuery()
-                .eq(code != null, DkmRole::getCode, code)
+                .like(StringUtils.isNotBlank(code), DkmRole::getCode, code)
                 .like(StringUtils.isNotBlank(roleName), DkmRole::getRoleName, roleName)
                 .ge(StringUtils.isNotBlank(startTime), DkmRole::getCreateTime, startTime)
                 .le(StringUtils.isNotBlank(endTime), DkmRole::getCreateTime, endTime);

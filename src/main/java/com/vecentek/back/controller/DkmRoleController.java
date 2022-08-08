@@ -48,7 +48,7 @@ public class DkmRoleController {
     public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
                                   @RequestParam(name = "pageSize") int pageSize,
                                   String roleName,
-                                  Integer code,
+                                  String code,
                                   String startTime,
                                   String endTime) {
 
