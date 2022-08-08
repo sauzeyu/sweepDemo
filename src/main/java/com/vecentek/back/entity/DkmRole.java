@@ -21,7 +21,7 @@ public class DkmRole extends BaseEntity {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer parentId;
-    private Integer code;
+    private String code;
     private String roleName;
     private String intro;
 
