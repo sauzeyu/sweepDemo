@@ -100,7 +100,7 @@ export default class EditForm extends Component {
             </Select>
           </Form.Item>
         </Spin>
-        <Form.Item {...formItemLayout} label={'额外信息'} name="extraInfo">
+        <Form.Item {...formItemLayout} label={'描述'} name="extraInfo">
           <Input.TextArea maxLength={200} />
         </Form.Item>
       </Form>

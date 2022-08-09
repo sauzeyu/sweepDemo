@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import { Badge, Button, message, Modal } from 'antd';
+import { Badge, Button, message, Modal, Tooltip } from 'antd';
 import { PlusCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
@@ -28,26 +28,67 @@ class DataTable extends Component {
     {
       title: '蓝牙设备序列号',
       dataIndex: 'hwDeviceSn',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '蓝牙检索号',
       dataIndex: 'searchNumber',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '设备供应商编号',
       dataIndex: 'hwDeviceProviderNo',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '蓝牙MAC地址',
       dataIndex: 'bleMacAddress',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '安全芯片SEID',
       dataIndex: 'dkSecUnitId',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '设备状态',
       dataIndex: 'flag',
+      fixed: 'right',
       render: (text) => {
         return overdue[text];
       },

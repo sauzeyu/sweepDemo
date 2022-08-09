@@ -108,9 +108,9 @@ export default class AddUserForm extends Component {
           <Form.Item
             label={'用户名'}
             name="username"
-            rules={[{ required: true, message: '姓名不能为空' }]}
+            rules={[{ required: true, message: '用户名不能为空' }]}
           >
-            <Input maxLength={40} placeholder={'请输入用户姓名'} />
+            <Input maxLength={40} placeholder={'请输入用户名'} />
           </Form.Item>
           <Form.Item
             label={'密码'}

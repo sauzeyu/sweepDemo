@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import Authorized from '@/components/Authorized';
-import { Badge, Button, message, Modal, Tag } from 'antd';
+import { Badge, Button, message, Modal, Tag, Tooltip } from 'antd';
 import {
   CloudUploadOutlined,
   InboxOutlined,
@@ -51,21 +51,53 @@ class DataTable extends Component {
       title: '车辆vin号',
       dataIndex: 'vin',
       width: 150,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '旧蓝牙设备序列号',
       dataIndex: 'oldBluetoothSn',
-      width: 110,
+      width: 150,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '新蓝牙设备序列号',
       dataIndex: 'newBluetoothSn',
       width: 150,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '换件时间',
       dataIndex: 'replacementTime',
       width: 110,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     // {
     //   title: '操作',

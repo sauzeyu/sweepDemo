@@ -77,6 +77,14 @@ class DataTable extends Component {
     {
       title: '手机型号',
       dataIndex: 'phoneModel',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '手机标定数据',

@@ -70,7 +70,7 @@ class SearchForm extends Component {
                 <Select.Option key={1} value={1}>
                   正常
                 </Select.Option>
-                <Select key={2} value={2}>
+                <Select key={0} value={0}>
                   报废
                 </Select>
               </Select>

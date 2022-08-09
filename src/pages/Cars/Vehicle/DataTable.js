@@ -90,6 +90,14 @@ class DataTable extends Component {
     {
       title: '蓝牙Mac地址',
       dataIndex: 'bleMacAddress',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '操作',

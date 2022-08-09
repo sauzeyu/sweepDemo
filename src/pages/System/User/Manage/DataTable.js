@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import { Badge, Button, message, Modal, Tag, Select, notification } from 'antd';
+import {
+  Badge,
+  Button,
+  message,
+  Modal,
+  Tag,
+  Select,
+  notification,
+  Tooltip,
+} from 'antd';
 import Authorized from '@/components/Authorized';
 import {
   getAdminList,
@@ -41,8 +50,17 @@ export class DataTable extends Component {
       dataIndex: 'username',
     },
     {
-      title: '额外信息',
+      title: '描述',
       dataIndex: 'extraInfo',
+      width: 300,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '创建时间',
