@@ -119,17 +119,8 @@ public class DkmStatisticsServiceImpl {
     public PageResp selectKeyLogByMonth() {
         List<String> monthList = MonthCountDTO.generateMonthList();
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-        SimpleDateFormat month = new SimpleDateFormat("yyyy-MM");
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        Date nowYear = c.getTime();
-        String endTime = format.format(nowYear);
-        c.add(Calendar.YEAR, -1);
-        Date lastYear =  c.getTime();
-        String startTime = format.format(lastYear);
-
-
+        String startTime = DownLoadUtil.getMonthYearLast();
+        String endTime = DownLoadUtil.getPerFirstDayOfMonth();
         List<MonthCountDTO> useLogCount = dkmKeyLogMapper.selectUseLogCountByMonth(startTime, endTime);
 
         useLogCount = MonthCountDTO.checkMonthCount(useLogCount, monthList);
@@ -206,12 +197,14 @@ public class DkmStatisticsServiceImpl {
     }
 
     public PageResp selectKeyErrorLogByPhoneBrand(String phoneBrand) {
+        Date[] time = getTime();
+        Date startTime = time[0];
+        Date endTime = time[1];
         List<CountDTO> list;
         if (StrUtil.isBlank(phoneBrand)) {
-            list = dkmKeyLogMapper.selectKeyErrorLog();
+            list = dkmKeyLogMapper.selectKeyErrorLog(startTime,endTime);
         } else {
-            list = dkmKeyLogMapper.selectKeyErrorLogByPhoneBrand(phoneBrand);
-
+            list = dkmKeyLogMapper.selectKeyErrorLogByPhoneBrand(phoneBrand,startTime,endTime);
         }
         for (CountDTO countDTO : list) {
             String name = countDTO.getName();
@@ -339,6 +332,7 @@ public class DkmStatisticsServiceImpl {
         String yearFirstDay = DownLoadUtil.getCurrYearFirst();
         String yearLastDay = DownLoadUtil.getCurrYearLast();
         // 今日故障次数
+
         int countErrorToday = dkmKeyLogMapper.countErrorToday(now,lastDay);
         // 每个月的使用数
         List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(yearFirstDay,yearLastDay));

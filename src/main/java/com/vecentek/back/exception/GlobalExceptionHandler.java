@@ -92,6 +92,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
     public PageResp throwable(Throwable e) {
+        log.error("服务繁忙,请稍后...", e);
         return errorResult("服务繁忙,请稍后...", e);
     }
 

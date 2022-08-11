@@ -196,4 +196,32 @@ return new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
         String tommorw = new SimpleDateFormat(DEFAULT_FORMAT).format(time);
         return tommorw;
     }
+
+    /**
+     * 获取下一个月的第一天
+     */
+    public static String getPerFirstDayOfMonth(){
+
+        SimpleDateFormat dft = new SimpleDateFormat(DEFAULT_FORMAT);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        return dft.format(calendar.getTime());
+
+    }
+
+
+    /**
+     * 获取去年的当月的最后一天
+     * @param
+     * @return
+     */
+    public static String getMonthYearLast(){
+        SimpleDateFormat dft = new SimpleDateFormat(DEFAULT_FORMAT);
+        Calendar calendar=Calendar.getInstance();
+        calendar.add(Calendar.YEAR,-1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        return dft.format(calendar.getTime());
+    }
 }

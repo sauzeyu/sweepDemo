@@ -74,11 +74,11 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
             "group by status_code")
     List<CountDTO> selectErrorCountByTime(String startTime, String endTime);
 
-    @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE (flag = 0 AND phone_brand = #{phoneBrand}) GROUP BY error_reason")
-    List<CountDTO> selectKeyErrorLogByPhoneBrand(String phoneBrand);
+    @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE (flag = 0 AND phone_brand = #{phoneBrand})  and operate_time >= #{startTime}  and operate_time <= #{endTime} GROUP BY error_reason")
+    List<CountDTO> selectKeyErrorLogByPhoneBrand(String phoneBrand,Date startTime, Date endTime);
 
-    @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE flag = 0  GROUP BY error_reason")
-    List<CountDTO> selectKeyErrorLog();
+    @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE flag = 0  and operate_time >= #{startTime}  and operate_time <= #{endTime}  GROUP BY error_reason")
+    List<CountDTO> selectKeyErrorLog(Date startTime, Date endTime);
 
     @Select("select count(1) as count from dkm_key_log where\n" +
             " operate_time >= #{lastDay}\n " +
