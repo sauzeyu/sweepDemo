@@ -1,5 +1,10 @@
 package com.vecentek.back.controller;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
+import com.vecentek.back.entity.DkmKey;
+import com.vecentek.back.entity.DkmKeyLog;
+import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
 import com.vecentek.common.response.PageResp;
 import org.springframework.scheduling.annotation.Async;
@@ -12,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 钥匙信息(DkmKey)表控制层
@@ -29,6 +37,9 @@ public class DkmKeyController {
      */
     @Resource
     private DkmKeyServiceImpl dkmKeyServiceImpl;
+
+    @Resource
+    private DkmKeyMapper dkmKeyMapper;
 
 
     @GetMapping(value = "/selectForPage")
@@ -239,5 +250,19 @@ public class DkmKeyController {
                 dkStates,
                 creator);
     }
+    @GetMapping("/add")
+    public Object add() throws ParseException {
+        DkmKey dkmKey = new DkmKey();
+        //分表是跟进创建时间， 创建时间必须要有值， 也可以使用mybatis的自动填充功能
+        dkmKey.setId(String.valueOf(IdUtil.getSnowflakeNextId()));
+        dkmKey.setVehicleId(1);
+        dkmKey.setDkState(2);
+        dkmKey.setPermissions(4);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse("2022-09-01 00:00:00");
+        dkmKey.setApplyTime(date);
 
+        dkmKeyMapper.insert(dkmKey);
+        return dkmKey;
+    }
 }

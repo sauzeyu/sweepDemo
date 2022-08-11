@@ -2,11 +2,17 @@ package com.vecentek.back.service.impl;
 
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.vecentek.back.config.ProConfig;
+import com.vecentek.back.config.YearMonthShardingAlgorithm;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.CountDTO;
@@ -18,12 +24,17 @@ import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
+import com.vecentek.back.util.DownLoadUtil;
+import com.vecentek.back.util.SpringContextUtil;
 import com.vecentek.common.response.PageResp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -71,13 +82,31 @@ public class DkmStatisticsServiceImpl {
         return PageResp.success("查询成功", statisticsDTO);
     }
 
+    public Date[] getTime() {
+        ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
+        Date startTime = DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
+        Date endTime = new Date();
+        return new Date[]{startTime,endTime};
+    }
     public PageResp selectVehicleAndKeyAndKeyLogTotal() {
+        // 获取分表字段的开始日期与结束日期
+        Date[] time = getTime();
+        Date startTime = time[0];
+        Date endTime = time[1];
         int totalVehicles = dkmVehicleMapper.selectCount(null);
-        int totalKeys = dkmKeyMapper.selectCount(null);
+        int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
+                .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime));
+
         int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
+                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
                 .eq(DkmKeyLog::getFlag, 0));
         int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
+                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
                 .eq(DkmKeyLog::getFlag, 1));
+
         StatisticsDTO statisticsDTO = new StatisticsDTO();
         statisticsDTO.setKeyErrorCount(totalKeyError);
         statisticsDTO.setVehicleCount(totalVehicles);
@@ -89,12 +118,25 @@ public class DkmStatisticsServiceImpl {
 
     public PageResp selectKeyLogByMonth() {
         List<String> monthList = MonthCountDTO.generateMonthList();
-        List<MonthCountDTO> useLogCount = dkmKeyLogMapper.selectUseLogCountByMonth();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+        SimpleDateFormat month = new SimpleDateFormat("yyyy-MM");
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        Date nowYear = c.getTime();
+        String endTime = format.format(nowYear);
+        c.add(Calendar.YEAR, -1);
+        Date lastYear =  c.getTime();
+        String startTime = format.format(lastYear);
+
+
+        List<MonthCountDTO> useLogCount = dkmKeyLogMapper.selectUseLogCountByMonth(startTime, endTime);
+
         useLogCount = MonthCountDTO.checkMonthCount(useLogCount, monthList);
 
         List<Integer> useLogCountList = MonthCountDTO.countToList(useLogCount);
 
-        List<MonthCountDTO> errorLogCount = dkmKeyLogMapper.selectErrorLogCountByMonth();
+        List<MonthCountDTO> errorLogCount = dkmKeyLogMapper.selectErrorLogCountByMonth(startTime, endTime);
         errorLogCount = MonthCountDTO.checkMonthCount(errorLogCount, monthList);
         List<Integer> errorLogCountList = MonthCountDTO.countToList(errorLogCount);
 
@@ -206,10 +248,21 @@ public class DkmStatisticsServiceImpl {
      * @return
      */
     public PageResp keyStatistics() {
+        Date[] time = getTime();
+        Date startTime = time[0];
+        Date endTime = time[1];
         // 车主钥匙
-        int masterCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().eq(DkmKey::getParentId, "0"));
+        int masterCount = dkmKeyMapper.selectCount(
+                new QueryWrapper<DkmKey>().lambda()
+                        .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
+                        .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime)
+                        .eq(DkmKey::getParentId, "0"));
+
         // 子钥匙
-        int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().ne(DkmKey::getParentId, "0"));
+        int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda()
+                .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
+                .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime)
+                .ne(DkmKey::getParentId, "0"));
         // 车主钥匙占比
 
         // 创建一个数值格式化对象
@@ -265,27 +318,40 @@ public class DkmStatisticsServiceImpl {
     }
 
     public PageResp keyUseTimeStatistics() {
+
+
+        String now = DownLoadUtil.getNow();
+        String lastDay = DownLoadUtil.getLastDay();
+        String yearFirstDay = DownLoadUtil.getCurrYearFirst();
+        String yearLastDay = DownLoadUtil.getCurrYearLast();
         // 今日使用次数
-        int countUseToday = dkmKeyLogMapper.countUseToday();
+        int countUseToday = dkmKeyLogMapper.countUseToday(now,lastDay);
         // 每个月的使用数
-        List<MonthCountDTO> useMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countUseByMonth());
+        List<MonthCountDTO> useMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countUseByMonth(yearFirstDay,yearLastDay));
         List<Integer> countList = MonthCountDTO.countToList(useMonthList);
         JSONObject res = new JSONObject().set("countUseToday", countUseToday).set("useMonthList", countList);
         return PageResp.success("查询成功", res);
     }
 
     public PageResp keyErrorTimeStatistics() {
+        String now = DownLoadUtil.getNow();
+        String lastDay = DownLoadUtil.getLastDay();
+        String yearFirstDay = DownLoadUtil.getCurrYearFirst();
+        String yearLastDay = DownLoadUtil.getCurrYearLast();
         // 今日故障次数
-        int countErrorToday = dkmKeyLogMapper.countErrorToday();
+        int countErrorToday = dkmKeyLogMapper.countErrorToday(now,lastDay);
         // 每个月的使用数
-        List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth());
+        List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(yearFirstDay,yearLastDay));
         List<Integer> countList = MonthCountDTO.countToList(errorMonthList);
         JSONObject res = new JSONObject().set("countErrorToday", countErrorToday).set("errorMonthList", countList);
         return PageResp.success("查询成功", res);
     }
 
     public PageResp selectKeyErrorLogByAllPhoneBrand() {
-        List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand();
+        Date[] time = getTime();
+        Date startTime = time[0];
+        Date endTime = time[1];
+        List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand(startTime,endTime);
         return PageResp.success("查询成功", list);
     }
 

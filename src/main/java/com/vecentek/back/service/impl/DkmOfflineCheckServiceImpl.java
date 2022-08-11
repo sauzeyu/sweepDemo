@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -393,8 +394,11 @@ public class DkmOfflineCheckServiceImpl {
             log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //String startTime = sdf.format(keyLogDetailVO.getStartTime());
+        //String endTime = sdf.format(keyLogDetailVO.getEndTime());
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
-        LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = new QueryWrapper<DkmKeyLog>().lambda()
+        LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()), DkmKeyLog::getVin, keyLogDetailVO.getVin())
                 .ge(ObjectUtil.isNotNull(keyLogDetailVO.getStartTime()),DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
                 .le(ObjectUtil.isNotNull(keyLogDetailVO.getEndTime()),DkmKeyLog::getOperateTime, keyLogDetailVO.getEndTime())
@@ -402,7 +406,9 @@ public class DkmOfflineCheckServiceImpl {
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getStatusCode()), DkmKeyLog::getStatusCode, keyLogDetailVO.getStatusCode())
                 .orderByAsc(DkmKeyLog::getOperateTime);
         // 查询
+        List<DkmKeyLog> dkmKeyLogs = dkmKeyLogMapper.selectList(dkmKeyLogLambdaQueryWrapper);
         page = dkmKeyLogMapper.selectPage(page, dkmKeyLogLambdaQueryWrapper);
+        page.setRecords(dkmKeyLogs);
         // 转为结果对象
         for (DkmKeyLog dkmKeyLog : page.getRecords()) {
             KeyLogDetailResVO keyLogDetailResVO = new KeyLogDetailResVO();

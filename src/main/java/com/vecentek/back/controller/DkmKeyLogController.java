@@ -1,5 +1,10 @@
 package com.vecentek.back.controller;
 
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
+import com.vecentek.back.entity.DkmKeyLog;
+import com.vecentek.back.entity.Dome;
+import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.service.impl.DkmKeyLogServiceImpl;
 import com.vecentek.common.response.PageResp;
 import org.springframework.scheduling.annotation.Async;
@@ -13,6 +18,9 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +34,8 @@ public class DkmKeyLogController {
 
     @Resource
     private DkmKeyLogServiceImpl dkmKeyUseLogService;
+    @Resource
+    private DkmKeyLogMapper dkmKeyLogMapper;
 
 
     @GetMapping("/selectForPage")
@@ -153,6 +163,24 @@ public class DkmKeyLogController {
     public PageResp checkKeyUseLog(String creator, Integer type) {
         //查询历史导出记录表(倒排)
         return this.dkmKeyUseLogService.checkKeyUseLog(creator, type);
+    }
+
+
+    @GetMapping("/add")
+    public Object add() throws ParseException {
+        DkmKeyLog dkmKeyLog = new DkmKeyLog();
+        //分表是跟进创建时间， 创建时间必须要有值， 也可以使用mybatis的自动填充功能
+        dkmKeyLog.setId(IdUtil.getSnowflakeNextId());
+        dkmKeyLog.setVin(DateUtil.date().toString("yyyy-MM-dd HH:mm:ss"));
+        dkmKeyLog.setKeyId("keyId");
+        dkmKeyLog.setFlag(1);
+        dkmKeyLog.setStatusCode("s");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse("2022-09-01 00:00:00");
+        dkmKeyLog.setOperateTime(date);
+
+        dkmKeyLogMapper.insert(dkmKeyLog);
+        return dkmKeyLog;
     }
 
 }
