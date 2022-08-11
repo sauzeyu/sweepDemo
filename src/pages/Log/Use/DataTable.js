@@ -14,6 +14,7 @@ import {
   Tag,
   Popover,
   message,
+  Tooltip,
 } from 'antd';
 import {
   DownloadOutlined,
@@ -144,6 +145,14 @@ class DataTable extends Component {
     {
       title: '手机型号',
       dataIndex: 'phoneModel',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '车型',
@@ -160,6 +169,14 @@ class DataTable extends Component {
     {
       title: '操作时间',
       dataIndex: 'operateTime',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '操作类型',
@@ -175,10 +192,26 @@ class DataTable extends Component {
     {
       title: '失败原因',
       dataIndex: 'errorReason',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '展示故障码',
       dataIndex: 'errorReason',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
   ];
 
