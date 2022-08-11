@@ -32,10 +32,10 @@ class SearchForm extends Component {
         if (values.startTime) {
           const startTime = values['startTime'];
           debugger;
-          values.startTime = moment(startTime[0]).format('YYYY-MM-DD');
+          values.startTime = moment(startTime[0]).format('YYYY-MM-DD 00:00:00');
           values.endTime = moment(startTime[1])
             .add(1, 'days')
-            .format('YYYY-MM-DD');
+            .format('YYYY-MM-DD 00:00:00');
         }
 
         this.props.keyErrorLogDataTable.fetch(values);

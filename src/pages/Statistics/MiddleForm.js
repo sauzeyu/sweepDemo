@@ -230,8 +230,8 @@ class MiddleForm extends React.Component {
 
   selectKeyLogCount = (times) => {
     let params = new URLSearchParams();
-    let startTime1 = moment(times[0]).format('YYYY-MM-DD');
-    let endTime1 = moment(times[1]).format('YYYY-MM-DD');
+    let startTime1 = moment(times[0]).format('YYYY-MM-DD 00:00:00');
+    let endTime1 = moment(times[1]).format('YYYY-MM-DD 00:00:00');
     let startTime;
     let endTime;
 
@@ -240,17 +240,17 @@ class MiddleForm extends React.Component {
       endTime = endTime1;
     } else {
       startTime = startTime1;
-      endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD');
+      endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD 00:00:00');
     }
 
     let fileUse = '钥匙使用类型';
     let fileError = '钥匙故障类型';
     this.state.fileUseName = startTime + '~' + endTime + fileUse;
     this.state.fileErrorName = startTime + '~' + endTime + fileError;
-    params.append('startTime', moment(times[0]).format('YYYY-MM-DD'));
+    params.append('startTime', moment(times[0]).format('YYYY-MM-DD 00:00:00'));
     params.append(
       'endTime',
-      moment(times[1]).add(1, 'days').format('YYYY-MM-DD'),
+      moment(times[1]).add(1, 'days').format('YYYY-MM-DD 00:00:00'),
     );
 
     selectKeyUseLogByTime(params).then((res) => {

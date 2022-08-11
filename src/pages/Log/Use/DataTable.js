@@ -220,15 +220,17 @@ class DataTable extends Component {
     if (statusCode && statusCode.value) {
       param.append('statusCode', statusCode.value);
     }
-    debugger;
+
     if (startTime && startTime.value && startTime.value[0]) {
-      const beginTime = moment(startTime.value[0]).format('YYYY-MM-DD');
+      const beginTime = moment(startTime.value[0]).format(
+        'YYYY-MM-DD 00:00:00',
+      );
       param.append('startTime', beginTime);
     }
     if (startTime && startTime.value && startTime.value[1]) {
       const endTime = moment(startTime.value[1])
         .add(1, 'days')
-        .format('YYYY-MM-DD');
+        .format('YYYY-MM-DD 00:00:00');
       param.append('endTime', endTime);
     }
     if (flag && flag.value) {
@@ -290,17 +292,18 @@ class DataTable extends Component {
     let d = date.getDate();
     d = d < 10 ? '0' + d : d;
 
-    return y + '/' + m + '/' + d;
+    return y + '-' + m + '-' + d + ' 00:00:00';
   }
   clearEndTime = () => {
     console.log();
     this.state.endTime = null;
-    debugger;
   };
   render() {
+    // debugger;
+
     let startTime = this.formatDateTime(this.defaultStartTime()[0]);
     let endTime = this.formatDateTime(this.defaultStartTime()[1]);
-    debugger;
+    // debugger;
     return (
       <div>
         <EasyTable
