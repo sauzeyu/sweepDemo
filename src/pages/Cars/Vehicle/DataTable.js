@@ -45,6 +45,14 @@ class DataTable extends Component {
       title: '车辆vin号',
       dataIndex: 'vin',
       width: 200,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '车型',

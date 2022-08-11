@@ -133,6 +133,14 @@ class DataTable extends Component {
     {
       title: '车辆vin号',
       dataIndex: 'vin',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '用户id',
