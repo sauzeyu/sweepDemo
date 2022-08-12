@@ -90,7 +90,7 @@ public class DkmRoleServiceImpl {
         Integer countCode = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getCode, dkmRole.getCode())
                 .or()
                 .eq(DkmRole::getRoleName, dkmRole.getRoleName()));
-        if (countCode.intValue() != 0){
+        if (countCode.intValue() > 1){
             return PageResp.fail("权限代号或角色名重复");
         }
 //        Integer countName = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, dkmRole.getRoleName()));

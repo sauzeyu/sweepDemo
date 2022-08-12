@@ -1,9 +1,12 @@
 package com.vecentek.back.service.impl;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmAdmin;
@@ -74,30 +77,39 @@ public class DkmAdminServiceImpl {
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateAdminById(AdminVO adminVO) {
         //TODO 需要将校验失败信息传入到message中 如修改用户名占用 需将错误信息放入catch中传入message
-        DkmAdmin admin1 = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().lambda()
-                .like(StrUtil.isNotBlank(adminVO.getUsername()),DkmAdmin::getUsername,adminVO.getUsername()));
-        if (admin1 == null) {
-            DkmAdmin admin = new DkmAdmin();
-            BeanUtils.copyProperties(adminVO, admin);
-            dkmAdminMapper.updateById(admin);
-            //删除此账户原有 账户-角色关系
-            dkmAdminRoleMapper.deleteByAdminId(adminVO.getId());
-            DkmAdminRole dkmAdminRole = new DkmAdminRole();
-            dkmAdminRole.setAdminId(adminVO.getId());
-            if (Objects.isNull(adminVO.getRoleList())) {
-                return PageResp.success("更新成功");
-            } else {
-                //根据角色名称查询id,插入中间表
-                dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, adminVO.getRoleList())).getId());
-                dkmAdminRoleMapper.insert(dkmAdminRole);
-                // 涉及到权限需要清除redis中的token
-                // 根据用户名找到token 然后删除
-                Boolean delete = redisTemplate.delete(adminVO.getUsername());
-                return PageResp.success("更新成功");
-            }
-        }else {
-            return PageResp.fail("用户名重复");
+
+        DkmAdmin admin = new DkmAdmin();
+        BeanUtils.copyProperties(adminVO, admin);
+
+        LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>().eq(DkmAdmin::getId, admin.getId())
+                .set(DkmAdmin::getExtraInfo, admin.getExtraInfo())
+                .set(DkmAdmin::getUsername, admin.getUsername());
+
+        try {
+            dkmAdminMapper.update(null, lambdaUpdateWrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return PageResp.success("用户名重复");
         }
+
+
+        //删除此账户原有 账户-角色关系
+        dkmAdminRoleMapper.deleteByAdminId(adminVO.getId());
+        DkmAdminRole dkmAdminRole = new DkmAdminRole();
+        dkmAdminRole.setAdminId(adminVO.getId());
+        if (Objects.isNull(adminVO.getRoleList())) {
+            return PageResp.success("更新成功");
+        } else {
+            //根据角色名称查询id,插入中间表
+            dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, adminVO.getRoleList())).getId());
+            dkmAdminRoleMapper.insert(dkmAdminRole);
+            // 涉及到权限需要清除redis中的token
+            // 根据用户名找到token 然后删除
+            Boolean delete = redisTemplate.delete(adminVO.getUsername());
+            return PageResp.success("更新成功");
+        }
+
+
     }
 
     /**
@@ -153,10 +165,10 @@ public class DkmAdminServiceImpl {
         // 新建用户角色中间表
         Integer role = insertAdminVO.getRole();
         //for (Integer integer : role) {
-            DkmAdminRole dkmAdminRole = new DkmAdminRole();
-            dkmAdminRole.setAdminId(admin.getId());
-            dkmAdminRole.setRoleId(role);
-            dkmAdminRoleMapper.insert(dkmAdminRole);
+        DkmAdminRole dkmAdminRole = new DkmAdminRole();
+        dkmAdminRole.setAdminId(admin.getId());
+        dkmAdminRole.setRoleId(role);
+        dkmAdminRoleMapper.insert(dkmAdminRole);
         //}
         return PageResp.success("新增成功");
     }

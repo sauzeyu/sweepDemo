@@ -2,7 +2,7 @@ spring:
   application:
     name: @project.artifactId@
   profiles:
-    active: test
+    active: foton
   cloud:
     nacos:
       discovery:

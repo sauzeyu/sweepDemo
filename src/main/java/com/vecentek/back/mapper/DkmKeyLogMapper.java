@@ -26,9 +26,9 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
      * @date 2022-06-01 14:02
      */
     @Select("select DATE_FORMAT(operate_time, '%Y-%m') as month, count(1) as count from dkm_key_log  \n" +
-            "where operate_time > #{startTime} and\n" +
+            "where  flag = 1  and operate_time > #{startTime} and\n" +
             "operate_time <  #{endTime}\n" +
-            "and flag=1 group by month")
+            "group by month")
     List<MonthCountDTO> selectUseLogCountByMonth(String startTime, String endTime);
 
     /**
@@ -39,9 +39,9 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
      * @date 2022-06-01 14:02
      */
     @Select("select DATE_FORMAT(operate_time, '%Y-%m') as month, count(1) as count from dkm_key_log  \n" +
-            "where operate_time > #{startTime} and\n" +
+            "where flag = 0 and operate_time > #{startTime} and\n" +
             "operate_time <  #{endTime}\n" +
-            "and flag=0 group by month")
+            "group by month")
     List<MonthCountDTO> selectErrorLogCountByMonth(String startTime, String endTime);
 
     /**
