@@ -34,7 +34,7 @@ export default class AddUserForm extends Component {
       console.log('title', this.props.title);
       values.password = md5(values.password);
       values.creator = getDvaApp()._store.getState().user.currentUser.username;
-      debugger;
+      // debugger;
       insertAdmin(values).then((res) => {
         console.log('res', res);
         if (res.code === 200) {

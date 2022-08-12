@@ -17,12 +17,22 @@ export default class EditForm extends Component {
   }
 
   handleSubmit = () => {
-    debugger;
     this.form.current.validateFields().then((values) => {
       console.log(values);
+      // debugger;
+
+      if (values?.roleList) {
+        let role = values.roleList;
+        if (role instanceof Array && role.length > 0) {
+          values.roleList = values.roleList[0];
+        }
+      }
+      // values.roleList = values.roleList[0];
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;
+      // debugger;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      console.log(values);
       updateAdminById(values).then(
         (res) => {
           message.success(res.msg);
@@ -49,9 +59,11 @@ export default class EditForm extends Component {
         });
       });
   }
+
   changeSubmit = () => {
     this.props.finish(true);
   };
+
   render() {
     const { roles } = this.state;
     const loadingRoles = false;
