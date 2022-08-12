@@ -7,6 +7,14 @@ class HistoryBluetooth extends Component {
       title: '车辆vin号',
       dataIndex: 'vin',
       width: 150,
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
       title: '旧蓝牙设备序列号',
