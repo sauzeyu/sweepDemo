@@ -48,10 +48,10 @@ public class DkmAdminServiceImpl {
     @Resource
     private RedisTemplate redisTemplate;
 
-    public PageResp selectForPage(int pageIndex, int pageSize, String userName, String startTime, String endTime) {
+    public PageResp selectForPage(int pageIndex, int pageSize, String username, String startTime, String endTime) {
         Page<DkmAdmin> page = new Page<>(pageIndex, pageSize);
         LambdaQueryWrapper<DkmAdmin> queryWrapper = Wrappers.<DkmAdmin>lambdaQuery()
-                .like(StrUtil.isNotBlank(userName), DkmAdmin::getUsername, userName)
+                .like(StrUtil.isNotBlank(username), DkmAdmin::getUsername, username)
                 .ge(StrUtil.isNotBlank(startTime), DkmAdmin::getCreateTime, startTime)
                 .le(StrUtil.isNotBlank(endTime), DkmAdmin::getCreateTime, endTime);
         Page<DkmAdmin> dkmAdminPage = dkmAdminMapper.selectPage(page, queryWrapper);
