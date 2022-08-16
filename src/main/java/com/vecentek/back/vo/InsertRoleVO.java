@@ -14,7 +14,7 @@ public class InsertRoleVO {
     /**
      * 角色代码
      */
-    private Integer code;
+    private String code;
     /**
      * 角色名称
      */

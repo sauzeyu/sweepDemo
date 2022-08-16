@@ -131,19 +131,21 @@ public class DkmRoleServiceImpl {
     @Transactional(rollbackFor = Exception.class)
     public PageResp insert(InsertRoleVO roleVO) {
         DkmRole role = new DkmRole();
-        BeanUtils.copyProperties(roleVO, role);
         if (roleVO.getMenuList() == null || roleVO.getMenuList().size() == 0) {
             return PageResp.fail("菜单权限不能未空！");
         }
-        if (StrUtil.isBlank(role.getRoleName()) || role.getCode() == null) {
+        if (StrUtil.isBlank(roleVO.getRoleName()) || roleVO.getCode() == null) {
             return PageResp.fail("角色名称或角色代码不能为空！");
         }
+        role.setRoleName(roleVO.getRoleName());
+        role.setCode(roleVO.getCode());
+        role.setIntro(roleVO.getIntro());
+        role.setCreateTime(new Date());
         DkmRole selectCode = dkmRoleMapper.selectOne(Wrappers.<DkmRole>lambdaQuery().eq(DkmRole::getCode, role.getCode()));
         DkmRole selectRoleName = dkmRoleMapper.selectOne(Wrappers.<DkmRole>lambdaQuery().eq(DkmRole::getRoleName, role.getRoleName()));
         if (selectCode != null || selectRoleName != null) {
             return PageResp.fail("角色名称或角色代码已存在！");
         }
-        role.setCreateTime(new Date());
         dkmRoleMapper.insert(role);
         for (String menuId : roleVO.getMenuList()) {
             DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();

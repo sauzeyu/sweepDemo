@@ -36,4 +36,8 @@ public class KeyLogDataResVO {
      * 父钥匙ID，车主钥匙为0
      */
     private String parentId;
+    /**
+     * 车架号
+     */
+    private String vin;
 }
