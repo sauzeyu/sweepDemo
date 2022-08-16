@@ -139,9 +139,9 @@ public class DkmAftermarketReplacementServiceImpl {
         cellStyle.setFont(cellFont);
 
         writer.setColumnWidth(0, 25);
-        writer.setColumnWidth(1, 15);
-        writer.setColumnWidth(2, 15);
-        writer.setColumnWidth(3, 15);
+        writer.setColumnWidth(1, 45);
+        writer.setColumnWidth(2, 45);
+        writer.setColumnWidth(3, 30);
 
         writer.addHeaderAlias("vin", "车辆vin号");
         writer.addHeaderAlias("oldBluetoothSn", "旧蓝牙设备序列号");
