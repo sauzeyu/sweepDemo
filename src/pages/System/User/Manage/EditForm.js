@@ -91,20 +91,26 @@ export default class EditForm extends Component {
         <Form.Item
           label={'姓名'}
           name="username"
-          rules={[{ required: true, message: '姓名不能为空' }]}
+          rules={[
+            { required: true, message: '姓名不能为空' },
+            {
+              pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
+              message: '用户名不能有特殊字符',
+            },
+          ]}
         >
           <Input maxLength={40} placeholder={'用户姓名'} />
         </Form.Item>
         <Spin spinning={loadingRoles}>
           <Form.Item
             label={'权限角色'}
-            name="roleList"
+            name="roleId"
             rules={[{ required: true, message: '权限角色不能为空' }]}
           >
             <Select allowClear>
               {roles.map((role) => {
                 return (
-                  <Select.Option key={role.id} value={role.roleName}>
+                  <Select.Option key={role.id} value={role.id}>
                     {role.roleName}
                   </Select.Option>
                 );

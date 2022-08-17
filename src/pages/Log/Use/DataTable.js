@@ -118,7 +118,9 @@ const SubTable = () => {
 }))
 class DataTable extends Component {
   state = {
-    endTime: null,
+    // startTime:'',
+    endTime: '',
+    flag: true,
   };
   columns = [
     {
@@ -188,7 +190,7 @@ class DataTable extends Component {
     },
     {
       title: '操作类型',
-      dataIndex: 'statusCode',
+      dataIndex: 'operationType',
     },
     {
       title: '操作结果',
@@ -210,8 +212,8 @@ class DataTable extends Component {
       ),
     },
     {
-      title: '展示故障码',
-      dataIndex: 'errorReason',
+      title: '操作码',
+      dataIndex: 'statusCode',
       ellipsis: {
         showTitle: false,
       },
@@ -336,28 +338,44 @@ class DataTable extends Component {
     return y + '-' + m + '-' + d + ' 00:00:00';
   }
   clearEndTime = () => {
-    console.log();
+    this.setState({
+      endTime: null,
+    });
+    console.log(11111);
     this.state.endTime = null;
   };
+  initEndTime = () => {
+    let defaultStartTimeElement = this.defaultStartTime()[1];
+    let end = this.formatDateTime(defaultStartTimeElement);
+    this.setState({
+      // startTime:defaultStartTimeElement,
+      endTime: end,
+    });
+    console.log('state', this.state);
+  };
+
   render() {
     // debugger;
 
-    let startTime = this.formatDateTime(this.defaultStartTime()[0]);
-    let endTime = this.formatDateTime(this.defaultStartTime()[1]);
-    // debugger;
+    // let startTime = this.formatDateTime(this.defaultStartTime()[0]);
+    // let endTime = this.formatDateTime(this.defaultStartTime()[1]);
+    // let endTime
+    // this.initEndTime(()=>{
+    //   endTime = this.state.endTime;
+    // });
     return (
       <div>
         <EasyTable
           // rowKey={'id'}
           scroll={{ x: '1200px' }}
-          autoFetch
+          // autoFetch
           source={getKeyLogList}
           dataProp={'data'}
           name={'keyErrorLogDataTable'}
           columns={this.columns}
-          fixedParams={{ startTime: startTime, endTime: endTime }}
+          // fixedParams={{ startTime: startTime, endTime: endTime }}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
-          onDataLoaded={this.clearEndTime(this.fixedParams)}
+          // onDataLoaded={this.clearEndTime()}
           extra={
             <Authorized route={LOG_USE_EXPORT}>
               <div className={'btn-group'}>

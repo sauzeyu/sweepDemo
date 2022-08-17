@@ -96,7 +96,7 @@ class MiddleForm extends React.Component {
       legend: {
         type: 'scroll',
         orient: 'vertical',
-        right: 10,
+        right: 80,
         top: 20,
         bottom: 20,
       },
@@ -223,24 +223,25 @@ class MiddleForm extends React.Component {
 
     const timeString = [
       moment().format('YYYY-MM-DD'),
-      moment().add(1, 'days').format('YYYY-MM-DD'),
+      // moment().add(1, 'days').format('YYYY-MM-DD'),
+      moment().format('YYYY-MM-DD'),
     ];
     this.selectKeyLogCount(timeString);
   }
 
   selectKeyLogCount = (times) => {
     let params = new URLSearchParams();
-    let startTime1 = moment(times[0]).format('YYYY-MM-DD 00:00:00');
-    let endTime1 = moment(times[1]).format('YYYY-MM-DD 00:00:00');
+    let startTime1 = moment(times[0]).format('YYYY-MM-DD');
+    let endTime1 = moment(times[1]).format('YYYY-MM-DD');
     let startTime;
     let endTime;
 
-    if (startTime1 == endTime1 || moment(times[1]) - moment(times[0]) > 1) {
+    if (startTime1 == endTime1 || moment(times[1]) - moment(times[0]) >= 1) {
       startTime = startTime1;
       endTime = endTime1;
     } else {
       startTime = startTime1;
-      endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD 00:00:00');
+      endTime = moment(times[1]).add(1, 'days').format('YYYY-MM-DD');
     }
 
     let fileUse = '钥匙使用类型';

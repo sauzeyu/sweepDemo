@@ -31,7 +31,9 @@ export default class AddForm extends Component {
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
       values.menuList = this.state.keys;
-
+      console.log('values', values);
+      values.code = values.code + '';
+      debugger;
       insert(values).then(
         (res) => {
           if (res.code === 200) {

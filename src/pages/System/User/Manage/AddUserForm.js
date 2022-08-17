@@ -49,7 +49,7 @@ export default class AddUserForm extends Component {
           // console.log('this.props'+this.props.searchFormValue);
           // DataTable.prototype.setState({addUserVisible: true});
           // this.setState({ addUserVisible: true });
-          debugger;
+          // debugger;
           message.error({
             content: res.msg,
           });
@@ -108,7 +108,13 @@ export default class AddUserForm extends Component {
           <Form.Item
             label={'用户名'}
             name="username"
-            rules={[{ required: true, message: '用户名不能为空' }]}
+            rules={[
+              { required: true, message: '用户名不能为空' },
+              {
+                pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
+                message: '用户名不能有特殊字符',
+              },
+            ]}
           >
             <Input maxLength={40} placeholder={'请输入用户名'} />
           </Form.Item>
@@ -122,7 +128,7 @@ export default class AddUserForm extends Component {
           <Spin spinning={loadingRoles}>
             <Form.Item
               label={'权限角色'}
-              name="role"
+              name="roleId"
               rules={[{ required: true, message: '权限角色不能为空' }]}
             >
               <Select allowClear>

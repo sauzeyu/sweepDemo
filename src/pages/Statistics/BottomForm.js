@@ -76,6 +76,7 @@ class BottomForm extends React.Component {
       },
       tooltip: {
         trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} ({d}%)',
       },
       // legend: {
       //   top: '15%',
@@ -102,12 +103,15 @@ class BottomForm extends React.Component {
           // name: 'Access From',
           type: 'pie',
           radius: [25, 125],
+
           center: ['50%', '45%'],
           roseType: 'area',
           itemStyle: {
             borderRadius: 8,
           },
-
+          labelLine: {
+            length: 30,
+          },
           label: {
             formatter: '{b|{b}：}{c}  {per|{d}%}',
             backgroundColor: '#F6F8FC',

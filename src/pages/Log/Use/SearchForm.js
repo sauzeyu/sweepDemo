@@ -19,6 +19,7 @@ class SearchForm extends Component {
   state = {
     isExpand: true,
     buttonHidden: true,
+    flag: true,
   };
   // componentDidMount() {
   //   this.fetchRoles();
@@ -31,19 +32,37 @@ class SearchForm extends Component {
       .then((values) => {
         if (values.startTime) {
           const startTime = values['startTime'];
-          debugger;
+          // debugger;
           values.startTime = moment(startTime[0]).format('YYYY-MM-DD 00:00:00');
           values.endTime = moment(startTime[1])
             .add(1, 'days')
             .format('YYYY-MM-DD 00:00:00');
         }
-
+        console.log('values', values);
         this.props.keyErrorLogDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
       });
   };
+  componentDidMount() {
+    //
+  }
+  componentWillUnmount() {}
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log(
+      this.props.keyErrorLogDataTable,
+      'this.props.keyErrorLogDataTable',
+      prevProps,
+      prevState,
+    );
+
+    if (this.props.keyErrorLogDataTable && this.state.flag) {
+      this.handleSubmit();
+      this.setState({ flag: false });
+    }
+  }
 
   onClick = () => {
     this.setState({
@@ -123,7 +142,7 @@ class SearchForm extends Component {
               ]}
               format={dateFormat}
             >
-              <RangePicker />
+              <RangePicker allowClear />
             </Form.Item>
           </Col>
 
