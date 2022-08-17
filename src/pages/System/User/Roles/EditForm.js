@@ -37,7 +37,12 @@ export default class EditForm extends Component {
       values.checkedKey = this.state.checkedKeys?.checked;
       updateRoleById(values).then(
         (res) => {
-          message.success(res.msg);
+          if (res.code === 200) {
+            message.success(res.msg);
+          } else {
+            message.error(res.msg);
+          }
+
           this.props.dataTableRef.refresh();
         },
         (res) => {
@@ -126,7 +131,11 @@ export default class EditForm extends Component {
         >
           <Input maxLength={5} placeholder={'角色代码'} />
         </Form.Item>
-        <Form.Item label={'菜单权限'} name={'menuList'}>
+        <Form.Item
+          label={'菜单权限'}
+          name={'menuList'}
+          rules={[{ required: true, message: '菜单权限不能为空' }]}
+        >
           {menus.length > 0 && (
             <Tree
               onLoad={this.onLoad}

@@ -125,7 +125,11 @@ export default class AddForm extends Component {
             placeholder={'角色代码'}
           />
         </Form.Item>
-        <Form.Item label={'菜单权限'} name={'menuList'}>
+        <Form.Item
+          label={'菜单权限'}
+          name={'menuList'}
+          rules={[{ required: true, message: '菜单权限不能为空' }]}
+        >
           {menus.length > 0 && (
             <Tree
               onLoad={this.onLoad}
