@@ -4,6 +4,9 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.StrUtil;
+import com.vecentek.back.config.ProConfig;
+import com.vecentek.back.config.TestProperties;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -224,4 +227,17 @@ return new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
 
         return dft.format(calendar.getTime());
     }
+
+
+    //获取系统初始时间，确定安时间分表后的最小表名
+    public static String getSysDate() {
+        ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
+        if (StrUtil.isEmpty(proConfig.getSysDate())) {
+            throw new RuntimeException("未设置系统初始时间");
+        }
+
+        return proConfig.getSysDate() + " 00:00:00";
+    }
+
+
 }

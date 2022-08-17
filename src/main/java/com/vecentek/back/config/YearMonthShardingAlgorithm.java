@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 根据年月分表规则
@@ -37,6 +38,12 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
             throw new RuntimeException("未设置系统初始时间");
         }
         return DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
+    }
+
+    //获取分表时间集
+    public Integer getSubTable() {
+        TestProperties bean = SpringContextUtil.getBean(TestProperties.class);
+        return bean.getFlag();
     }
 
     @Override
@@ -60,8 +67,19 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
             time = (Date) preciseShardingValue.getValue();
         }
         String year = DateUtil.date(time).toString("yyyyMM");
+
+        Integer table = Integer.parseInt(year.substring(year.length() - 2));
+
+        Integer subTable = getSubTable();
         String logicTableName = preciseShardingValue.getLogicTableName();
         String tableName = logicTableName + "_" + year;
+        if (table >= subTable) {
+            table = table % subTable == 0 ? table : table + (table % subTable);
+            String newTable = String.format("%2d", table).replace(" ", "0");
+            year = DateUtil.date(time).toString("yyyy" + newTable);
+            return logicTableName + "_" + year;
+        }
+
         return tableName;
     }
 
@@ -133,8 +151,20 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
         List<String> collect = dateTimes.stream().map(x -> x.toString("yyyyMM")).collect(Collectors.toList());
         HashSet h = new HashSet(collect);
         List<String> suffixList = ListUtil.toList(h);
+
         List<String> list = suffixList.stream().sorted(Comparator.comparing(Integer::parseInt)).collect(Collectors.toList());
-        return list;
+        Integer subTable = getSubTable();
+        String lastStr = list.get(list.size() - 1);
+        int lastNum = Integer.parseInt(lastStr.substring(lastStr.length() - 2));
+        if (lastNum % subTable != 0) {
+            lastNum = lastNum + subTable - (lastNum % subTable);
+            String newLastNum = String.format("%2d", lastNum).replace(" ", "0");
+            list.set(list.size() - 1, lastStr.substring(0, 4) + newLastNum);
+        }
+
+        List<String> subTableList = list.stream()
+                .filter(time -> Integer.parseInt(time.substring(time.length() - 2)) % subTable == 0).collect(Collectors.toList());
+        return subTableList;
     }
 
 }

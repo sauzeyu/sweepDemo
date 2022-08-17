@@ -1,5 +1,6 @@
 package com.vecentek.back.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -9,6 +10,9 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.vecentek.back.config.ProConfig;
+import com.vecentek.back.config.TestProperties;
+import com.vecentek.back.config.YearMonthShardingAlgorithm;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.constant.FileConstant;
@@ -19,6 +23,7 @@ import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.util.DownLoadUtil;
+import com.vecentek.back.util.SpringContextUtil;
 import com.vecentek.common.response.PageResp;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -52,21 +57,31 @@ public class DkmKeyLogServiceImpl {
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, List<String> statusCode, Integer flag, String vehicleBrand, String vehicleModel, String vehicleType) {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
-        if (CharSequenceUtil.isBlank(vin)
-                && CharSequenceUtil.isBlank(userId)
-                && CharSequenceUtil.isBlank(startTime)
+        if (
+                //CharSequenceUtil.isBlank(vin)
+                //&& CharSequenceUtil.isBlank(userId)
+
+                 CharSequenceUtil.isBlank(startTime)
                 && CharSequenceUtil.isBlank(endTime)
-                && CharSequenceUtil.isBlank(phoneBrand)
-                && CharSequenceUtil.isBlank(phoneModel)
-                && ObjectUtil.isNull(statusCode)
-                && flag == null
-                && CharSequenceUtil.isBlank(vehicleBrand)
-                && CharSequenceUtil.isBlank(vehicleModel)
-                && CharSequenceUtil.isBlank(vehicleType)){
-            List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, null);
-            startTime = timeList.get(FileConstant.STARTTIME);
-            endTime = timeList.get(FileConstant.ENDTIME);
+
+                //&& CharSequenceUtil.isBlank(phoneBrand)
+                //&& CharSequenceUtil.isBlank(phoneModel)
+                //&& ObjectUtil.isNull(statusCode)
+                //&& flag == null
+                //&& CharSequenceUtil.isBlank(vehicleBrand)
+                //&& CharSequenceUtil.isBlank(vehicleModel)
+                //&& CharSequenceUtil.isBlank(vehicleType)
+
+        ){
+            //List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, null);
+            //startTime = timeList.get(FileConstant.STARTTIME);
+            //endTime = timeList.get(FileConstant.ENDTIME);
+            startTime = DownLoadUtil.getSysDate();
+            endTime = DownLoadUtil.getNextDay();
+
         }
+
+
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 //.like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
@@ -85,7 +100,7 @@ public class DkmKeyLogServiceImpl {
 
         if (page.getRecords().size() > 0) {
             page.getRecords().forEach(keyLog -> {
-                keyLog.setStatusCode(KeyStatusCodeEnum.matchName(keyLog.getStatusCode()));
+                keyLog.setOperationType(KeyStatusCodeEnum.matchName(keyLog.getStatusCode()));
                 if (keyLog.getFlag() != null && keyLog.getFlag() == 0) {
                     if (KeyStatusCodeEnum.SAFE_BLUETOOTH_DISCONNECT.getName().equals(keyLog.getStatusCode())) {
                         keyLog.setErrorReason(BluetoothErrorReasonEnum.matchReason(keyLog.getErrorReason()));
@@ -255,6 +270,7 @@ public class DkmKeyLogServiceImpl {
         writer.setColumnWidth(5, 20);
         writer.setColumnWidth(6, 20);
         writer.setColumnWidth(7, 20);
+        writer.setColumnWidth(8, 20);
 
 
         writer.addHeaderAlias("vin", "车辆vin号");
@@ -267,6 +283,7 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("statusCode", "操作类型");
         writer.addHeaderAlias("flag", "操作结果");
         writer.addHeaderAlias("errorReason", "失败原因");
+        writer.addHeaderAlias("errorReason", "展示故障码");
     }
 
     /**

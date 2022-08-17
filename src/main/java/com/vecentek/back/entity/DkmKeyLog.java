@@ -1,5 +1,6 @@
 package com.vecentek.back.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -80,4 +81,11 @@ public class DkmKeyLog implements Serializable {
      * 车型
      */
     private String vehicleType;
+
+
+    /**
+     * 操作类型
+     */
+    @TableField(exist= false)
+    private String operationType;
 }
