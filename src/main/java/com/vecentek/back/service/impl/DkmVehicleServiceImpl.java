@@ -65,7 +65,7 @@ public class DkmVehicleServiceImpl {
      * @param pageSize     分页大小
      * @param vin          车辆vin码
      * @param hwDeviceSn   蓝牙设备序列号
-     * @param vehicleModel 车辆车型
+     * @param vehicleModel 车辆型号
      * @param vehicleBrand 车辆品牌
      * @return {@link PageResp}
      * @author EdgeYu

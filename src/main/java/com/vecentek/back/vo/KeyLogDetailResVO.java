@@ -17,6 +17,10 @@ public class KeyLogDetailResVO {
      */
     private String keyId;
     /**
+     * 用户ID
+     */
+    private String userId;
+    /**
      * 车控执行状态码
      */
     private String statusCode;

@@ -110,7 +110,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
                 return pageResp;
             }
             ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
-            reader.addHeaderAlias("车型", "vehicleModel");
+            reader.addHeaderAlias("车辆型号", "vehicleModel");
             reader.addHeaderAlias("手机品牌", "phoneBrand");
             reader.addHeaderAlias("手机型号", "phoneModel");
             reader.addHeaderAlias("车辆品牌", "vehicleBrand");
