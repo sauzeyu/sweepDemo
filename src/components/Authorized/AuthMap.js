@@ -26,8 +26,19 @@ export const AFTERMARKET_REPLACEMENT_INFO_EXPORT =
 // ------ 日志管理 ------
 export const LOG_USE_EXPORT = '/log/use/export';
 
-// ------ 安全测试用例 ------
-export const SECURITYTESTCASE_DOWNLOAD = '/securityTestCase/download';
-export const SECURITYTESTCASE_DEL = '/securityTestCase/del';
-export const SECURITYTESTCASE_ADD = '/securityTestCase/add';
-export const SECURITYTESTCASE_UPDATE = '/securityTestCase/update';
+// ------ 页面权限 ------
+export const STATISTICS = '/statistics';
+
+export const DASHBOARD_ZIPKIN = '/dashboard/zipkin';
+export const DASHBOARD_ADMIN = '/dashboard/admin';
+
+export const KEYS_INFO = '/keys/info';
+export const CARS_BLUETOOTH = '/cars/bluetooth';
+export const CARS_VEHICLE = '/cars/vehicle';
+export const CARS_PHONE = '/cars/phone';
+export const AFTERMARKET_REPLACEMENT_INFO = '/aftermarketReplacement/info';
+export const LOG_USE = '/log/use';
+
+export const SYSTEM_USER_MANAGE = '/sys/userManage';
+export const SYSTEM_USER_ROLES = '/sys/userRoles';
+export const SYSTEM_USER_RESOURCE = '/sys/userResource';
