@@ -84,6 +84,9 @@ public class DkmRoleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateRoleById(RoleDTO role) {
+        if (CollUtil.isEmpty(role.getMenuList())) { // 菜单列表为空则完成更新
+            return PageResp.fail("权限不能为空");
+        }
         DkmRole dkmRole = new DkmRole();
         BeanUtils.copyProperties(role, dkmRole);
         // 重复性校验 code 和 name 不能重复 否则数据库报错
@@ -93,38 +96,29 @@ public class DkmRoleServiceImpl {
         if (countCode.intValue() > 1){
             return PageResp.fail("权限代号或角色名重复");
         }
-//        Integer countName = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, dkmRole.getRoleName()));
-//        if (countName.intValue() == 1){
-//            return PageResp.fail("角色名重复");
-//        }
         dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, dkmRole.getId()));
-        dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId()));
-        if (CollUtil.isEmpty(role.getMenuList())) {
+        dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId())); // 删除原来所有权限角色关系
+        for (String menuId : role.getMenuList()) {
+            DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();
+            dkmRoleMenu.setRoleId(role.getId());
+            dkmRoleMenu.setMenuId(Integer.parseInt(menuId));
+            dkmRoleMenuMapper.insert(dkmRoleMenu);
+        }
+        // 修改了角色权限后删除该角色对应所有账号的token
+        List<DkmAdminRole> dkmAdminRoles = dkmAdminRoleMapper.selectList(new LambdaQueryWrapper<DkmAdminRole>().eq(DkmAdminRole::getRoleId, role.getId()));
+        if (Objects.isNull(dkmAdminRoles)) { // 角色没有对应用户
             return PageResp.success("操作成功");
         } else {
-            for (String menuId : role.getMenuList()) {
-                DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();
-                dkmRoleMenu.setRoleId(role.getId());
-                dkmRoleMenu.setMenuId(Integer.parseInt(menuId));
-                dkmRoleMenuMapper.insert(dkmRoleMenu);
-            }
-            // 修改了角色权限后删除该角色对应所有账号的token
-            List<DkmAdminRole> dkmAdminRoles = dkmAdminRoleMapper.selectList(new LambdaQueryWrapper<DkmAdminRole>().eq(DkmAdminRole::getRoleId, role.getId()));
-            if (Objects.isNull(dkmAdminRoles)) { // 角色没有对应用户
-                return PageResp.success("操作成功");
-            } else {
-                for (DkmAdminRole dkmAdminRole : dkmAdminRoles) {
-                    Integer adminId = dkmAdminRole.getAdminId();
-                    DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminId);
-                    if (dkmAdmin != null) {
-                        String username = dkmAdmin.getUsername();
-                        // 根据用户名找到token 然后删除
-                        Boolean delete = redisTemplate.delete(username);
-                    }
+            for (DkmAdminRole dkmAdminRole : dkmAdminRoles) {
+                Integer adminId = dkmAdminRole.getAdminId();
+                DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminId);
+                if (dkmAdmin != null) {
+                    String username = dkmAdmin.getUsername();
+                    // 根据用户名找到token 然后删除
+                    Boolean delete = redisTemplate.delete(username);
                 }
             }
         }
-
         return PageResp.success("操作成功");
     }
 

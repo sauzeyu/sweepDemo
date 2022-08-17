@@ -11,6 +11,6 @@ public class InsertAdminVO {
     private String extraInfo;
     private String creator;
     private Date createTime;
-    private Integer role;
+    private Integer roleId;
 
 }

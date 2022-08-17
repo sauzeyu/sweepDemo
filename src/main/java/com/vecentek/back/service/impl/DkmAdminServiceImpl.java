@@ -76,32 +76,26 @@ public class DkmAdminServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateAdminById(AdminVO adminVO) {
-        //TODO 需要将校验失败信息传入到message中 如修改用户名占用 需将错误信息放入catch中传入message
-
         DkmAdmin admin = new DkmAdmin();
         BeanUtils.copyProperties(adminVO, admin);
-
         LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>().eq(DkmAdmin::getId, admin.getId())
                 .set(DkmAdmin::getExtraInfo, admin.getExtraInfo())
                 .set(DkmAdmin::getUsername, admin.getUsername());
-
         try {
             dkmAdminMapper.update(null, lambdaUpdateWrapper);
         } catch (Exception e) {
             e.printStackTrace();
             return PageResp.success("用户名重复");
         }
-
-
         //删除此账户原有 账户-角色关系
         dkmAdminRoleMapper.deleteByAdminId(adminVO.getId());
-        DkmAdminRole dkmAdminRole = new DkmAdminRole();
-        dkmAdminRole.setAdminId(adminVO.getId());
-        if (Objects.isNull(adminVO.getRoleList())) {
+        if (Objects.isNull(adminVO.getRoleId())) {
             return PageResp.success("更新成功");
         } else {
+            DkmAdminRole dkmAdminRole = new DkmAdminRole();
+            dkmAdminRole.setAdminId(adminVO.getId());
             //根据角色名称查询id,插入中间表
-            dkmAdminRole.setRoleId(dkmRoleMapper.selectOne(new LambdaQueryWrapper<DkmRole>().eq(DkmRole::getRoleName, adminVO.getRoleList())).getId());
+            dkmAdminRole.setRoleId(adminVO.getRoleId());
             dkmAdminRoleMapper.insert(dkmAdminRole);
             // 涉及到权限需要清除redis中的token
             // 根据用户名找到token 然后删除
@@ -150,26 +144,24 @@ public class DkmAdminServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insert(InsertAdminVO insertAdminVO) {
-        if (StrUtil.hasBlank(insertAdminVO.getUsername(), insertAdminVO.getPassword())) {
+        if (StrUtil.hasBlank(insertAdminVO.getUsername(), insertAdminVO.getPassword()) || Objects.isNull(insertAdminVO.getRoleId())) {
             return PageResp.fail(9001, "必填参数未传递");
         }
-        DkmAdmin admin = new DkmAdmin();
-        BeanUtils.copyProperties(insertAdminVO, admin);
         DkmAdmin alreadyExistAdmin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery()
-                .eq(DkmAdmin::getUsername, admin.getUsername()));
+                .eq(DkmAdmin::getUsername, insertAdminVO.getUsername()));
         if (alreadyExistAdmin != null) {
             return PageResp.fail(500, "用户已存在");
         }
+        DkmAdmin admin = new DkmAdmin();
+        BeanUtils.copyProperties(insertAdminVO, admin);
         admin.setCreateTime(new Date());
         dkmAdminMapper.insert(admin);
         // 新建用户角色中间表
-        Integer role = insertAdminVO.getRole();
-        //for (Integer integer : role) {
+        Integer roleId = insertAdminVO.getRoleId();
         DkmAdminRole dkmAdminRole = new DkmAdminRole();
         dkmAdminRole.setAdminId(admin.getId());
-        dkmAdminRole.setRoleId(role);
+        dkmAdminRole.setRoleId(roleId);
         dkmAdminRoleMapper.insert(dkmAdminRole);
-        //}
         return PageResp.success("新增成功");
     }
 }
