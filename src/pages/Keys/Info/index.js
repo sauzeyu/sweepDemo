@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Card } from 'antd';
 import SearchForm from './SearchForm';
 import DataTable from './DataTable';
+import Authorized from '@/components/Authorized';
+import { KEYS_INFO } from '@/components/Authorized/AuthMap';
+
 /**
  * 汽车类型
  */
@@ -14,17 +17,20 @@ class Index extends Component {
   state = {
     searchFormValues: {},
   };
+
   render() {
     const { searchFormValues } = this.state;
     return (
-      <div className={'card-group'}>
-        <Card bordered={false}>
-          <SearchForm getFormValues={this.getFormValues} />
-        </Card>
-        <Card bordered={false}>
-          <DataTable searchFormValues={searchFormValues} />
-        </Card>
-      </div>
+      <Authorized route={KEYS_INFO}>
+        <div className={'card-group'}>
+          <Card bordered={false}>
+            <SearchForm getFormValues={this.getFormValues} />
+          </Card>
+          <Card bordered={false}>
+            <DataTable searchFormValues={searchFormValues} />
+          </Card>
+        </div>
+      </Authorized>
     );
   }
 }
