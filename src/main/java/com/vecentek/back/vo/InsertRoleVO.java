@@ -1,5 +1,6 @@
 package com.vecentek.back.vo;
 
+import com.vecentek.back.entity.DkmRole;
 import lombok.Data;
 
 import java.util.List;

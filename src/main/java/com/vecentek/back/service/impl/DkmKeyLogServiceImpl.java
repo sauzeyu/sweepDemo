@@ -283,7 +283,7 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("statusCode", "操作类型");
         writer.addHeaderAlias("flag", "操作结果");
         writer.addHeaderAlias("errorReason", "失败原因");
-        writer.addHeaderAlias("errorReason", "展示故障码");
+        writer.addHeaderAlias("operationType", "操作码");
     }
 
     /**
@@ -337,7 +337,7 @@ public class DkmKeyLogServiceImpl {
         if (!keyLogList.isEmpty()) {
 
             keyLogList.forEach(keyLog -> {
-                keyLog.setStatusCode(KeyStatusCodeEnum.matchName(keyLog.getStatusCode()));
+                keyLog.setOperationType(KeyStatusCodeEnum.matchName(keyLog.getStatusCode()));
                 if (keyLog.getFlag() != null && keyLog.getFlag() == 0) {
                     if (KeyStatusCodeEnum.SAFE_BLUETOOTH_DISCONNECT.getName().equals(keyLog.getStatusCode())) {
                         keyLog.setErrorReason(BluetoothErrorReasonEnum.matchReason(keyLog.getErrorReason()));

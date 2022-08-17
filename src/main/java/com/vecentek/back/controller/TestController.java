@@ -66,8 +66,7 @@ public class TestController {
         entity.setTitle(DateUtil.date().toString("yyyy-MM-dd HH:mm:ss"));
         entity.setCont(entity.getTitle());
         domeMapper.insert(entity);
-        return entity;
-    }
+        return entity;    }
 
     @ApiOperation("分表后更新")
     @GetMapping("/update")

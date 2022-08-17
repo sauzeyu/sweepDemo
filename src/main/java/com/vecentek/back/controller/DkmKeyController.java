@@ -250,19 +250,5 @@ public class DkmKeyController {
                 dkStates,
                 creator);
     }
-    @GetMapping("/add")
-    public Object add() throws ParseException {
-        DkmKey dkmKey = new DkmKey();
-        //分表是跟进创建时间， 创建时间必须要有值， 也可以使用mybatis的自动填充功能
-        dkmKey.setId(String.valueOf(IdUtil.getSnowflakeNextId()));
-        dkmKey.setVehicleId(1);
-        dkmKey.setDkState(2);
-        dkmKey.setPermissions(4);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse("2022-09-01 00:00:00");
-        dkmKey.setApplyTime(date);
 
-        dkmKeyMapper.insert(dkmKey);
-        return dkmKey;
-    }
 }

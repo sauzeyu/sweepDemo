@@ -179,21 +179,5 @@ public class DkmKeyLogController {
     }
 
 
-    @GetMapping("/add")
-    public Object add() throws ParseException {
-        DkmKeyLog dkmKeyLog = new DkmKeyLog();
-        //分表是跟进创建时间， 创建时间必须要有值， 也可以使用mybatis的自动填充功能
-        dkmKeyLog.setId(IdUtil.getSnowflakeNextId());
-        dkmKeyLog.setVin(DateUtil.date().toString("yyyy-MM-dd HH:mm:ss"));
-        dkmKeyLog.setKeyId("keyId");
-        dkmKeyLog.setFlag(1);
-        dkmKeyLog.setStatusCode("s");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse("2022-09-01 00:00:00");
-        dkmKeyLog.setOperateTime(date);
-
-        dkmKeyLogMapper.insert(dkmKeyLog);
-        return dkmKeyLog;
-    }
 
 }
