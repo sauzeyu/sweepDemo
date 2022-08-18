@@ -17,6 +17,7 @@ import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.back.util.DownLoadUtil;
 import com.vecentek.common.response.PageResp;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -53,6 +54,10 @@ public class DkmAftermarketReplacementServiceImpl {
 
 
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String startTime, String endTime) {
+        // 清洗
+        if (StringUtils.isNotBlank(vin)) {
+            vin = vin.trim();
+        }
         Page<DkmAftermarketReplacement> page = new Page<>(pageIndex, pageSize);
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmAftermarketReplacement::getVin, vin)
@@ -90,6 +95,9 @@ public class DkmAftermarketReplacementServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public void downloadAftermarketReplacement(String vin, String startTime, String endTime, Boolean isXls, String creator, HttpServletResponse response) throws UnsupportedEncodingException {
+        if (StringUtils.isNotBlank(vin)) {
+            vin = vin.trim();
+        }
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
         String fileName = timeList.get(FileConstant.FILENAME);
@@ -98,8 +106,9 @@ public class DkmAftermarketReplacementServiceImpl {
 
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmAftermarketReplacement::getVin, vin)
-                .ge(startTime != null, DkmAftermarketReplacement::getReplacementTime, startTime)
-                .le(endTime != null, DkmAftermarketReplacement::getReplacementTime, endTime);
+                .ge(StrUtil.isNotBlank(startTime), DkmAftermarketReplacement::getReplacementTime, startTime)
+                .le(StrUtil.isNotBlank(endTime), DkmAftermarketReplacement::getReplacementTime, endTime)
+                .orderByDesc(DkmAftermarketReplacement::getReplacementTime);
         List<DkmAftermarketReplacement> replacementDataList = dkmAftermarketReplacementMapper.selectList(queryWrapper);
         String suffix = null;
         if (isXls == null) {

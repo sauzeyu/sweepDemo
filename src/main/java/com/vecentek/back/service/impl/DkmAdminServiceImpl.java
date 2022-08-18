@@ -18,6 +18,7 @@ import com.vecentek.back.mapper.DkmRoleMapper;
 import com.vecentek.back.vo.AdminVO;
 import com.vecentek.back.vo.InsertAdminVO;
 import com.vecentek.common.response.PageResp;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -76,16 +77,25 @@ public class DkmAdminServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateAdminById(AdminVO adminVO) {
+        if (StringUtils.isBlank(adminVO.getUsername()) || Objects.isNull(adminVO.getRoleId())) {
+            return PageResp.fail("用户名或权限不能为空");
+        }
+        Integer countCode = dkmAdminMapper.selectCount(new QueryWrapper<DkmAdmin>().lambda().eq(DkmAdmin::getUsername, adminVO.getUsername()));
+        if (countCode.intValue() > 1){
+            return PageResp.fail("用户名重复");
+        }
         DkmAdmin admin = new DkmAdmin();
         BeanUtils.copyProperties(adminVO, admin);
-        LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>().eq(DkmAdmin::getId, admin.getId())
+        LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>()
+                .eq(DkmAdmin::getId, admin.getId())
                 .set(DkmAdmin::getExtraInfo, admin.getExtraInfo())
-                .set(DkmAdmin::getUsername, admin.getUsername());
+                .set(DkmAdmin::getUsername, admin.getUsername())
+                .set(DkmAdmin::getUpdateTime,adminVO.getUpdateTime());
         try {
             dkmAdminMapper.update(null, lambdaUpdateWrapper);
         } catch (Exception e) {
             e.printStackTrace();
-            return PageResp.success("用户名重复");
+            return PageResp.fail("更新失败");
         }
         //删除此账户原有 账户-角色关系
         dkmAdminRoleMapper.deleteByAdminId(adminVO.getId());

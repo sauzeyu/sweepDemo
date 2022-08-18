@@ -94,7 +94,7 @@ public class DkmRoleServiceImpl {
                 .or()
                 .eq(DkmRole::getRoleName, dkmRole.getRoleName()));
         if (countCode.intValue() > 1){
-            return PageResp.fail("权限代号或角色名重复");
+            return PageResp.fail("角色代码或角色名重复");
         }
         dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, dkmRole.getId()));
         dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId())); // 删除原来所有权限角色关系

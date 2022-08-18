@@ -6,6 +6,7 @@ import com.vecentek.back.entity.DkmAdmin;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.mapper.DkmAdminMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -42,8 +43,10 @@ public class FakeDataTest {
 
     @Test
     public void select() {
-        DkmAdmin admin = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().eq("username", "ADMIN"));
-        System.out.println(admin);
+//        DkmAdmin admin = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().eq("username", "ADMIN"));
+//        System.out.println(admin);
+
+        System.out.println(StringUtils.capitalize("userRoles"));
     }
 
 }
