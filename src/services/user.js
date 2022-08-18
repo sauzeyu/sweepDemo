@@ -21,11 +21,12 @@ export async function modifyPassword(params) {
 }
 
 function decorateUserInfo(res) {
-  message.config({
-    maxCount: 1,
-  });
   if (res.code === 401) {
-    message.error('账号或密码不正确').then((r) => {});
+    message.destroy('error');
+    message.error({
+      content: '账号或密码不正确',
+      key: 'error',
+    });
   }
 
   const userInfo = {

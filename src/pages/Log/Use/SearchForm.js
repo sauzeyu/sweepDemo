@@ -45,10 +45,10 @@ class SearchForm extends Component {
         if (errors) return;
       });
   };
-  componentDidMount() {
-    //
-  }
-  componentWillUnmount() {}
+  // componentDidMount() {
+  //   //
+  // }
+  // componentWillUnmount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log(

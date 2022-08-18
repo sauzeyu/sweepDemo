@@ -13,12 +13,19 @@ export default class EditForm extends Component {
     menus: [],
     checkedKeys: [],
     selectedKeys: [],
+    flag: true,
   };
 
   componentWillReceiveProps(nextProps, nextContext) {
     this.setState({
       checkedKeys: nextProps.keyList,
     });
+  }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.form.current && this.state.flag) {
+      this.form.current.setFieldsValue({ menuList: this.state.checkedKeys });
+      this.setState({ flag: false });
+    }
   }
 
   componentDidMount() {
@@ -28,7 +35,7 @@ export default class EditForm extends Component {
 
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
-      values.menuList = this.state.keys;
+      // values.menuList = this.state.keys;
       console.log('values', values);
 
       values.updator =
@@ -61,6 +68,7 @@ export default class EditForm extends Component {
         this.setState({
           menus: res.data,
         });
+        // this.form.current.setFieldsValue({menuList:res.data})
       })
       .catch((e) => {
         Modal.error({
@@ -77,6 +85,7 @@ export default class EditForm extends Component {
       checkedKeys: checkedKeys,
       keys: checkedKeysResult,
     });
+    this.form.current.setFieldsValue({ menuList: checkedKeys });
   };
 
   onSelect = (checkedKeys, info) => {
@@ -89,9 +98,12 @@ export default class EditForm extends Component {
     });
     this.state.selectedKeys = checkedKeysResult;
     console.log('this.state.checkedKeys', this.state.checkedKeys);
+    debugger;
   };
-
-  onLoad = (loadedKeys, tree) => {};
+  onLoad = (loadedKeys, tree) => {
+    console.log('loadedKeys', loadedKeys);
+    console.log('tree', tree);
+  };
   changeSubmit = () => {
     this.props.finish(true);
   };
@@ -127,14 +139,28 @@ export default class EditForm extends Component {
         <Form.Item
           label={'角色代码'}
           name="code"
-          rules={[{ required: true, message: '角色代码不能为空' }]}
+          rules={[
+            { required: true, message: '角色代码不能为空' },
+
+            {
+              pattern: new RegExp(/^[0-9]*$/),
+              message: '角色代码只能是数字',
+            },
+          ]}
         >
           <Input maxLength={5} placeholder={'角色代码'} />
         </Form.Item>
         <Form.Item
           label={'菜单权限'}
           name={'menuList'}
-          rules={[{ required: true, message: '菜单权限不能为空' }]}
+          rules={[
+            {
+              required: true,
+              message: '菜单权限不能为空',
+              defaultField: [],
+              type: 'array',
+            },
+          ]}
         >
           {menus.length > 0 && (
             <Tree

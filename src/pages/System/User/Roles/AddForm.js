@@ -30,10 +30,10 @@ export default class AddForm extends Component {
 
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
-      values.menuList = this.state.keys;
+      // values.menuList = this.state.keys;
       console.log('values', values);
       values.code = values.code + '';
-      debugger;
+
       insert(values).then(
         (res) => {
           if (res.code === 200) {
@@ -78,6 +78,7 @@ export default class AddForm extends Component {
       checkedKeys: checkedKey,
       keys: checkedKeysResult,
     });
+    this.form.current.setFieldsValue({ menuList: checkedKey });
   };
   onLoad = (loadedKeys, tree) => {};
 
@@ -117,9 +118,15 @@ export default class AddForm extends Component {
         <Form.Item
           label={'角色代码'}
           name="code"
-          rules={[{ required: true, message: '角色代码不能为空' }]}
+          rules={[
+            { required: true, message: '角色代码不能为空' },
+            {
+              pattern: new RegExp(/^[0-9]*$/),
+              message: '角色代码只能是数字',
+            },
+          ]}
         >
-          <InputNumber
+          <Input
             style={{ width: 200 }}
             maxLength={5}
             placeholder={'角色代码'}
@@ -128,7 +135,14 @@ export default class AddForm extends Component {
         <Form.Item
           label={'菜单权限'}
           name={'menuList'}
-          rules={[{ required: true, message: '菜单权限不能为空' }]}
+          rules={[
+            {
+              required: true,
+              message: '菜单权限不能为空',
+              defaultField: [],
+              type: 'array',
+            },
+          ]}
         >
           {menus.length > 0 && (
             <Tree

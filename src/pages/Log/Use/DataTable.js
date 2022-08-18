@@ -189,6 +189,18 @@ class DataTable extends Component {
       ),
     },
     {
+      title: '操作码',
+      dataIndex: 'statusCode',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
+    },
+    {
       title: '操作类型',
       dataIndex: 'operationType',
     },
@@ -202,18 +214,6 @@ class DataTable extends Component {
     {
       title: '失败原因',
       dataIndex: 'errorReason',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (text) => (
-        <Tooltip placement="topLeft" title={text}>
-          {text}
-        </Tooltip>
-      ),
-    },
-    {
-      title: '操作码',
-      dataIndex: 'statusCode',
       ellipsis: {
         showTitle: false,
       },
@@ -238,6 +238,7 @@ class DataTable extends Component {
 
   exportExcel = () => {
     console.log(this.props);
+    debugger;
     let creator = getDvaApp()._store.getState().user.currentUser.username;
     let startTime = this.props.searchFormValues[0];
     let phoneBrand = this.props.searchFormValues[1];
@@ -246,7 +247,8 @@ class DataTable extends Component {
     let vin = this.props.searchFormValues[4];
     let flag = this.props.searchFormValues[5];
     let userId = this.props.searchFormValues[6];
-    let vehicleModel = this.props.searchFormValues[7];
+    let vehicleBrand = this.props.searchFormValues[7];
+    let vehicleModel = this.props.searchFormValues[8];
     let vehicleType = this.props.searchFormValues[9];
     let fileName = '钥匙记录.xlsx';
     let param = new URLSearchParams();
