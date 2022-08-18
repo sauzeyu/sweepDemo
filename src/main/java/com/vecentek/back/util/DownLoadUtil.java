@@ -123,6 +123,17 @@ public class DownLoadUtil {
     }
 
     /**
+     * 获取明年的第一天
+     * @param
+     * @return
+     */
+    public static String getTommorwYearFirst(){
+        Calendar currCal=Calendar.getInstance();
+        int currentYear = currCal.get(Calendar.YEAR);
+        return getYearFirst(currentYear + 1);
+    }
+
+    /**
      * 获取当年的最后一天
      * @param
      * @return

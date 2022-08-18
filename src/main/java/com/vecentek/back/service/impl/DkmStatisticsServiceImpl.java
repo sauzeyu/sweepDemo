@@ -90,9 +90,8 @@ public class DkmStatisticsServiceImpl {
     }
     public PageResp selectVehicleAndKeyAndKeyLogTotal() {
         // 获取分表字段的开始日期与结束日期
-        Date[] time = getTime();
-        Date startTime = time[0];
-        Date endTime = time[1];
+        String startTime = DownLoadUtil.getCurrYearFirst();
+        String endTime = DownLoadUtil.getTommorwYearFirst();
         int totalVehicles = dkmVehicleMapper.selectCount(null);
         int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
                 .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)

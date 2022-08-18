@@ -126,7 +126,7 @@ public class DkmRoleServiceImpl {
     public PageResp insert(InsertRoleVO roleVO) {
         DkmRole role = new DkmRole();
         if (roleVO.getMenuList() == null || roleVO.getMenuList().size() == 0) {
-            return PageResp.fail("菜单权限不能未空！");
+            return PageResp.fail("菜单权限不能为空！");
         }
         if (StrUtil.isBlank(roleVO.getRoleName()) || roleVO.getCode() == null) {
             return PageResp.fail("角色名称或角色代码不能为空！");

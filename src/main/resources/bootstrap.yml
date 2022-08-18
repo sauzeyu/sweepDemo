@@ -1,19 +1,22 @@
-#本地环境配置
 spring:
   application:
-    name: dkserver-back
+    name: @project.artifactId@
   profiles:
     active: foton
   cloud:
     nacos:
       discovery:
-        server-addr: 172.16.13.13:8848 # 注册中心地址
-        ip: 172.16.11.210
-        namespace: foton
+        ip: 172.16.38.213
+        namespace: ${spring.profiles.active}
       config:
-        server-addr: 172.16.13.13:8848  # config地址
-        enabled: true # 是否开启
-        refresh-enabled: true # 是否开启自动刷新
+        server-addr: 172.16.13.13:8848  #  配置中心地址
         file-extension: yaml # 指定配置文件类型
-        namespace: foton
         group: liujz
+        namespace: ${spring.profiles.active}
+        shared-configs:
+          - data-id: common.yaml
+            refresh: true
+            group: common
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志

@@ -279,11 +279,17 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("phoneModel", "手机型号");
         writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleModel", "车辆型号");
+
+
+
         writer.addHeaderAlias("operateTime", "操作时间");
-        writer.addHeaderAlias("statusCode", "操作类型");
+
+
+        writer.addHeaderAlias("statusCode", "操作码");
+        writer.addHeaderAlias("operationType", "操作类型");
         writer.addHeaderAlias("flag", "操作结果");
         writer.addHeaderAlias("errorReason", "失败原因");
-        writer.addHeaderAlias("operationType", "操作码");
+
     }
 
     /**
