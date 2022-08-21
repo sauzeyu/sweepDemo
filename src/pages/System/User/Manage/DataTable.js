@@ -110,13 +110,18 @@ export class DataTable extends Component {
     getAdminRoleNameById(user.id).then(
       (res) => {
         roleList = res.data;
+
         this.setState(
           {
             userInfoVisible: true,
           },
           () => {
             if (user) {
-              user.roleList = roleList;
+              // user.roleId
+              user.roleId = roleList;
+              console.log(user);
+              debugger;
+              // this.editForm.current?.setFieldsValue(user);
               this.editForm?.setFieldsValue(user);
             }
           },

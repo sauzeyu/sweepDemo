@@ -94,7 +94,9 @@ export default class EditForm extends Component {
           rules={[
             { required: true, message: '姓名不能为空' },
             {
-              pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
+              // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
+              pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
+
               message: '用户名不能有特殊字符',
             },
           ]}

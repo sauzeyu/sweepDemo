@@ -132,7 +132,16 @@ export default class EditForm extends Component {
         <Form.Item
           label={'角色名称'}
           name="roleName"
-          rules={[{ required: true, message: '角色名称不能为空' }]}
+          rules={[
+            { required: true, message: '角色名称不能为空' },
+
+            {
+              // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
+              pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
+
+              message: '角色名称不能有特殊字符',
+            },
+          ]}
         >
           <Input maxLength={40} placeholder={'角色名称'} />
         </Form.Item>
