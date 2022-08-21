@@ -33,10 +33,10 @@ public class DkmUserVehicleController {
         return dkmUserVehicleService.insertUserVehicle(userVehicle);
     }
 
-    @RequestMapping(value = "/updateUserVehicle", method = RequestMethod.POST)
-    public PageResp updateUserVehicle(@RequestBody UserChangeVO userChange) throws ParameterValidationException {
-        return dkmUserVehicleService.updateUserVehicle(userChange);
-    }
+    //@RequestMapping(value = "/updateUserVehicle", method = RequestMethod.POST)
+    //public PageResp updateUserVehicle(@RequestBody UserChangeVO userChange) throws ParameterValidationException {
+    //    return dkmUserVehicleService.updateUserVehicle(userChange);
+    //}
 
     /**
      * 车主注销(解除人车绑定关系)

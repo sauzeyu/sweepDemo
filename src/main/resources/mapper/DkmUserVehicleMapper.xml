@@ -11,18 +11,18 @@
         </foreach>
     </insert>
 
-    <update id="updateUserVehicle">
-        update dkm_user_vehicle
-        <set>
-            <if test="userChange.newUserId != null and userChange.newUserId != '' ">
-                user_id = #{userChange.newUserId},
-            </if>
-            <if test="userChange.buyVehicleTime != null and userChange.buyVehicleTime != '' ">
-                bind_time = #{userChange.buyVehicleTime},
-            </if>
-        </set>
-        where vin =#{userChange.vin}
-    </update>
+<!--    <update id="updateUserVehicle">-->
+<!--        update dkm_user_vehicle-->
+<!--        <set>-->
+<!--            <if test="userChange.newUserId != null and userChange.newUserId != '' ">-->
+<!--                user_id = #{userChange.newUserId},-->
+<!--            </if>-->
+<!--            <if test="userChange.buyVehicleTime != null and userChange.buyVehicleTime != '' ">-->
+<!--                bind_time = #{userChange.buyVehicleTime},-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where vin =#{userChange.vin}-->
+<!--    </update>-->
 
 
     <select id="selectVehicleByVin" resultType="java.lang.String">

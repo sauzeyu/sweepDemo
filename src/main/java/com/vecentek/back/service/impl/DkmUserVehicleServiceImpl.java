@@ -73,6 +73,7 @@ public class DkmUserVehicleServiceImpl {
         if (dkmUser == null) {
             dkmUser = new DkmUser();
             dkmUser.setPhone(userVehicle.getUserId());
+
             if (userVehicle.getUsername() != null) {
                 dkmUser.setUsername(userVehicle.getUsername());
             }
@@ -124,17 +125,17 @@ public class DkmUserVehicleServiceImpl {
         return PageResp.fail("系统繁忙，请稍后再试！");
     }
 
-    public PageResp updateUserVehicle(UserChangeVO userChange) throws ParameterValidationException {
-        log.info("request：" + "/api/userVehicle/updateUserVehicle " + userChange.toString());
-        if (userChange == null || StringUtils.isBlank(userChange.getVin())) {
-            throw new ParameterValidationException();
-        }
-        int i = dkmUserVehicleMapper.updateUserVehicle(userChange);
-        if (i != 1) {
-            throw new ParameterValidationException();
-        }
-        return PageResp.success("过户成功！");
-    }
+    //public PageResp updateUserVehicle(UserChangeVO userChange) throws ParameterValidationException {
+    //    log.info("request：" + "/api/userVehicle/updateUserVehicle " + userChange.toString());
+    //    if (userChange == null || StringUtils.isBlank(userChange.getVin())) {
+    //        throw new ParameterValidationException();
+    //    }
+    //    int i = dkmUserVehicleMapper.updateUserVehicle(userChange);
+    //    if (i != 1) {
+    //        throw new ParameterValidationException();
+    //    }
+    //    return PageResp.success("过户成功！");
+    //}
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) {
@@ -155,7 +156,7 @@ public class DkmUserVehicleServiceImpl {
         // 根据userId和vin查询中间表
         DkmUserVehicle dkmUserVehicle = dkmUserVehicleMapper.selectOne(Wrappers.<DkmUserVehicle>lambdaQuery()
                 .eq(DkmUserVehicle::getVin, vin)
-                .eq(DkmUserVehicle::getUserId, userId)
+                .eq(DkmUserVehicle::getPhone, userId)
                 .eq(DkmUserVehicle::getBindStatus, 1));
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
