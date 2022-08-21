@@ -1,11 +1,16 @@
 package com.vecentek.back;
 
+import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.vecentek.back.entity.DkmAdmin;
+import com.vecentek.back.entity.DkmBluetooths;
 import com.vecentek.back.entity.DkmKey;
+import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.mapper.DkmAdminMapper;
+import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
+import com.vecentek.back.mapper.DkmVehicleMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +24,10 @@ public class FakeDataTest {
     private DkmKeyMapper dkmKeyMapper;
     @Resource
     private DkmAdminMapper dkmAdminMapper;
+    @Resource
+    private DkmBluetoothsMapper dkmBluetoothsMapper;
+    @Resource
+    private DkmVehicleMapper dkmVehicleMapper;
 
     @Test
     public void insert() {
@@ -47,6 +56,58 @@ public class FakeDataTest {
 //        System.out.println(admin);
 
         System.out.println(StringUtils.capitalize("userRoles"));
+    }
+
+    /**
+     * 同时制造蓝牙表和车辆表测试数据
+     */
+    @Test
+    public void idTest() {
+        int num = 0;
+        for (int i = 0; i < 990; i++) {
+            String s = IdUtil.simpleUUID();
+            DkmBluetooths dkmBluetooths = new DkmBluetooths();
+            DkmVehicle dkmVehicle = new DkmVehicle();
+            String bleMac = RandomUtil.randomString(12).toUpperCase();
+            String bleSn = "30323130" + s.toUpperCase();
+            String searchNum = "503430" + s.toUpperCase();
+            String pk = RandomUtil.randomString(98).toUpperCase() + s.toUpperCase();
+            // 蓝牙
+            dkmBluetooths.setDkSecUnitId("AAAAAAA"); // 本次制造假数据标识符
+            dkmBluetooths.setHwDeviceSn(bleSn);
+            dkmBluetooths.setSearchNumber(searchNum);
+            dkmBluetooths.setHwDeviceProviderNo("P4001");
+            dkmBluetooths.setDkSdkVersion("1");
+            dkmBluetooths.setBleMacAddress(bleMac);
+            dkmBluetooths.setPubKey(pk);
+            dkmBluetooths.setCreateTime(new Date());
+            dkmBluetooths.setDigKey(RandomUtil.randomNumbers(64));
+            dkmBluetooths.setMasterKey(RandomUtil.randomNumbers(32));
+            dkmBluetooths.setFlag(1);
+            dkmBluetooths.setCreator("fakeDataTest");
+            int insert = dkmBluetoothsMapper.insert(dkmBluetooths);
+            // 车辆
+            dkmVehicle.setBleMacAddress(bleMac);
+            dkmVehicle.setHwDeviceProviderNo("P4001");
+            dkmVehicle.setHwDeviceSn(bleSn);
+            dkmVehicle.setDkSecUnitId("AAAAAAA");
+            dkmVehicle.setSearchNumber(searchNum);
+            dkmVehicle.setVin(RandomUtil.randomString(17).toUpperCase());
+            dkmVehicle.setVehicleModel("P4");
+            dkmVehicle.setVehicleBrand("福田");
+            dkmVehicle.setVehicleType("大将军");
+            dkmVehicle.setHwDeviceProviderNo("P4001");
+            dkmVehicle.setPubKey(pk);
+            dkmVehicle.setCreateTime(new Date());
+            dkmVehicle.setCreator("fakeDataTest");
+            int insert1 = dkmVehicleMapper.insert(dkmVehicle);
+
+            if (insert == 1 && insert1 == 1){
+                num ++;
+            }
+        }
+
+        System.out.println("成功插入" + num + "条");
     }
 
 }

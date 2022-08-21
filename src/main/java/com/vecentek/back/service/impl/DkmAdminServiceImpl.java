@@ -80,16 +80,14 @@ public class DkmAdminServiceImpl {
         if (StringUtils.isBlank(adminVO.getUsername()) || Objects.isNull(adminVO.getRoleId())) {
             return PageResp.fail("用户名或权限不能为空");
         }
-        Integer countCode = dkmAdminMapper.selectCount(new QueryWrapper<DkmAdmin>().lambda().eq(DkmAdmin::getUsername, adminVO.getUsername()));
-        if (countCode.intValue() > 1){
+        DkmAdmin dkmAdmin = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().lambda().eq(DkmAdmin::getUsername, adminVO.getUsername()));
+        if ( ObjectUtil.isNotNull(dkmAdmin) && ObjectUtil.notEqual(dkmAdmin.getId(),adminVO.getId())){ // if(admin!=null 并且id不相等){}
             return PageResp.fail("用户名重复");
         }
-        DkmAdmin admin = new DkmAdmin();
-        BeanUtils.copyProperties(adminVO, admin);
         LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>()
-                .eq(DkmAdmin::getId, admin.getId())
-                .set(DkmAdmin::getExtraInfo, admin.getExtraInfo())
-                .set(DkmAdmin::getUsername, admin.getUsername())
+                .eq(DkmAdmin::getId, adminVO.getId())
+                .set(DkmAdmin::getExtraInfo, adminVO.getExtraInfo())
+                .set(DkmAdmin::getUsername, adminVO.getUsername())
                 .set(DkmAdmin::getUpdateTime,adminVO.getUpdateTime());
         try {
             dkmAdminMapper.update(null, lambdaUpdateWrapper);
@@ -99,19 +97,20 @@ public class DkmAdminServiceImpl {
         }
         //删除此账户原有 账户-角色关系
         dkmAdminRoleMapper.deleteByAdminId(adminVO.getId());
-        if (Objects.isNull(adminVO.getRoleId())) {
-            return PageResp.success("更新成功");
-        } else {
+        if (ObjectUtil.isNotNull(adminVO.getRoleId())){
             DkmAdminRole dkmAdminRole = new DkmAdminRole();
             dkmAdminRole.setAdminId(adminVO.getId());
             //根据角色名称查询id,插入中间表
             dkmAdminRole.setRoleId(adminVO.getRoleId());
             dkmAdminRoleMapper.insert(dkmAdminRole);
-            // 涉及到权限需要清除redis中的token
-            // 根据用户名找到token 然后删除
-            Boolean delete = redisTemplate.delete(adminVO.getUsername());
-            return PageResp.success("更新成功");
         }
+        // 涉及到权限需要清除redis中的token
+        // 根据用户名找到token 然后删除
+        Boolean delete = redisTemplate.delete(adminVO.getUsername());
+        if (!delete) {
+            return PageResp.fail(9100, "Redis删除token失败，或用户token已失效");
+        }
+        return PageResp.success("更新成功");
 
 
     }
@@ -159,8 +158,8 @@ public class DkmAdminServiceImpl {
         }
         DkmAdmin alreadyExistAdmin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery()
                 .eq(DkmAdmin::getUsername, insertAdminVO.getUsername()));
-        if (alreadyExistAdmin != null) {
-            return PageResp.fail(500, "用户已存在");
+        if (ObjectUtil.isNotNull(alreadyExistAdmin)) {
+            return PageResp.fail(500, "该用户名已存在");
         }
         DkmAdmin admin = new DkmAdmin();
         BeanUtils.copyProperties(insertAdminVO, admin);

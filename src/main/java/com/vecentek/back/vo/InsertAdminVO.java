@@ -1,16 +1,12 @@
 package com.vecentek.back.vo;
 
+import com.vecentek.back.entity.DkmAdmin;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
-public class InsertAdminVO {
-    private String username;
-    private String password;
-    private String extraInfo;
-    private String creator;
-    private Date createTime;
+public class InsertAdminVO extends DkmAdmin {
     private Integer roleId;
 
 }
