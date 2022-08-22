@@ -264,6 +264,7 @@ public class DkmKeyLogServiceImpl {
         writer.setColumnWidth(6, 20);
         writer.setColumnWidth(7, 20);
         writer.setColumnWidth(8, 20);
+        writer.setColumnWidth(9, 20);
 
 
         writer.addHeaderAlias("vin", "车辆vin号");
