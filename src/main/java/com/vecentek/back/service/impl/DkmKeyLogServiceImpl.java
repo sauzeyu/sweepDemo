@@ -58,24 +58,10 @@ public class DkmKeyLogServiceImpl {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         if (
-                //CharSequenceUtil.isBlank(vin)
-                //&& CharSequenceUtil.isBlank(userId)
+                CharSequenceUtil.isBlank(startTime)
+                        && CharSequenceUtil.isBlank(endTime)
 
-                 CharSequenceUtil.isBlank(startTime)
-                && CharSequenceUtil.isBlank(endTime)
-
-                //&& CharSequenceUtil.isBlank(phoneBrand)
-                //&& CharSequenceUtil.isBlank(phoneModel)
-                //&& ObjectUtil.isNull(statusCode)
-                //&& flag == null
-                //&& CharSequenceUtil.isBlank(vehicleBrand)
-                //&& CharSequenceUtil.isBlank(vehicleModel)
-                //&& CharSequenceUtil.isBlank(vehicleType)
-
-        ){
-            //List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, null);
-            //startTime = timeList.get(FileConstant.STARTTIME);
-            //endTime = timeList.get(FileConstant.ENDTIME);
+        ) {
             startTime = DownLoadUtil.getSysDate();
             endTime = DownLoadUtil.getNextDay();
 
@@ -144,6 +130,12 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleType,
                                     String creator)  {
 
+        if (CharSequenceUtil.isBlank(startTime)){
+            startTime = DownLoadUtil.getSysDate();
+        }
+        if (CharSequenceUtil.isBlank(endTime)){
+            endTime = DownLoadUtil.getNextDay();
+        }
         // 1.1 形成文件名
         String excelName = "钥匙使用记录-" + System.currentTimeMillis();
 
@@ -187,9 +179,9 @@ public class DkmKeyLogServiceImpl {
         Integer sum = dkmKeyLogMapper.selectCount(queryWrapper);
         // 3.2每次分页数据量10W (SXXSF 最大分页100W)
         Integer end = 100000;
-
+        System.out.println("end ="+end);
         List<DkmKeyLog> dkmKeyLogs;
-
+        System.out.println("sum ="+sum);
 
         // 4 将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
         try {
@@ -277,6 +269,8 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("userId", "用户id");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
         writer.addHeaderAlias("phoneModel", "手机型号");
+        writer.addHeaderAlias("vehicleType", "车型");
+
         writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleModel", "车辆型号");
 
@@ -322,7 +316,10 @@ public class DkmKeyLogServiceImpl {
                                           String vehicleType,
                                           Integer start,
                                           Integer end) {
+if(1==1){
 
+    System.out.println("DkmKeyLogServiceImpl.getDkmKeyLogs");
+}
         // 4.1.1根据条件查出库中对应记录数据
         LambdaQueryWrapper<DkmKeyLog> queryWrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
