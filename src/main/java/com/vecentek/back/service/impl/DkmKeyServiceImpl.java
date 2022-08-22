@@ -2,7 +2,6 @@ package com.vecentek.back.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -10,11 +9,9 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.constant.FileConstant;
 import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.DkmKeyDTO;
 import com.vecentek.back.entity.DkmKey;
@@ -25,7 +22,6 @@ import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
-import com.vecentek.back.util.DownLoadUtil;
 import com.vecentek.back.util.KeyLifecycleUtil;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
@@ -221,9 +217,9 @@ public class DkmKeyServiceImpl {
             key.setUpdateTime(new Date());
             int isSuccess = dkmKeyMapper.updateById(key);
             if (Objects.equals("0", key.getParentId())) { // 冻结解冻没有来源字段
-                keyLifecycleUtil.insert(key,1,0,2);
-            }else {
-                keyLifecycleUtil.insert(key,2,0,2);
+                keyLifecycleUtil.insert(key, 1, 0, 2);
+            } else {
+                keyLifecycleUtil.insert(key, 2, 0, 2);
             }
             if (isSuccess == 1) {
                 return PageResp.success("更新成功");
@@ -246,9 +242,9 @@ public class DkmKeyServiceImpl {
                 dkmKey.setUpdateTime(new Date());
                 int isSuccess = dkmKeyMapper.updateById(dkmKey);
                 if (Objects.equals("0", dkmKey.getParentId())) { // 冻结解冻没有来源字段
-                    keyLifecycleUtil.insert(dkmKey,1,0,3);
-                }else {
-                    keyLifecycleUtil.insert(dkmKey,2,0,3);
+                    keyLifecycleUtil.insert(dkmKey, 1, 0, 3);
+                } else {
+                    keyLifecycleUtil.insert(dkmKey, 2, 0, 3);
                 }
                 if (isSuccess == 1) {
                     return PageResp.success("更新成功");
@@ -267,7 +263,7 @@ public class DkmKeyServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateStateForRevokeById(String id) {
-        if (StrUtil.isBlank(id)){
+        if (StrUtil.isBlank(id)) {
             return PageResp.fail("钥匙id为空");
         }
         DkmKey dkmKey = this.dkmKeyMapper.selectById(id);
@@ -294,8 +290,8 @@ public class DkmKeyServiceImpl {
                 // 检查是否为父钥匙，吊销全部分享钥匙
                 if (Objects.equals(dkmKey.getParentId(), "0")) {
                     List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getParentId, id)
-                            .eq(DkmKey::getDkState,1));
-                    for (DkmKey child : dkmKeys){
+                            .eq(DkmKey::getDkState, 1));
+                    for (DkmKey child : dkmKeys) {
                         child.setDkState(5);
                         child.setUpdateTime(new Date());
                         dkmKeyMapper.updateById(child);
@@ -341,6 +337,7 @@ public class DkmKeyServiceImpl {
 
     /**
      * 单表excel分页导出
+     *
      * @param vin
      * @param userId
      * @param keyType
@@ -375,7 +372,7 @@ public class DkmKeyServiceImpl {
         String fileName = "";
 
         // 1.3形成文件名
-        String excelName = fileName + "钥匙信息记录-"+ System.currentTimeMillis();
+        String excelName = fileName + "钥匙信息记录-" + System.currentTimeMillis();
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
@@ -449,39 +446,39 @@ public class DkmKeyServiceImpl {
         // 4将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
         try {
 
-        for (int i = 0; i <= sum / end; i++) {
-            int start = (i * end);
+            for (int i = 0; i <= sum / end; i++) {
+                int start = (i * end);
 
-            // 4.1分页查询数据 否则会OOM
-            dkmKeys = selectDkmKeyLogs(vin,
-                    userId,
-                    keyType,
-                    applyStartTime,
-                    applyEndTime,
-                    periodMax,
-                    periodMin,
-                    periodUnit,
-                    valFromStartTime,
-                    valFromEndTime,
-                    valToStartTime,
-                    valToEndTime,
-                    dkState,
-                    start,
-                    end);
+                // 4.1分页查询数据 否则会OOM
+                dkmKeys = selectDkmKeyLogs(vin,
+                        userId,
+                        keyType,
+                        applyStartTime,
+                        applyEndTime,
+                        periodMax,
+                        periodMin,
+                        periodUnit,
+                        valFromStartTime,
+                        valFromEndTime,
+                        valToStartTime,
+                        valToEndTime,
+                        dkState,
+                        start,
+                        end);
 
-            // 4.2首个sheet需要重新命名
-            if (i == 0) {
-                writer.renameSheet("初始表");
-                // 4.3写入新sheet会刷新样式 每次都需要重新设置单元格样式
+                // 4.2首个sheet需要重新命名
+                if (i == 0) {
+                    writer.renameSheet("初始表");
+                    // 4.3写入新sheet会刷新样式 每次都需要重新设置单元格样式
+                    extracted(writer);
+                    // 4.4一次性写出内容，使用默认样式，强制输出标题
+                    writer.write(dkmKeys, true);
+                    continue;
+                }
+                writer.setSheet("表" + (i + 1));
                 extracted(writer);
-                // 4.4一次性写出内容，使用默认样式，强制输出标题
                 writer.write(dkmKeys, true);
-                continue;
             }
-            writer.setSheet("表" + (i + 1));
-            extracted(writer);
-            writer.write(dkmKeys, true);
-        }
 
 
         } catch (Exception e) {
@@ -548,20 +545,20 @@ public class DkmKeyServiceImpl {
      * @return
      */
     private List<DkmKey> selectDkmKeyLogs(String vin,
-                                       String userId,
-                                       Integer keyType,
-                                       String applyStartTime,
-                                       String applyEndTime,
-                                       Integer periodMax,
-                                       Integer periodMin,
-                                       String periodUnit,
-                                       String valFromStartTime,
-                                       String valFromEndTime,
-                                       String valToStartTime,
-                                       String valToEndTime,
-                                       Integer[] dkState,
-                                       Integer start,
-                                       Integer end) {
+                                          String userId,
+                                          Integer keyType,
+                                          String applyStartTime,
+                                          String applyEndTime,
+                                          Integer periodMax,
+                                          Integer periodMin,
+                                          String periodUnit,
+                                          String valFromStartTime,
+                                          String valFromEndTime,
+                                          String valToStartTime,
+                                          String valToEndTime,
+                                          Integer[] dkState,
+                                          Integer start,
+                                          Integer end) {
         if (keyType == null) {
             keyType = 3;
         }

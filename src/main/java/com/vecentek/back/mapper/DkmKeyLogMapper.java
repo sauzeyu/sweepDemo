@@ -6,7 +6,6 @@ import com.vecentek.back.dto.MonthCountDTO;
 import com.vecentek.back.entity.DkmKeyLog;
 import org.apache.ibatis.annotations.Select;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -75,7 +74,7 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
     List<CountDTO> selectErrorCountByTime(String startTime, String endTime);
 
     @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE (flag = 0 AND phone_brand = #{phoneBrand})  and operate_time >= #{startTime}  and operate_time <= #{endTime} GROUP BY error_reason")
-    List<CountDTO> selectKeyErrorLogByPhoneBrand(String phoneBrand,Date startTime, Date endTime);
+    List<CountDTO> selectKeyErrorLogByPhoneBrand(String phoneBrand, Date startTime, Date endTime);
 
     @Select("SELECT error_reason as name,COUNT( 1 ) as value FROM dkm_key_log WHERE flag = 0  and operate_time >= #{startTime}  and operate_time <= #{endTime}  GROUP BY error_reason")
     List<CountDTO> selectKeyErrorLog(Date startTime, Date endTime);
@@ -84,10 +83,10 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
             " operate_time >= #{lastDay}\n " +
             "and operate_time <= #{now}\n" +
             "and flag = 1")
-    int countUseToday(String now,String lastDay);
+    int countUseToday(String now, String lastDay);
 
     @Select("select count(1) as count from dkm_key_log where  day(create_time) = day(now()) and operate_time >= #{lastDay} and operate_time <= #{now} and flag = 0")
-    int countErrorToday(String now,String lastDay);
+    int countErrorToday(String now, String lastDay);
 
     @Select("select count(1) as value , phone_brand as name \n" +
             "from dkm_key_log\n" +

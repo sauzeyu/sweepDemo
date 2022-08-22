@@ -1,6 +1,7 @@
 package com.vecentek.back.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -29,7 +30,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author ：EdgeYu
@@ -87,15 +87,24 @@ public class DkmRoleServiceImpl {
         if (CollUtil.isEmpty(role.getMenuList())) { // 菜单列表为空则完成更新
             return PageResp.fail("权限不能为空");
         }
+        if (StrUtil.hasBlank(role.getRoleName(), role.getCode())) {
+            return PageResp.fail(9001, "必填参数未传递");
+        }
+        DkmRole selectOne = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getId, role.getId()));
+        if (ObjectUtil.isNotNull(selectOne)) {
+            return PageResp.fail("用户不存在");
+        }
+        // 重复性校验 code 和 name 不能重复 否则数据库报错
+        DkmRole dkmRole2 = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, role.getRoleName()));
+        if (ObjectUtil.isNotNull(dkmRole2) && ObjectUtil.notEqual(dkmRole2.getId(), role.getId())) { // if(admin!=null 并且id不相等){}
+            return PageResp.fail("角色名重复");
+        }
+        DkmRole dkmRole1 = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getCode, role.getCode()));
+        if (ObjectUtil.isNotNull(dkmRole1) && ObjectUtil.notEqual(dkmRole1.getId(), role.getId())) { // if(admin!=null 并且id不相等){}
+            return PageResp.fail("角色代码重复");
+        }
         DkmRole dkmRole = new DkmRole();
         BeanUtils.copyProperties(role, dkmRole);
-        // 重复性校验 code 和 name 不能重复 否则数据库报错
-        Integer countCode = dkmRoleMapper.selectCount(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getCode, dkmRole.getCode())
-                .or()
-                .eq(DkmRole::getRoleName, dkmRole.getRoleName()));
-        if (countCode.intValue() > 1){
-            return PageResp.fail("角色代码或角色名重复");
-        }
         dkmRoleMapper.update(dkmRole, Wrappers.<DkmRole>lambdaUpdate().eq(DkmRole::getId, dkmRole.getId()));
         dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, dkmRole.getId())); // 删除原来所有权限角色关系
         for (String menuId : role.getMenuList()) {
@@ -106,16 +115,19 @@ public class DkmRoleServiceImpl {
         }
         // 修改了角色权限后删除该角色对应所有账号的token
         List<DkmAdminRole> dkmAdminRoles = dkmAdminRoleMapper.selectList(new LambdaQueryWrapper<DkmAdminRole>().eq(DkmAdminRole::getRoleId, role.getId()));
-        if (Objects.isNull(dkmAdminRoles)) { // 角色没有对应用户
+        if (CollUtil.isEmpty(dkmAdminRoles)) { // 角色没有对应用户
             return PageResp.success("操作成功");
         } else {
             for (DkmAdminRole dkmAdminRole : dkmAdminRoles) {
                 Integer adminId = dkmAdminRole.getAdminId();
                 DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminId);
-                if (dkmAdmin != null) {
+                if (ObjectUtil.isNotNull(dkmAdmin)) {
                     String username = dkmAdmin.getUsername();
                     // 根据用户名找到token 然后删除
                     Boolean delete = redisTemplate.delete(username);
+                    if (!delete) {
+                        return PageResp.fail(9100, "Redis删除token失败或用户token已失效");
+                    }
                 }
             }
         }
@@ -124,22 +136,22 @@ public class DkmRoleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp insert(InsertRoleVO roleVO) {
-        DkmRole role = new DkmRole();
         if (roleVO.getMenuList() == null || roleVO.getMenuList().size() == 0) {
             return PageResp.fail("菜单权限不能为空！");
         }
         if (StrUtil.isBlank(roleVO.getRoleName()) || roleVO.getCode() == null) {
             return PageResp.fail("角色名称或角色代码不能为空！");
         }
+        DkmRole selectCode = dkmRoleMapper.selectOne(Wrappers.<DkmRole>lambdaQuery().eq(DkmRole::getCode, roleVO.getCode()));
+        DkmRole selectRoleName = dkmRoleMapper.selectOne(Wrappers.<DkmRole>lambdaQuery().eq(DkmRole::getRoleName, roleVO.getRoleName()));
+        if (ObjectUtil.isNotNull(selectCode) || ObjectUtil.isNotNull(selectRoleName)) {
+            return PageResp.fail("角色名称或角色代码已存在！");
+        }
+        DkmRole role = new DkmRole();
         role.setRoleName(roleVO.getRoleName());
         role.setCode(roleVO.getCode());
         role.setIntro(roleVO.getIntro());
         role.setCreateTime(new Date());
-        DkmRole selectCode = dkmRoleMapper.selectOne(Wrappers.<DkmRole>lambdaQuery().eq(DkmRole::getCode, role.getCode()));
-        DkmRole selectRoleName = dkmRoleMapper.selectOne(Wrappers.<DkmRole>lambdaQuery().eq(DkmRole::getRoleName, role.getRoleName()));
-        if (selectCode != null || selectRoleName != null) {
-            return PageResp.fail("角色名称或角色代码已存在！");
-        }
         dkmRoleMapper.insert(role);
         for (String menuId : roleVO.getMenuList()) {
             DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();

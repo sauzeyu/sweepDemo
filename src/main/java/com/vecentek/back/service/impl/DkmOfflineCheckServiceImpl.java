@@ -46,7 +46,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -400,8 +399,8 @@ public class DkmOfflineCheckServiceImpl {
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()), DkmKeyLog::getVin, keyLogDetailVO.getVin())
-                .ge(ObjectUtil.isNotNull(keyLogDetailVO.getStartTime()),DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
-                .le(ObjectUtil.isNotNull(keyLogDetailVO.getEndTime()),DkmKeyLog::getOperateTime, keyLogDetailVO.getEndTime())
+                .ge(ObjectUtil.isNotNull(keyLogDetailVO.getStartTime()), DkmKeyLog::getOperateTime, keyLogDetailVO.getStartTime())
+                .le(ObjectUtil.isNotNull(keyLogDetailVO.getEndTime()), DkmKeyLog::getOperateTime, keyLogDetailVO.getEndTime())
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getUserId()), DkmKeyLog::getUserId, keyLogDetailVO.getUserId())
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getStatusCode()), DkmKeyLog::getStatusCode, keyLogDetailVO.getStatusCode())
                 .orderByAsc(DkmKeyLog::getOperateTime);

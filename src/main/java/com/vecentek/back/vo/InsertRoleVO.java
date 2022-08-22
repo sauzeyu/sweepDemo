@@ -11,19 +11,7 @@ import java.util.List;
  * @since 2022-07-12 20:03
  */
 @Data
-public class InsertRoleVO  extends DkmRole {
-    ///**
-    // * 角色代码
-    // */
-    //private Integer code;
-    ///**
-    // * 角色名称
-    // */
-    //private String roleName;
-    ///**
-    // * 角色描述
-    // */
-    //private String intro;
+public class InsertRoleVO extends DkmRole {
     /**
      * 菜单列表
      */

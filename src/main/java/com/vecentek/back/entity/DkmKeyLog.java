@@ -86,6 +86,6 @@ public class DkmKeyLog implements Serializable {
     /**
      * 操作类型
      */
-    @TableField(exist= false)
+    @TableField(exist = false)
     private String operationType;
 }

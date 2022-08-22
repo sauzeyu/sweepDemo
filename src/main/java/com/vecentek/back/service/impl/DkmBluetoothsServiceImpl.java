@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 蓝牙数据(DkmBluetooths)表服务实现类
@@ -74,6 +73,7 @@ public class DkmBluetoothsServiceImpl {
 
     /**
      * 下载蓝牙信息excel
+     *
      * @param hwDeviceSn
      * @param searchNumber
      * @param flag

@@ -58,10 +58,11 @@ public class DkmKeyLogServiceImpl {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         if (
-                CharSequenceUtil.isBlank(startTime)
-                        && CharSequenceUtil.isBlank(endTime)
+                 CharSequenceUtil.isBlank(startTime)
+                && CharSequenceUtil.isBlank(endTime)
 
         ) {
+
             startTime = DownLoadUtil.getSysDate();
             endTime = DownLoadUtil.getNextDay();
 
@@ -128,7 +129,7 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator)  {
+                                    String creator) {
 
         if (CharSequenceUtil.isBlank(startTime)){
             startTime = DownLoadUtil.getSysDate();
@@ -179,9 +180,9 @@ public class DkmKeyLogServiceImpl {
         Integer sum = dkmKeyLogMapper.selectCount(queryWrapper);
         // 3.2每次分页数据量10W (SXXSF 最大分页100W)
         Integer end = 100000;
-        System.out.println("end ="+end);
+
         List<DkmKeyLog> dkmKeyLogs;
-        System.out.println("sum ="+sum);
+
 
         // 4 将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
         try {
@@ -309,23 +310,20 @@ public class DkmKeyLogServiceImpl {
                                           String endTime,
                                           String phoneBrand,
                                           String phoneModel,
-                                          @RequestParam(value = "statusCode",required=false) List<String> statusCode,
+                                          @RequestParam(value = "statusCode", required = false) List<String> statusCode,
                                           Integer flag,
                                           String vehicleBrand,
                                           String vehicleModel,
                                           String vehicleType,
                                           Integer start,
                                           Integer end) {
-if(1==1){
 
-    System.out.println("DkmKeyLogServiceImpl.getDkmKeyLogs");
-}
         // 4.1.1根据条件查出库中对应记录数据
         LambdaQueryWrapper<DkmKeyLog> queryWrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
                 .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
-                .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
+                .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)

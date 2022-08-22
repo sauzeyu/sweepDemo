@@ -22,7 +22,7 @@ public class UserVehicleVO {
      */
     private String username;
     /**
-     * 用户手机号
+     * 用户id
      */
     private String userId;
     /**

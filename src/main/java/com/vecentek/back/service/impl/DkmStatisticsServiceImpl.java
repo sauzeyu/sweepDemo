@@ -2,17 +2,13 @@ package com.vecentek.back.service.impl;
 
 
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.vecentek.back.config.ProConfig;
-import com.vecentek.back.config.YearMonthShardingAlgorithm;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.CountDTO;
@@ -30,11 +26,8 @@ import com.vecentek.common.response.PageResp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.Timestamp;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,8 +79,9 @@ public class DkmStatisticsServiceImpl {
         ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
         Date startTime = DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
         Date endTime = new Date();
-        return new Date[]{startTime,endTime};
+        return new Date[]{startTime, endTime};
     }
+
     public PageResp selectVehicleAndKeyAndKeyLogTotal() {
         // 获取分表字段的开始日期与结束日期
         String startTime = DownLoadUtil.getCurrYearFirst();
@@ -201,9 +195,9 @@ public class DkmStatisticsServiceImpl {
         Date endTime = time[1];
         List<CountDTO> list;
         if (StrUtil.isBlank(phoneBrand)) {
-            list = dkmKeyLogMapper.selectKeyErrorLog(startTime,endTime);
+            list = dkmKeyLogMapper.selectKeyErrorLog(startTime, endTime);
         } else {
-            list = dkmKeyLogMapper.selectKeyErrorLogByPhoneBrand(phoneBrand,startTime,endTime);
+            list = dkmKeyLogMapper.selectKeyErrorLogByPhoneBrand(phoneBrand, startTime, endTime);
         }
         for (CountDTO countDTO : list) {
             String name = countDTO.getName();
@@ -317,9 +311,9 @@ public class DkmStatisticsServiceImpl {
         String yearFirstDay = DownLoadUtil.getCurrYearFirst();
         String yearLastDay = DownLoadUtil.getCurrYearLast();
         // 今日使用次数
-        int countUseToday = dkmKeyLogMapper.countUseToday(now,lastDay);
+        int countUseToday = dkmKeyLogMapper.countUseToday(now, lastDay);
         // 每个月的使用数
-        List<MonthCountDTO> useMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countUseByMonth(yearFirstDay,yearLastDay));
+        List<MonthCountDTO> useMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countUseByMonth(yearFirstDay, yearLastDay));
         List<Integer> countList = MonthCountDTO.countToList(useMonthList);
         JSONObject res = new JSONObject().set("countUseToday", countUseToday).set("useMonthList", countList);
         return PageResp.success("查询成功", res);
@@ -332,9 +326,9 @@ public class DkmStatisticsServiceImpl {
         String yearLastDay = DownLoadUtil.getCurrYearLast();
         // 今日故障次数
 
-        int countErrorToday = dkmKeyLogMapper.countErrorToday(now,lastDay);
+        int countErrorToday = dkmKeyLogMapper.countErrorToday(now, lastDay);
         // 每个月的使用数
-        List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(yearFirstDay,yearLastDay));
+        List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(yearFirstDay, yearLastDay));
         List<Integer> countList = MonthCountDTO.countToList(errorMonthList);
         JSONObject res = new JSONObject().set("countErrorToday", countErrorToday).set("errorMonthList", countList);
         return PageResp.success("查询成功", res);
@@ -344,7 +338,7 @@ public class DkmStatisticsServiceImpl {
         Date[] time = getTime();
         Date startTime = time[0];
         Date endTime = time[1];
-        List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand(startTime,endTime);
+        List<CountDTO> list = dkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand(startTime, endTime);
         return PageResp.success("查询成功", list);
     }
 

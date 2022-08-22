@@ -30,7 +30,7 @@ public class DkmUserVehicle extends BaseEntity {
     /**
      * 用户id
      */
-    private Integer userId;
+    private String userId;
     /**
      * 绑定时间
      */

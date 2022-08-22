@@ -1,11 +1,9 @@
 package com.vecentek.back.controller;
 
-import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.service.impl.DkmUserVehicleServiceImpl;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
-import com.vecentek.back.vo.UserChangeVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;

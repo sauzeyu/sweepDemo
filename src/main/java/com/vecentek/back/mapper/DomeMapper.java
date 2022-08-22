@@ -5,6 +5,7 @@ import com.vecentek.back.entity.Dome;
 
 
 /**
+ *
  */
 public interface DomeMapper extends BaseMapper<Dome> {
 

@@ -1,7 +1,5 @@
 package com.vecentek.back.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,8 +21,7 @@ public class DkmUser extends BaseEntity {
     /**
      * 手机用户id
      */
-    @TableId(type = IdType.AUTO)
-    private Integer id;
+    private String id;
     /**
      * 手机号
      */

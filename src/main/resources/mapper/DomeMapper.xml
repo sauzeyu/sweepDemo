@@ -5,14 +5,14 @@
 <mapper namespace="com.vecentek.back.mapper.DomeMapper">
 
     <resultMap id="BaseResultMap" type="com.vecentek.back.entity.Dome">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="createId" column="create_id" jdbcType="BIGINT"/>
-            <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
-            <result property="updateId" column="update_id" jdbcType="BIGINT"/>
-            <result property="updateDate" column="update_date" jdbcType="TIMESTAMP"/>
-            <result property="deleteState" column="delete_state" jdbcType="TINYINT"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="cont" column="cont" jdbcType="VARCHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="createId" column="create_id" jdbcType="BIGINT"/>
+        <result property="createDate" column="create_date" jdbcType="TIMESTAMP"/>
+        <result property="updateId" column="update_id" jdbcType="BIGINT"/>
+        <result property="updateDate" column="update_date" jdbcType="TIMESTAMP"/>
+        <result property="deleteState" column="delete_state" jdbcType="TINYINT"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="cont" column="cont" jdbcType="VARCHAR"/>
     </resultMap>
 
 </mapper>
