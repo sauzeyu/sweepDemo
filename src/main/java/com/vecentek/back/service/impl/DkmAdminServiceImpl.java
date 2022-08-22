@@ -6,7 +6,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmAdmin;
@@ -81,14 +80,14 @@ public class DkmAdminServiceImpl {
             return PageResp.fail("用户名或权限不能为空");
         }
         DkmAdmin dkmAdmin = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().lambda().eq(DkmAdmin::getUsername, adminVO.getUsername()));
-        if ( ObjectUtil.isNotNull(dkmAdmin) && ObjectUtil.notEqual(dkmAdmin.getId(),adminVO.getId())){ // if(admin!=null 并且id不相等){}
+        if (ObjectUtil.isNotNull(dkmAdmin) && ObjectUtil.notEqual(dkmAdmin.getId(), adminVO.getId())) { // if(admin!=null 并且id不相等){}
             return PageResp.fail("用户名重复");
         }
         LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>()
                 .eq(DkmAdmin::getId, adminVO.getId())
                 .set(DkmAdmin::getExtraInfo, adminVO.getExtraInfo())
                 .set(DkmAdmin::getUsername, adminVO.getUsername())
-                .set(DkmAdmin::getUpdateTime,adminVO.getUpdateTime());
+                .set(DkmAdmin::getUpdateTime, adminVO.getUpdateTime());
         try {
             dkmAdminMapper.update(null, lambdaUpdateWrapper);
         } catch (Exception e) {
@@ -97,7 +96,7 @@ public class DkmAdminServiceImpl {
         }
         //删除此账户原有 账户-角色关系
         dkmAdminRoleMapper.deleteByAdminId(adminVO.getId());
-        if (ObjectUtil.isNotNull(adminVO.getRoleId())){
+        if (ObjectUtil.isNotNull(adminVO.getRoleId())) {
             DkmAdminRole dkmAdminRole = new DkmAdminRole();
             dkmAdminRole.setAdminId(adminVO.getId());
             //根据角色名称查询id,插入中间表

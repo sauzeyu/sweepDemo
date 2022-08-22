@@ -13,15 +13,6 @@ import java.util.Map;
 public class SpringContextUtil implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        SpringContextUtil.applicationContext = applicationContext;
-    }
-
-    public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
     public static Object getBean(String beanName) {
         return applicationContext.getBean(beanName);
     }
@@ -40,5 +31,14 @@ public class SpringContextUtil implements ApplicationContextAware {
             result.addAll(map.values());
         }
         return result;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        SpringContextUtil.applicationContext = applicationContext;
     }
 }

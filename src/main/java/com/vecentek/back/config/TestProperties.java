@@ -16,5 +16,5 @@ import org.springframework.stereotype.Component;
 @Data
 @ConfigurationProperties(prefix = "test")
 public class TestProperties {
-    private Integer flag ;
+    private Integer flag;
 }

@@ -31,8 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -85,6 +83,7 @@ public class DkmAftermarketReplacementServiceImpl {
 
     /**
      * 下载换件信息excel
+     *
      * @param vin
      * @param startTime
      * @param endTime

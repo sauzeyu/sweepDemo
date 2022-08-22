@@ -20,9 +20,9 @@ public class KeyLifecycleUtil {
         dkmKeyLifecycle.setUserId(key.getUserId());
         dkmKeyLifecycle.setKeyId(key.getId());
         dkmKeyLifecycle.setVin(key.getVin());
-        if (source == 0){
+        if (source == 0) {
             // 不设置来源
-        }else {
+        } else {
             dkmKeyLifecycle.setKeySource(source);
         }
         dkmKeyLifecycle.setKeyType(type);

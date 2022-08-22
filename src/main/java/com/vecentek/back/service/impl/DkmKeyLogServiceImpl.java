@@ -1,6 +1,5 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -10,12 +9,8 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.vecentek.back.config.ProConfig;
-import com.vecentek.back.config.TestProperties;
-import com.vecentek.back.config.YearMonthShardingAlgorithm;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.constant.FileConstant;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
@@ -23,7 +18,6 @@ import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.util.DownLoadUtil;
-import com.vecentek.back.util.SpringContextUtil;
 import com.vecentek.common.response.PageResp;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -36,8 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -58,21 +50,21 @@ public class DkmKeyLogServiceImpl {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         if (
-                //CharSequenceUtil.isBlank(vin)
-                //&& CharSequenceUtil.isBlank(userId)
+            //CharSequenceUtil.isBlank(vin)
+            //&& CharSequenceUtil.isBlank(userId)
 
-                 CharSequenceUtil.isBlank(startTime)
-                && CharSequenceUtil.isBlank(endTime)
+                CharSequenceUtil.isBlank(startTime)
+                        && CharSequenceUtil.isBlank(endTime)
 
-                //&& CharSequenceUtil.isBlank(phoneBrand)
-                //&& CharSequenceUtil.isBlank(phoneModel)
-                //&& ObjectUtil.isNull(statusCode)
-                //&& flag == null
-                //&& CharSequenceUtil.isBlank(vehicleBrand)
-                //&& CharSequenceUtil.isBlank(vehicleModel)
-                //&& CharSequenceUtil.isBlank(vehicleType)
+            //&& CharSequenceUtil.isBlank(phoneBrand)
+            //&& CharSequenceUtil.isBlank(phoneModel)
+            //&& ObjectUtil.isNull(statusCode)
+            //&& flag == null
+            //&& CharSequenceUtil.isBlank(vehicleBrand)
+            //&& CharSequenceUtil.isBlank(vehicleModel)
+            //&& CharSequenceUtil.isBlank(vehicleType)
 
-        ){
+        ) {
             //List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, null);
             //startTime = timeList.get(FileConstant.STARTTIME);
             //endTime = timeList.get(FileConstant.ENDTIME);
@@ -84,7 +76,7 @@ public class DkmKeyLogServiceImpl {
 
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 //.like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
-                .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
+                .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
@@ -116,6 +108,7 @@ public class DkmKeyLogServiceImpl {
 
     /**
      * 异步下载单表分页钥匙记录信息
+     *
      * @param vin
      * @param userId
      * @param startTime
@@ -142,7 +135,7 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator)  {
+                                    String creator) {
 
         // 1.1 形成文件名
         String excelName = "钥匙使用记录-" + System.currentTimeMillis();
@@ -176,7 +169,7 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
                 .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
-                .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
+                .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
@@ -193,37 +186,37 @@ public class DkmKeyLogServiceImpl {
 
         // 4 将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
         try {
-        for (int i = 0; i <= sum / end; i++) {
-            int start = (i * end);
+            for (int i = 0; i <= sum / end; i++) {
+                int start = (i * end);
 
-            // 4.1分页查询数据 否则会OOM
-            dkmKeyLogs = getDkmKeyLogs(vin,
-                    userId,
-                    startTime,
-                    endTime,
-                    phoneBrand,
-                    phoneModel,
-                    statusCode,
-                    flag,
-                    vehicleBrand,
-                    vehicleModel,
-                    vehicleType,
-                    start,
-                    end);
+                // 4.1分页查询数据 否则会OOM
+                dkmKeyLogs = getDkmKeyLogs(vin,
+                        userId,
+                        startTime,
+                        endTime,
+                        phoneBrand,
+                        phoneModel,
+                        statusCode,
+                        flag,
+                        vehicleBrand,
+                        vehicleModel,
+                        vehicleType,
+                        start,
+                        end);
 
-            // 4.2首个sheet需要重新命名
-            if (i == 0) {
-                writer.renameSheet("初始表");
-                // 4.3写入新sheet会刷新样式 每次都需要重新设置单元格样式
+                // 4.2首个sheet需要重新命名
+                if (i == 0) {
+                    writer.renameSheet("初始表");
+                    // 4.3写入新sheet会刷新样式 每次都需要重新设置单元格样式
+                    extracted(writer);
+                    // 4.4一次性写出内容，使用默认样式，强制输出标题
+                    writer.write(dkmKeyLogs, true);
+                    continue;
+                }
+                writer.setSheet("表" + (i + 1));
                 extracted(writer);
-                // 4.4一次性写出内容，使用默认样式，强制输出标题
                 writer.write(dkmKeyLogs, true);
-                continue;
             }
-            writer.setSheet("表" + (i + 1));
-            extracted(writer);
-            writer.write(dkmKeyLogs, true);
-        }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -239,6 +232,7 @@ public class DkmKeyLogServiceImpl {
 
     /**
      * BigExcelWriter设置单元格样式
+     *
      * @param writer
      */
     private void extracted(ExcelWriter writer) {
@@ -281,7 +275,6 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("vehicleModel", "车辆型号");
 
 
-
         writer.addHeaderAlias("operateTime", "操作时间");
 
 
@@ -294,6 +287,7 @@ public class DkmKeyLogServiceImpl {
 
     /**
      * 根据分页条件去查询钥匙记录
+     *
      * @param vin
      * @param userId
      * @param startTime
@@ -315,7 +309,7 @@ public class DkmKeyLogServiceImpl {
                                           String endTime,
                                           String phoneBrand,
                                           String phoneModel,
-                                          @RequestParam(value = "statusCode",required=false) List<String> statusCode,
+                                          @RequestParam(value = "statusCode", required = false) List<String> statusCode,
                                           Integer flag,
                                           String vehicleBrand,
                                           String vehicleModel,
@@ -328,7 +322,7 @@ public class DkmKeyLogServiceImpl {
                 .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
                 .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
                 .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
-                .in(ObjectUtil.isNotNull(statusCode),DkmKeyLog::getStatusCode,statusCode)
+                .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
                 .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
@@ -360,6 +354,7 @@ public class DkmKeyLogServiceImpl {
 
     /**
      * 根据具体用户和excel类型查询历史下载记录列表
+     *
      * @param creator
      * @param type
      * @return

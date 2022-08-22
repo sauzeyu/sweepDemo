@@ -4,12 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.vecentek.back.dto.DkmVehicleDTO;
 import com.vecentek.back.dto.MonthCountDTO;
 import com.vecentek.back.entity.DkmVehicle;
-import com.vecentek.back.util.DownLoadUtil;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,9 +72,9 @@ public interface DkmVehicleMapper extends BaseMapper<DkmVehicle> {
 
     //@Select("select DATE_FORMAT(operate_time, '%m') as month, count(1) as count from dkm_key_log where flag = 1 and year(operate_time) = year(now()) group by month")
     @Select("select DATE_FORMAT(operate_time, '%m') as month, count(1) as count from dkm_key_log where flag = 1 and operate_time >=  #{yearFirstDay} and operate_time <=  #{yearLastDay} group by month")
-    List<MonthCountDTO> countUseByMonth(String yearFirstDay,String yearLastDay);
+    List<MonthCountDTO> countUseByMonth(String yearFirstDay, String yearLastDay);
 
     @Select("select DATE_FORMAT(operate_time, '%m') as month, count(1) as count from dkm_key_log where flag = 0 and operate_time >=  #{yearFirstDay} and operate_time <=  #{yearLastDay} group by month")
-    List<MonthCountDTO> countErrorByMonth(String yearFirstDay,String yearLastDay);
+    List<MonthCountDTO> countErrorByMonth(String yearFirstDay, String yearLastDay);
 
 }

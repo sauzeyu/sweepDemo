@@ -102,6 +102,29 @@ public class JmeterTest {
     }
 
     @Test
+    public void signRTC() throws IOException {
+        LambdaQueryWrapper<DkmUser> queryWrapper = Wrappers.<DkmUser>lambdaQuery().last("limit 10000");
+        List<DkmUser> dkmUsers = dkmUserMapper.selectList(queryWrapper);
+        System.out.println(dkmUsers);
+        for (DkmUser dkmUser : dkmUsers) {
+
+            OutputStream os = new FileOutputStream(new File("G:\\JmeterTest3\\data\\login\\login" + dkmUser.getId()));
+
+            BerTlvBuilder tlv = new BerTlvBuilder();
+
+            tlv.addBytes(new BerTag(0x9f, 0x1f), dkmUser.getPhone().getBytes(StandardCharsets.UTF_8));
+            // tlv.addBytes(new BerTag(0x1c), dkmUser.getPassword().getBytes(StandardCharsets.UTF_8));
+            // tlv.addBytes(new BerTag(0x1d), dkmUser.getPhoneFingerprint().getBytes(StandardCharsets.UTF_8));
+
+            byte[] bytes = tlv.buildArray();
+
+            os.write(bytes);
+            os.flush();
+            os.close();
+        }
+    }
+
+    @Test
     public void openKey() throws IOException {
         LambdaQueryWrapper<DkmUser> queryWrapper = Wrappers.<DkmUser>lambdaQuery()
                 .ge(DkmUser::getId, 1000001)

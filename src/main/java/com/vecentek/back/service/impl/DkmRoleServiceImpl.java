@@ -30,7 +30,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author ：EdgeYu
@@ -88,20 +87,20 @@ public class DkmRoleServiceImpl {
         if (CollUtil.isEmpty(role.getMenuList())) { // 菜单列表为空则完成更新
             return PageResp.fail("权限不能为空");
         }
-        if (StrUtil.hasBlank(role.getRoleName(),role.getCode())) {
+        if (StrUtil.hasBlank(role.getRoleName(), role.getCode())) {
             return PageResp.fail(9001, "必填参数未传递");
         }
         DkmRole selectOne = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getId, role.getId()));
-        if (ObjectUtil.isNotNull(selectOne)){
+        if (ObjectUtil.isNotNull(selectOne)) {
             return PageResp.fail("用户不存在");
         }
         // 重复性校验 code 和 name 不能重复 否则数据库报错
         DkmRole dkmRole2 = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, role.getRoleName()));
-        if (ObjectUtil.isNotNull(dkmRole2) && ObjectUtil.notEqual(dkmRole2.getId(),role.getId())){ // if(admin!=null 并且id不相等){}
+        if (ObjectUtil.isNotNull(dkmRole2) && ObjectUtil.notEqual(dkmRole2.getId(), role.getId())) { // if(admin!=null 并且id不相等){}
             return PageResp.fail("角色名重复");
         }
         DkmRole dkmRole1 = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getCode, role.getCode()));
-        if (ObjectUtil.isNotNull(dkmRole1) && ObjectUtil.notEqual(dkmRole1.getId(),role.getId())){ // if(admin!=null 并且id不相等){}
+        if (ObjectUtil.isNotNull(dkmRole1) && ObjectUtil.notEqual(dkmRole1.getId(), role.getId())) { // if(admin!=null 并且id不相等){}
             return PageResp.fail("角色代码重复");
         }
         DkmRole dkmRole = new DkmRole();

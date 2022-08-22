@@ -1,11 +1,9 @@
 package com.vecentek.back.controller;
 
-import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.service.impl.DkmUserVehicleServiceImpl;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
-import com.vecentek.back.vo.UserChangeVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +31,10 @@ public class DkmUserVehicleController {
         return dkmUserVehicleService.insertUserVehicle(userVehicle);
     }
 
-    @RequestMapping(value = "/updateUserVehicle", method = RequestMethod.POST)
-    public PageResp updateUserVehicle(@RequestBody UserChangeVO userChange) throws ParameterValidationException {
-        return dkmUserVehicleService.updateUserVehicle(userChange);
-    }
+    //@RequestMapping(value = "/updateUserVehicle", method = RequestMethod.POST)
+    //public PageResp updateUserVehicle(@RequestBody UserChangeVO userChange) throws ParameterValidationException {
+    //    return dkmUserVehicleService.updateUserVehicle(userChange);
+    //}
 
     /**
      * 车主注销(解除人车绑定关系)

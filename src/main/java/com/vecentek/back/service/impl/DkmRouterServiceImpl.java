@@ -34,6 +34,7 @@ public class DkmRouterServiceImpl {
 
     /**
      * 获取菜单路由，只包括一级二级路由
+     *
      * @param id
      * @return
      */
@@ -54,7 +55,7 @@ public class DkmRouterServiceImpl {
                 List<DkmMenu> dkmMenus = dkmMenuMapper.selectList(new LambdaQueryWrapper<DkmMenu>()
                         .eq(DkmMenu::getId, dkmRoleMenu.getMenuId())
                         .ne(DkmMenu::getType, 1));// 不为按钮类型的权限
-                if (CollUtil.isNotEmpty(dkmMenus)){
+                if (CollUtil.isNotEmpty(dkmMenus)) {
                     allMenu.addAll(dkmMenus);
                 }
             }
@@ -65,9 +66,9 @@ public class DkmRouterServiceImpl {
         ArrayList<DkmMenu> ParentList = new ArrayList<>();
         ArrayList<DkmMenu> ChildList = new ArrayList<>();
         for (DkmMenu menu : allMenu) {
-            if (menu.getParentId() == null){
+            if (menu.getParentId() == null) {
                 ParentList.add(menu);
-            }else {
+            } else {
                 ChildList.add(menu);
             }
         }
@@ -75,7 +76,7 @@ public class DkmRouterServiceImpl {
         for (DkmMenu parent : ParentList) {
             ArrayList<ChildRouterDTO> routes = new ArrayList<>();
             for (DkmMenu child : ChildList) {
-                if (Objects.equals(child.getParentId(),parent.getId())){
+                if (Objects.equals(child.getParentId(), parent.getId())) {
                     ChildRouterDTO childRouterDTO = new ChildRouterDTO();
                     childRouterDTO.setPath("/" + parent.getHref() + "/" + child.getHref());
                     childRouterDTO.setTitle(child.getTitle());
@@ -88,6 +89,6 @@ public class DkmRouterServiceImpl {
             parentRouterDTO.setRoutes(routes);
             res.add(parentRouterDTO);
         }
-        return PageResp.success("获取成功",res);
+        return PageResp.success("获取成功", res);
     }
 }

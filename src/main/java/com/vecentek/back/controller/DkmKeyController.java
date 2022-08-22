@@ -1,9 +1,5 @@
 package com.vecentek.back.controller;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.IdUtil;
-import com.vecentek.back.entity.DkmKey;
-import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
 import com.vecentek.common.response.PageResp;
@@ -17,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * 钥匙信息(DkmKey)表控制层
@@ -154,6 +147,7 @@ public class DkmKeyController {
 
     /**
      * 开始导出钥匙信息excel
+     *
      * @param vin
      * @param userId
      * @param keyType
@@ -204,6 +198,7 @@ public class DkmKeyController {
 
     /**
      * 开启其他线程异步导出钥匙信息excel
+     *
      * @param vin
      * @param userId
      * @param keyType

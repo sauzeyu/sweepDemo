@@ -6,7 +6,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.vecentek.back.config.ProConfig;
-import com.vecentek.back.config.TestProperties;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,10 +101,11 @@ public class DownLoadUtil {
 
     /**
      * 格式化日期
+     *
      * @param date 日期对象
      * @return String 日期字符串
      */
-    public static String formatDate(Date date){
+    public static String formatDate(Date date) {
         SimpleDateFormat f = new SimpleDateFormat(DEFAULT_FORMAT);
         String sDate = f.format(date);
         return sDate;
@@ -113,43 +113,47 @@ public class DownLoadUtil {
 
     /**
      * 获取当年的第一天
+     *
      * @param
      * @return
      */
-    public static String getCurrYearFirst(){
-        Calendar currCal=Calendar.getInstance();
+    public static String getCurrYearFirst() {
+        Calendar currCal = Calendar.getInstance();
         int currentYear = currCal.get(Calendar.YEAR);
         return getYearFirst(currentYear);
     }
 
     /**
      * 获取明年的第一天
+     *
      * @param
      * @return
      */
-    public static String getTommorwYearFirst(){
-        Calendar currCal=Calendar.getInstance();
+    public static String getTommorwYearFirst() {
+        Calendar currCal = Calendar.getInstance();
         int currentYear = currCal.get(Calendar.YEAR);
         return getYearFirst(currentYear + 1);
     }
 
     /**
      * 获取当年的最后一天
+     *
      * @param
      * @return
      */
-    public static String getCurrYearLast(){
-        Calendar currCal=Calendar.getInstance();
+    public static String getCurrYearLast() {
+        Calendar currCal = Calendar.getInstance();
         int currentYear = currCal.get(Calendar.YEAR);
         return getYearLast(currentYear);
     }
 
     /**
      * 获取某年第一天日期
+     *
      * @param year 年份
      * @return Date
      */
-    public static String getYearFirst(int year){
+    public static String getYearFirst(int year) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.set(Calendar.YEAR, year);
@@ -160,10 +164,11 @@ public class DownLoadUtil {
 
     /**
      * 获取某年最后一天日期
+     *
      * @param year 年份
      * @return Date
      */
-    public static String getYearLast(int year){
+    public static String getYearLast(int year) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.set(Calendar.YEAR, year);
@@ -173,39 +178,36 @@ public class DownLoadUtil {
         return yearLast;
     }
 
-    public static String getNow(){
+    public static String getNow() {
 
 
-
-        Calendar cal=Calendar.getInstance();
-return new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
+        Calendar cal = Calendar.getInstance();
+        return new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
 
 
     }
 
-    public static String getNextDay(){
+    public static String getNextDay() {
 
 
-
-        Calendar cal=Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         String today = new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
 
-        cal.add(Calendar.DATE,1);//这里改为1
-        Date time=cal.getTime();
+        cal.add(Calendar.DATE, 1);//这里改为1
+        Date time = cal.getTime();
         System.out.println(new SimpleDateFormat(DEFAULT_FORMAT).format(time));
         String tommorw = new SimpleDateFormat(DEFAULT_FORMAT).format(time);
         return tommorw;
     }
 
-    public static String getLastDay(){
+    public static String getLastDay() {
 
 
-
-        Calendar cal=Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         String today = new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
 
-        cal.add(Calendar.DATE,-1);//这里改为1
-        Date time=cal.getTime();
+        cal.add(Calendar.DATE, -1);//这里改为1
+        Date time = cal.getTime();
         System.out.println(new SimpleDateFormat(DEFAULT_FORMAT).format(time));
         String tommorw = new SimpleDateFormat(DEFAULT_FORMAT).format(time);
         return tommorw;
@@ -214,7 +216,7 @@ return new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
     /**
      * 获取下一个月的第一天
      */
-    public static String getPerFirstDayOfMonth(){
+    public static String getPerFirstDayOfMonth() {
 
         SimpleDateFormat dft = new SimpleDateFormat(DEFAULT_FORMAT);
         Calendar calendar = Calendar.getInstance();
@@ -227,13 +229,14 @@ return new SimpleDateFormat(DEFAULT_FORMAT).format(cal.getTime());
 
     /**
      * 获取去年的当月的最后一天
+     *
      * @param
      * @return
      */
-    public static String getMonthYearLast(){
+    public static String getMonthYearLast() {
         SimpleDateFormat dft = new SimpleDateFormat(DEFAULT_FORMAT);
-        Calendar calendar=Calendar.getInstance();
-        calendar.add(Calendar.YEAR,-1);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, -1);
         calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 
         return dft.format(calendar.getTime());

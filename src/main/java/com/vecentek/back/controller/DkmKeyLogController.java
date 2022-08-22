@@ -1,10 +1,7 @@
 package com.vecentek.back.controller;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
 import com.vecentek.back.entity.DkmKeyLog;
-import com.vecentek.back.entity.Dome;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.service.impl.DkmKeyLogServiceImpl;
 import com.vecentek.common.response.PageResp;
@@ -48,7 +45,7 @@ public class DkmKeyLogController {
                                   String endTime,
                                   String phoneBrand,
                                   String phoneModel,
-                                  @RequestParam(value = "statusCode",required=false) List<String> statusCode,
+                                  @RequestParam(value = "statusCode", required = false) List<String> statusCode,
                                   Integer flag,
                                   String vehicleBrand,
                                   String vehicleModel,
@@ -67,6 +64,7 @@ public class DkmKeyLogController {
                 vehicleModel,
                 vehicleType);
     }
+
     @GetMapping("/addTest")
     public void addTest(String operateTime) throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -80,8 +78,10 @@ public class DkmKeyLogController {
         dkmKeyLog.setStatusCode("1");
         dkmKeyLogMapper.insert(dkmKeyLog);
     }
+
     /**
      * 开始导出钥匙记录excel
+     *
      * @param vin
      * @param userId
      * @param startTime
@@ -106,13 +106,13 @@ public class DkmKeyLogController {
                                          String endTime,
                                          String phoneBrand,
                                          String phoneModel,
-                                         @RequestParam(value = "statusCode",required=false) List<String> statusCode,
+                                         @RequestParam(value = "statusCode", required = false) List<String> statusCode,
                                          String vehicleBrand,
                                          String vehicleModel,
                                          String vehicleType,
                                          Integer flag,
                                          String creator
-    )  {
+    ) {
 
         downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator);
         return PageResp.success("正在导出");
@@ -121,6 +121,7 @@ public class DkmKeyLogController {
 
     /**
      * 开启其他线程异步导出钥匙记录excel
+     *
      * @param vin
      * @param userId
      * @param startTime
@@ -141,13 +142,13 @@ public class DkmKeyLogController {
                                     String endTime,
                                     String phoneBrand,
                                     String phoneModel,
-                                    @RequestParam(value = "statusCode",required=false) List<String> statusCode,
+                                    @RequestParam(value = "statusCode", required = false) List<String> statusCode,
                                     Integer flag,
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
                                     String creator
-    )  {
+    ) {
 
 
         this.dkmKeyUseLogService.downloadKeyLogExcel
@@ -168,6 +169,7 @@ public class DkmKeyLogController {
 
     /**
      * 查询历史导出记录表
+     *
      * @param creator
      * @param type
      * @return
@@ -177,7 +179,6 @@ public class DkmKeyLogController {
         //查询历史导出记录表(倒排)
         return this.dkmKeyUseLogService.checkKeyUseLog(creator, type);
     }
-
 
 
 }

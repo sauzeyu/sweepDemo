@@ -20,7 +20,6 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -138,6 +137,7 @@ public class DkmVehicleServiceImpl {
 
     /**
      * 下载车辆信息excel
+     *
      * @param vin
      * @param hwDeviceSn
      * @param vehicleModel

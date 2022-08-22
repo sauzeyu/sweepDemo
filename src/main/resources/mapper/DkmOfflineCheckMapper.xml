@@ -13,7 +13,6 @@
     </insert>
 
 
-
     <insert id="insertBluetoothBatch">
         insert dkm_bluetooths (hw_device_sn, hw_device_id, hw_device_provider_no, dk_sdk_version, dk_sec_unit_id,
         ble_name, ble_mac_address, ble_protocol_version, ble_hardware_version, ble_software_version, master_key,dig_key,

@@ -11,7 +11,7 @@ import java.util.List;
  * @since 2022-07-12 20:03
  */
 @Data
-public class InsertRoleVO  extends DkmRole {
+public class InsertRoleVO extends DkmRole {
     /**
      * 菜单列表
      */

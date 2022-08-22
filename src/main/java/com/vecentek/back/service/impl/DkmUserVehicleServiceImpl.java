@@ -1,7 +1,6 @@
 package com.vecentek.back.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -10,7 +9,6 @@ import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.entity.DkmUserVehicle;
 import com.vecentek.back.entity.DkmVehicle;
-import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
@@ -20,11 +18,9 @@ import com.vecentek.back.util.KeyLifecycleUtil;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
-import com.vecentek.back.vo.UserChangeVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +39,6 @@ import java.util.Objects;
 @Service("dkmUserVehicleService")
 @Slf4j
 public class DkmUserVehicleServiceImpl {
-
-    private static final int MAX_DATA_TOTAL = 50;
 
     @Resource
     private DkmUserVehicleMapper dkmUserVehicleMapper;
@@ -72,6 +66,7 @@ public class DkmUserVehicleServiceImpl {
         DkmUser dkmUser = dkmUserMapper.selectOne(userWrapper);
         if (dkmUser == null) {
             dkmUser = new DkmUser();
+            dkmUser.setId(userVehicle.getUserId());
             dkmUser.setPhone(userVehicle.getUserId());
             if (userVehicle.getUsername() != null) {
                 dkmUser.setUsername(userVehicle.getUsername());
@@ -90,7 +85,7 @@ public class DkmUserVehicleServiceImpl {
         LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper = new LambdaQueryWrapper<>();
         dkmUserVehicleLambdaQueryWrapper.eq(DkmUserVehicle::getVin, userVehicle.getVin())
                 .eq(DkmUserVehicle::getUserId, userVehicle.getUserId())
-                .eq(DkmUserVehicle::getBindStatus,1);
+                .eq(DkmUserVehicle::getBindStatus, 1);
         List<DkmUserVehicle> dkmUserVehicles = dkmUserVehicleMapper.selectList(dkmUserVehicleLambdaQueryWrapper);
         if (CollUtil.isEmpty(dkmUserVehicles)) {
             DkmUserVehicle dkmUserVehicle = new DkmUserVehicle();
@@ -124,17 +119,17 @@ public class DkmUserVehicleServiceImpl {
         return PageResp.fail("系统繁忙，请稍后再试！");
     }
 
-    public PageResp updateUserVehicle(UserChangeVO userChange) throws ParameterValidationException {
-        log.info("request：" + "/api/userVehicle/updateUserVehicle " + userChange.toString());
-        if (userChange == null || StringUtils.isBlank(userChange.getVin())) {
-            throw new ParameterValidationException();
-        }
-        int i = dkmUserVehicleMapper.updateUserVehicle(userChange);
-        if (i != 1) {
-            throw new ParameterValidationException();
-        }
-        return PageResp.success("过户成功！");
-    }
+    //public PageResp updateUserVehicle(UserChangeVO userChange) throws ParameterValidationException {
+    //    log.info("request：" + "/api/userVehicle/updateUserVehicle " + userChange.toString());
+    //    if (userChange == null || StringUtils.isBlank(userChange.getVin())) {
+    //        throw new ParameterValidationException();
+    //    }
+    //    int i = dkmUserVehicleMapper.updateUserVehicle(userChange);
+    //    if (i != 1) {
+    //        throw new ParameterValidationException();
+    //    }
+    //    return PageResp.success("过户成功！");
+    //}
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) {
@@ -183,9 +178,9 @@ public class DkmUserVehicleServiceImpl {
             // 钥匙生命周期
             // 封装生命周期对象
             if (Objects.equals("0", key.getParentId())) {
-                keyLifecycleUtil.insert(key,1,3,5);
-            }else {
-                keyLifecycleUtil.insert(key,2,3,5);
+                keyLifecycleUtil.insert(key, 1, 3, 5);
+            } else {
+                keyLifecycleUtil.insert(key, 2, 3, 5);
             }
             // 返回钥匙用户id
             userList.add(key.getUserId());

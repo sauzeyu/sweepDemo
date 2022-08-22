@@ -2,8 +2,6 @@ package com.vecentek.back;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.vecentek.back.entity.DkmAdmin;
 import com.vecentek.back.entity.DkmBluetooths;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmVehicle;
@@ -102,8 +100,8 @@ public class FakeDataTest {
             dkmVehicle.setCreator("fakeDataTest");
             int insert1 = dkmVehicleMapper.insert(dkmVehicle);
 
-            if (insert == 1 && insert1 == 1){
-                num ++;
+            if (insert == 1 && insert1 == 1) {
+                num++;
             }
         }
 
