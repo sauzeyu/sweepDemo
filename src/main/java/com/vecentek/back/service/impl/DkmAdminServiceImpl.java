@@ -79,6 +79,13 @@ public class DkmAdminServiceImpl {
         if (StringUtils.isBlank(adminVO.getUsername()) || Objects.isNull(adminVO.getRoleId())) {
             return PageResp.fail("用户名或权限不能为空");
         }
+        if (Objects.isNull(adminVO.getId())){
+            return PageResp.fail("用户名id为空");
+        }
+        DkmAdmin dkmAdmin1 = dkmAdminMapper.selectById(adminVO.getId());
+        if (Objects.isNull(dkmAdmin1)){
+            return PageResp.fail("用户已不存在");
+        }
         DkmAdmin dkmAdmin = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().lambda().eq(DkmAdmin::getUsername, adminVO.getUsername()));
         if (ObjectUtil.isNotNull(dkmAdmin) && ObjectUtil.notEqual(dkmAdmin.getId(), adminVO.getId())) { // if(admin!=null 并且id不相等){}
             return PageResp.fail("用户名重复");
@@ -105,10 +112,14 @@ public class DkmAdminServiceImpl {
             dkmAdminRoleMapper.insert(dkmAdminRole);
         }
         // 涉及到权限需要清除redis中的token
-        // 根据用户名找到token 然后删除
-        Boolean delete = redisTemplate.delete(adminVO.getUsername());
-        if (!delete) {
-            return PageResp.fail(9100, "Redis删除token失败，或用户token已失效");
+        // 检查是否有用户token
+        Boolean aBoolean = redisTemplate.hasKey(dkmAdmin1.getUsername());
+        if (aBoolean){ // 如果有才删除，没有就不管
+            // 根据用户名找到token 然后删除
+            Boolean delete = redisTemplate.delete(dkmAdmin1.getUsername());
+            if (!delete) {
+                return PageResp.fail("有关联用户token删除失败，请联系管理员或让用户主动下线重登！");
+            }
         }
         return PageResp.success("更新成功");
 
@@ -134,7 +145,15 @@ public class DkmAdminServiceImpl {
         // 删除tokon
         String username = dkmAdmin.getUsername();
         // 根据用户名找到token 然后删除
-        Boolean delete = redisTemplate.delete(username);
+        // 检查是否有用户token
+        Boolean aBoolean = redisTemplate.hasKey(username);
+        if (aBoolean){ // 如果有才删除，没有就不管
+            // 根据用户名找到token 然后删除
+            Boolean delete = redisTemplate.delete(username);
+            if (!delete) {
+                return PageResp.fail("有关联用户token删除失败，请联系管理员或让用户主动下线重登！");
+            }
+        }
         return PageResp.success("删除成功");
     }
 

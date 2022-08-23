@@ -12,6 +12,7 @@ import com.vecentek.back.mapper.DkmVehicleMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -26,6 +27,8 @@ public class FakeDataTest {
     private DkmBluetoothsMapper dkmBluetoothsMapper;
     @Resource
     private DkmVehicleMapper dkmVehicleMapper;
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Test
     public void insert() {
@@ -106,6 +109,12 @@ public class FakeDataTest {
         }
 
         System.out.println("成功插入" + num + "条");
+    }
+
+    @Test
+    public void testRedis(){
+        Boolean username = redisTemplate.hasKey("123");
+        System.out.println(username);
     }
 
 }

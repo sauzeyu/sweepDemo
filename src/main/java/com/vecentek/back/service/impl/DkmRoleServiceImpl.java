@@ -76,9 +76,34 @@ public class DkmRoleServiceImpl {
 
     @Transactional(rollbackFor = Exception.class)
     public PageResp deleteById(int id) {
+        if (ObjectUtil.isNull(id)) {
+            return PageResp.fail("id不能为空");
+        }
         dkmRoleMapper.deleteById(id);
         dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, id));
         dkmAdminRoleMapper.deleteByRoleId(id);
+        // 修改了角色权限后删除该角色对应所有账号的token
+        List<DkmAdminRole> dkmAdminRoles = dkmAdminRoleMapper.selectList(new LambdaQueryWrapper<DkmAdminRole>().eq(DkmAdminRole::getRoleId, id));
+        if (CollUtil.isEmpty(dkmAdminRoles)) { // 角色没有对应用户
+            return PageResp.success("操作成功");
+        } else {
+            for (DkmAdminRole dkmAdminRole : dkmAdminRoles) {
+                Integer adminId = dkmAdminRole.getAdminId();
+                DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminId);
+                if (ObjectUtil.isNotNull(dkmAdmin)) {
+                    String username = dkmAdmin.getUsername();
+                    // 检查是否有用户token
+                    Boolean aBoolean = redisTemplate.hasKey(username);
+                    if (aBoolean){ // 如果有才删除，没有就不管
+                        // 根据用户名找到token 然后删除
+                        Boolean delete = redisTemplate.delete(username);
+                        if (!delete) {
+                            return PageResp.fail("有关联用户token删除失败，请联系管理员或让用户主动下线重登！");
+                        }
+                    }
+                }
+            }
+        }
         return PageResp.success("删除成功");
     }
 
@@ -123,10 +148,14 @@ public class DkmRoleServiceImpl {
                 DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminId);
                 if (ObjectUtil.isNotNull(dkmAdmin)) {
                     String username = dkmAdmin.getUsername();
-                    // 根据用户名找到token 然后删除
-                    Boolean delete = redisTemplate.delete(username);
-                    if (!delete) {
-                        return PageResp.fail(9100, "Redis删除token失败或用户token已失效");
+                    // 检查是否有用户token
+                    Boolean aBoolean = redisTemplate.hasKey(username);
+                    if (aBoolean){ // 如果有才删除，没有就不管
+                        // 根据用户名找到token 然后删除
+                        Boolean delete = redisTemplate.delete(username);
+                        if (!delete) {
+                            return PageResp.fail("有关联用户token删除失败，请联系管理员或让用户主动下线重登！");
+                        }
                     }
                 }
             }
