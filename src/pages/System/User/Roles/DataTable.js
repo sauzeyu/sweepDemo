@@ -162,6 +162,10 @@ export class DataTable extends Component {
       this.setState({ editRoleVisible: value });
       console.log(value, '点击了');
     };
+    const onClick = (value) => {
+      this.setState({ editRoleVisible: value });
+      console.log(value, '点击了');
+    };
     return (
       <div>
         <EasyTable
@@ -204,6 +208,7 @@ export class DataTable extends Component {
             dataTableRef={this.dataTable}
             editFormRef={(ref) => (this.editForm = ref.form.current)}
             finish={editFinishFailed}
+            click={onClick}
           />
         </Modal>
         <Modal

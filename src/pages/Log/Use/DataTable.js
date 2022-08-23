@@ -238,7 +238,7 @@ class DataTable extends Component {
 
   exportExcel = () => {
     console.log(this.props);
-    debugger;
+
     let creator = getDvaApp()._store.getState().user.currentUser.username;
     let startTime = this.props.searchFormValues[0];
     let phoneBrand = this.props.searchFormValues[1];
@@ -246,6 +246,7 @@ class DataTable extends Component {
     let statusCode = this.props.searchFormValues[3];
     let vin = this.props.searchFormValues[4];
     let flag = this.props.searchFormValues[5];
+    debugger;
     let userId = this.props.searchFormValues[6];
     let vehicleBrand = this.props.searchFormValues[7];
     let vehicleModel = this.props.searchFormValues[8];
@@ -278,7 +279,8 @@ class DataTable extends Component {
         .format('YYYY-MM-DD 00:00:00');
       param.append('endTime', endTime);
     }
-    if (flag && flag.value) {
+    debugger;
+    if (flag.value == 0 || flag.value == 1) {
       param.append('flag', flag.value);
     }
     if (userId && userId.value) {
@@ -343,7 +345,7 @@ class DataTable extends Component {
     this.setState({
       endTime: null,
     });
-    console.log(11111);
+    // console.log(11111);
     this.state.endTime = null;
   };
   initEndTime = () => {

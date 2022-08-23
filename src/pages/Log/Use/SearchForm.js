@@ -51,12 +51,12 @@ class SearchForm extends Component {
   // componentWillUnmount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log(
-      this.props.keyErrorLogDataTable,
-      'this.props.keyErrorLogDataTable',
-      prevProps,
-      prevState,
-    );
+    // console.log(
+    //   this.props.keyErrorLogDataTable,
+    //   'this.props.keyErrorLogDataTable',
+    //   prevProps,
+    //   prevState,
+    // );
 
     if (this.props.keyErrorLogDataTable && this.state.flag) {
       this.handleSubmit();

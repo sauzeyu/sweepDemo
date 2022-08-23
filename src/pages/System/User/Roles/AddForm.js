@@ -113,6 +113,7 @@ export default class AddForm extends Component {
           name="roleName"
           rules={[
             { required: true, message: '角色名称不能为空' },
+
             {
               // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
               pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
@@ -129,8 +130,10 @@ export default class AddForm extends Component {
           rules={[
             { required: true, message: '角色代码不能为空' },
             {
-              pattern: new RegExp(/^[0-9]*$/),
-              message: '角色代码只能是数字',
+              // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
+              pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
+
+              message: '角色代码不能有特殊字符',
             },
           ]}
         >

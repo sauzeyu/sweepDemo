@@ -24,7 +24,7 @@ export default class EditForm extends Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.form.current && this.state.flag) {
       this.form.current.setFieldsValue({ menuList: this.state.checkedKeys });
-      this.setState({ flag: false });
+      // this.setState({flag:false})
     }
   }
 
@@ -134,7 +134,6 @@ export default class EditForm extends Component {
           name="roleName"
           rules={[
             { required: true, message: '角色名称不能为空' },
-
             {
               // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
               pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
@@ -152,8 +151,10 @@ export default class EditForm extends Component {
             { required: true, message: '角色代码不能为空' },
 
             {
-              pattern: new RegExp(/^[0-9]*$/),
-              message: '角色代码只能是数字',
+              // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
+              pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
+
+              message: '角色代码不能有特殊字符',
             },
           ]}
         >
