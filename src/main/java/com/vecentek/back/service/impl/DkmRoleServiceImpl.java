@@ -91,8 +91,8 @@ public class DkmRoleServiceImpl {
             return PageResp.fail(9001, "必填参数未传递");
         }
         DkmRole selectOne = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getId, role.getId()));
-        if (ObjectUtil.isNotNull(selectOne)) {
-            return PageResp.fail("用户不存在");
+        if (ObjectUtil.isNull(selectOne)) {
+            return PageResp.fail("该角色已不存在");
         }
         // 重复性校验 code 和 name 不能重复 否则数据库报错
         DkmRole dkmRole2 = dkmRoleMapper.selectOne(new QueryWrapper<DkmRole>().lambda().eq(DkmRole::getRoleName, role.getRoleName()));
