@@ -35,9 +35,16 @@ export default class EditForm extends Component {
 
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
-      // values.menuList = this.state.keys;
+      if (this.form.current && this.state.flag) {
+        this.form.current.setFieldsValue({ menuList: this.state.checkedKeys });
+        // this.setState({flag:false})
+      }
       console.log('values', values);
-
+      debugger;
+      if (values.menuList == null || values?.menuList.length === 0) {
+        message.error('菜单权限不能为空');
+        return;
+      }
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
@@ -163,14 +170,14 @@ export default class EditForm extends Component {
         <Form.Item
           label={'菜单权限'}
           name={'menuList'}
-          rules={[
-            {
-              required: true,
-              message: '菜单权限不能为空',
-              defaultField: [],
-              type: 'array',
-            },
-          ]}
+          // rules={[
+          //   {
+          //     required: true,
+          //     message: '菜单权限不能为空',
+          //     defaultField: [],
+          //     type: 'array',
+          //   },
+          // ]}
         >
           {menus.length > 0 && (
             <Tree

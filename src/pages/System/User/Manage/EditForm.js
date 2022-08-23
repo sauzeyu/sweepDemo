@@ -27,6 +27,7 @@ export default class EditForm extends Component {
           values.roleList = values.roleList[0];
         }
       }
+
       // values.roleList = values.roleList[0];
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;
