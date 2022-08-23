@@ -87,7 +87,8 @@ public class DkmAdminServiceImpl {
                 .eq(DkmAdmin::getId, adminVO.getId())
                 .set(DkmAdmin::getExtraInfo, adminVO.getExtraInfo())
                 .set(DkmAdmin::getUsername, adminVO.getUsername())
-                .set(DkmAdmin::getUpdateTime, adminVO.getUpdateTime());
+                .set(DkmAdmin::getUpdateTime, adminVO.getUpdateTime())
+                .set(DkmAdmin::getUpdator,adminVO.getUpdator());
         try {
             dkmAdminMapper.update(null, lambdaUpdateWrapper);
         } catch (Exception e) {
