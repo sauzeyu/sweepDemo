@@ -50,6 +50,11 @@ public class DkmKeyLog implements Serializable {
      */
     private Integer flag;
     /**
+     * 成败标识 1 成功 0 失败
+     */
+    @TableField(exist = false)
+    private String flagVO;
+    /**
      * 车控执行状态码
      */
     private String statusCode;

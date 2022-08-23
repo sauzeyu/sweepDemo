@@ -283,7 +283,7 @@ public class DkmKeyLogServiceImpl {
 
         writer.addHeaderAlias("statusCode", "操作码");
         writer.addHeaderAlias("operationType", "操作类型");
-        writer.addHeaderAlias("flag", "操作结果");
+        writer.addHeaderAlias("flagVO", "操作结果");
         writer.addHeaderAlias("errorReason", "失败原因");
 
     }
@@ -346,6 +346,12 @@ public class DkmKeyLogServiceImpl {
                     } else {
                         keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
                     }
+                }
+                if(keyLog.getFlag() == 0){
+                    keyLog.setFlagVO("失败");
+                }
+                if(keyLog.getFlag() == 1){
+                    keyLog.setFlagVO("成功");
                 }
             });
 
