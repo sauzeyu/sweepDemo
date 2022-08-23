@@ -1,5 +1,7 @@
 package com.vecentek.back;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.HMac;
 import cn.hutool.crypto.digest.HmacAlgorithm;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -22,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -247,5 +250,78 @@ public class JmeterTest {
 
     }
 
+    /**
+     * 制造上传钥匙使用日志测试数据
+     */
+    @Test
+    public void uploadKeyLog() throws IOException{
+        for (int i = 0; i <= 250; i++) {
+            // 使用日志 statusCode 1 byte
+            // 使用日志 statusCode 2 byte
+            // 错误日志 statusCode 1 byte
+            // 错误日志 statusCode 2 byte
+            OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_1byte" + i));
+            BerTlvBuilder tlv = new BerTlvBuilder();
+            // VIN
+            tlv.addBytes(new BerTag(0X9F, 0X62), RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
+            // keyId
+            tlv.addBytes(new BerTag(0X07), (i + "").getBytes(StandardCharsets.UTF_8));
+            // statusCode 1个byte
+            ArrayList<String> list = CollUtil.newArrayList("08", "0A", "0B", "0C", "0D", "03", "04", "05", "06", "09", "0E");
+            tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
+            // operateTime
+            tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406T163929Z".getBytes(StandardCharsets.UTF_8));
+            // userId
+            tlv.addBytes(new BerTag(0X1b), (i + "").getBytes(StandardCharsets.UTF_8));
+            // phoneBrand
+            tlv.addBytes(new BerTag(0X9F, 0X16), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // phoneModel
+            tlv.addBytes(new BerTag(0X9F, 0X17), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // errorReason 为空 为使用日志
+//            tlv.addBytes(new BerTag(0X9F, 0X3C), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = tlv.buildArray();
+            os.write(bytes);
+            os.flush();
+            os.close();
+        }
+    }
+    @Test
+    public void uploadKeyLog2() throws IOException{
+        for (int i = 0; i <= 250; i++) {
+            // 使用日志 statusCode 1 byte
+            // 使用日志 statusCode 2 byte
+            // 错误日志 statusCode 1 byte
+            // 错误日志 statusCode 2 byte
+            OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_2byte" + i));
+            BerTlvBuilder tlv = new BerTlvBuilder();
+            // VIN
+            tlv.addBytes(new BerTag(0X9F, 0X62), RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
+            // keyId
+            tlv.addBytes(new BerTag(0X07), (i + "").getBytes(StandardCharsets.UTF_8));
+            // statusCode 1个byte
+            ArrayList<String> list = CollUtil.newArrayList("0400", "0401", "0500", "0501", "0600", "0601", "0700", "0701", "0800", "0801");
+            tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
+            // operateTime
+            tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406T163929Z".getBytes(StandardCharsets.UTF_8));
+            // userId
+            tlv.addBytes(new BerTag(0X1b), (i + "").getBytes(StandardCharsets.UTF_8));
+            // phoneBrand
+            tlv.addBytes(new BerTag(0X9F, 0X16), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // phoneModel
+            tlv.addBytes(new BerTag(0X9F, 0X17), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // errorReason 为空 为使用日志
+//            tlv.addBytes(new BerTag(0X9F, 0X3C), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = tlv.buildArray();
+            os.write(bytes);
+            os.flush();
+            os.close();
+        }
+    }
 
+    @Test
+    public void rand(){
+        ArrayList<String> list = CollUtil.newArrayList("08", "0A", "0B", "0C", "0D", "03", "04", "05", "06", "09", "0E");
+        String s = RandomUtil.randomEle(list);
+        System.out.println(s);
+    }
 }
