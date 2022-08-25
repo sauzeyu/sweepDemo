@@ -60,7 +60,7 @@ public class DkmAdminServiceImpl {
     }
 
     public PageResp selectRoleNameListById(int id) {
-        List<String> roleNameList = dkmAdminMapper.selectRoleNameListById(id);
+        DkmRole roleNameList = dkmAdminMapper.selectRoleNameListById(id);
         return PageResp.success("查询成功", roleNameList);
     }
 

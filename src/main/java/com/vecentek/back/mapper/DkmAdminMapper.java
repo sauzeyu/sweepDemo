@@ -2,6 +2,7 @@ package com.vecentek.back.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.vecentek.back.entity.DkmAdmin;
+import com.vecentek.back.entity.DkmRole;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -20,11 +21,11 @@ public interface DkmAdminMapper extends BaseMapper<DkmAdmin> {
      * @param id 管理员id
      * @return 角色列表
      */
-    @Select("select dr.role_name \n" +
+    @Select("select dr.role_name , dr.id\n" +
             "from dkm_admin da\n" +
             "         left join dkm_admin_role dar on da.id = dar.admin_id\n" +
             "         left join dkm_role dr on dr.id = dar.role_id where da.id=#{id}")
-    List<String> selectRoleNameListById(@Param("id") int id);
+    DkmRole selectRoleNameListById(@Param("id") int id);
 
 
 }

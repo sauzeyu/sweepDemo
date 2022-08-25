@@ -559,15 +559,16 @@ public class DkmKeyServiceImpl {
                                           Integer[] dkState,
                                           Integer start,
                                           Integer end) {
-        if (keyType == null) {
-            keyType = 3;
-        }
-        if (periodMax != null) {
-            periodMax = checkTimeUnit(periodMax, periodUnit);
-        }
-        if (periodMin != null) {
-            periodMin = checkTimeUnit(periodMin, periodUnit);
-        }
+
+        //if (keyType == null) {
+        //    keyType = 3;
+        //}
+        //if (periodMax != null) {
+        //    periodMax = checkTimeUnit(periodMax, periodUnit);
+        //}
+        //if (periodMin != null) {
+        //    periodMin = checkTimeUnit(periodMin, periodUnit);
+        //}
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.lambdaQuery();
         // 是否需要dkStates条件
         if (dkState != null && dkState.length > 0) {
