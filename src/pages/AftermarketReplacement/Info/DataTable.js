@@ -183,7 +183,7 @@ class DataTable extends Component {
           source={getBluetoothList}
           dataProp={'data'}
           name={'aftermarketReplacementDataTable'}
-          rowKey={'id'}
+          // rowKey={'id'}
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
