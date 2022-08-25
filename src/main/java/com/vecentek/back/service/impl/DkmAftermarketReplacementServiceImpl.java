@@ -97,12 +97,8 @@ public class DkmAftermarketReplacementServiceImpl {
         if (StringUtils.isNotBlank(vin)) {
             vin = vin.trim();
         }
-        //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
-        List<String> timeList = DownLoadUtil.checkLastWeekTotal(startTime, endTime, creator);
-        String fileName = timeList.get(FileConstant.FILENAME);
         // 1.3形成文件名
-        String excelName = fileName + "换件信息";
-
+        String excelName = "换件信息" ;
         LambdaQueryWrapper<DkmAftermarketReplacement> queryWrapper = Wrappers.<DkmAftermarketReplacement>lambdaQuery()
                 .like(StrUtil.isNotBlank(vin), DkmAftermarketReplacement::getVin, vin)
                 .ge(StrUtil.isNotBlank(startTime), DkmAftermarketReplacement::getReplacementTime, startTime)
