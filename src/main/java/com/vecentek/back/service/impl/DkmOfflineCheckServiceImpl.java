@@ -217,8 +217,6 @@ public class DkmOfflineCheckServiceImpl {
                 dkmBluetoothsMapper.insert(bluetooth);
             });
         }
-        // 新增一个map返回给前端作为测试结果，正式环境删除
-        // TODO 上线删除
         ArrayList<Map> resList = new ArrayList<>();
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
         if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
@@ -277,13 +275,14 @@ public class DkmOfflineCheckServiceImpl {
                         // 2.6 发送用户消息（换件后） 钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台
                         // “vin“: “ ASDCSDASDADA1“,
                         // “userList”:[18202828282,15982637777,17237378989]
-
-                        HashMap<String, Object> paramMap = new HashMap<>(16);
-                        paramMap.put("vin", dkmKey.getVin());
-                        paramMap.put("userList", userList);
-                        resList.add(paramMap);
-                        String urlString = "http://localhost:8007/dkserver-icce/dkm/wechat/recv";
-                        HttpRequest.post(urlString).form(paramMap).execute().body();
+                        // 新增一个map返回给前端作为测试结果，正式环境删除
+                        // TODO 上线删除
+//                        HashMap<String, Object> paramMap = new HashMap<>(16);
+//                        paramMap.put("vin", dkmKey.getVin());
+//                        paramMap.put("userList", userList);
+//                        resList.add(paramMap);
+//                        String urlString = "http://localhost:8007/dkserver-icce/dkm/wechat/recv";
+//                        HttpRequest.post(urlString).form(paramMap).execute().body();
                         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台");
                     });
                 }
