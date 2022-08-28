@@ -157,11 +157,11 @@ class DataTable extends Component {
       let endTime = moment(replacementTime[1])
         .add(1, 'days')
         .format('YYYY-MM-DD');
-      if (startTime && startTime.value) {
-        param.append('startTime', startTime.value);
+      if (startTime) {
+        param.append('startTime', startTime);
       }
-      if (endTime && endTime.value) {
-        param.append('endTime', endTime.value);
+      if (endTime) {
+        param.append('endTime', endTime);
       }
     }
 

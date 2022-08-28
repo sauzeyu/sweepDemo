@@ -14,7 +14,6 @@ class SearchForm extends Component {
       .validateFields()
       .then((values) => {
         if (values.startTime) {
-          // debugger;
           const startTime = values['startTime'];
           values.startTime = moment(startTime[0]).format('YYYY-MM-DD');
           values.endTime = moment(startTime[1])

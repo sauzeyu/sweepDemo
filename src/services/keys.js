@@ -26,7 +26,6 @@ export async function selectVehicleById(id) {
 }
 
 export async function getKeyLogList(params) {
-  // debugger;
   return request.get('dkmKeyLog/selectForPage', {
     params,
     paramsSerializer: (params) => {
@@ -67,7 +66,7 @@ export async function getKeyLogList(params) {
 
 //通过创建者查询 历史导出记录表(倒排)
 export async function checkKeyUseLog(params) {
-  return request.get('dkmKeyLog/checkKeyUseLog', { params });
+  return request.get('dkmKeyLogHistoryExport/checkKeyUseLog', { params });
 }
 
 function clearDeep(obj) {

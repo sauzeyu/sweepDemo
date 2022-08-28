@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { connect } from 'dva';
 
@@ -34,8 +34,8 @@ import moment from 'moment';
 import { downloadExcel } from '@/services/downloadExcel';
 const { Description } = DescriptionList;
 const dateFormat = 'YYYY/MM/DD';
+
 const download = (col) => {
-  // debugger;
   console.log(col);
   let param = new URLSearchParams();
   let fileName = col.missionName;
@@ -53,6 +53,24 @@ const download = (col) => {
   });
 };
 const SubTable = () => {
+  // @ts-ignore
+  const [loadings, setLoadings] = useState([]);
+
+  const enterLoading = (index, text) => {
+    download(text);
+    setLoadings((prevLoadings) => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+    setTimeout(() => {
+      setLoadings((prevLoadings) => {
+        const newLoadings = [...prevLoadings];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+    }, 3000);
+  };
   const columns1 = [
     // {
     //   title: '序号',
@@ -86,12 +104,18 @@ const SubTable = () => {
     {
       title: '操作',
       dataIndex: '',
-      render: (col) => {
+      render: (text, record, index) => {
         return (
           <div className={'link-group'}>
-            <Popover title="" trigger="click">
-              <a onClick={() => download(col)}>下载</a>
-            </Popover>
+            {/*<Popover title="" trigger="click">*/}
+            <Button
+              icon={<DownloadOutlined />}
+              loading={loadings[index]}
+              onClick={() => enterLoading(index, text)}
+            >
+              下载
+            </Button>
+            {/*</Popover>*/}
           </div>
         );
       },
@@ -99,12 +123,14 @@ const SubTable = () => {
   ];
 
   // console.log("props ",props);
+  let creator = getDvaApp()._store.getState().user.currentUser.username;
   return (
     <EasyTable
       rowKey={'id'}
       scroll={{ x: '800px' }}
       autoFetch
       source={checkKeyUseLog}
+      fixedParams={{ creator: creator, type: 0 }}
       dataProp={'data'}
       name={'checkKeyUseLogTable'}
       columns={columns1}
@@ -246,7 +272,6 @@ class DataTable extends Component {
     let statusCode = this.props.searchFormValues[3];
     let vin = this.props.searchFormValues[4];
     let flag = this.props.searchFormValues[5];
-    debugger;
     let userId = this.props.searchFormValues[6];
     let vehicleBrand = this.props.searchFormValues[7];
     let vehicleModel = this.props.searchFormValues[8];
@@ -279,7 +304,6 @@ class DataTable extends Component {
         .format('YYYY-MM-DD 00:00:00');
       param.append('endTime', endTime);
     }
-    debugger;
     if (flag.value == 0 || flag.value == 1) {
       param.append('flag', flag.value);
     }
@@ -359,8 +383,6 @@ class DataTable extends Component {
   };
 
   render() {
-    // debugger;
-
     // let startTime = this.formatDateTime(this.defaultStartTime()[0]);
     // let endTime = this.formatDateTime(this.defaultStartTime()[1]);
     // let endTime

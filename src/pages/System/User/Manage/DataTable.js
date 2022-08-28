@@ -109,7 +109,6 @@ export class DataTable extends Component {
     let roleList;
     getAdminRoleNameById(user.id).then(
       (res) => {
-        debugger;
         roleList = res.data.id;
 
         this.setState(
@@ -121,10 +120,8 @@ export class DataTable extends Component {
               // user.roleId
               user.roleId = roleList;
               console.log(user);
-              // debugger;
               // this.editForm.current?.setFieldsValue(user);
               this.editForm?.setFieldsValue(user);
-              debugger;
             }
           },
         );

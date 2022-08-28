@@ -19,8 +19,6 @@ export default class EditForm extends Component {
   handleSubmit = () => {
     this.form.current.validateFields().then((values) => {
       console.log(values);
-      // debugger;
-
       if (values?.roleList) {
         let role = values.roleList;
         if (role instanceof Array && role.length > 0) {
@@ -31,7 +29,6 @@ export default class EditForm extends Component {
       // values.roleList = values.roleList[0];
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;
-      // debugger;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       console.log(values);
       updateAdminById(values).then(

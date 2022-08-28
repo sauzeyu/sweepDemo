@@ -1,5 +1,5 @@
 import { getDvaApp } from '@@/plugin-dva/exports';
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import EasyTable from '@/components/EasyTable';
 import Authorized from '@/components/Authorized';
 import moment from 'moment';
@@ -40,6 +40,7 @@ import { downloadExcel } from '@/services/downloadExcel';
 
 const download = (col) => {
   console.log(col);
+  debugger;
   let param = new URLSearchParams();
   let fileName = col.missionName;
   if (fileName) {
@@ -57,6 +58,24 @@ const download = (col) => {
 };
 
 const SubTable2 = () => {
+  const [loadings, setLoadings] = useState([]);
+
+  const enterLoading = (index, text) => {
+    download(text);
+    setLoadings((prevLoadings) => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+    setTimeout(() => {
+      setLoadings((prevLoadings) => {
+        const newLoadings = [...prevLoadings];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+    }, 3000);
+  };
+
   const columns1 = [
     // {
     //   title: '序号',
@@ -96,12 +115,18 @@ const SubTable2 = () => {
     {
       title: '操作',
       dataIndex: '',
-      render: (col) => {
+      render: (text, record, index) => {
         return (
           <div className={'link-group'}>
-            <Popover title="" trigger="click">
-              <a onClick={() => download(col)}>下载</a>
-            </Popover>
+            {/*<Popover title="" trigger="click">*/}
+            <Button
+              icon={<DownloadOutlined />}
+              loading={loadings[index]}
+              onClick={() => enterLoading(index, text)}
+            >
+              下载
+            </Button>
+            {/*</Popover>*/}
           </div>
         );
       },
@@ -126,6 +151,7 @@ const SubTable2 = () => {
 };
 const SubTable = (props) => {
   const dataList = React.useRef();
+
   const columns = [
     {
       title: '操作时间',

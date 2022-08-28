@@ -96,7 +96,7 @@ class MiddleForm extends React.Component {
       legend: {
         type: 'scroll',
         orient: 'vertical',
-        right: 80,
+        right: 45,
         top: 20,
         bottom: 20,
       },
@@ -161,7 +161,7 @@ class MiddleForm extends React.Component {
       legend: {
         type: 'scroll',
         orient: 'vertical',
-        right: 10,
+        right: 80,
         top: 20,
         bottom: 20,
       },
@@ -397,20 +397,6 @@ class MiddleForm extends React.Component {
             </Row>
           </TabPane>
         </Tabs>
-
-        {/*<Row align={'bottom'} style={{marginTop: 20}}>*/}
-        {/*  <Col span={6} push={4}>*/}
-        {/*  </Col>*/}
-        {/*  <Col span={6} push={8}>*/}
-        {/*    <ReactEcharts option={this.getOptionAsMid()} notMerge={true}/>*/}
-        {/*  </Col>*/}
-        {/*</Row>*/}
-
-        {/*<Row align={'bottom'} style={{marginTop: 20}}>*/}
-        {/*  <Col span={24}>*/}
-        {/*    <ReactEcharts option={this.getLineChart()} notMerge={true}/>*/}
-        {/*  </Col>*/}
-        {/*</Row>*/}
       </Card>
     );
   }

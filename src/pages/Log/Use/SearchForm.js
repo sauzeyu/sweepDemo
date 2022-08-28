@@ -3,10 +3,7 @@ import { Button, Col, Form, Row, Select, Input, DatePicker, Modal } from 'antd';
 import EasyTable from '@/components/EasyTable';
 import { Permit } from '@/constants/keys';
 import moment from 'moment';
-import {
-  DownOutlined,
-  UpOutlined,
-} from '_@ant-design_icons@4.7.0@@ant-design/icons';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Code } from '@/constants/statusCode';
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
@@ -32,7 +29,6 @@ class SearchForm extends Component {
       .then((values) => {
         if (values.startTime) {
           const startTime = values['startTime'];
-          // debugger;
           values.startTime = moment(startTime[0]).format('YYYY-MM-DD 00:00:00');
           values.endTime = moment(startTime[1])
             .add(1, 'days')
