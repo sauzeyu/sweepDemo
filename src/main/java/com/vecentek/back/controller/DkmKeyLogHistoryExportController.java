@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.service.DkmKeyLogHistoryExportService;
 import com.vecentek.back.service.impl.DkmKeyLogHistoryExportServiceImpl;
+import com.vecentek.back.service.impl.DkmKeyLogServiceImpl;
+import com.vecentek.common.response.PageResp;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +37,6 @@ import java.util.List;
 public class DkmKeyLogHistoryExportController extends ApiController {
     @Resource
     private DkmKeyLogHistoryExportServiceImpl dkmKeyLogHistorysExportService;
-
     /**
      * 服务对象
      */
@@ -98,6 +99,18 @@ public class DkmKeyLogHistoryExportController extends ApiController {
     @DeleteMapping
     public R delete(@RequestParam("idList") List<Long> idList) {
         return success(this.dkmKeyLogHistoryExportService.removeByIds(idList));
+    }
+    /**
+     * 查询历史导出记录表
+     *
+     * @param creator
+     * @param type
+     * @return
+     */
+    @GetMapping("/checkKeyUseLog")
+    public PageResp checkKeyUseLog(String creator, Integer type) {
+        //查询历史导出记录表(倒排)
+        return this.dkmKeyLogHistorysExportService.checkKeyUseLog(creator, type);
     }
 
     @PostMapping(value = "/downloadExcel")

@@ -360,20 +360,6 @@ public class DkmKeyLogServiceImpl {
         return keyLogList;
     }
 
-    /**
-     * 根据具体用户和excel类型查询历史下载记录列表
-     * @param creator
-     * @param type
-     * @return
-     */
-    public PageResp checkKeyUseLog(String creator, Integer type) {
-        LambdaQueryWrapper<DkmKeyLogHistoryExport> dkmKeyLogHistoryExportLambdaQueryWrapper = new LambdaQueryWrapper<>();
-        dkmKeyLogHistoryExportLambdaQueryWrapper.eq(creator != null, DkmKeyLogHistoryExport::getCreator, creator)
-                .eq(type != null, DkmKeyLogHistoryExport::getType, type)
-                .orderByDesc(DkmKeyLogHistoryExport::getCreateTime)
-        ;
-        List<DkmKeyLogHistoryExport> dkmKeyLogHistoryExports = dkmKeyLogHistoryExportMapper.selectList(dkmKeyLogHistoryExportLambdaQueryWrapper);
-        return PageResp.success("查询成功", (long) dkmKeyLogHistoryExports.size(), dkmKeyLogHistoryExports);
-    }
+
 
 }
