@@ -34,7 +34,7 @@ class Index extends Component {
               <SearchForm getFormValues={this.getFormValues} />
             </Card>
           </Authorized>
-          <Authorized route={CARS_PHONE_SELECT}>
+          <Authorized route={CARS_PHONE_TABLE}>
             <Card bordered={false}>
               <DataTable searchFormValues={searchFormValues} />
             </Card>

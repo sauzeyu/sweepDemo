@@ -4,7 +4,11 @@ import SearchForm from './SearchForm';
 import DataTable from './DataTable';
 
 import Authorized from '@/components/Authorized';
-import { LOG_USE, LOG_USE_SELECT } from '@/components/Authorized/AuthMap';
+import {
+  LOG_USE,
+  LOG_USE_SELECT,
+  LOG_USE_TABLE,
+} from '@/components/Authorized/AuthMap';
 
 /**
  * 钥匙故障记录
