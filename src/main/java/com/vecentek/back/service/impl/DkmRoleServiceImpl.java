@@ -80,8 +80,6 @@ public class DkmRoleServiceImpl {
             return PageResp.fail("id不能为空");
         }
         dkmRoleMapper.deleteById(id);
-        dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, id));
-        dkmAdminRoleMapper.deleteByRoleId(id);
         // 修改了角色权限后删除该角色对应所有账号的token
         List<DkmAdminRole> dkmAdminRoles = dkmAdminRoleMapper.selectList(new LambdaQueryWrapper<DkmAdminRole>().eq(DkmAdminRole::getRoleId, id));
         if (CollUtil.isEmpty(dkmAdminRoles)) { // 角色没有对应用户
@@ -103,6 +101,13 @@ public class DkmRoleServiceImpl {
                     }
                 }
             }
+        }
+        try {
+            dkmRoleMenuMapper.delete(Wrappers.<DkmRoleMenu>lambdaQuery().eq(DkmRoleMenu::getRoleId, id));
+            dkmAdminRoleMapper.deleteByRoleId(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return PageResp.fail("删除失败");
         }
         return PageResp.success("删除成功");
     }
