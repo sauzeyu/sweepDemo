@@ -2,6 +2,8 @@ package com.vecentek.back.controller;
 
 import cn.hutool.core.util.IdUtil;
 import com.vecentek.back.entity.DkmKeyLog;
+import com.vecentek.back.entity.DkmKeyLogHistoryExport;
+import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.service.impl.DkmKeyLogServiceImpl;
 import com.vecentek.common.response.PageResp;
@@ -34,6 +36,8 @@ public class DkmKeyLogController {
     private DkmKeyLogServiceImpl dkmKeyUseLogService;
     @Resource
     private DkmKeyLogMapper dkmKeyLogMapper;
+    @Resource
+    private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
     @GetMapping("/selectForPage")
@@ -113,8 +117,20 @@ public class DkmKeyLogController {
                                          Integer flag,
                                          String creator
     ) {
+        // 1.1 形成文件名
+        String excelName = "钥匙使用记录-" + System.currentTimeMillis();
 
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator);
+        // 2 向历史导出记录新增一条状态为导出中的数据
+        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
+                .exportStatus(0)
+                .missionName(excelName)
+                .createTime(new Date())
+                .creator(creator)
+                .type(0)
+                .build();
+
+        dkmKeyLogHistoryExportMapper.insert(build);
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator,excelName);
         return PageResp.success("正在导出");
 
     }
@@ -147,12 +163,13 @@ public class DkmKeyLogController {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator
+                                    String creator,
+                                    String excelName
     ) {
 
 
         this.dkmKeyUseLogService.downloadKeyLogExcel
-                (vin,
+                (       vin,
                         userId,
                         startTime,
                         endTime,
@@ -163,7 +180,9 @@ public class DkmKeyLogController {
                         vehicleBrand,
                         vehicleModel,
                         vehicleType,
-                        creator);
+                        creator,
+                        excelName
+                        );
 
     }
 

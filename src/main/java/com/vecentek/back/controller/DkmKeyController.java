@@ -1,5 +1,7 @@
 package com.vecentek.back.controller;
 
+import com.vecentek.back.entity.DkmKeyLogHistoryExport;
+import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
 import com.vecentek.common.response.PageResp;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
 /**
  * 钥匙信息(DkmKey)表控制层
@@ -33,6 +36,9 @@ public class DkmKeyController {
 
     @Resource
     private DkmKeyMapper dkmKeyMapper;
+
+    @Resource
+    private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
     @GetMapping(value = "/selectForPage")
@@ -179,6 +185,19 @@ public class DkmKeyController {
                                          String valToEndTime,
                                          Integer[] dkState,
                                          String creator) {
+        // 1.3形成文件名
+        String excelName = "钥匙信息记录-" + System.currentTimeMillis();
+
+        // 2向历史导出记录新增一条状态为导出中的数据
+        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
+                .exportStatus(0)
+                .missionName(excelName)
+                .creator(creator)
+                .createTime(new Date())
+                .type(1)
+                .build();
+        dkmKeyLogHistoryExportMapper.insert(build);
+
         downloadKeyExcel(vin,
                 userId,
                 keyType,
@@ -190,8 +209,11 @@ public class DkmKeyController {
                 valFromStartTime,
                 valFromEndTime,
                 valToStartTime,
-                valToEndTime
-                , dkState, creator);
+                valToEndTime,
+                dkState,
+                creator,
+                excelName
+                );
         return PageResp.success("正在导出");
 
     }
@@ -228,7 +250,9 @@ public class DkmKeyController {
                                  String valToStartTime,
                                  String valToEndTime,
                                  Integer[] dkStates,
-                                 String creator) {
+                                 String creator,
+                                 String excelName
+                                 ) {
         this.dkmKeyServiceImpl.downloadKeyLogExcel(
                 vin,
                 userId,
@@ -243,7 +267,11 @@ public class DkmKeyController {
                 valToStartTime,
                 valToEndTime,
                 dkStates,
-                creator);
+                creator,
+                excelName
+                );
+
+
     }
 
 }

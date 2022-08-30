@@ -27,6 +27,6 @@ public interface DkmMenuMapper extends BaseMapper<DkmMenu> {
             "         left join dkm_role_menu drm\n" +
             "                   on drm.role_id = dr.id\n" +
             "         left join dkm_menu dm on dm.id = drm.menu_id\n" +
-            "where dr.id = #{id}")
+            "where dr.id = #{id} and dm.type = 1 ")
     List<String> selectMenuByRoleId(@Param("id") Integer id);
 }

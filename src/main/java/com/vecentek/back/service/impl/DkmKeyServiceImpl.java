@@ -368,11 +368,10 @@ public class DkmKeyServiceImpl {
                                     String valToStartTime,
                                     String valToEndTime,
                                     Integer[] dkState,
-                                    String creator) {
-        String fileName = "";
+                                    String creator,
+                                    String excelName
+                                    ) {
 
-        // 1.3形成文件名
-        String excelName = fileName + "钥匙信息记录-" + System.currentTimeMillis();
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
@@ -387,15 +386,7 @@ public class DkmKeyServiceImpl {
         ExcelWriter writer = ExcelUtil.getWriter(filePath);
 
 
-        // 2向历史导出记录新增一条状态为导出中的数据
-        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
-                .exportStatus(0)
-                .missionName(excelName)
-                .creator(creator)
-                .createTime(new Date())
-                .type(1)
-                .build();
-        dkmKeyLogHistoryExportMapper.insert(build);
+
         // 3.1所有数据量
         if (keyType == null) {
             keyType = 3;
@@ -483,6 +474,8 @@ public class DkmKeyServiceImpl {
 
         } catch (Exception e) {
             e.printStackTrace();
+            dkmKeyLogHistoryExportMapper.update(null,
+                    Wrappers.<DkmKeyLogHistoryExport>lambdaUpdate().set(DkmKeyLogHistoryExport::getExportStatus, 2).eq(DkmKeyLogHistoryExport::getMissionName, excelName));
         } finally {
             writer.close();
         }

@@ -129,7 +129,9 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator) {
+                                    String creator,
+                                    String excelName
+    ) {
 
         if (CharSequenceUtil.isBlank(startTime)){
             startTime = DownLoadUtil.getSysDate();
@@ -137,8 +139,7 @@ public class DkmKeyLogServiceImpl {
         if (CharSequenceUtil.isBlank(endTime)){
             endTime = DownLoadUtil.getNextDay();
         }
-        // 1.1 形成文件名
-        String excelName = "钥匙使用记录-" + System.currentTimeMillis();
+
 
         // 1.2 使用1处文件名(时间戳)进行文件命名 并指定到服务器路径
         String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
@@ -152,16 +153,7 @@ public class DkmKeyLogServiceImpl {
         ExcelWriter writer = ExcelUtil.getWriter(filePath);
 
 
-        // 2 向历史导出记录新增一条状态为导出中的数据
-        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
-                .exportStatus(0)
-                .missionName(excelName)
-                .createTime(new Date())
-                .creator(creator)
-                .type(0)
-                .build();
 
-        dkmKeyLogHistoryExportMapper.insert(build);
 
 
         // 3.1所有数据量
@@ -220,6 +212,8 @@ public class DkmKeyLogServiceImpl {
 
         } catch (Exception e) {
             e.printStackTrace();
+            dkmKeyLogHistoryExportMapper.update(null,
+                    Wrappers.<DkmKeyLogHistoryExport>lambdaUpdate().set(DkmKeyLogHistoryExport::getExportStatus, 2).eq(DkmKeyLogHistoryExport::getMissionName, excelName));
         } finally {
             writer.close();
         }

@@ -1,5 +1,9 @@
 package com.vecentek.back.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.vecentek.back.entity.DkmMenu;
+import com.vecentek.back.mapper.DkmMenuMapper;
+import com.vecentek.back.service.impl.DkmMenuServiceImpl;
 import com.vecentek.back.service.impl.DkmRoleServiceImpl;
 import com.vecentek.back.vo.InsertRoleVO;
 import com.vecentek.back.vo.RoleDTO;
@@ -12,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ：EdgeYu
@@ -28,7 +37,8 @@ public class DkmRoleController {
      */
     @Resource
     private DkmRoleServiceImpl dkmRoleService;
-
+    @Resource
+    private DkmMenuMapper dkmMenuMapper;
 
     /**
      * 分页查询管理员信息
@@ -58,7 +68,7 @@ public class DkmRoleController {
 
     @RequestMapping(value = "/updateRoleById", method = RequestMethod.POST)
     public PageResp updateRoleById(@RequestBody RoleDTO role) {
-
+        role.setMenuList(menuParentId(role.getMenuList()));
         return this.dkmRoleService.updateRoleById(role);
     }
 
@@ -72,7 +82,31 @@ public class DkmRoleController {
 
     @PostMapping(value = "/insert")
     public PageResp insert(@RequestBody InsertRoleVO roleVO) {
+        roleVO.setMenuList(menuParentId(roleVO.getMenuList()));
+
         return this.dkmRoleService.insert(roleVO);
     }
 
+    private DkmMenu selectParentMenu(DkmMenu subMenu) {
+        return dkmMenuMapper.selectOne(new LambdaQueryWrapper<DkmMenu>().eq(DkmMenu::getId, subMenu.getParentId()));
+    }
+
+    public List<String> menuParentId(List<String> list) {
+        int length = list.size();
+        for (int i = 0; i < length; i++) {
+            DkmMenu menu = dkmMenuMapper.selectOne(new LambdaQueryWrapper<DkmMenu>().eq(DkmMenu::getId, Integer.parseInt(list.get(i))));
+            if (menu.getParentId() != null) {
+                DkmMenu superMenu = selectParentMenu(menu);
+                list.add(superMenu.getId().toString());
+                if (superMenu.getParentId() != null) {
+                    DkmMenu topMenu = selectParentMenu(superMenu);
+                    list.add(topMenu.getId().toString());
+                }
+            }
+        }
+        HashSet<String> set = new HashSet<>(list);
+        List<String> collect = set.stream().collect(Collectors.toList());
+
+        return collect;
+    }
 }
