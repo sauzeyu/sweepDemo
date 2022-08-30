@@ -4,7 +4,7 @@ import SearchForm from './SearchForm';
 import DataTable from './DataTable';
 
 import Authorized from '@/components/Authorized';
-import { LOG_USE } from '@/components/Authorized/AuthMap';
+import { LOG_USE, LOG_USE_SELECT } from '@/components/Authorized/AuthMap';
 
 /**
  * 钥匙故障记录
@@ -18,17 +18,22 @@ class Index extends Component {
   state = {
     searchFormValues: {},
   };
+
   render() {
     const { searchFormValues } = this.state;
     return (
       <Authorized route={LOG_USE}>
         <div className={'card-group'}>
-          <Card bordered={false}>
-            <SearchForm getFormValues={this.getFormValues} />
-          </Card>
-          <Card bordered={false}>
-            <DataTable searchFormValues={searchFormValues} />
-          </Card>
+          <Authorized route={LOG_USE_SELECT}>
+            <Card bordered={false}>
+              <SearchForm getFormValues={this.getFormValues} />
+            </Card>
+          </Authorized>
+          <Authorized route={LOG_USE_TABLE}>
+            <Card bordered={false}>
+              <DataTable searchFormValues={searchFormValues} />
+            </Card>
+          </Authorized>
         </div>
       </Authorized>
     );

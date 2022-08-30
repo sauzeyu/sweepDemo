@@ -52,7 +52,8 @@ const SubTable = (props) => {
             return <ButtonTable {...record} />;
           },
           expandIcon: ({ expanded, onExpand, record }) => {
-            let flag = menuFlag[record?.id];
+            // let flag = menuFlag[record?.id];
+            let flag = record.type === 1;
             if (!flag) {
               if (expanded) {
                 return (
@@ -163,7 +164,9 @@ export class DataTable extends Component {
             return <SubTable {...record} />;
           },
           expandIcon: ({ expanded, onExpand, record }) => {
-            let flag = menuFlag[record?.id];
+            console.log('record ', record);
+
+            let flag = record.type === 1;
             if (!flag) {
               if (expanded) {
                 return (

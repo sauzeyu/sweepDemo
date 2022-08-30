@@ -5,7 +5,11 @@ import DataTable from './DataTable';
 import SearchForm from './SearchForm';
 import Authorized from '@/components/Authorized';
 import SeesawView from '@/components/SeesawView';
-import { AFTERMARKET_REPLACEMENT_INFO } from '@/components/Authorized/AuthMap';
+import {
+  AFTERMARKET_REPLACEMENT_INFO,
+  AFTERMARKET_REPLACEMENT_INFO_SELECT,
+  AFTERMARKET_REPLACEMENT_INFO_TABLE,
+} from '@/components/Authorized/AuthMap';
 @SeesawView()
 export default class Index extends React.Component {
   getFormValues = (values) => {
@@ -22,12 +26,16 @@ export default class Index extends React.Component {
     return (
       <Authorized route={AFTERMARKET_REPLACEMENT_INFO}>
         <div className={'card-group'}>
-          <Card bordered={false}>
-            <SearchForm getFormValues={this.getFormValues} />
-          </Card>
-          <Card bordered={false}>
-            <DataTable searchFormValues={searchFormValues} />
-          </Card>
+          <Authorized route={AFTERMARKET_REPLACEMENT_INFO_SELECT}>
+            <Card bordered={false}>
+              <SearchForm getFormValues={this.getFormValues} />
+            </Card>
+          </Authorized>
+          <Authorized route={AFTERMARKET_REPLACEMENT_INFO_TABLE}>
+            <Card bordered={false}>
+              <DataTable searchFormValues={searchFormValues} />
+            </Card>
+          </Authorized>
         </div>
       </Authorized>
     );

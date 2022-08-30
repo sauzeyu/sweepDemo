@@ -30,10 +30,10 @@ import { exportStatus } from '@/constants/export';
 import { keyLifecycleList, keyUseListById } from '@/services/cars';
 import { useMemo } from 'react';
 import {
-  KEY_INFO_EXPORT,
-  KEY_INFO_FREEZE,
-  KEY_INFO_REVOKE,
-  KEY_INFO_THAW,
+  KEYS_INFO_EXPORT,
+  KEYS_INFO_FREEZE,
+  KEYS_INFO_REVOKE,
+  KEYS_INFO_THAW,
 } from '@/components/Authorized/AuthMap';
 import { exportKey } from '@/services/exportKey';
 import { downloadExcel } from '@/services/downloadExcel';
@@ -314,7 +314,7 @@ class DataTable extends Component {
             >
               <a onClick={() => this.carInfo(col)}>查看车辆</a>
             </Popover>
-            <Authorized route={KEY_INFO_THAW}>
+            <Authorized route={KEYS_INFO_THAW}>
               <a
                 onClick={() => this.enableKey(col, true)}
                 hidden={!isDisable}
@@ -323,7 +323,7 @@ class DataTable extends Component {
                 解冻
               </a>
             </Authorized>
-            <Authorized route={KEY_INFO_FREEZE}>
+            <Authorized route={KEYS_INFO_FREEZE}>
               <a
                 className={'text-danger'}
                 onClick={() => this.enableKey(col, false)}
@@ -333,7 +333,7 @@ class DataTable extends Component {
                 冻结
               </a>
             </Authorized>
-            <Authorized route={KEY_INFO_REVOKE}>
+            <Authorized route={KEYS_INFO_REVOKE}>
               <a
                 className={'text-danger'}
                 onClick={() => this.revokeKey(col)}
@@ -565,7 +565,7 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <Authorized route={KEY_INFO_EXPORT}>
+            <Authorized route={KEYS_INFO_EXPORT}>
               <div className={'btn-group'}>
                 <Button
                   type={'ghost'}

@@ -28,6 +28,21 @@ export class DataTable extends Component {
 
   editRole = (role) => {
     selectMenuByRoleId(role.id).then((res) => {
+      // console.log('res.data',res.data);
+      // // debugger;
+      // let data = res.data;
+      // let list  = ['2','4','5','6','7','9','10','11','14','15','17','18','19','21','22','23','26'];
+      //
+      // for (let i = data.length - 1; i >= 0; i--) {
+      //   for (let j = list.length - 1; j >= 0; j--) {
+      //     if (data[i] === list[j]) {
+      //       data.splice(i, 1);
+      //     }
+      //   }
+      //
+      // }
+      // console.log('data',data);
+      // debugger;
       this.setState({
         selectKeys: res.data,
       });
@@ -194,8 +209,6 @@ export class DataTable extends Component {
           }
         />
         <Modal
-          // destroyOnClose={true}
-
           title="修改角色"
           visible={this.state.editRoleVisible}
           onOk={this.onEditFormOk}
@@ -228,7 +241,6 @@ export class DataTable extends Component {
         </Modal>
       </div>
     );
-    console.log(this.dataTable);
   }
 }
 

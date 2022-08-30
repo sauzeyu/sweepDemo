@@ -8,6 +8,8 @@ import { connect } from 'dva';
 import { getBluetooth, delBluetooth } from '@/services/cars';
 import { overdue } from '@/constants/cars';
 import { exportBluetooth } from '@/services/exportBluetooth';
+import { CARS_BLUETOOTH_EXPORT } from '@/components/Authorized/AuthMap';
+import Authorized from '@/components/Authorized';
 @connect(({ carsType, loading }) => ({
   carsType,
 }))
@@ -216,7 +218,7 @@ class DataTable extends Component {
           columns={this.columns}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <div className={'btn-group'}>
+            <Authorized route={CARS_BLUETOOTH_EXPORT}>
               <Button
                 type={'ghost'}
                 size={'large'}
@@ -225,7 +227,7 @@ class DataTable extends Component {
               >
                 导出蓝牙信息
               </Button>
-            </div>
+            </Authorized>
           }
           // extra={
           //   <Button

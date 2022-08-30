@@ -4,7 +4,11 @@ import SearchForm from './SearchForm';
 import DataTable from './DataTable';
 import SeesawView from '@/components/SeesawView';
 import Authorized from '@/components/Authorized';
-import { CARS_BLUETOOTH } from '@/components/Authorized/AuthMap';
+import {
+  CARS_BLUETOOTH,
+  CARS_BLUETOOTH_TABLE,
+  CARS_BLUETOOTH_SELECT,
+} from '@/components/Authorized/AuthMap';
 
 @SeesawView()
 /**
@@ -25,12 +29,16 @@ class Index extends Component {
     return (
       <Authorized route={CARS_BLUETOOTH}>
         <div className={'card-group'}>
-          <Card bordered={false}>
-            <SearchForm getFormValues={this.getFormValues} />
-          </Card>
-          <Card bordered={false}>
-            <DataTable searchFormValues={searchFormValues} />
-          </Card>
+          <Authorized route={CARS_BLUETOOTH_SELECT}>
+            <Card bordered={false}>
+              <SearchForm getFormValues={this.getFormValues} />
+            </Card>
+          </Authorized>
+          <Authorized route={CARS_BLUETOOTH_TABLE}>
+            <Card bordered={false}>
+              <DataTable searchFormValues={searchFormValues} />
+            </Card>
+          </Authorized>
         </div>
       </Authorized>
     );

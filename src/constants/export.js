@@ -20,7 +20,7 @@ import React from 'react';
 // };
 
 export const exportStatus = {
-  0: <Badge color="bule" text="正在导出" />,
+  0: <Badge color="blue" text="正在导出" />,
   1: <Badge color="green" text="导出完成" />,
   2: <Badge color="red" text="导出失败" />,
 };

@@ -10,6 +10,8 @@ import KeyTable from './KeyTable';
 import { windowType, sunroofType, color } from '@/constants/cars';
 import { exportVehicle } from '@/services/exportVehicle';
 import { PlusCircleOutlined, DownloadOutlined } from '@ant-design/icons';
+import Authorized from '@/components/Authorized';
+import { CARS_VEHICLE_EXPORT } from '@/components/Authorized/AuthMap';
 
 const { Description } = DescriptionList;
 
@@ -236,7 +238,7 @@ class DataTable extends Component {
           onChange={this.handleTableChange}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
-            <div className={'btn-group'}>
+            <Authorized route={CARS_VEHICLE_EXPORT}>
               <Button
                 type={'ghost'}
                 size={'large'}
@@ -245,7 +247,7 @@ class DataTable extends Component {
               >
                 导出车辆信息
               </Button>
-            </div>
+            </Authorized>
           }
         />
         <Modal

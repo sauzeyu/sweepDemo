@@ -7,10 +7,10 @@ import importExcel from '@/utils/importExcel';
 import { exportPhoneCalibration } from '@/services/upOrDownload';
 import { getPublicPath } from '@/utils';
 import {
-  CAR_PHONE_UPDATE,
-  CAR_PHONE_EXPORT,
-  CAR_PHONE_IMPORT,
-  CAR_PHONE_TEMPLATE,
+  CARS_PHONE_UPDATE,
+  CARS_PHONE_EXPORT,
+  CARS_PHONE_IMPORT,
+  CARS_PHONE_TEMPLATE,
 } from '@/components/Authorized/AuthMap';
 import Authorized from '@/components/Authorized';
 import {
@@ -104,7 +104,7 @@ class DataTable extends Component {
       fixed: 'right',
       render: (row) => {
         return (
-          <Authorized route={CAR_PHONE_UPDATE}>
+          <Authorized route={CARS_PHONE_UPDATE}>
             <div className={'link-group'}>
               <a onClick={() => this.editRow(row)}>编辑</a>
             </div>
@@ -287,7 +287,7 @@ class DataTable extends Component {
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
             <div className={'btn-group'}>
-              <Authorized route={CAR_PHONE_TEMPLATE}>
+              <Authorized route={CARS_PHONE_TEMPLATE}>
                 <Button
                   onClick={() => this.openDownloadTemplate()}
                   type={'ghost'}
@@ -297,7 +297,7 @@ class DataTable extends Component {
                   导入模板
                 </Button>
               </Authorized>
-              <Authorized route={CAR_PHONE_EXPORT}>
+              <Authorized route={CARS_PHONE_EXPORT}>
                 <Button
                   onClick={() => this.openModalExport()}
                   type={'ghost'}
@@ -307,7 +307,7 @@ class DataTable extends Component {
                   导出
                 </Button>
               </Authorized>
-              <Authorized route={CAR_PHONE_IMPORT}>
+              <Authorized route={CARS_PHONE_IMPORT}>
                 <Button
                   onClick={() =>
                     importExcel(

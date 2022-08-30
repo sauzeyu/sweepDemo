@@ -14,3 +14,7 @@ export async function insert(role) {
 export async function deleteById(id) {
   return request.post('dkmRole/deleteById?id=' + id);
 }
+
+export function menuParentId(id) {
+  return request.get('dkmRole/menuParentId?id=' + id);
+}
