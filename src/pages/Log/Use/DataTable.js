@@ -36,7 +36,6 @@ const { Description } = DescriptionList;
 const dateFormat = 'YYYY/MM/DD';
 
 const download = (col) => {
-  console.log(col);
   let param = new URLSearchParams();
   let fileName = col.missionName;
   if (fileName) {
@@ -122,7 +121,6 @@ const SubTable = () => {
     },
   ];
 
-  // console.log("props ",props);
   let creator = getDvaApp()._store.getState().user.currentUser.username;
   return (
     <EasyTable
@@ -263,8 +261,6 @@ class DataTable extends Component {
   };
 
   exportExcel = () => {
-    console.log(this.props);
-
     let creator = getDvaApp()._store.getState().user.currentUser.username;
     let startTime = this.props.searchFormValues[0];
     let phoneBrand = this.props.searchFormValues[1];
@@ -369,7 +365,6 @@ class DataTable extends Component {
     this.setState({
       endTime: null,
     });
-    // console.log(11111);
     this.state.endTime = null;
   };
   initEndTime = () => {
@@ -379,7 +374,6 @@ class DataTable extends Component {
       // startTime:defaultStartTimeElement,
       endTime: end,
     });
-    console.log('state', this.state);
   };
 
   render() {

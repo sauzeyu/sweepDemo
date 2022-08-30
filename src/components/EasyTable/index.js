@@ -193,8 +193,6 @@ class EasyTable extends React.Component {
       currentIndex: pagination?.current,
       currentPageSize: pagination?.pageSize,
     });
-    console.log('this ', this);
-    console.log('this pagination ', pagination);
     this.props.onChange && this.props.onChange(pagination);
   };
 

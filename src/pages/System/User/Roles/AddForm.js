@@ -31,7 +31,6 @@ export default class AddForm extends Component {
   handleSubmit = (values) => {
     this.form.current.validateFields().then((values) => {
       // values.menuList = this.state.keys;
-      console.log('values', values);
       values.code = values.code + '';
 
       insert(values).then(
@@ -67,12 +66,6 @@ export default class AddForm extends Component {
   }
 
   onCheck = (checkedKey, event) => {
-    console.log(
-      'checkedKey',
-      checkedKey,
-      'event.halfCheckedKeys ',
-      event.halfCheckedKeys,
-    );
     let checkedKeysResult = [...checkedKey, ...event.halfCheckedKeys];
     this.setState({
       checkedKeys: checkedKey,
@@ -82,9 +75,7 @@ export default class AddForm extends Component {
   };
   onLoad = (loadedKeys, tree) => {};
 
-  onSelect = (selectedKeys, info) => {
-    console.log('selected', selectedKeys, info);
-  };
+  onSelect = (selectedKeys, info) => {};
   changeSubmit = () => {
     this.props.finish(true);
   };

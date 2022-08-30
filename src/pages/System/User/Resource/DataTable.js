@@ -164,8 +164,6 @@ export class DataTable extends Component {
             return <SubTable {...record} />;
           },
           expandIcon: ({ expanded, onExpand, record }) => {
-            console.log('record ', record);
-
             let flag = record.type === 1;
             if (!flag) {
               if (expanded) {

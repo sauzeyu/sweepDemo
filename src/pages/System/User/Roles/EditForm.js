@@ -39,7 +39,6 @@ export default class EditForm extends Component {
         this.form.current.setFieldsValue({ menuList: this.state.checkedKeys });
         // this.setState({flag:false})
       }
-      console.log('values', values);
       if (values.menuList == null || values?.menuList.length === 0) {
         message.error('菜单权限不能为空');
         return;
@@ -96,18 +95,12 @@ export default class EditForm extends Component {
 
   onSelect = (checkedKeys, info) => {
     let checkedKeysResult = [...checkedKeys, ...info.halfCheckedKeys];
-    console.log('info', info);
-    console.log('checkedKeysResult', checkedKeysResult);
     this.setState({
       checkedKeys: checkedKeysResult,
     });
     this.state.selectedKeys = checkedKeysResult;
-    console.log('this.state.checkedKeys', this.state.checkedKeys);
   };
-  onLoad = (loadedKeys, tree) => {
-    console.log('loadedKeys', loadedKeys);
-    console.log('tree', tree);
-  };
+  onLoad = (loadedKeys, tree) => {};
   changeSubmit = () => {
     this.props.finish(true);
   };

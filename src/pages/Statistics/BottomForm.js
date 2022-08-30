@@ -156,7 +156,6 @@ class BottomForm extends React.Component {
       click: (event) => {
         const params = new URLSearchParams();
         params.append('phoneBrand', event?.data?.name);
-        console.log('params ', params);
         this.state.fileName = params.get('phoneBrand') + '故障类型占比';
         selectKeyErrorLogByPhoneBrand(params).then((res) => {
           this.setState({

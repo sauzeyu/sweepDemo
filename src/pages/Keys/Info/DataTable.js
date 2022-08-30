@@ -39,7 +39,6 @@ import { exportKey } from '@/services/exportKey';
 import { downloadExcel } from '@/services/downloadExcel';
 
 const download = (col) => {
-  console.log(col);
   debugger;
   let param = new URLSearchParams();
   let fileName = col.missionName;
@@ -133,7 +132,6 @@ const SubTable2 = () => {
     },
   ];
 
-  // console.log("props ",props);
   let creator = getDvaApp()._store.getState().user.currentUser.username;
   return (
     <EasyTable
@@ -426,7 +424,7 @@ class DataTable extends Component {
           .then(
             () => {
               message.success('操作成功');
-              this.dataTable.refresh();
+              this.dataTable.reload();
             },
             (err) => {
               message.error(err.message);
@@ -449,9 +447,7 @@ class DataTable extends Component {
   exportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
 
-    console.log('this.props.searchFormValues ', this.props.searchFormValues);
     let obj = Object.keys(this.props.searchFormValues);
-    console.log('obj ', obj);
 
     let applyTime = this.props.searchFormValues[0];
     let vin = this.props.searchFormValues[1];
@@ -478,8 +474,6 @@ class DataTable extends Component {
     if (dkState?.value && dkState.value.length > 0) {
       dkState.value = dkState.value.toString();
     }
-    console.log('periodMin', periodMin);
-    console.log('periodMax', periodMax);
 
     if (userId?.value) {
       param.append('userId', userId.value);
@@ -539,7 +533,6 @@ class DataTable extends Component {
     }
 
     exportKey(param).then((res) => {
-      console.log('res.data', res.data);
       let blob = new Blob([res.data]);
 
       let link = document.createElement('a');

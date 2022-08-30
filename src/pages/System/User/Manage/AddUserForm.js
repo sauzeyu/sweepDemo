@@ -31,20 +31,16 @@ export default class AddUserForm extends Component {
 
   handleSubmit = () => {
     this.form.current.validateFields().then((values) => {
-      console.log('title', this.props.title);
       values.password = md5(values.password);
       values.creator = getDvaApp()._store.getState().user.currentUser.username;
       insertAdmin(values).then((res) => {
-        console.log('res', res);
         if (res.code === 200) {
-          // console.log('this.props'+this.props.searchFormValue);
           // DataTable.prototype.setState({addUserVisible: false});
           // this.setState({ addUserVisible: false });
           message.success({
             content: res.msg,
           });
         } else {
-          // console.log('this.props'+this.props.searchFormValue);
           // DataTable.prototype.setState({addUserVisible: true});
           // this.setState({ addUserVisible: true });
           message.error({

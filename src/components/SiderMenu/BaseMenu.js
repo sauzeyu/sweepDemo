@@ -10,7 +10,6 @@ import styles from './index.less';
 const { SubMenu } = Menu;
 
 const getIcon = (icon) => {
-  // console.log("icon:"+icon);
   if (!icon) return null;
   if (typeof icon === 'string' && icon.indexOf('http') === 0) {
     return (
@@ -62,7 +61,6 @@ export default class BaseMenu extends PureComponent {
    * @memberof SiderMenu
    */
   getNavMenuItems = (menusData) => {
-    // console.log(menusData.isMenu);
     if (!menusData) {
       return [];
     }
@@ -87,7 +85,6 @@ export default class BaseMenu extends PureComponent {
    * get SubMenu or Item
    */
   getSubMenuOrItem = (item, isRoot) => {
-    // console.log('item:'+item);
     if (item.isDir) {
       const childrenItems = this.getNavMenuItems(item.children);
       // 当无子菜单时就不展示菜单
@@ -126,7 +123,6 @@ export default class BaseMenu extends PureComponent {
    * @memberof SiderMenu
    */
   getMenuItemPath = (item) => {
-    // console.log('item:'+item);
     const itemPath = this.conversionPath(item.route);
     const icon = getIcon(item.icon);
     const { target, title } = item;

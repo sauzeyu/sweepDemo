@@ -191,7 +191,7 @@ class Table extends Component {
   };
 
   refresh() {
-    this.dataTable.refresh();
+    this.dataTable.reload();
   }
 
   render() {

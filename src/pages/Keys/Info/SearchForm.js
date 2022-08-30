@@ -63,7 +63,6 @@ class SearchForm extends Component {
           delete values.valToTime;
         }
 
-        console.log(' values ', values);
         this.props.keysDataTable.fetch(values);
       })
       .catch((errors) => {

@@ -28,7 +28,6 @@ export class DataTable extends Component {
 
   editRole = (role) => {
     selectMenuByRoleId(role.id).then((res) => {
-      // console.log('res.data',res.data);
       // // debugger;
       // let data = res.data;
       // let list  = ['2','4','5','6','7','9','10','11','14','15','17','18','19','21','22','23','26'];
@@ -41,7 +40,6 @@ export class DataTable extends Component {
       //   }
       //
       // }
-      // console.log('data',data);
       // debugger;
       this.setState({
         selectKeys: res.data,
@@ -171,15 +169,12 @@ export class DataTable extends Component {
   render() {
     const onFinishFailed = (value) => {
       this.setState({ addRoleVisible: value });
-      console.log(value, '点击了');
     };
     const editFinishFailed = (value) => {
       this.setState({ editRoleVisible: value });
-      console.log(value, '点击了');
     };
     const onClick = (value) => {
       this.setState({ editRoleVisible: value });
-      console.log(value, '点击了');
     };
     return (
       <div>

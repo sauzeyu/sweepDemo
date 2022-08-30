@@ -34,7 +34,6 @@ class SearchForm extends Component {
             .add(1, 'days')
             .format('YYYY-MM-DD 00:00:00');
         }
-        console.log('values', values);
         this.props.keyErrorLogDataTable.fetch(values);
       })
       .catch((errors) => {
@@ -47,7 +46,6 @@ class SearchForm extends Component {
   // componentWillUnmount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    // console.log(
     //   this.props.keyErrorLogDataTable,
     //   'this.props.keyErrorLogDataTable',
     //   prevProps,
@@ -115,9 +113,7 @@ class SearchForm extends Component {
     for (let i = 0; i < Code.length; i++) {
       children.push(<Option key={Code[i][0]}> {Code[i][1]}</Option>);
     }
-    const handleChange = (value) => {
-      console.log(`selected ${value}`);
-    };
+    const handleChange = (value) => {};
     return (
       <Form
         {...formItemLayout}

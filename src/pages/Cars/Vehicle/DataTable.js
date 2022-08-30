@@ -145,7 +145,7 @@ class DataTable extends Component {
       ),
       onOk: () => {
         discardVehicle(col.id).then(() => {
-          this.dataTable.refresh();
+          this.dataTable.reload();
         });
       },
     });
@@ -185,7 +185,6 @@ class DataTable extends Component {
     });
   };
   exportExcel = () => {
-    console.log(this.props.searchFormValues);
     let hwDeviceSn = this.props.searchFormValues[0];
     let vin = this.props.searchFormValues[1];
     let vehicleModel = this.props.searchFormValues[2];

@@ -19,7 +19,6 @@ export default class ModifyForm extends React.Component {
     this.form.current
       .validateFields()
       .then((vals) => {
-        console.log(vals);
         // 校验两次密码是否一致
         if (vals.newPassword !== vals.reNewPassword) {
           // 调用ant 的 modal组件

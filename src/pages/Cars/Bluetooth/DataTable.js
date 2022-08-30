@@ -151,7 +151,7 @@ class DataTable extends Component {
                 Modal.success({
                   title: msg + '成功',
                 });
-                this.dataTable.refresh();
+                this.dataTable.reload();
               } else {
                 Modal.error({
                   title: msg + '失败',

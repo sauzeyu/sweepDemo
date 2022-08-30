@@ -28,7 +28,7 @@ export default class LogsTable extends React.Component {
           })
           .then(
             () => {
-              this.dataTable.refresh();
+              this.dataTable.reload();
             },
             (err) => {
               Modal.error({
@@ -50,7 +50,7 @@ export default class LogsTable extends React.Component {
           })
           .then(
             () => {
-              this.dataTable.refresh();
+              this.dataTable.reload();
             },
             (err) => {
               Modal.error({

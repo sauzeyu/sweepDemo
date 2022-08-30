@@ -30,12 +30,10 @@ export async function getKeyLogList(params) {
     params,
     paramsSerializer: (params) => {
       clearDeep(params);
-      console.log('params', params);
       // if (params?.statusCode && params?.statusCode?.length !== 0) {
 
       // return params.statusCode.map(item => `statusCode=${item}`).join('&');
 
-      console.log('params', params);
       // let newParams = params.filter(
       //   (item) => !['', null, undefined, NaN, false, true].includes(item)
       // )
@@ -43,7 +41,6 @@ export async function getKeyLogList(params) {
       const keys = Object.keys(params);
 
       const arr = [];
-      console.log('keys', keys);
       keys.forEach((item) => {
         if (Array.isArray(params[item])) {
           const url = params[item]
@@ -56,7 +53,6 @@ export async function getKeyLogList(params) {
         }
       });
       const result = arr.join('&');
-      console.log(result);
       return `${result}`;
     },
 

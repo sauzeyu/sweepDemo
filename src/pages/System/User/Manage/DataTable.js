@@ -119,7 +119,6 @@ export class DataTable extends Component {
             if (user) {
               // user.roleId
               user.roleId = roleList;
-              console.log(user);
               // this.editForm.current?.setFieldsValue(user);
               this.editForm?.setFieldsValue(user);
             }
@@ -133,8 +132,6 @@ export class DataTable extends Component {
   };
 
   addUserFormOk = () => {
-    // let addUserVisible = AddUserForm.prototype.state.addUserVisible;
-    //   this.setState({ addUserVisible: addUserVisible });
     this.addForm.submit();
     this.setState({ addUserVisible: false });
   };
@@ -171,17 +168,13 @@ export class DataTable extends Component {
 
   render() {
     const { searchFormValue } = this.state.addUserVisible;
-    const onClick = (value) => {
-      console.log(value, '点击了');
-    };
+    const onClick = (value) => {};
 
     const onFinishFailed = (value) => {
       this.setState({ addUserVisible: value });
-      console.log(value, '点击了');
     };
     const editFinishFailed = (value) => {
       this.setState({ userInfoVisible: value });
-      console.log(value, '点击了');
     };
     return (
       <>
