@@ -185,8 +185,8 @@ class DataTable extends Component {
     if (searchNumber && searchNumber.value) {
       param.append('searchNumber', searchNumber.value);
     }
-
-    if (flag.value != null) {
+    debugger;
+    if (flag && flag.value != null) {
       param.append('flag', flag.value);
     }
 
