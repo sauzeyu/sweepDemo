@@ -32,7 +32,7 @@ export default class EditForm extends Component {
       updateAdminById(values).then(
         (res) => {
           message.success(res.msg);
-          this.props.dataTableRef.refresh();
+          this.props.dataTableRef.reload();
         },
         (res) => {
           message.error(res.msg);

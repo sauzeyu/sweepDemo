@@ -137,7 +137,7 @@ class Table extends Component {
       .then(
         (res) => {
           message.success('操作成功');
-          this.refresh();
+          this.reload();
         },
         (e) => {
           message.error(e.message);
@@ -174,7 +174,7 @@ class Table extends Component {
             (res) => {
               if (res !== false) {
                 this.closeUserEditModal();
-                this.refresh();
+                this.reload();
               }
             },
             (err) => {

@@ -41,7 +41,7 @@ export default class AddForm extends Component {
             message.error(res.msg);
           }
 
-          this.props.dataTableRef.refresh();
+          this.props.dataTableRef.reload();
         },
         (res) => {
           message.error(res.msg);

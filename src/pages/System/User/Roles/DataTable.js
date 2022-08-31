@@ -64,7 +64,7 @@ export class DataTable extends Component {
         return deleteById(role.id).then(
           (res) => {
             message.success(res.msg);
-            that.refresh();
+            that.reload();
           },
           (res) => {
             message.error(res.msg);

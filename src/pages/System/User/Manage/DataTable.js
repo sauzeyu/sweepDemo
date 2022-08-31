@@ -146,7 +146,7 @@ export class DataTable extends Component {
       content: `确定删除 ${user.username}？`,
       onOk: () => {
         return deleteById(user.id).then(() => {
-          that.refresh();
+          that.reload();
         });
       },
       okText: '删除',
@@ -164,6 +164,7 @@ export class DataTable extends Component {
       userInfoVisible: false,
       addUserVisible: false,
     });
+    this.editForm?.resetFields();
   };
 
   render() {
@@ -174,6 +175,7 @@ export class DataTable extends Component {
       this.setState({ addUserVisible: value });
     };
     const editFinishFailed = (value) => {
+      this.setState({ userInfoVisible: value });
       this.setState({ userInfoVisible: value });
     };
     return (
