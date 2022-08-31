@@ -300,7 +300,8 @@ class DataTable extends Component {
         .format('YYYY-MM-DD 00:00:00');
       param.append('endTime', endTime);
     }
-    if (flag.value == 0 || flag.value == 1) {
+    debugger;
+    if (flag && (flag.value == 0 || flag.value == 1)) {
       param.append('flag', flag.value);
     }
     if (userId && userId.value) {

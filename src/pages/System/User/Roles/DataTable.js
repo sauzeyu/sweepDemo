@@ -28,19 +28,6 @@ export class DataTable extends Component {
 
   editRole = (role) => {
     selectMenuByRoleId(role.id).then((res) => {
-      // // debugger;
-      // let data = res.data;
-      // let list  = ['2','4','5','6','7','9','10','11','14','15','17','18','19','21','22','23','26'];
-      //
-      // for (let i = data.length - 1; i >= 0; i--) {
-      //   for (let j = list.length - 1; j >= 0; j--) {
-      //     if (data[i] === list[j]) {
-      //       data.splice(i, 1);
-      //     }
-      //   }
-      //
-      // }
-      // debugger;
       this.setState({
         selectKeys: res.data,
       });

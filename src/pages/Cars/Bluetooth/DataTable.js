@@ -200,12 +200,6 @@ class DataTable extends Component {
     });
   };
   render() {
-    // const bodyScale = () => {
-    //   let clientWidth = document.documentElement.clientWidth;
-    //   let scale = clientWidth
-    //   document.body.style.zoom = scale;
-    // }
-    // bodyScale();
     const { editFormVisible } = this.state;
     return (
       <div>
@@ -229,15 +223,6 @@ class DataTable extends Component {
               </Button>
             </Authorized>
           }
-          // extra={
-          //   <Button
-          //     type={'primary'}
-          //     icon={<PlusCircleOutlined />}
-          //     onClick={() => this.upsert()}
-          //   >
-          //     新增蓝牙
-          //   </Button>
-          // }
         />
         <DrawerConfirm
           title={'车辆型号'}
