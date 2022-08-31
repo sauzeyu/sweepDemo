@@ -39,7 +39,6 @@ import { exportKey } from '@/services/exportKey';
 import { downloadExcel } from '@/services/downloadExcel';
 
 const download = (col) => {
-  debugger;
   let param = new URLSearchParams();
   let fileName = col.missionName;
   if (fileName) {

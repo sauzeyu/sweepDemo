@@ -109,10 +109,9 @@ export class DataTable extends Component {
     let roleList;
     getAdminRoleNameById(user.id).then(
       (res) => {
-        debugger;
-        if (res?.data) {
-          roleList = res.data.id;
-        }
+        // if (res?.data) {
+        roleList = res?.data?.id;
+        // }
         this.setState(
           {
             userInfoVisible: true,
