@@ -26,12 +26,11 @@ export default class Index extends React.Component {
     return (
       <Authorized route={AFTERMARKET_REPLACEMENT_INFO}>
         <div className={'card-group'}>
-          <Authorized route={AFTERMARKET_REPLACEMENT_INFO_SELECT}>
+          <Authorized route={AFTERMARKET_REPLACEMENT_INFO_TABLE}>
             <Card bordered={false}>
               <SearchForm getFormValues={this.getFormValues} />
             </Card>
-          </Authorized>
-          <Authorized route={AFTERMARKET_REPLACEMENT_INFO_TABLE}>
+
             <Card bordered={false}>
               <DataTable searchFormValues={searchFormValues} />
             </Card>

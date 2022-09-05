@@ -18,12 +18,10 @@ export default class Index extends React.Component {
     return (
       <Authorized route={SYSTEM_USER_MANAGE}>
         <div className={'card-group'}>
-          <Authorized route={SYSTEM_USER_MANAGE_SELECT}>
+          <Authorized route={SYSTEM_USER_MANAGE_TABLE}>
             <Card>
               <SearchForm />
             </Card>
-          </Authorized>
-          <Authorized route={SYSTEM_USER_MANAGE_TABLE}>
             <Card>
               <DataTable />
             </Card>

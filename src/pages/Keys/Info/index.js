@@ -27,12 +27,10 @@ class Index extends Component {
     return (
       <Authorized route={KEYS_INFO}>
         <div className={'card-group'}>
-          <Authorized route={KEYS_INFO_SELECT}>
+          <Authorized route={KEYS_INFO_TABLE}>
             <Card bordered={false}>
               <SearchForm getFormValues={this.getFormValues} />
             </Card>
-          </Authorized>
-          <Authorized route={KEYS_INFO_TABLE}>
             <Card bordered={false}>
               <DataTable searchFormValues={searchFormValues} />
             </Card>

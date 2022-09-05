@@ -14,12 +14,10 @@ export default class extends React.Component {
     return (
       <Authorized route={SYSTEM_USER_RESOURCE}>
         <div className={'card-group'}>
-          <Authorized route={SYSTEM_USER_RESOURCE_SELECT}>
+          <Authorized route={SYSTEM_USER_RESOURCE_TABLE}>
             <Card bordered={false}>
               <SearchForm />
             </Card>
-          </Authorized>
-          <Authorized route={SYSTEM_USER_RESOURCE_TABLE}>
             <Card bordered={false}>
               <DataTable />
             </Card>
