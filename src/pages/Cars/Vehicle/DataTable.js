@@ -187,9 +187,9 @@ class DataTable extends Component {
   exportExcel = () => {
     let hwDeviceSn = this.props.searchFormValues[0];
     let vin = this.props.searchFormValues[1];
-    let vehicleModel = this.props.searchFormValues[2];
+    let vehicleType = this.props.searchFormValues[2];
     let vehicleBrand = this.props.searchFormValues[3];
-    let vehicleType = this.props.searchFormValues[4];
+    let vehicleModel = this.props.searchFormValues[4];
     let fileName = '车辆信息.xlsx';
     let param = new URLSearchParams();
     if (hwDeviceSn && hwDeviceSn.value) {

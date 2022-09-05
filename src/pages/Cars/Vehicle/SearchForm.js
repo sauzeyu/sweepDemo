@@ -63,8 +63,8 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'车辆型号'} name="vehicleModel">
-              <RestrictiveInput trim placeholder={'请输入车辆型号'} />
+            <Form.Item label={'车型'} name="vehicleType">
+              <RestrictiveInput trim placeholder={'请输入车型'} />
             </Form.Item>
           </Col>
 
@@ -92,8 +92,8 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label={'车型'} name="vehicleType">
-              <RestrictiveInput trim placeholder={'请输入车型'} />
+            <Form.Item label={'车辆型号'} name="vehicleModel">
+              <RestrictiveInput trim placeholder={'请输入车辆型号'} />
             </Form.Item>
           </Col>
         </Row>
