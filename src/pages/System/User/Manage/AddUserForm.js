@@ -101,6 +101,7 @@ export default class AddUserForm extends Component {
           <Form.Item
             label={'用户名'}
             name="username"
+            id="addUserName"
             rules={[
               { required: true, message: '用户名不能为空' },
               {

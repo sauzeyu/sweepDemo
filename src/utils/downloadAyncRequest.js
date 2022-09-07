@@ -7,11 +7,14 @@ function createDefaultRequest() {
   const instance = axios.create({
     timeout: 1000 * 60 * 10,
     responseType: 'blob',
-    headers: {
-      'access-token': getDvaApp()._store.getState().user.currentUser.token,
-    },
   });
-
+  instance.interceptors.request.use((config) => {
+    const state = getDvaApp()._store.getState();
+    if (state.user && state.user.currentUser && state.user.currentUser.token) {
+      config.headers['access-token'] = state.user.currentUser.token;
+    }
+    return config;
+  });
   instance.getAbsUrl = function (url) {
     return joinPath('', url);
   };

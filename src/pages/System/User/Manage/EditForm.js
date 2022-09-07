@@ -87,6 +87,7 @@ export default class EditForm extends Component {
         <Form.Item
           label={'姓名'}
           name="username"
+          id="editUserName"
           rules={[
             { required: true, message: '姓名不能为空' },
             {
@@ -108,8 +109,8 @@ export default class EditForm extends Component {
             <Select allowClear>
               {roles.map((role) => {
                 return (
-                  <Select.Option key={role.id} value={role.id}>
-                    {role.roleName}
+                  <Select.Option key={role?.id} value={role?.id}>
+                    {role?.roleName}
                   </Select.Option>
                 );
               })}
