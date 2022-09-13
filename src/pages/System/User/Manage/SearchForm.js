@@ -50,8 +50,9 @@ export default class SearchForm extends Component {
       <Form {...formItemLayout} onFinish={this.handleSubmit} ref={this.form}>
         <Row>
           <Col {...colSpan}>
-            <Form.Item label={'用户名'} name="username" id="searchUserName">
-              <Input placeholder={'请输入用户名'} />
+            <Form.Item label={'用户名'} name="username">
+              <Input placeholder={'请输入用户名'} id="searchUserName" />
+              {/*<Input placeholder={'请输入用户名'}  />*/}
             </Form.Item>
           </Col>
           <Col {...colSpan}>
