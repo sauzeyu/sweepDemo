@@ -120,7 +120,11 @@ export default class AddUserForm extends Component {
             name="password"
             rules={[{ required: true, message: '密码不能为空' }]}
           >
-            <Input.Password maxLength={40} placeholder={'请输入密码'} />
+            <Input.Password
+              maxLength={40}
+              placeholder={'请输入密码'}
+              id="addPassword"
+            />
           </Form.Item>
           <Spin spinning={loadingRoles}>
             <Form.Item
