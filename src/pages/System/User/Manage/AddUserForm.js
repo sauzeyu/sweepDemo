@@ -109,8 +109,11 @@ export default class AddUserForm extends Component {
               },
             ]}
           >
-            {/*<Input maxLength={40} placeholder={'请输入用户名'} id="addUserName"/>*/}
-            <Input maxLength={40} placeholder={'请输入用户名'} />
+            <Input
+              maxLength={40}
+              placeholder={'请输入用户名'}
+              id="addUserName"
+            />
           </Form.Item>
           <Form.Item
             label={'密码'}

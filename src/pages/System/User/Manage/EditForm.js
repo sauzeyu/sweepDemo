@@ -87,7 +87,6 @@ export default class EditForm extends Component {
         <Form.Item
           label={'姓名'}
           name="username"
-          id="editUserName"
           rules={[
             { required: true, message: '姓名不能为空' },
             {
@@ -98,7 +97,7 @@ export default class EditForm extends Component {
             },
           ]}
         >
-          <Input maxLength={40} placeholder={'用户姓名'} />
+          <Input maxLength={40} placeholder={'用户姓名'} id="editUserName" />
         </Form.Item>
         <Spin spinning={loadingRoles}>
           <Form.Item
