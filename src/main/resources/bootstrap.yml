@@ -13,3 +13,4 @@ spring:
           - data-id: common.yaml
             refresh: true
             group: common
+
