@@ -53,6 +53,7 @@ public class LogControllerTest {
         System.out.println(maps);
     }
 
+
     List<Map> test2(CountDTO countDTO, String statusCode) {
         String type = "";
         if (ObjectUtil.equals(statusCode, "04")) {

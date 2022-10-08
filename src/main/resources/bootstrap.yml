@@ -1,22 +1,15 @@
 spring:
   application:
-    name: @project.artifactId@
+    name: dkserver-back
   profiles:
-    active: foton
+    active: pre
   cloud:
     nacos:
-      discovery:
-        ip: 172.16.38.213
-        namespace: ${spring.profiles.active}
       config:
         server-addr: 172.16.13.13:8888  #  配置中心地址
         file-extension: yaml # 指定配置文件类型
-        group: liujz
         namespace: ${spring.profiles.active}
         shared-configs:
           - data-id: common.yaml
             refresh: true
             group: common
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
