@@ -97,7 +97,7 @@ class Uploader extends Component {
     if (autoUpload) {
       setTimeout(() => {
         this.upload().catch((err) => {
-          console.error(err);
+          // console.error(err);
         });
       });
     }

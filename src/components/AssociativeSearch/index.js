@@ -109,7 +109,7 @@ export default class extends React.Component {
         this.hasFoundItems = data && data.length > 0;
       },
       (err) => {
-        console.warn(err);
+        // console.warn(err);
       },
     );
   }
