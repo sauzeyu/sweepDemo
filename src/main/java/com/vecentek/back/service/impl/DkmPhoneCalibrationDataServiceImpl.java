@@ -35,6 +35,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 /**
@@ -118,6 +119,16 @@ public class DkmPhoneCalibrationDataServiceImpl {
             reader.addHeaderAlias("标定数据", "personalAndCalibrationString");
             List<DkmPhoneCalibrationData> calibrationList = reader.readAll(DkmPhoneCalibrationData.class);
             reader.close();
+            //车辆型号 + 手机型号 形成的联合主键进行冒泡比对来查重
+            for (int i = 0; i < calibrationList.size(); i++) {
+                String beforeID = calibrationList.get(i).getVehicleModel() + calibrationList.get(i).getPhoneModel();
+                for (int j = i + 1; j < calibrationList.size(); j++) {
+                    String afterID = calibrationList.get(j).getVehicleModel() + calibrationList.get(j).getPhoneModel();
+                    if(StrUtil.equals(beforeID,afterID)){
+                        return PageResp.fail("导入失败，excel文件车辆型号和手机型号有重复!");
+                    }
+                }
+            }
             if (calibrationList.size() == 0) {
                 return PageResp.fail("导入失败，请检查excel文件！");
             }
@@ -141,6 +152,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
 
             }
             for (DkmPhoneCalibrationData calibrationData : calibrationList) {
+
                 // 查询已经存在的手机标定数据
                 LambdaQueryWrapper<DkmPhoneCalibrationData> queryWrapper = Wrappers.<DkmPhoneCalibrationData>lambdaQuery()
                         .eq(DkmPhoneCalibrationData::getVehicleModel, calibrationData.getVehicleModel())
