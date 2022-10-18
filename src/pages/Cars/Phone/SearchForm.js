@@ -59,7 +59,7 @@ class SearchForm extends Component {
           </Col>
           <Col {...colSpan}>
             <Form.Item label={'车辆品牌'} name="vehicleBrand">
-              <Input placeholder={'请输入手机品牌'} />
+              <Input placeholder={'请输入车辆品牌'} />
             </Form.Item>
           </Col>
           <Col {...colSpan2}>

@@ -32,11 +32,9 @@ function importExcel(url, that) {
 
       if (status === 'done') {
         const { response } = info.file;
-
         if (response.code === 200) {
           message.success(`${info.file.name} 文件上传成功.`);
-
-          that?.dataTable?.reload();
+          that?.dataTable?.refresh();
         }
         if (response.code === 500) {
           message.error(response.msg + ` ${info.file.name} 文件上传失败.`);

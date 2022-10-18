@@ -30,6 +30,7 @@ export default class extends React.Component {
   };
   hasFoundItems = false;
   lastData = [];
+
   //AssociativeSearch
   constructor(props) {
     super(props);
@@ -38,6 +39,7 @@ export default class extends React.Component {
     const { debounceWait } = this.props;
     this.handleSearch = debounce(this.handleSearch, debounceWait);
   }
+
   static getDerivedStateFromProps(props, state) {
     const { data } = state;
     if (props.data !== data) {
@@ -47,10 +49,12 @@ export default class extends React.Component {
     }
     return null;
   }
+
   componentDidMount() {
     const { fetchOnMount = true } = this.props;
     if (fetchOnMount) this.doFetch();
   }
+
   setSelectList = (data, isFetchOnBottom) => {
     this.setState({ data }, () => {
       if (!isFetchOnBottom && this.props.autoSelectFirst) {
@@ -97,6 +101,7 @@ export default class extends React.Component {
       return getFullData(val);
     }
   };
+
   doFetch(filter) {
     const { onFetch } = this.props;
     this.lastFetchId += 1;
@@ -112,7 +117,9 @@ export default class extends React.Component {
         // console.warn(err);
       },
     );
+    g;
   }
+
   handleFetchResult = (rs, isFetchOnBottom) => {
     return new Promise((resolve, reject) => {
       if (rs === null) return resolve([]);
@@ -153,11 +160,13 @@ export default class extends React.Component {
     }
     this.props.onFocus && this.props.onFocus(evt);
   };
+
   getLabel(item) {
     const { labelKey } = this.props;
     if (typeof labelKey === 'function') return labelKey(item);
     return item[labelKey];
   }
+
   getValue(item) {
     const { valueKey } = this.props;
     let value = item[valueKey];
@@ -166,6 +175,7 @@ export default class extends React.Component {
     }
     return value;
   }
+
   getKey(item, index) {
     const { itemKey, valueKey } = this.props;
     if (itemKey) {
@@ -176,6 +186,7 @@ export default class extends React.Component {
     }
     return valueKey;
   }
+
   render() {
     const {
       showSearch = true,
