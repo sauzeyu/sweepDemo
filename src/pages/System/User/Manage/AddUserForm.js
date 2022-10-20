@@ -118,7 +118,16 @@ export default class AddUserForm extends Component {
           <Form.Item
             label={'密码'}
             name="password"
-            rules={[{ required: true, message: '密码不能为空' }]}
+            rules={[
+              { required: true, message: '密码不能为空' },
+              {
+                pattern: new RegExp(
+                  /(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?=.*[A-Z])(?=.*[a-z])(?!.*\n).*$/,
+                ),
+                message:
+                  '密码必须由数字/大写字母/小写字母/特殊字符组成,长度在8位以上',
+              },
+            ]}
           >
             <Input.Password
               maxLength={40}
