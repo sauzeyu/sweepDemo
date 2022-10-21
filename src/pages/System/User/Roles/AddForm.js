@@ -113,7 +113,7 @@ export default class AddForm extends Component {
             },
           ]}
         >
-          <Input maxLength={40} placeholder={'角色名称'} />
+          <Input maxLength={20} placeholder={'角色名称'} />
         </Form.Item>
         <Form.Item
           label={'角色代码'}

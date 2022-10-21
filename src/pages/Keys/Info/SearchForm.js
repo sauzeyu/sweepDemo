@@ -110,13 +110,21 @@ class SearchForm extends Component {
       },
     };
     const colSpan = {
-      xs: 12,
+      xs: 24,
       sm: 24,
       md: 24,
       lg: 24,
       xl: 24,
       xxl: 6,
     };
+    // const colSpan = {
+    //   xs: 12,
+    //   sm: 24,
+    //   md: 24,
+    //   lg: 24,
+    //   xl: 24,
+    //   xxl: 6,
+    // };
     const { buttonHidden, isExpand } = this.state;
     let buttonName;
     let icon;

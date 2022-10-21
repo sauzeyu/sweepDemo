@@ -85,7 +85,10 @@ export default class ModifyForm extends React.Component {
               ),
             },
             {
-              pattern: /^[a-zA-Z0-9~!@#$%^&*()_+-=;':",./<>?`]{6,16}$/,
+              pattern: new RegExp(
+                /(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?=.*[A-Z])(?=.*[a-z])(?!.*\n).*$/,
+              ),
+              // pattern: /^[a-zA-Z0-9~!@#$%^&*()_+-=;':",./<>?`]{6,16}$/,
               message: (
                 <FormattedMessage
                   id={'Validator.password'}
@@ -105,7 +108,9 @@ export default class ModifyForm extends React.Component {
         >
           <Input
             type="password"
-            placeholder={'输入新密码，6-16位数字、字母、英文符号'}
+            placeholder={
+              '密码必须由数字/大写字母/小写字母/特殊字符组成,长度在8位以上'
+            }
           />
         </Form.Item>
         {/* 重复输入新密码 */}
