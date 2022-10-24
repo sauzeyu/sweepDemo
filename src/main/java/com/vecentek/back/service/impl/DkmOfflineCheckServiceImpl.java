@@ -48,7 +48,6 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -222,7 +221,6 @@ public class DkmOfflineCheckServiceImpl {
                 dkmBluetoothsMapper.insert(bluetooth);
             });
         }
-        ArrayList<Map> resList = new ArrayList<>();
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
         if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
 
@@ -301,7 +299,7 @@ public class DkmOfflineCheckServiceImpl {
                 newBluetooth.setDigKey(digKey);
                 newBluetooth.setMasterKey(digKey.substring(32));
                 dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
-                        .eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
+                        .eq(DkmBluetooths::getHwDeviceSn, oldBluetooth.getHwDeviceSn()));
 
                 dkmBluetoothsMapper.insert(newBluetooth);
                 dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
@@ -315,7 +313,7 @@ public class DkmOfflineCheckServiceImpl {
             });
         }
         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传成功");
-        return PageResp.success("上传成功", resList);
+        return PageResp.success("上传成功");
     }
 
     /**
