@@ -240,12 +240,12 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="钥匙开始时间" name={'valFromTime'}>
-              <RangePicker style={{ width: 275 }} />
+            <Form.Item label="生效时间" name={'valFromTime'}>
+              <RangePicker />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="钥匙结束时间" name={'valToTime'}>
+            <Form.Item label="失效时间" name={'valToTime'}>
               <RangePicker />
             </Form.Item>
           </Col>

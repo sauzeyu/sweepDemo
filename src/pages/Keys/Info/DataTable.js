@@ -242,7 +242,7 @@ class DataTable extends Component {
       },
     },
     {
-      title: '钥匙开始时间',
+      title: '生效时间',
       dataIndex: 'valFrom',
       ellipsis: {
         showTitle: false,
@@ -254,7 +254,7 @@ class DataTable extends Component {
       ),
     },
     {
-      title: '钥匙结束时间',
+      title: '失效时间',
       dataIndex: 'valTo',
       ellipsis: {
         showTitle: false,
