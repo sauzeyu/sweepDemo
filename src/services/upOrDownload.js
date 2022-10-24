@@ -6,3 +6,10 @@ export async function exportPhoneCalibration(params) {
     params,
   );
 }
+
+export async function exportVehicleCalibration(params) {
+  return request.post(
+    '/dkmVehicleCalibrationData/downloadCalibrationExcel',
+    params,
+  );
+}

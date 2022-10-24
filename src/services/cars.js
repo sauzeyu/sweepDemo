@@ -69,6 +69,11 @@ export async function getPhone(params) {
   return request.get('dkmPhoneCalibrationData/selectForPage', { params });
 }
 
+// 获取车辆标定数据列表
+export async function getVehicle(params) {
+  return request.get('dkmVehicleCalibrationData/selectForPage', { params });
+}
+
 // 修改手机标定数据列表
 export async function updatePhone(params) {
   return request.post('dkmPhoneCalibrationData/updateById', params);

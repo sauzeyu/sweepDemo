@@ -48,6 +48,9 @@ export const CARS_VEHICLE_EXPORT = '/cars/vehicle/export';
 export const CARS_VEHICLE_TABLE = '/cars/vehicle/table';
 export const CARS_VEHICLE_SELECT = '/cars/vehicle/select';
 
+export const CARS_VEHICLE_CALIBRATION = '/cars/vehicleCalibration';
+export const CARS_VEHICLE_CALIBRATION_TABLE = '/cars/vehicleCalibration/table';
+
 // ------ 售后换件管理 ------
 export const AFTERMARKET_REPLACEMENT_INFO = '/aftermarketReplacement/info';
 export const AFTERMARKET_REPLACEMENT_INFO_EXPORT =
