@@ -118,7 +118,7 @@ export default [
           },
           {
             path: '/cars/vehicleCalibration',
-            title: '用户自标定数据导入 ',
+            title: '用户自标定数据导入',
             component: './Cars/VehicleCalibration',
           },
         ],

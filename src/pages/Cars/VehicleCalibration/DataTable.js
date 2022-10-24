@@ -10,10 +10,10 @@ import {
 } from '@/services/upOrDownload';
 import { getPublicPath } from '@/utils';
 import {
-  CARS_PHONE_UPDATE,
-  CARS_PHONE_EXPORT,
-  CARS_PHONE_IMPORT,
-  CARS_PHONE_TEMPLATE,
+  CARS_VEHICLE_CALIBRATION_UPDATE,
+  CARS_VEHICLE_CALIBRATION_EXPORT,
+  CARS_VEHICLE_CALIBRATION_IMPORT,
+  CARS_VEHICLE_CALIBRATION_TEMPLATE,
 } from '@/components/Authorized/AuthMap';
 import Authorized from '@/components/Authorized';
 import {
@@ -26,6 +26,7 @@ import {
   Form,
   Input,
   Tooltip,
+  Select,
 } from 'antd';
 import {
   CloudUploadOutlined,
@@ -33,7 +34,12 @@ import {
   DownloadOutlined,
   CloudDownloadOutlined,
 } from '@ant-design/icons';
-import { getPhone, getVehicle, updatePhone } from '@/services/cars';
+import {
+  getPhone,
+  getVehicle,
+  updatePhone,
+  updateVehicleCalibration,
+} from '@/services/cars';
 import { connect } from 'dva';
 import { getDvaApp } from '@@/plugin-dva/exports';
 
@@ -92,7 +98,7 @@ class DataTable extends Component {
       fixed: 'right',
       render: (row) => {
         return (
-          <Authorized route={CARS_PHONE_UPDATE}>
+          <Authorized route={CARS_VEHICLE_CALIBRATION_UPDATE}>
             <div className={'link-group'}>
               <a onClick={() => this.editRow(row)}>编辑</a>
             </div>
@@ -222,11 +228,11 @@ class DataTable extends Component {
   };
 
   editFormOk = () => {
-    let phoneCalibrationData = {};
-    phoneCalibrationData.id = this.editForm?.current?.getFieldValue('id');
-    phoneCalibrationData.personalAndCalibrationString =
-      this.editForm?.current?.getFieldValue('personalAndCalibrationString');
-    updatePhone(phoneCalibrationData).then((res) => {
+    let vehicleCalibrationData = {};
+    vehicleCalibrationData.id = this.editForm?.current?.getFieldValue('id');
+    vehicleCalibrationData.vehicleAndCalibrationString =
+      this.editForm?.current?.getFieldValue('vehicleAndCalibrationString');
+    updateVehicleCalibration(vehicleCalibrationData).then((res) => {
       if (res.code === 200) {
         message.success(res.msg);
         this.dataTable.reload();
@@ -267,7 +273,7 @@ class DataTable extends Component {
           wrappedComponentRef={(ref) => (this.dataTable = ref)}
           extra={
             <div className={'btn-group'}>
-              <Authorized route={CARS_PHONE_TEMPLATE}>
+              <Authorized route={CARS_VEHICLE_CALIBRATION_TEMPLATE}>
                 <Button
                   onClick={() => this.openDownloadTemplate()}
                   type={'ghost'}
@@ -277,7 +283,7 @@ class DataTable extends Component {
                   导入模板
                 </Button>
               </Authorized>
-              <Authorized route={CARS_PHONE_EXPORT}>
+              <Authorized route={CARS_VEHICLE_CALIBRATION_EXPORT}>
                 <Button
                   onClick={() => this.openModalExport()}
                   type={'ghost'}
@@ -287,7 +293,7 @@ class DataTable extends Component {
                   导出
                 </Button>
               </Authorized>
-              <Authorized route={CARS_PHONE_IMPORT}>
+              <Authorized route={CARS_VEHICLE_CALIBRATION_IMPORT}>
                 <Button
                   onClick={() =>
                     importExcel(
@@ -323,13 +329,14 @@ class DataTable extends Component {
             >
               <Input readOnly={true} />
             </Form.Item>
-            <Form.Item name="phoneBrand" label={'手机品牌'}>
+
+            <Form.Item name="level" label={'蓝牙灵敏度等级'}>
               <Input readOnly={true} />
             </Form.Item>
-            <Form.Item name="phoneModel" label={'手机型号'}>
-              <Input readOnly={true} />
-            </Form.Item>
-            <Form.Item name="personalAndCalibrationString" label={'标定数据'}>
+            <Form.Item
+              name="vehicleAndCalibrationString"
+              label={'手机标定数据'}
+            >
               <Input.TextArea autoSize={true} />
             </Form.Item>
           </Form>

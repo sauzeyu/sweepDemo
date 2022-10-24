@@ -73,6 +73,7 @@ export default class LoginPage extends Component {
         },
         (e) => {
           // 登陆失败
+          console.log(e);
           const data = e.data || {};
           if (this.captcha) {
             this.captcha.refresh();
