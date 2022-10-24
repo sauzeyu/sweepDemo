@@ -16,12 +16,12 @@
     <insert id="insertBluetoothBatch">
         insert dkm_bluetooths (hw_device_sn, hw_device_id, hw_device_provider_no, dk_sdk_version, dk_sec_unit_id,
         ble_name, ble_mac_address, ble_protocol_version, ble_hardware_version, ble_software_version, master_key,dig_key,
-        flag,create_time)
+        flag,create_time,device_status)
         values
         <foreach collection="dkmBluetooths" item="bluetooth" separator=",">
             (#{bluetooth.hwDeviceSn},#{bluetooth.hwDeviceId},#{bluetooth.hwDeviceProviderNo},#{bluetooth.dkSdkVersion},
             #{bluetooth.dkSecUnitId},#{bluetooth.bleName},#{bluetooth.bleMacAddress},#{bluetooth.bleProtocolVersion},
-            #{bluetooth.bleHardwareVersion},#{bluetooth.bleSoftwareVersion},#{bluetooth.masterKey},#{bluetooth.digKey},0,now())
+            #{bluetooth.bleHardwareVersion},#{bluetooth.bleSoftwareVersion},#{bluetooth.masterKey},#{bluetooth.digKey},1,now(),0)
         </foreach>
     </insert>
 

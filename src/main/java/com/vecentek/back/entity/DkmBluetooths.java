@@ -52,9 +52,10 @@ public class DkmBluetooths extends BaseEntity implements Serializable {
 
     private String digKey;
     /**
-     * 蓝牙设备状态，1：正常，2：报废
+     * 蓝牙设备状态,状态: 1 正常 0 报废
      */
     private Integer flag;
+    private Integer deviceStatus;
 
     /**
      * 蓝牙模块公钥
