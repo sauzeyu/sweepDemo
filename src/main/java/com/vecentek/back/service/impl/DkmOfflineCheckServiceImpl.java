@@ -226,9 +226,9 @@ public class DkmOfflineCheckServiceImpl {
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
         if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
 
-            aftermarketReplacementVehicleBluetoothList.forEach(oldVehicle -> {
+            aftermarketReplacementVehicleBluetoothList.forEach(vehicleBluetooth -> {
                 DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery()
-                        .eq(DkmVehicle::getVin, oldVehicle.getVin()));
+                        .eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
 
                 List<DkmKey> keyList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
                         .eq(DkmKey::getVin, vehicle.getVin()).eq(DkmKey::getDkState, "1"));
@@ -285,12 +285,12 @@ public class DkmOfflineCheckServiceImpl {
                 dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
                 DkmBluetooths newBluetooth = new DkmBluetooths();
                 DkmBluetooths oldBluetooth = new DkmBluetooths();
-                BeanUtil.copyProperties(oldVehicle, vehicle);
-                BeanUtil.copyProperties(oldVehicle, newBluetooth);
+                oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
+                BeanUtil.copyProperties(vehicleBluetooth, vehicle);
+                BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
                 vehicle.setUpdateTime(new Date());
                 newBluetooth.setCreateTime(new Date());
                 newBluetooth.setFlag(1); // 启用
-                oldBluetooth.setHwDeviceSn(oldVehicle.getHwDeviceSn());
                 oldBluetooth.setFlag(0); // 报废
                 oldBluetooth.setUpdateTime(new Date());
 
@@ -304,9 +304,11 @@ public class DkmOfflineCheckServiceImpl {
                         .eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
 
                 dkmBluetoothsMapper.insert(newBluetooth);
-                dkmAftermarketReplacement.setVin(oldVehicle.getVin());
-                dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, oldVehicle.getVin()));
-                dkmAftermarketReplacement.setNewBluetoothSn(oldVehicle.getHwDeviceSn());
+                dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
+
+                dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
+
+                dkmAftermarketReplacement.setNewBluetoothSn(vehicleBluetooth.getHwDeviceSn());
                 dkmAftermarketReplacement.setReplacementTime(new Date());
                 dkmAftermarketReplacement.setCreateTime(new Date());
                 dkmAftermarketReplacementMapper.insert(dkmAftermarketReplacement);
