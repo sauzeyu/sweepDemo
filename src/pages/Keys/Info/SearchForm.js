@@ -110,13 +110,21 @@ class SearchForm extends Component {
       },
     };
     const colSpan = {
-      xs: 12,
+      xs: 24,
       sm: 24,
       md: 24,
       lg: 24,
       xl: 24,
       xxl: 6,
     };
+    // const colSpan = {
+    //   xs: 12,
+    //   sm: 24,
+    //   md: 24,
+    //   lg: 24,
+    //   xl: 24,
+    //   xxl: 6,
+    // };
     const { buttonHidden, isExpand } = this.state;
     let buttonName;
     let icon;
@@ -166,6 +174,7 @@ class SearchForm extends Component {
                       style={{
                         width: 85,
                       }}
+                      maxLength={8}
                       placeholder="min"
                     />
                   </Form.Item>
@@ -182,6 +191,7 @@ class SearchForm extends Component {
                       style={{
                         width: 85,
                       }}
+                      maxLength={8}
                       placeholder="max"
                     />
                   </Form.Item>
@@ -232,12 +242,12 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="钥匙开始时间" name={'valFromTime'}>
-              <RangePicker style={{ width: 275 }} />
+            <Form.Item label="生效时间" name={'valFromTime'}>
+              <RangePicker />
             </Form.Item>
           </Col>
           <Col {...colSpan}>
-            <Form.Item label="钥匙结束时间" name={'valToTime'}>
+            <Form.Item label="失效时间" name={'valToTime'}>
               <RangePicker />
             </Form.Item>
           </Col>
