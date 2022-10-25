@@ -13,8 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableAsync
 @EnableScheduling
-public class BackMain8008 {
+public class BackApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BackMain8008.class, args);
+        SpringApplication.run(BackApplication.class, args);
     }
 }
