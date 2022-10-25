@@ -19,6 +19,7 @@ function createDefaultRequest() {
   });
   instance.interceptors.response.use(
     (response) => {
+      // debugger;
       const data = response.data;
       if (response.status === 401) {
         // window.location.href = '/user/login';
@@ -41,38 +42,28 @@ function createDefaultRequest() {
       let resultError = { response: r };
       if (r.response) {
         const response = r.response;
+
+        if (response.status === 401 && response.data.code === 9000) {
+          message.warn('没有此页面访问权限！');
+        }
+        if (response.status === 401 && response.data.code === 9100) {
+          message.error('登录状态已过期，请重新登录！');
+          getDvaApp()._store.dispatch({
+            type: 'user/logout',
+            payload: {
+              takeRouteInfo: true,
+            },
+          });
+        }
         if (typeof response.data === 'object') {
+          console.log("response.data === 'object'");
           resultError = {
             response,
             code: response.data.errorCode,
             message: response.data.errorMsg || response.data.message,
             requestId: response.data.requestId,
           };
-          if (response.status === 401 && response.data.code === 9000) {
-            message.warn('没有此页面访问权限！');
-          }
-          if (response.status === 401 && response.data.code === 9100) {
-            message.error('登录状态已过期，请重新登录！');
-            getDvaApp()._store.dispatch({
-              type: 'user/logout',
-              payload: {
-                takeRouteInfo: true,
-              },
-            });
-          }
         } else {
-          if (response.status === 401 && response.data.code === 9000) {
-            message.warn('没有此页面访问权限！');
-          }
-          if (response.status === 401 && response.data.code === 9100) {
-            message.error('登录状态已过期，请重新登录！');
-            getDvaApp()._store.dispatch({
-              type: 'user/logout',
-              payload: {
-                takeRouteInfo: true,
-              },
-            });
-          }
           // const status = response.status;
           // if (status === 401 && status.data.code === 9000) {
           //   message.warn("没有此页面访问权限！")

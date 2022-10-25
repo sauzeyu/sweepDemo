@@ -32,6 +32,7 @@ import { exportStatus } from '@/constants/export';
 import { getDvaApp } from '@@/plugin-dva/exports';
 import moment from 'moment';
 import { downloadExcel } from '@/services/downloadExcel';
+
 const { Description } = DescriptionList;
 const dateFormat = 'YYYY/MM/DD';
 
@@ -320,13 +321,16 @@ class DataTable extends Component {
     }
 
     exportKeyUseLog(param).then((res) => {
-      let blob = new Blob([res.data]);
+      debugger;
+      if (res.data) {
+        let blob = new Blob([res.data]);
 
-      let link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
-      // link.click();
-      window.URL.revokeObjectURL(link.href);
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+        // link.click();
+        window.URL.revokeObjectURL(link.href);
+      }
     });
     message.info('正在导出');
   };
@@ -348,6 +352,7 @@ class DataTable extends Component {
     defaultTime[1] = monthEndDate;
     return defaultTime;
   };
+
   formatDateTime(date) {
     if (date == '' || !date) {
       return '';
@@ -361,6 +366,7 @@ class DataTable extends Component {
 
     return y + '-' + m + '-' + d + ' 00:00:00';
   }
+
   clearEndTime = () => {
     this.setState({
       endTime: null,

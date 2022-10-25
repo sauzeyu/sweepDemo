@@ -48,6 +48,13 @@ export const CARS_VEHICLE_EXPORT = '/cars/vehicle/export';
 export const CARS_VEHICLE_TABLE = '/cars/vehicle/table';
 export const CARS_VEHICLE_SELECT = '/cars/vehicle/select';
 
+export const CARS_VEHICLE_CALIBRATION = '/cars/vehicleCalibration';
+export const CARS_VEHICLE_CALIBRATION_TABLE = '/cars/vehicleCalibration/table';
+export const CARS_VEHICLE_CALIBRATION_UPDATE = '/cars/phone/update';
+export const CARS_VEHICLE_CALIBRATION_EXPORT = '/cars/phone/export';
+export const CARS_VEHICLE_CALIBRATION_IMPORT = '/cars/phone/import';
+export const CARS_VEHICLE_CALIBRATION_TEMPLATE = '/cars/phone/template';
+
 // ------ 售后换件管理 ------
 export const AFTERMARKET_REPLACEMENT_INFO = '/aftermarketReplacement/info';
 export const AFTERMARKET_REPLACEMENT_INFO_EXPORT =

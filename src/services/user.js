@@ -28,6 +28,13 @@ function decorateUserInfo(res) {
       key: 'error',
     });
   }
+  if (res.code === 9005) {
+    message.destroy('error');
+    message.error({
+      content: '你的账户未配置系统内角色暂时无法登录，请联系管理员！',
+      key: 'error',
+    });
+  }
 
   const userInfo = {
     username: res.user.username,

@@ -99,7 +99,7 @@ export default [
       },
       {
         path: '/cars',
-        title: '汽车管理',
+        title: '车辆管理',
         routes: [
           {
             path: '/cars/bluetooth',
@@ -115,6 +115,11 @@ export default [
             path: '/cars/phone',
             title: '手机标定数据管理',
             component: './Cars/Phone',
+          },
+          {
+            path: '/cars/vehicleCalibration',
+            title: '用户自标定数据导入',
+            component: './Cars/VehicleCalibration',
           },
         ],
       },
