@@ -2,7 +2,7 @@ spring:
   application:
     name: dkserver-back
   profiles:
-    active: saic
+    active: saic-test
   cloud:
     nacos:
       config:
