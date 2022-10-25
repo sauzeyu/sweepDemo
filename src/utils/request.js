@@ -19,7 +19,7 @@ function createDefaultRequest() {
   });
   instance.interceptors.response.use(
     (response) => {
-      // debugger;
+      //  ;
       const data = response.data;
       if (response.status === 401) {
         // window.location.href = '/user/login';

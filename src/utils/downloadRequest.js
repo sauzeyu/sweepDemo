@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getDvaApp } from '@@/plugin-dva/exports';
 import { joinPath } from '@/utils/index';
-import { message } from '_antd@4.21.5@antd';
+import { message } from 'antd';
 
 const baseURL = '/dkserver-back';
 

@@ -321,7 +321,6 @@ class DataTable extends Component {
     }
 
     exportKeyUseLog(param).then((res) => {
-      debugger;
       if (res.data) {
         let blob = new Blob([res.data]);
 
