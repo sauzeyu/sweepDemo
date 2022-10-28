@@ -321,8 +321,9 @@ class DataTable extends Component {
     }
 
     exportKeyUseLog(param).then((res) => {
+      let blob = null;
       if (res.data) {
-        let blob = new Blob([res.data]);
+        blob = new Blob([res.data]);
 
         let link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
@@ -330,8 +331,10 @@ class DataTable extends Component {
         // link.click();
         window.URL.revokeObjectURL(link.href);
       }
+      if (blob) {
+        message.info('正在导出钥匙日志信息，详情在历史导出列表查看');
+      }
     });
-    message.info('正在导出');
   };
   reload = () => {
     this.dataTable.reload();

@@ -174,7 +174,7 @@ export default class EditForm extends Component {
               onLoad={this.onLoad}
               checkable
               // checkStrictly
-
+              selectable={false}
               autoExpandParent={false}
               onCheck={this.onCheck}
               onSelect={this.onSelect}
