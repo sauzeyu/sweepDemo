@@ -532,15 +532,19 @@ class DataTable extends Component {
     }
 
     exportKey(param).then((res) => {
-      let blob = new Blob([res.data]);
+      let blob = null;
+      if (res.data) {
+        blob = new Blob([res.data]);
 
-      let link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
-      // link.click();
-      window.URL.revokeObjectURL(link.href);
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = fileName;
+      }
+      if (blob) {
+        window.URL.revokeObjectURL(link.href);
+        message.info('正在导出钥匙信息，详情在历史导出列表查看');
+      }
     });
-    message.info('正在导出钥匙信息，详情在历史导出列表查看');
   };
   render() {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
