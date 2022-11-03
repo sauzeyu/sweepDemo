@@ -12,6 +12,7 @@ import { exportVehicle } from '@/services/exportVehicle';
 import { PlusCircleOutlined, DownloadOutlined } from '@ant-design/icons';
 import Authorized from '@/components/Authorized';
 import { CARS_VEHICLE_EXPORT } from '@/components/Authorized/AuthMap';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 
 const { Description } = DescriptionList;
 
@@ -38,9 +39,7 @@ class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
     {

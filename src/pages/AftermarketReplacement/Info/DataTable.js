@@ -10,6 +10,7 @@ import {
   DownloadOutlined,
 } from '@ant-design/icons';
 import { connect } from 'dva';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 
 import { getBluetoothList } from '@/services/aftermarketReplacement';
 
@@ -24,6 +25,7 @@ import { AFTERMARKET_REPLACEMENT_INFO_EXPORT } from '@/components/Authorized/Aut
 
 import { exportReplacement } from '@/services/exportReplacement';
 import moment from 'moment';
+
 const { Description } = DescriptionList;
 
 @connect(({ customer, loading }) => ({
@@ -42,9 +44,7 @@ class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
     {
@@ -174,6 +174,7 @@ class DataTable extends Component {
       window.URL.revokeObjectURL(link.href);
     });
   };
+
   render() {
     const { carInfoVisible, carInfo = {} } = this.state;
     return (

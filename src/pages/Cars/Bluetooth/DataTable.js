@@ -10,6 +10,7 @@ import { overdue } from '@/constants/cars';
 import { exportBluetooth } from '@/services/exportBluetooth';
 import { CARS_BLUETOOTH_EXPORT } from '@/components/Authorized/AuthMap';
 import Authorized from '@/components/Authorized';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 @connect(({ carsType, loading }) => ({
   carsType,
 }))
@@ -22,9 +23,7 @@ class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
     {
