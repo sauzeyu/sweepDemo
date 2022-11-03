@@ -24,6 +24,7 @@ import {
   SYSTEM_USER_INSERT,
   SYSTEM_USER_UPDATE,
 } from '@/components/Authorized/AuthMap';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 
 export class DataTable extends Component {
   state = {
@@ -40,9 +41,7 @@ export class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
     {

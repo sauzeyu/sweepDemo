@@ -37,6 +37,7 @@ import {
 } from '@/components/Authorized/AuthMap';
 import { exportKey } from '@/services/exportKey';
 import { downloadExcel } from '@/services/downloadExcel';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 
 const download = (col) => {
   let param = new URLSearchParams();
@@ -204,9 +205,7 @@ class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
 

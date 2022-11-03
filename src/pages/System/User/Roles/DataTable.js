@@ -15,6 +15,7 @@ import {
 } from '@/components/Authorized/AuthMap';
 import { UsergroupAddOutlined } from '@ant-design/icons';
 import AddForm from '@/pages/System/User/Roles/AddForm';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 
 export class DataTable extends Component {
   state = {
@@ -88,9 +89,7 @@ export class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
     {

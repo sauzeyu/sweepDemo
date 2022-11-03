@@ -33,6 +33,7 @@ import {
 import { getPhone, updatePhone } from '@/services/cars';
 import { connect } from 'dva';
 import { getDvaApp } from '@@/plugin-dva/exports';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 
 const { Dragger } = Upload;
 const xlsTemp = getPublicPath('template/phoneCalibrationExcel.xls');
@@ -53,9 +54,7 @@ class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
     {

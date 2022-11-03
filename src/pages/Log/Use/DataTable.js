@@ -32,6 +32,7 @@ import { exportStatus } from '@/constants/export';
 import { getDvaApp } from '@@/plugin-dva/exports';
 import moment from 'moment';
 import { downloadExcel } from '@/services/downloadExcel';
+import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
 
 const { Description } = DescriptionList;
 const dateFormat = 'YYYY/MM/DD';
@@ -152,9 +153,7 @@ class DataTable extends Component {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        let currentIndex = this.dataTable?.state?.currentIndex;
-        let currentPageSize = this.dataTable?.state?.currentPageSize;
-        return (currentIndex - 1) * currentPageSize + (index + 1);
+        return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
     {
@@ -394,7 +393,7 @@ class DataTable extends Component {
     return (
       <div>
         <EasyTable
-          // rowKey={'id'}
+          // rowKey={1}
           scroll={{ x: '1200px' }}
           // autoFetch
           source={getKeyLogList}
