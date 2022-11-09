@@ -56,6 +56,7 @@ public class DkmKeyController {
                                   String valToStartTime,
                                   String valToEndTime,
                                   Integer keyType,
+                                  Integer keyResource,
                                   Integer[] dkState
     ) {
         return this.dkmKeyServiceImpl.selectForPage(pageIndex,
@@ -72,6 +73,7 @@ public class DkmKeyController {
                 valToStartTime,
                 valToEndTime,
                 keyType,
+                keyResource,
                 dkState);
     }
 
@@ -184,6 +186,7 @@ public class DkmKeyController {
                                          String valToStartTime,
                                          String valToEndTime,
                                          Integer[] dkState,
+                                         Integer keyResource,
                                          String creator) {
         // 1.3形成文件名
         String excelName = "钥匙信息记录-" + System.currentTimeMillis();
@@ -211,6 +214,7 @@ public class DkmKeyController {
                 valToStartTime,
                 valToEndTime,
                 dkState,
+                keyResource,
                 creator,
                 excelName
                 );
@@ -250,6 +254,7 @@ public class DkmKeyController {
                                  String valToStartTime,
                                  String valToEndTime,
                                  Integer[] dkStates,
+                                 Integer keyResource,
                                  String creator,
                                  String excelName
                                  ) {
@@ -267,6 +272,7 @@ public class DkmKeyController {
                 valToStartTime,
                 valToEndTime,
                 dkStates,
+                keyResource,
                 creator,
                 excelName
                 );

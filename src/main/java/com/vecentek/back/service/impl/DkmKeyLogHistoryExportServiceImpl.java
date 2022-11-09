@@ -25,8 +25,10 @@ import java.util.List;
  */
 @Service("dkmKeyLogHistoryExportService")
 public class DkmKeyLogHistoryExportServiceImpl extends ServiceImpl<DkmKeyLogHistoryExportMapper, DkmKeyLogHistoryExport> implements DkmKeyLogHistoryExportService {
-@Resource
-DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+    @Resource
+    private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+
+
     public void downloadExcel(String fileName, HttpServletResponse response) {
 
         // 设置响应头信息
@@ -70,6 +72,7 @@ DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
     /**
      * 根据具体用户和excel类型查询历史下载记录列表
+     *
      * @param creator
      * @param type
      * @return

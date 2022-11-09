@@ -7,6 +7,8 @@ import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.service.impl.DkmKeyLogServiceImpl;
 import com.vecentek.common.response.PageResp;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/dkmKeyLog")
+
 public class DkmKeyLogController {
 
     @Resource
@@ -130,7 +133,7 @@ public class DkmKeyLogController {
                 .build();
 
         dkmKeyLogHistoryExportMapper.insert(build);
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator,excelName);
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator, excelName);
         return PageResp.success("正在导出");
 
     }
@@ -158,7 +161,7 @@ public class DkmKeyLogController {
                                     String endTime,
                                     String phoneBrand,
                                     String phoneModel,
-                                    @RequestParam(value = "statusCode", required = false) List<String> statusCode,
+                                    List<String> statusCode,
                                     Integer flag,
                                     String vehicleBrand,
                                     String vehicleModel,
@@ -169,7 +172,7 @@ public class DkmKeyLogController {
 
 
         this.dkmKeyUseLogService.downloadKeyLogExcel
-                (       vin,
+                (vin,
                         userId,
                         startTime,
                         endTime,
@@ -182,11 +185,9 @@ public class DkmKeyLogController {
                         vehicleType,
                         creator,
                         excelName
-                        );
+                );
 
     }
-
-
 
 
 }

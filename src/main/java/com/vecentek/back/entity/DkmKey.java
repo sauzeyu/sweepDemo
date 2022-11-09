@@ -1,5 +1,6 @@
 package com.vecentek.back.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -106,4 +107,15 @@ public class DkmKey extends BaseEntity implements Serializable {
      * 有效期到失效期分钟间隔
      */
     private Long period;
+
+    /**
+     * 钥匙来源（1：APP,2：小程序）
+     */
+    private Integer keyResource;
+
+    /**
+     * 钥匙来源（1：APP,2：小程序） excelIO对象
+     */
+    @TableField(exist = false)
+    private String keyResourceVO;
 }

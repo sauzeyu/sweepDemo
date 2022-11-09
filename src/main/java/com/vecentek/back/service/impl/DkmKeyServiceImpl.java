@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.KeyResourceConstant;
 import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.DkmKeyDTO;
 import com.vecentek.back.entity.DkmKey;
@@ -134,6 +135,7 @@ public class DkmKeyServiceImpl {
                                   String valToStartTime,
                                   String valToEndTime,
                                   Integer keyType,
+                                  Integer keyResource,
                                   Integer[] dkState
     ) {
         if (keyType == null) {
@@ -174,6 +176,7 @@ public class DkmKeyServiceImpl {
                 .le(periodMax != null, DkmKey::getPeriod, periodMax)
                 .eq(keyType == 1, DkmKey::getParentId, "0")
                 .ne(keyType == 2, DkmKey::getParentId, "0")
+                .eq(keyResource != null, DkmKey::getKeyResource, keyResource)
                 .orderByDesc(DkmKey::getVin)
                 .orderByAsc(DkmKey::getParentId)
                 .orderByAsc(DkmKey::getDkState)
@@ -368,10 +371,10 @@ public class DkmKeyServiceImpl {
                                     String valToStartTime,
                                     String valToEndTime,
                                     Integer[] dkState,
+                                    Integer keyResource,
                                     String creator,
                                     String excelName
-                                    ) {
-
+    ) {
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
@@ -384,7 +387,6 @@ public class DkmKeyServiceImpl {
         }
 
         ExcelWriter writer = ExcelUtil.getWriter(filePath);
-
 
 
         // 3.1所有数据量
@@ -422,6 +424,7 @@ public class DkmKeyServiceImpl {
                 .le(periodMax != null, DkmKey::getPeriod, periodMax)
                 .eq(keyType == 1, DkmKey::getParentId, "0")
                 .ne(keyType == 2, DkmKey::getParentId, "0")
+                .eq(keyResource != null, DkmKey::getKeyResource, keyResource)
                 .orderByDesc(DkmKey::getVin)
                 .orderByAsc(DkmKey::getParentId)
                 .orderByDesc(DkmKey::getApplyTime);
@@ -454,6 +457,7 @@ public class DkmKeyServiceImpl {
                         valToStartTime,
                         valToEndTime,
                         dkState,
+                        keyResource,
                         start,
                         end);
 
@@ -520,6 +524,7 @@ public class DkmKeyServiceImpl {
         writer.setColumnWidth(5, 20);
         writer.setColumnWidth(6, 20);
         writer.setColumnWidth(7, 20);
+        writer.setColumnWidth(8, 20);
 
 
         writer.addHeaderAlias("parentId", "钥匙类型");
@@ -530,6 +535,7 @@ public class DkmKeyServiceImpl {
         writer.addHeaderAlias("valTo", "失效时间");
         writer.addHeaderAlias("applyTime", "申请时间");
         writer.addHeaderAlias("period", "周期(分钟)");
+        writer.addHeaderAlias("keyResourceVO", "钥匙来源");
     }
 
     /**
@@ -550,6 +556,7 @@ public class DkmKeyServiceImpl {
                                           String valToStartTime,
                                           String valToEndTime,
                                           Integer[] dkState,
+                                          Integer keyResource,
                                           Integer start,
                                           Integer end) {
 
@@ -586,6 +593,7 @@ public class DkmKeyServiceImpl {
                 .le(periodMax != null, DkmKey::getPeriod, periodMax)
                 .eq(keyType == 1, DkmKey::getParentId, "0")
                 .ne(keyType == 2, DkmKey::getParentId, "0")
+                .eq(keyResource != null, DkmKey::getKeyResource, keyResource)
                 .orderByDesc(DkmKey::getVin)
                 .orderByAsc(DkmKey::getParentId)
                 .orderByDesc(DkmKey::getApplyTime)
@@ -598,15 +606,20 @@ public class DkmKeyServiceImpl {
             keyList.forEach(key -> {
                 if (Objects.equals(key.getParentId(), "0")) {
                     key.setParentId("车主钥匙");
-                } else {
+                }
+                if (!Objects.equals(key.getParentId(), "0")) {
                     key.setParentId("分享钥匙");
                 }
-
+                if (KeyResourceConstant.APP.equals(key.getKeyResource())) {
+                    key.setKeyResourceVO("APP");
+                }
+                if (KeyResourceConstant.SMALLPROGRAM.equals(key.getKeyResource())) {
+                    key.setKeyResourceVO("小程序");
+                }
                 key.setPersonalAndCalibration(KeyStatusEnum.matchName(key.getDkState()));
             });
 
         }
-
 
         return keyList;
     }
