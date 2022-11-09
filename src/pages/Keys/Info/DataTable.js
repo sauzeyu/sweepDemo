@@ -231,6 +231,7 @@ class DataTable extends Component {
 
     {
       title: '钥匙类型',
+      width: 100,
       dataIndex: 'parentId',
       render: (text) => {
         return KeyType(text);
@@ -255,6 +256,7 @@ class DataTable extends Component {
     },
     {
       title: '钥匙状态',
+      width: 100,
       dataIndex: 'dkState',
       render: (text) => {
         return DKState[text];
@@ -298,6 +300,7 @@ class DataTable extends Component {
     },
     {
       title: '周期时长',
+      width: 100,
       dataIndex: 'period',
       render: (col) => this.time(col),
     },
@@ -645,7 +648,7 @@ class DataTable extends Component {
           }
           columnWidth={120}
           expandIconAsCell={false}
-          expandIconColumnIndex={10}
+          expandIconColumnIndex={11}
           expandable={{
             expandedRowRender: (record) => {
               record.that = this;
