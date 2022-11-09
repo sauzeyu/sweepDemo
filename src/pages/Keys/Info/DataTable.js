@@ -1,5 +1,5 @@
 import { getDvaApp } from '@@/plugin-dva/exports';
-import React, { Component, useState } from 'react';
+import React, { Component, useImperativeHandle, useState } from 'react';
 import EasyTable from '@/components/EasyTable';
 import Authorized from '@/components/Authorized';
 import moment from 'moment';
@@ -25,7 +25,13 @@ import {
   selectVehicleById,
   checkKeyUseLog,
 } from '@/services/keys';
-import { DKState, KeySource, KeyState, KeyType } from '@/constants/keys';
+import {
+  DKState,
+  KeySource,
+  KeyState,
+  KeyType,
+  KeyResource,
+} from '@/constants/keys';
 import { exportStatus } from '@/constants/export';
 import { keyLifecycleList, keyUseListById } from '@/services/cars';
 import { useMemo } from 'react';
@@ -147,9 +153,9 @@ const SubTable2 = () => {
     />
   );
 };
-const SubTable = (props) => {
-  const dataList = React.useRef();
 
+const SubTable = (props) => {
+  // console.log('that  ', props.that);
   const columns = [
     {
       title: '操作时间',
@@ -174,6 +180,7 @@ const SubTable = (props) => {
     },
   ];
   const name = useMemo(() => `carSubModelsDataTable_${props.id}`, [props.id]);
+
   return (
     <Card>
       <EasyTable
@@ -184,8 +191,12 @@ const SubTable = (props) => {
         autoFetch
         fixedParams={{ keyId: props.id }}
         renderHeader={() => null}
-        wrappedComponentRef={() => {
-          return dataList;
+        wrappedComponentRef={(ref) => {
+          props.that.state.subTableRefList['subTable_' + props.id] = ref;
+
+          props.that.setState({
+            subTableRefList: props.that.state.subTableRefList,
+          });
         }}
       />
     </Card>
@@ -196,8 +207,17 @@ const SubTable = (props) => {
   keysManage,
 }))
 class DataTable extends Component {
+  // constructor(props) {
+  //   super(props)
+  //   this.childRef = React.createRef();
+  // }
   state = {
+    subTableRefList: [],
     carInfo: {},
+    applyStartTime: '',
+    applyEndTime: '',
+    dkState: 1,
+    keyResource: 1,
   };
 
   columns = [
@@ -282,10 +302,17 @@ class DataTable extends Component {
       render: (col) => this.time(col),
     },
     {
+      title: '钥匙来源',
+      dataIndex: 'keyResource',
+      render: (text) => {
+        return KeyResource(text);
+      },
+    },
+    {
       title: '操作',
       fixed: 'right',
       width: 240,
-      render: (col) => {
+      render: (col, record, index) => {
         let isDisable = col.dkState === 3;
         let disableStyle = {};
 
@@ -322,7 +349,7 @@ class DataTable extends Component {
             <Authorized route={KEYS_INFO_FREEZE}>
               <a
                 className={'text-danger'}
-                onClick={() => this.enableKey(col, false)}
+                onClick={() => this.enableKey(col, false, index)}
                 hidden={isDisable}
                 {...disableStyle}
               >
@@ -380,6 +407,10 @@ class DataTable extends Component {
   };
   enableKey = (col, isEnableKey) => {
     let txt = isEnableKey ? '解冻' : '冻结';
+    console.log(
+      'props.that.state.subTableRefList ',
+      this.state.subTableRefList['subTable_' + col.id],
+    );
     Modal.confirm({
       title: txt + '钥匙',
       content: `确定${txt}钥匙？`,
@@ -401,6 +432,7 @@ class DataTable extends Component {
                 message.error(res.msg);
               }
               this.dataTable.reload();
+              this.state.subTableRefList['subTable_' + col.id]?.reload();
             },
             (err) => {
               message.error(err.message);
@@ -445,23 +477,20 @@ class DataTable extends Component {
   exportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
 
-    let obj = Object.keys(this.props.searchFormValues);
-
-    let applyTime = this.props.searchFormValues[0];
-    let vin = this.props.searchFormValues[1];
-    let periodMin = this.props.searchFormValues[2];
-    let periodMax = this.props.searchFormValues[3];
-    let periodUnit = this.props.searchFormValues[4];
-
-    let userId = this.props.searchFormValues[5];
-
-    let valFromTime = this.props.searchFormValues[6];
-
-    let valToTime = this.props.searchFormValues[7];
-
-    let keyType = this.props.searchFormValues[8];
-
-    let dkState = this.props.searchFormValues[9];
+    // console.log('this.props.searchFormValues;', this.props.searchFormValues);
+    const {
+      applyTime,
+      vin,
+      periodMin,
+      periodMax,
+      periodUnit,
+      userId,
+      valFromTime,
+      valToTime,
+      keyType,
+      dkState,
+      keyResource,
+    } = this.props.searchFormValues;
 
     let fileName = '钥匙信息.xlsx';
     let param = new URLSearchParams();
@@ -469,10 +498,6 @@ class DataTable extends Component {
     if (keyType?.value && keyType.value.length > 0) {
       keyType.value = keyType.value.reduce((prev, current) => prev + current);
     }
-    if (dkState?.value && dkState.value.length > 0) {
-      dkState.value = dkState.value.toString();
-    }
-
     if (userId?.value) {
       param.append('userId', userId.value);
     }
@@ -492,15 +517,24 @@ class DataTable extends Component {
     if (keyType?.value) {
       param.append('keyType', keyType.value);
     }
-    if (dkState?.value) {
-      param.append('dkState', dkState.value);
+    if (dkState) {
+      if (dkState?.length < 1) {
+      } else {
+        param.append('dkState', dkState);
+      }
+    }
+    if (keyResource) {
+      if (keyResource?.length < 1) {
+      } else {
+        param.append('keyResource', keyResource);
+      }
     }
 
-    if (applyTime?.value) {
-      const applyStartTime = moment(applyTime?.value[0])?.format('YYYY-MM-DD');
+    if (applyTime) {
+      const applyStartTime = moment(applyTime[0])?.format('YYYY-MM-DD');
       param.append('applyStartTime', applyStartTime);
 
-      const applyEndTime = moment(applyTime?.value[1])
+      const applyEndTime = moment(applyTime[1])
         ?.add(1, 'days')
         .format('YYYY-MM-DD');
       param.append('applyEndTime', applyEndTime);
@@ -532,28 +566,56 @@ class DataTable extends Component {
 
     exportKey(param).then((res) => {
       let blob = null;
+      let link = null;
       if (res.data) {
         blob = new Blob([res.data]);
 
-        let link = document.createElement('a');
+        link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = fileName;
       }
       if (blob) {
-        window.URL.revokeObjectURL(link.href);
+        window.URL.revokeObjectURL(link?.href);
         message.info('正在导出钥匙信息，详情在历史导出列表查看');
       }
     });
   };
+  defaultStartTime = () => {
+    let defaultTime = [];
+
+    let now = new Date(); //当前日期
+    let nowMonth = now.getMonth(); //当前月
+    let nowYear = now.getFullYear(); //当前年
+    //本月的开始时间
+    let monthStartDate = new Date(nowYear, nowMonth, 1);
+    //本月的结束时间
+    let monthEndDate = new Date(nowYear, nowMonth + 1, 0);
+
+    defaultTime[0] = monthStartDate;
+    defaultTime[1] = monthEndDate;
+    return defaultTime;
+  };
+
   render() {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
+    this.state.applyStartTime = moment(this.defaultStartTime()[0])?.format(
+      'YYYY-MM-DD 00:00:00',
+    );
+    this.state.applyEndTime = moment(this.defaultStartTime()[1])
+      ?.add(1, 'd')
+      ?.format('YYYY-MM-DD 00:00:00');
     return (
       <div>
         <EasyTable
           scroll={{ x: '1200px' }}
           autoFetch
           source={getKeysList}
-          fixedParams={{ creator: creator, type: 1 }}
+          fixedParams={{
+            applyStartTime: this.state.applyStartTime,
+            applyEndTime: this.state.applyEndTime,
+            dkState: this.state.dkState,
+            keyResource: this.state.keyResource,
+          }}
           dataProp={'data'}
           name={'keysDataTable'}
           rowKey={'id'}
@@ -586,15 +648,27 @@ class DataTable extends Component {
           expandIconColumnIndex={10}
           expandable={{
             expandedRowRender: (record) => {
+              record.that = this;
               return <SubTable {...record} />;
             },
             expandIcon: (props) => {
               return (
-                <a onClick={(e) => props.onExpand(props.record, e)}>
-                  生命周期 {props.expanded ? <UpOutlined /> : <DownOutlined />}
+                <a
+                  onClick={(e) => {
+                    props.onExpand(props.record, e);
+                  }}
+                >
+                  生命周期
+                  {props.expanded ? <UpOutlined /> : <DownOutlined />}
                 </a>
               );
             },
+            // onExpand : (props) => {
+            //   return (
+            //     <a onClick={(e) => props.onExpand(props.record, e)}>
+            //     </a>
+            //   );
+            // },
           }}
         />
         <Modal

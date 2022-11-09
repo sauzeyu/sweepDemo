@@ -262,16 +262,21 @@ class DataTable extends Component {
 
   exportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
-    let startTime = this.props.searchFormValues[0];
-    let phoneBrand = this.props.searchFormValues[1];
-    let phoneModel = this.props.searchFormValues[2];
-    let statusCode = this.props.searchFormValues[3];
-    let vin = this.props.searchFormValues[4];
-    let flag = this.props.searchFormValues[5];
-    let userId = this.props.searchFormValues[6];
-    let vehicleBrand = this.props.searchFormValues[7];
-    let vehicleModel = this.props.searchFormValues[8];
-    let vehicleType = this.props.searchFormValues[9];
+    console.log('this.props.searchFormValues;', this.props.searchFormValues);
+
+    const {
+      startTime,
+      phoneBrand,
+      phoneModel,
+      statusCode,
+      vin,
+      flag,
+      userId,
+      vehicleBrand,
+      vehicleModel,
+      vehicleType,
+    } = this.props.searchFormValues;
+
     let fileName = '钥匙记录.xlsx';
     let param = new URLSearchParams();
 
@@ -288,14 +293,12 @@ class DataTable extends Component {
       param.append('statusCode', statusCode.value);
     }
 
-    if (startTime && startTime.value && startTime.value[0]) {
-      const beginTime = moment(startTime.value[0]).format(
-        'YYYY-MM-DD 00:00:00',
-      );
+    if (startTime?.length === 2) {
+      const beginTime = moment(startTime[0]).format('YYYY-MM-DD 00:00:00');
+
       param.append('startTime', beginTime);
-    }
-    if (startTime && startTime.value && startTime.value[1]) {
-      const endTime = moment(startTime.value[1])
+
+      const endTime = moment(startTime[1])
         .add(1, 'days')
         .format('YYYY-MM-DD 00:00:00');
       param.append('endTime', endTime);
@@ -378,22 +381,14 @@ class DataTable extends Component {
     let defaultStartTimeElement = this.defaultStartTime()[1];
     let end = this.formatDateTime(defaultStartTimeElement);
     this.setState({
-      // startTime:defaultStartTimeElement,
       endTime: end,
     });
   };
 
   render() {
-    // let startTime = this.formatDateTime(this.defaultStartTime()[0]);
-    // let endTime = this.formatDateTime(this.defaultStartTime()[1]);
-    // let endTime
-    // this.initEndTime(()=>{
-    //   endTime = this.state.endTime;
-    // });
     return (
       <div>
         <EasyTable
-          // rowKey={1}
           scroll={{ x: '1200px' }}
           // autoFetch
           source={getKeyLogList}

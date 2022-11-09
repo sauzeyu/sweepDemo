@@ -16,6 +16,7 @@ import moment from 'moment';
 
 const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
+
 @EasyTable.connect(({ keysDataTable }) => ({
   keysDataTable,
 }))
@@ -23,6 +24,7 @@ class SearchForm extends Component {
   state = {
     isExpand: true,
     buttonHidden: true,
+    flag: true,
   };
   form = React.createRef();
   handleSubmit = (evt) => {
@@ -70,6 +72,18 @@ class SearchForm extends Component {
       });
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    //   this.props.keyErrorLogDataTable,
+    //   'this.props.keyErrorLogDataTable',
+    //   prevProps,
+    //   prevState,
+    // );
+
+    if (this.props.keysDataTable && this.state.flag) {
+      this.handleSubmit();
+      this.setState({ flag: false });
+    }
+  }
   onClick = () => {
     this.setState({
       isExpand: !this.state.isExpand,
@@ -141,7 +155,11 @@ class SearchForm extends Component {
         onFinish={this.handleSubmit}
         ref={this.form}
         onFieldsChange={(changedFields, allFields) => {
-          this.props.getFormValues(allFields);
+          let result = {};
+          allFields.forEach((field) =>
+            Object.defineProperty(result, field.name.toString(), field),
+          );
+          this.props.getFormValues(result);
         }}
       >
         <Row type={'flex'} gutter={16} wrap={true}>
@@ -155,13 +173,86 @@ class SearchForm extends Component {
               ]}
               format={dateFormat}
             >
-              <RangePicker />
+              <RangePicker allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colSpan}>
-            <Form.Item label={'车辆vin号'} name="vin">
-              <Input placeholder="请输入车辆vin号" style={{ width: 275 }} />
+            <Form.Item label={'钥匙状态'} name="dkState" initialValue={1}>
+              <Select
+                placeholder="请选择钥匙状态"
+                mode={'multiple'}
+                style={{ width: 258 }}
+                showArrow
+                allowClear={true}
+              >
+                <Select.Option key={1} value={1}>
+                  启用
+                </Select.Option>
+                <Select.Option key={3} value={3}>
+                  冻结
+                </Select.Option>
+                <Select.Option key={4} value={4}>
+                  过期
+                </Select.Option>
+                <Select.Option key={5} value={5}>
+                  吊销
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col {...colSpan}>
+            <Form.Item label={'钥匙来源'} name="keyResource" initialValue={1}>
+              <Select
+                placeholder="请选择钥匙来源"
+                // mode={'multiple'}
+                style={{ width: 258 }}
+                showArrow
+                allowClear={true}
+              >
+                <Select.Option key={1} value={1}>
+                  APP
+                </Select.Option>
+                <Select.Option key={2} value={2}>
+                  小程序
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+
+          <Col {...colSpan}>
+            <Row gutter={16} type={'flex'} wrap={true}>
+              <Col>
+                <Button
+                  onClick={() => {
+                    this.form.current.resetFields();
+                  }}
+                >
+                  重置
+                </Button>
+              </Col>
+              <Col>
+                <Form.Item>
+                  <Button type={'primary'} htmlType={'submit'}>
+                    查询
+                  </Button>
+                </Form.Item>
+              </Col>
+              <Col>
+                <Button type="link" onClick={this.onClick}>
+                  {buttonName}
+                  {icon}
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+
+        <Row hidden={buttonHidden} type={'flex'} gutter={16} wrap={true}>
+          <Col {...colSpan}>
+            <Form.Item label="生效时间" name={'valFromTime'}>
+              <RangePicker />
             </Form.Item>
           </Col>
 
@@ -208,51 +299,17 @@ class SearchForm extends Component {
           </Col>
 
           <Col {...colSpan}>
-            <Row gutter={16} type={'flex'} wrap={true}>
-              <Col>
-                <Button
-                  onClick={() => {
-                    this.form.current.resetFields();
-                  }}
-                >
-                  重置
-                </Button>
-              </Col>
-              <Col>
-                <Form.Item>
-                  <Button type={'primary'} htmlType={'submit'}>
-                    查询
-                  </Button>
-                </Form.Item>
-              </Col>
-              <Col>
-                <Button type="link" onClick={this.onClick}>
-                  {buttonName}
-                  {icon}
-                </Button>
-              </Col>
-            </Row>
+            <Form.Item label={'车辆vin号'} name="vin">
+              <Input placeholder="请输入车辆vin号" style={{ width: 258 }} />
+            </Form.Item>
           </Col>
         </Row>
-
         <Row hidden={buttonHidden} type={'flex'} gutter={16} wrap={true}>
-          <Col {...colSpan}>
-            <Form.Item label={'用户id'} name="userId">
-              <Input placeholder="请输入用户id" />
-            </Form.Item>
-          </Col>
-          <Col {...colSpan}>
-            <Form.Item label="生效时间" name={'valFromTime'}>
-              <RangePicker />
-            </Form.Item>
-          </Col>
           <Col {...colSpan}>
             <Form.Item label="失效时间" name={'valToTime'}>
               <RangePicker />
             </Form.Item>
           </Col>
-        </Row>
-        <Row hidden={buttonHidden} type={'flex'} gutter={16} wrap={true}>
           <Col {...colSpan}>
             <Form.Item label={'钥匙类型'} name="keyType">
               <Select
@@ -270,29 +327,9 @@ class SearchForm extends Component {
               </Select>
             </Form.Item>
           </Col>
-
           <Col {...colSpan}>
-            <Form.Item label={'钥匙状态'} name="dkState">
-              <Select
-                placeholder="请选择钥匙状态"
-                mode={'multiple'}
-                style={{ width: 275 }}
-                showArrow
-                allowClear={true}
-              >
-                <Select.Option key={1} value={1}>
-                  启用
-                </Select.Option>
-                <Select.Option key={3} value={3}>
-                  冻结
-                </Select.Option>
-                <Select.Option key={4} value={4}>
-                  过期
-                </Select.Option>
-                <Select.Option key={5} value={5}>
-                  吊销
-                </Select.Option>
-              </Select>
+            <Form.Item label={'用户id'} name="userId">
+              <Input placeholder="请输入用户id" />
             </Form.Item>
           </Col>
         </Row>

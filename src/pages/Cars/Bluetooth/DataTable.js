@@ -173,9 +173,7 @@ class DataTable extends Component {
     this.setState({ editFormVisible: false });
   };
   exportExcel = () => {
-    let hwDeviceSn = this.props.searchFormValues[0];
-    let searchNumber = this.props.searchFormValues[1];
-    let flag = this.props.searchFormValues[2];
+    const { hwDeviceSn, searchNumber, flag } = this.props.searchFormValues;
     let fileName = '蓝牙信息.xlsx';
     let param = new URLSearchParams();
     if (hwDeviceSn && hwDeviceSn.value) {

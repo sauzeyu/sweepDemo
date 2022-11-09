@@ -48,7 +48,12 @@ class SearchForm extends Component {
         onFinish={this.handleSubmit}
         ref={this.form}
         onFieldsChange={(changedFields, allFields) => {
-          this.props.getFormValues(allFields);
+          let result = {};
+          allFields.forEach((field) =>
+            Object.defineProperty(result, field.name.toString(), field),
+          );
+
+          this.props.getFormValues(result);
         }}
       >
         <Row type={'flex'} gutter={16}>
