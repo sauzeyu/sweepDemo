@@ -5,8 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 /**
  * 蓝牙数据(DkmBluetooths)实体类
  *
@@ -18,7 +16,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DkmBluetooths extends BaseEntity implements Serializable {
+public class DkmBluetooths extends BaseEntity {
     private static final long serialVersionUID = 910587834779611304L;
     /**
      * 设备序列号
@@ -52,9 +50,10 @@ public class DkmBluetooths extends BaseEntity implements Serializable {
 
     private String digKey;
     /**
-     * 蓝牙设备状态，1：正常，2：报废
+     * 蓝牙设备状态,状态: 1 正常 0 报废
      */
     private Integer flag;
+    private Integer deviceStatus;
 
     /**
      * 蓝牙模块公钥
