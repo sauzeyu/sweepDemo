@@ -144,8 +144,7 @@ class DataTable extends Component {
     });
   };
   exportExcel = () => {
-    let vin = this.props.searchFormValues[0];
-    let replacementTime = this.props.searchFormValues[1]?.value;
+    const { vin, replacementTime } = this.props.searchFormValues;
     let fileName = '换件信息.xlsx';
     let param = new URLSearchParams();
     if (vin && vin.value) {

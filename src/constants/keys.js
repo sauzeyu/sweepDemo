@@ -36,6 +36,14 @@ export const KeyType = (text) => {
   }
 };
 
+export const KeyResource = (text) => {
+  if (text === 1) {
+    return <Tag color="blue">App</Tag>;
+  } else if (text === 2) {
+    return <Tag color="green">小程序</Tag>;
+  }
+};
+
 export const KeysState = {
   1: '未配对',
   101: '已配对',

@@ -113,14 +113,18 @@ class SearchForm extends Component {
     for (let i = 0; i < Code.length; i++) {
       children.push(<Option key={Code[i][0]}> {Code[i][1]}</Option>);
     }
-    const handleChange = (value) => {};
     return (
       <Form
         {...formItemLayout}
         onFinish={this.handleSubmit}
         ref={this.form}
         onFieldsChange={(changedFields, allFields) => {
-          this.props.getFormValues(allFields);
+          let result = {};
+          allFields.forEach((field) =>
+            Object.defineProperty(result, field.name.toString(), field),
+          );
+
+          this.props.getFormValues(result);
         }}
       >
         <Row type={'flex'} gutter={16} wrap={true}>
@@ -179,7 +183,6 @@ class SearchForm extends Component {
         <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
           <Col {...colSpan}>
             <Form.Item label="操作类型" name={'statusCode'}>
-              {/*<Input placeholder="请输入操作类型" />*/}
               <Select
                 mode="multiple"
                 allowClear
@@ -187,7 +190,6 @@ class SearchForm extends Component {
                   width: '100%',
                 }}
                 placeholder="请输入操作类型"
-                onChange={handleChange}
               >
                 {children}
               </Select>
