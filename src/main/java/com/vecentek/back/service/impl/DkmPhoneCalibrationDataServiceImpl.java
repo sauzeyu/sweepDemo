@@ -12,6 +12,7 @@ import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
+import com.vecentek.back.entity.DkmVehicleCalibrationData;
 import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
@@ -33,8 +34,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -118,21 +121,17 @@ public class DkmPhoneCalibrationDataServiceImpl {
             reader.addHeaderAlias("标定数据", "personalAndCalibrationString");
             List<DkmPhoneCalibrationData> calibrationList = reader.readAll(DkmPhoneCalibrationData.class);
             reader.close();
-            //车辆型号 + 手机型号 形成的联合主键进行冒泡比对来查重
-            for (int i = 0; i < calibrationList.size(); i++) {
-                String beforeID = calibrationList.get(i).getVehicleModel() + calibrationList.get(i).getPhoneModel();
-                for (int j = i + 1; j < calibrationList.size(); j++) {
-                    String afterID = calibrationList.get(j).getVehicleModel() + calibrationList.get(j).getPhoneModel();
-                    if(StrUtil.equals(beforeID,afterID)){
-                        return PageResp.fail("导入失败，excel文件车辆型号和手机型号有重复!");
-                    }
-                }
-            }
             if (calibrationList.size() == 0) {
                 return PageResp.fail("导入失败，请检查excel文件！");
             }
             int rowIndex = 1;
+            //车辆型号 + 手机型号 形成的联合主键放入set结构去重
+            Set<String> hashSet = new HashSet<>();
             for (DkmPhoneCalibrationData calibration : calibrationList) {
+                    String afterID = calibration.getVehicleModel() + calibration.getPhoneModel();
+                    if (!hashSet.add(afterID)) {
+                        return PageResp.fail("车辆型号【"+calibration.getVehicleModel() + "】与手机型号【" + calibration.getPhoneModel() + "】有重复数据");
+                    }
                 rowIndex++;
                 String personalAndCalibrationString = calibration.getPersonalAndCalibrationString().replace(" ", "");
                 calibration.setPersonalAndCalibrationString(personalAndCalibrationString);
