@@ -187,6 +187,7 @@ public class DkmRoleServiceImpl {
         role.setCode(roleVO.getCode());
         role.setIntro(roleVO.getIntro());
         role.setCreateTime(new Date());
+        role.setCreator(roleVO.getCreator());
         dkmRoleMapper.insert(role);
         for (String menuId : roleVO.getMenuList()) {
             DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();

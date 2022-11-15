@@ -186,7 +186,6 @@ public class DkmKeyLogServiceImpl {
             // 4 将数据库查询和单个sheet导出操作视为原子操作 按数据总量和递增值计算原子操作数
             try {
                 for (int i = 0; i <= sum / end; i++) {
-                    System.out.println("---------------------------start---------------------------------------");
                     int start = (i * end);
 
                     // 4.1分页查询数据 否则会OOM
