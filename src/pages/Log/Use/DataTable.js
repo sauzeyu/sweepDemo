@@ -280,17 +280,19 @@ class DataTable extends Component {
     let fileName = '钥匙记录.xlsx';
     let param = new URLSearchParams();
 
-    if (vin && vin.value) {
-      param.append('vin', vin.value);
+    if (vin) {
+      param.append('vin', vin);
     }
-    if (phoneBrand && phoneBrand.value) {
-      param.append('phoneBrand', phoneBrand.value);
+    if (phoneBrand) {
+      param.append('phoneBrand', phoneBrand);
     }
-    if (phoneModel && phoneModel.value) {
-      param.append('phoneModel', phoneModel.value);
+    if (phoneModel) {
+      param.append('phoneModel', phoneModel);
     }
-    if (statusCode && statusCode.value) {
-      param.append('statusCode', statusCode.value);
+    if (statusCode) {
+      if (statusCode.length > 0) {
+        param.append('statusCode', statusCode);
+      }
     }
 
     if (startTime?.length === 2) {
@@ -303,20 +305,20 @@ class DataTable extends Component {
         .format('YYYY-MM-DD 00:00:00');
       param.append('endTime', endTime);
     }
-    if (flag && (flag.value == 0 || flag.value == 1)) {
-      param.append('flag', flag.value);
+    if (flag && (flag == 0 || flag == 1)) {
+      param.append('flag', flag);
     }
-    if (userId && userId.value) {
-      param.append('userId', userId.value);
+    if (userId) {
+      param.append('userId', userId);
     }
-    if (vehicleModel && vehicleModel.value) {
-      param.append('vehicleModel', vehicleModel.value);
+    if (vehicleModel) {
+      param.append('vehicleModel', vehicleModel);
     }
-    if (vehicleBrand && vehicleBrand.value) {
-      param.append('vehicleBrand', vehicleBrand.value);
+    if (vehicleBrand) {
+      param.append('vehicleBrand', vehicleBrand);
     }
-    if (vehicleType && vehicleType.value) {
-      param.append('vehicleType', vehicleType.value);
+    if (vehicleType) {
+      param.append('vehicleType', vehicleType);
     }
     if (creator) {
       param.append('creator', creator);
