@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -379,7 +380,7 @@ public class DkmKeyServiceImpl {
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
 //        String filePath = ("D:/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX); // 本地测试
-        String filePath = ("/excel/" + excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = (File.separatorChar +"excel" +File.separatorChar+ excelName + ExcelConstant.EXCEL_SUFFIX_XLSX);
 
         // 是否有重名文件
         if (FileUtil.isFile(filePath)) {

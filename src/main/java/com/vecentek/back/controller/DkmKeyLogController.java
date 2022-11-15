@@ -72,19 +72,7 @@ public class DkmKeyLogController {
                 vehicleType);
     }
 
-    @GetMapping("/addTest")
-    public void addTest(String operateTime) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = simpleDateFormat.parse(operateTime);
-        DkmKeyLog dkmKeyLog = new DkmKeyLog();
-        dkmKeyLog.setId(IdUtil.getSnowflakeNextId());
-        dkmKeyLog.setVin("1");
-        dkmKeyLog.setKeyId("2");
-        dkmKeyLog.setFlag(1);
-        dkmKeyLog.setOperateTime(date);
-        dkmKeyLog.setStatusCode("1");
-        dkmKeyLogMapper.insert(dkmKeyLog);
-    }
+
 
     /**
      * 开始导出钥匙记录excel

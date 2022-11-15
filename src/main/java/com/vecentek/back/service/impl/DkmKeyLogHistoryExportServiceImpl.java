@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -40,7 +41,7 @@ public class DkmKeyLogHistoryExportServiceImpl extends ServiceImpl<DkmKeyLogHist
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/vnd.ms-excel");
 
-        String filePath = ("/excel/" + fileName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = (File.separatorChar + "excel" + File.separatorChar + fileName + ExcelConstant.EXCEL_SUFFIX_XLSX);
         //String filePath = ("/excel/" + fileName + ExcelConstant.EXCEL_SUFFIX_XLSX);
         //ExcelWriter writer = ExcelUtil.getBigWriter(filePath);
         FileInputStream input = null;
