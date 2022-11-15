@@ -107,6 +107,7 @@ export default class ModifyForm extends React.Component {
           ]}
         >
           <Input
+            maxLength={16}
             type="password"
             placeholder={
               '密码必须由数字/大写字母/小写字母/特殊字符组成,长度在8位以上'
