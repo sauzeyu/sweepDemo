@@ -32,7 +32,8 @@ export default class AddForm extends Component {
     this.form.current.validateFields().then((values) => {
       // values.menuList = this.state.keys;
       values.code = values.code + '';
-
+      values.creator =
+        getDvaApp()._store.getState()?.user?.currentUser?.username;
       insert(values).then(
         (res) => {
           if (res.code === 200) {
@@ -129,6 +130,7 @@ export default class AddForm extends Component {
           ]}
         >
           <Input
+            type="number"
             style={{ width: 200 }}
             maxLength={5}
             placeholder={'角色代码'}

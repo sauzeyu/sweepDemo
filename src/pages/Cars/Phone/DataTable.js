@@ -119,17 +119,17 @@ class DataTable extends Component {
 
     let fileName;
     let param = new URLSearchParams();
-    if (vehicleType && vehicleType.value) {
-      param.append('vehicleType', vehicleType.value);
+    if (vehicleType) {
+      param.append('vehicleType', vehicleType);
     }
-    if (vehicleBrand && vehicleBrand.value) {
-      param.append('vehicleBrand', vehicleBrand.value);
+    if (vehicleBrand) {
+      param.append('vehicleBrand', vehicleBrand);
     }
-    if (vehicleModel && vehicleModel.value) {
-      param.append('vehicleModel', vehicleModel.value);
+    if (vehicleModel) {
+      param.append('vehicleModel', vehicleModel);
     }
-    if (phoneBrand && phoneBrand.value) {
-      param.append('phoneBrand', phoneBrand.value);
+    if (phoneBrand) {
+      param.append('phoneBrand', phoneBrand);
     }
     if (isXlsx) {
       param.append('isXlsx', isXlsx);

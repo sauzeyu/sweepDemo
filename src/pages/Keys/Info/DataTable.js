@@ -497,28 +497,28 @@ class DataTable extends Component {
 
     let fileName = '钥匙信息.xlsx';
     let param = new URLSearchParams();
+    let tempKeyType;
+    if (keyType && keyType?.length > 0) {
+      tempKeyType = keyType.reduce((prev, current) => prev + current);
+    }
+    if (userId) {
+      param.append('userId', userId);
+    }
+    if (vin) {
+      param.append('vin', vin);
+    }
+    if (periodMin) {
+      param.append('periodMin', periodMin);
+    }
+    if (periodMax) {
+      param.append('periodMax', periodMax);
+    }
 
-    if (keyType?.value && keyType.value.length > 0) {
-      keyType.value = keyType.value.reduce((prev, current) => prev + current);
+    if (periodUnit) {
+      param.append('periodUnit', periodUnit);
     }
-    if (userId?.value) {
-      param.append('userId', userId.value);
-    }
-    if (vin?.value) {
-      param.append('vin', vin.value);
-    }
-    if (periodMin?.value) {
-      param.append('periodMin', periodMin.value);
-    }
-    if (periodMax?.value) {
-      param.append('periodMax', periodMax.value);
-    }
-
-    if (periodUnit?.value) {
-      param.append('periodUnit', periodUnit.value);
-    }
-    if (keyType?.value) {
-      param.append('keyType', keyType.value);
+    if (tempKeyType) {
+      param.append('keyType', tempKeyType);
     }
     if (dkState) {
       if (dkState?.length < 1) {
@@ -542,22 +542,20 @@ class DataTable extends Component {
         .format('YYYY-MM-DD');
       param.append('applyEndTime', applyEndTime);
     }
-    if (valFromTime?.value) {
-      const valFromStartTime = moment(valFromTime?.value[0])?.format(
-        'YYYY-MM-DD',
-      );
+    if (valFromTime) {
+      const valFromStartTime = moment(valFromTime[0])?.format('YYYY-MM-DD');
       param.append('valFromStartTime', valFromStartTime);
 
-      const valFromEndTime = moment(valFromTime?.value[1])
+      const valFromEndTime = moment(valFromTime[1])
         ?.add(1, 'days')
         .format('YYYY-MM-DD');
       param.append('valFromEndTime', valFromEndTime);
     }
-    if (valToTime?.value) {
-      const valToStartTime = moment(valToTime?.value[0])?.format('YYYY-MM-DD');
+    if (valToTime) {
+      const valToStartTime = moment(valToTime[0])?.format('YYYY-MM-DD');
       param.append('valToStartTime', valToStartTime);
 
-      const valToEndTime = moment(valToTime?.value[1])
+      const valToEndTime = moment(valToTime[1])
         ?.add(1, 'days')
         .format('YYYY-MM-DD');
       param.append('valToEndTime', valToEndTime);
@@ -614,8 +612,8 @@ class DataTable extends Component {
           autoFetch
           source={getKeysList}
           fixedParams={{
-            applyStartTime: this.state.applyStartTime,
-            applyEndTime: this.state.applyEndTime,
+            // applyStartTime: this.state.applyStartTime,
+            // applyEndTime: this.state.applyEndTime,
             dkState: this.state.dkState,
             keyResource: this.state.keyResource,
           }}

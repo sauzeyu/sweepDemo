@@ -176,14 +176,15 @@ class DataTable extends Component {
     const { hwDeviceSn, searchNumber, flag } = this.props.searchFormValues;
     let fileName = '蓝牙信息.xlsx';
     let param = new URLSearchParams();
-    if (hwDeviceSn && hwDeviceSn.value) {
-      param.append('hwDeviceSn', hwDeviceSn.value);
+
+    if (hwDeviceSn) {
+      param.append('hwDeviceSn', hwDeviceSn);
     }
-    if (searchNumber && searchNumber.value) {
-      param.append('searchNumber', searchNumber.value);
+    if (searchNumber) {
+      param.append('searchNumber', searchNumber);
     }
-    if (flag && flag.value != null) {
-      param.append('flag', flag.value);
+    if (flag) {
+      param.append('flag', flag);
     }
 
     exportBluetooth(param).then((res) => {

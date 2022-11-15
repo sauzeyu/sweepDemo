@@ -147,7 +147,7 @@ class DataTable extends Component {
     const { vin, replacementTime } = this.props.searchFormValues;
     let fileName = '换件信息.xlsx';
     let param = new URLSearchParams();
-    if (vin && vin.value) {
+    if (vin) {
       param.append('vin', vin.value);
     }
 

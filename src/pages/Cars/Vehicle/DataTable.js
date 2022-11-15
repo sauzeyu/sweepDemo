@@ -189,20 +189,20 @@ class DataTable extends Component {
 
     let fileName = '车辆信息.xlsx';
     let param = new URLSearchParams();
-    if (hwDeviceSn && hwDeviceSn.value) {
-      param.append('hwDeviceSn', hwDeviceSn.value);
+    if (hwDeviceSn) {
+      param.append('hwDeviceSn', hwDeviceSn);
     }
-    if (vin && vin.value) {
-      param.append('vin', vin.value);
+    if (vin) {
+      param.append('vin', vin);
     }
-    if (vehicleModel && vehicleModel.value) {
-      param.append('vehicleModel', vehicleModel.value);
+    if (vehicleModel) {
+      param.append('vehicleModel', vehicleModel);
     }
-    if (vehicleBrand && vehicleBrand.value) {
-      param.append('vehicleBrand', vehicleBrand.value);
+    if (vehicleBrand) {
+      param.append('vehicleBrand', vehicleBrand);
     }
-    if (vehicleType && vehicleType.value) {
-      param.append('vehicleType', vehicleType.value);
+    if (vehicleType) {
+      param.append('vehicleType', vehicleType);
     }
     exportVehicle(param).then((res) => {
       let blob = new Blob([res.data]);
