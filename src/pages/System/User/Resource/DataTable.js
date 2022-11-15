@@ -10,17 +10,14 @@ const SubTable = (props) => {
   const dataList = React.useRef();
   const columns = [
     {
-      title: '菜单名称',
+      title: '控件名称',
       dataIndex: 'title',
     },
     {
       title: 'icon',
       dataIndex: 'icon',
     },
-    {
-      title: '路由',
-      dataIndex: 'href',
-    },
+
     {
       title: '类型',
       dataIndex: 'type',
