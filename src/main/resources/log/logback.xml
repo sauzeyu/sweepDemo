@@ -195,7 +195,7 @@
     </springProfile>
 
     <!--仿真环境:打印控制台和输出到文件-->
-    <springProfile name="fzhj">
+    <springProfile name="pre">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="INFO_FILE"/>
@@ -225,7 +225,16 @@
     </springProfile>
 
     <!--福田环境:输出到文件-->
-    <springProfile name="foton">
+    <springProfile name="saic-test">
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="DEBUG_FILE"/>
+            <appender-ref ref="INFO_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="saic">
         <root level="info">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="DEBUG_FILE"/>
