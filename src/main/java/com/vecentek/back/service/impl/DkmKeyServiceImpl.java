@@ -118,6 +118,9 @@ public class DkmKeyServiceImpl {
                 time = time * 60 * 24;
                 break;
         }
+        if (time < 0) {
+            time = Integer.MAX_VALUE;
+        }
         return time;
 
     }
