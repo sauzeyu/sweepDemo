@@ -66,7 +66,7 @@ export default class ModifyForm extends React.Component {
             },
           ]}
         >
-          <Input type="password" placeholder={'请输入原密码'} />
+          <Input type="password" maxLength={16} placeholder={'请输入原密码'} />
         </Form.Item>
         {/* 新密码 */}
 
@@ -131,7 +131,11 @@ export default class ModifyForm extends React.Component {
             },
           ]}
         >
-          <Input type="password" placeholder={'请重新输入新密码'} />
+          <Input
+            maxLength={16}
+            type="password"
+            placeholder={'请重新输入新密码'}
+          />
         </Form.Item>
         <Form.Item>
           <Button
