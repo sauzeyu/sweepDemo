@@ -123,14 +123,13 @@ export default class AddForm extends Component {
             { required: true, message: '角色代码不能为空' },
             {
               // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
-              pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
+              pattern: new RegExp(/^[0-9]+$/),
 
               message: '角色代码不能有特殊字符',
             },
           ]}
         >
           <Input
-            type="number"
             style={{ width: 200 }}
             maxLength={5}
             placeholder={'角色代码'}

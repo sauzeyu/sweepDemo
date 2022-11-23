@@ -13,8 +13,8 @@ export default defineConfig({
       // target: 'http://172.16.11.210:8008/',
       // target: 'https://cd.vecentek.com:20611',
       // target: 'http://172.16.6.106:9001/vecentek',
-      target: 'http://localhost:9001/vecentek',
-      // target: 'http://172.16.6.107:8000/vecentek',
+      // target: 'http://localhost:9001/vecentek',
+      target: 'http://172.16.6.107:8000/vecentek',
       // target: 'http://172.16.13.12:9002/vecentek',
       // target: 'http://172.16.13.13:9001/vecentek',
       // target: 'http://172.16.13.12:8000/vecentek',
@@ -123,7 +123,7 @@ function getGlobalParams() {
   return {
     env: BUILD_ENV,
     baseUrl: PUBLIC_PATH, // /
-    buildVersion: '2.3.1', // undefined
+    buildVersion: '2.3.2', // undefined
     StartParams: startParams, // {}
   };
 }
