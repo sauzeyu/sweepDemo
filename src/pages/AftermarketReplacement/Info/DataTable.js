@@ -148,7 +148,7 @@ class DataTable extends Component {
     let fileName = '换件信息.xlsx';
     let param = new URLSearchParams();
     if (vin) {
-      param.append('vin', vin.value);
+      param.append('vin', vin);
     }
 
     if (replacementTime) {

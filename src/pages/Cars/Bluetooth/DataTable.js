@@ -183,7 +183,7 @@ class DataTable extends Component {
     if (searchNumber) {
       param.append('searchNumber', searchNumber);
     }
-    if (flag) {
+    if (flag == 0 || flag == 1) {
       param.append('flag', flag);
     }
 

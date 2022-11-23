@@ -123,7 +123,6 @@ class SearchForm extends Component {
           allFields.forEach((field) =>
             Object.defineProperty(result, field.name.toString(), field),
           );
-
           this.props.getFormValues(result);
         }}
       >

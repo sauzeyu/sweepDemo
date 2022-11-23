@@ -144,6 +144,7 @@ export default class LoginPage extends Component {
             >
               <Input
                 prefix={<LockOutlined />}
+                maxLength={16}
                 type={'password'}
                 size={'large'}
                 placeholder={'密码'}
