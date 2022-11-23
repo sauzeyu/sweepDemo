@@ -146,6 +146,10 @@ public class DkmVehicleCalibrationDataServiceImpl {
                 if (!hashSet.add(afterID)) {
                     return PageResp.fail("车型【"+calibrationData.getVehicleModel() + "】与蓝牙灵敏度【" + calibrationData.getLevel() + "】有重复数据");
                 }
+                if (Integer.parseInt(calibrationData.getLevel()) > 3){
+                    return PageResp.fail("蓝牙灵敏度只能为1,2,3");
+                }
+
                 // 查询已经存在的手机标定数据
                 LambdaQueryWrapper<DkmVehicleCalibrationData> queryWrapper = Wrappers.<DkmVehicleCalibrationData>lambdaQuery()
                         .eq(DkmVehicleCalibrationData::getVehicleModel, calibrationData.getVehicleModel())
