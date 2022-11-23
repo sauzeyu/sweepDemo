@@ -494,7 +494,6 @@ class DataTable extends Component {
       dkState,
       keyResource,
     } = this.props.searchFormValues;
-
     let fileName = '钥匙信息.xlsx';
     let param = new URLSearchParams();
     let tempKeyType;
@@ -507,10 +506,12 @@ class DataTable extends Component {
     if (vin) {
       param.append('vin', vin);
     }
-    if (periodMin) {
+
+    if (periodMin != null) {
       param.append('periodMin', periodMin);
     }
-    if (periodMax) {
+
+    if (periodMax != null) {
       param.append('periodMax', periodMax);
     }
 

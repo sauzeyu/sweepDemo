@@ -129,8 +129,7 @@ export default class AddForm extends Component {
             },
           ]}
         >
-          <Input
-            type="number"
+          <InputNumber
             style={{ width: 200 }}
             maxLength={5}
             placeholder={'角色代码'}
