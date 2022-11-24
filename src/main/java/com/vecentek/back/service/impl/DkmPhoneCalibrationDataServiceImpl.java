@@ -12,7 +12,6 @@ import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
-import com.vecentek.back.entity.DkmVehicleCalibrationData;
 import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
@@ -154,8 +153,6 @@ public class DkmPhoneCalibrationDataServiceImpl {
                 // 查询已经存在的手机标定数据
                 LambdaQueryWrapper<DkmPhoneCalibrationData> queryWrapper = Wrappers.<DkmPhoneCalibrationData>lambdaQuery()
                         .eq(DkmPhoneCalibrationData::getVehicleModel, calibrationData.getVehicleModel())
-                        .eq(DkmPhoneCalibrationData::getVehicleBrand, calibrationData.getVehicleBrand())
-                        .eq(DkmPhoneCalibrationData::getVehicleType, calibrationData.getVehicleType())
                         .eq(DkmPhoneCalibrationData::getPhoneModel, calibrationData.getPhoneModel());
 
                 DkmPhoneCalibrationData alreadyExist = dkmPhoneCalibrationDataMapper.selectOne(queryWrapper);
@@ -167,9 +164,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     redisUtils.setCacheObject(CalibrationDataConstant.DEFAULT, calibrationData.getPersonalAndCalibrationString());
                     DkmPhoneCalibrationData dkmPhoneCalibrationData = dkmPhoneCalibrationDataMapper.selectOne(new QueryWrapper<DkmPhoneCalibrationData>().lambda()
                             .eq(DkmPhoneCalibrationData::getPhoneModel, CalibrationDataConstant.DEFAULT)
-                            .eq(DkmPhoneCalibrationData::getVehicleBrand, CalibrationDataConstant.DEFAULT)
-                            .eq(DkmPhoneCalibrationData::getVehicleType, CalibrationDataConstant.DEFAULT)
-                            .eq(DkmPhoneCalibrationData::getPhoneBrand, CalibrationDataConstant.DEFAULT));
+                            .eq(DkmPhoneCalibrationData::getVehicleBrand, CalibrationDataConstant.DEFAULT));
                     if (dkmPhoneCalibrationData == null) {
                         // 插入一行
                         DkmPhoneCalibrationData phoneCalibrationData = new DkmPhoneCalibrationData();
