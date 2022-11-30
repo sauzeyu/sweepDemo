@@ -145,6 +145,9 @@ public class DkmPhoneCalibrationDataServiceImpl {
                 if (calibration.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
                     return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
                 }
+                if (!calibration.getPersonalAndCalibrationString().matches("^[A-Fa-f0-9]+$")){
+                    return PageResp.fail("第 " + rowIndex + " 行标定数据解析错误！请检查数据是否正常！");
+                }
                 try {
                     byte[] bytes = HexUtil.parseHex(calibration.getPersonalAndCalibrationString());
                 } catch (Exception e) {
