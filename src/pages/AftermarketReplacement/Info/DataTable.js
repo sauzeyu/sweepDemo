@@ -144,20 +144,18 @@ class DataTable extends Component {
     });
   };
   exportExcel = () => {
-    const { vin, replacementTime } = this.props.searchFormValues;
+    const { vin, startTime } = this.props.searchFormValues;
     let fileName = '换件信息.xlsx';
     let param = new URLSearchParams();
     if (vin) {
       param.append('vin', vin);
     }
-
-    if (replacementTime) {
-      let startTime = moment(replacementTime[0]).format('YYYY-MM-DD');
-      let endTime = moment(replacementTime[1])
-        .add(1, 'days')
-        .format('YYYY-MM-DD');
-      if (startTime) {
-        param.append('startTime', startTime);
+    debugger;
+    if (startTime) {
+      let startTime1 = moment(startTime[0]).format('YYYY-MM-DD');
+      let endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
+      if (startTime1) {
+        param.append('startTime', startTime1);
       }
       if (endTime) {
         param.append('endTime', endTime);
