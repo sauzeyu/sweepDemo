@@ -80,7 +80,11 @@ export default class AddForm extends Component {
   changeSubmit = () => {
     this.props.finish(true);
   };
-
+  onKeypress = () => {
+    let s = /[\d]/.test(String.fromCharCode(event.keyCode));
+    debugger;
+    return /[\d]/.test(String.fromCharCode(event.keyCode));
+  };
   render() {
     const formItemLayout = {
       labelCol: {
@@ -93,6 +97,7 @@ export default class AddForm extends Component {
       },
     };
     const { menus } = this.state;
+
     return (
       <Form
         ref={this.form}
@@ -130,6 +135,7 @@ export default class AddForm extends Component {
           ]}
         >
           <Input
+            // onKeypress={this.onKeypress}
             type="number"
             style={{ width: 200 }}
             maxLength={5}

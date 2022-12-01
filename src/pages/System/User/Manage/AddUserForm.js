@@ -130,7 +130,7 @@ export default class AddUserForm extends Component {
             ]}
           >
             <Input.Password
-              maxLength={40}
+              maxLength={16}
               placeholder={'请输入密码'}
               id="addPassword"
             />
