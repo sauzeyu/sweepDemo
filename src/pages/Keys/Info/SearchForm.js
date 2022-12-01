@@ -265,6 +265,7 @@ class SearchForm extends Component {
                       style={{
                         width: 85,
                       }}
+                      min={0}
                       maxLength={5}
                       placeholder="min"
                     />
@@ -282,6 +283,7 @@ class SearchForm extends Component {
                       style={{
                         width: 85,
                       }}
+                      min={0}
                       maxLength={5}
                       placeholder="max"
                     />
