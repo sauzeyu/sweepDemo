@@ -56,8 +56,8 @@ class SearchForm extends Component {
           this.props.getFormValues(result);
         }}
       >
-        <Row type={'flex'} gutter={16}>
-          <Col {...colSpan1}>
+        <Row type={'flex'} gutter={20}>
+          <Col {...colSpan}>
             <Form.Item label={'车型'} name="vehicleType">
               <Input placeholder={'请输入车辆型号'} />
             </Form.Item>
@@ -67,12 +67,12 @@ class SearchForm extends Component {
               <Input placeholder={'请输入车辆品牌'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan2}>
+          <Col {...colSpan}>
             <Form.Item label={'车辆型号'} name="vehicleModel">
               <Input placeholder={'请输入车辆型号'} />
             </Form.Item>
           </Col>
-          <Col {...colSpan2}>
+          <Col {...colSpan}>
             <Form.Item label={'手机品牌'} name="phoneBrand">
               <Input placeholder={'请输入手机品牌'} />
             </Form.Item>

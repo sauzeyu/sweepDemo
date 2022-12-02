@@ -44,8 +44,8 @@ export default class ModifyForm extends React.Component {
      */
     const { busy } = this.props;
     const formItemLayout = {
-      // labelCol:{ span: 8 },
-      // wrapperCol: { span: 16 }
+      labelCol: { span: 6 },
+      wrapperCol: { span: 16 },
     };
     return (
       <Form onFinish={this.submit} ref={this.form}>
@@ -66,7 +66,12 @@ export default class ModifyForm extends React.Component {
             },
           ]}
         >
-          <Input type="password" maxLength={16} placeholder={'请输入原密码'} />
+          <Input
+            className={style.inputWidth}
+            type="password"
+            maxLength={16}
+            placeholder={'请输入原密码'}
+          />
         </Form.Item>
         {/* 新密码 */}
 
@@ -107,6 +112,7 @@ export default class ModifyForm extends React.Component {
           ]}
         >
           <Input
+            className={style.inputWidth}
             maxLength={16}
             type="password"
             placeholder={
@@ -117,7 +123,7 @@ export default class ModifyForm extends React.Component {
         {/* 重复输入新密码 */}
         <Form.Item
           {...formItemLayout}
-          label="新密码"
+          label="确认密码"
           name="reNewPassword"
           rules={[
             {
@@ -132,6 +138,7 @@ export default class ModifyForm extends React.Component {
           ]}
         >
           <Input
+            className={style.inputWidth}
             maxLength={16}
             type="password"
             placeholder={'请重新输入新密码'}
