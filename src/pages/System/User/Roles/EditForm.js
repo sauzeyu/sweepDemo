@@ -155,7 +155,7 @@ export default class EditForm extends Component {
             },
           ]}
         >
-          <Input type="number" maxLength={5} placeholder={'角色代码'} />
+          <InputNumber maxLength={5} placeholder={'角色代码'} />
         </Form.Item>
         <Form.Item
           label={'菜单权限'}
