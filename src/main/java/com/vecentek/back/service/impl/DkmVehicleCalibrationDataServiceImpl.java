@@ -146,8 +146,8 @@ public class DkmVehicleCalibrationDataServiceImpl {
                 if (!hashSet.add(afterID)) {
                     return PageResp.fail("车型【"+calibrationData.getVehicleModel() + "】与蓝牙灵敏度【" + calibrationData.getLevel() + "】有重复数据");
                 }
-                if (Integer.parseInt(calibrationData.getLevel()) > 3){
-                    return PageResp.fail("蓝牙灵敏度只能为1,2,3");
+                if (Integer.parseInt(calibrationData.getLevel()) > 20){
+                    return PageResp.fail("请检查您的蓝牙灵敏度是否合规,蓝牙灵敏度最高为20");
                 }
 
                 // 查询已经存在的手机标定数据
