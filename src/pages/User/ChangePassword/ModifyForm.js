@@ -117,7 +117,7 @@ export default class ModifyForm extends React.Component {
         {/* 重复输入新密码 */}
         <Form.Item
           {...formItemLayout}
-          label="新密码"
+          label="确认密码"
           name="reNewPassword"
           rules={[
             {
