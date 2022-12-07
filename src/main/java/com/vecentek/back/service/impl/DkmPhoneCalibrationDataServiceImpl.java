@@ -87,10 +87,8 @@ public class DkmPhoneCalibrationDataServiceImpl {
         if (dkmPhoneCalibrationData.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
             return PageResp.fail("标定数据必须是32字节");
         }
-        try {
-            byte[] bytes = HexUtil.parseHex(dkmPhoneCalibrationData.getPersonalAndCalibrationString());
-        } catch (Exception e) {
-            return PageResp.fail("标定数据解析错误！请检查数据是否正常");
+        if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmPhoneCalibrationData.getPersonalAndCalibrationString())) {
+            return PageResp.fail("标定数据解析错误！请检查数据是否正常！");
         }
         dkmPhoneCalibrationDataMapper.updateById(dkmPhoneCalibrationData);
 
@@ -127,10 +125,10 @@ public class DkmPhoneCalibrationDataServiceImpl {
             //车辆型号 + 手机型号 形成的联合主键放入set结构去重
             Set<String> hashSet = new HashSet<>();
             for (DkmPhoneCalibrationData calibration : calibrationList) {
-                    String afterID = calibration.getVehicleModel() + calibration.getPhoneModel();
-                    if (!hashSet.add(afterID)) {
-                        return PageResp.fail("车辆型号【"+calibration.getVehicleModel() + "】与手机型号【" + calibration.getPhoneModel() + "】有重复数据");
-                    }
+                String afterID = calibration.getVehicleModel() + calibration.getPhoneModel();
+                if (!hashSet.add(afterID)) {
+                    return PageResp.fail("车辆型号【" + calibration.getVehicleModel() + "】与手机型号【" + calibration.getPhoneModel() + "】有重复数据");
+                }
                 rowIndex++;
                 String personalAndCalibrationString = calibration.getPersonalAndCalibrationString().replace(" ", "");
                 calibration.setPersonalAndCalibrationString(personalAndCalibrationString);
@@ -144,14 +142,13 @@ public class DkmPhoneCalibrationDataServiceImpl {
                 if (calibration.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
                     return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
                 }
-                if (!calibration.getPersonalAndCalibrationString().matches("^[A-Fa-f0-9]+$")){
+                if (!com.vecentek.back.util.HexUtil.isAsciiHexString(calibration.getPersonalAndCalibrationString())) {
                     return PageResp.fail("第 " + rowIndex + " 行标定数据解析错误！请检查数据是否正常！");
                 }
-                try {
-                    byte[] bytes = HexUtil.parseHex(calibration.getPersonalAndCalibrationString());
-                } catch (Exception e) {
-                    return PageResp.fail("第 " + rowIndex + " 行标定数据解析错误！请检查数据是否正常！");
-                }
+                //if (!calibration.getPersonalAndCalibrationString().matches("^[A-Fa-f0-9]+$")){
+                //    return PageResp.fail("第 " + rowIndex + " 行标定数据解析错误！请检查数据是否正常！");
+                //}
+
 
             }
             for (DkmPhoneCalibrationData calibrationData : calibrationList) {
@@ -290,4 +287,6 @@ public class DkmPhoneCalibrationDataServiceImpl {
         }
 
     }
+
+
 }
