@@ -113,8 +113,8 @@ public class DkmKeyController {
      * @return
      */
     @PostMapping(value = "/updateStateById")
-    public PageResp updateStateById(@RequestParam String keyId, @RequestParam Integer dkState, @RequestParam String userId) {
-        return this.dkmKeyServiceImpl.updateStateById(keyId, dkState, userId);
+    public PageResp updateStateById(@RequestParam String keyId, @RequestParam Integer dkState, @RequestParam String userId,@RequestParam String vin) {
+        return this.dkmKeyServiceImpl.updateStateById(keyId, dkState, userId,vin);
     }
 
 

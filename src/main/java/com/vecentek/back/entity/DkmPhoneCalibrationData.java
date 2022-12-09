@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 /**
  * DkmPhoneCalibrationData表实体类
  *
@@ -30,21 +33,29 @@ public class DkmPhoneCalibrationData extends BaseEntity {
     /**
      * 车型
      */
+    @Size(min = 1, max = 16, message = "车型长度最长为8位")
+    @NotBlank(message = "车辆型号不能为空")
     private String vehicleModel;
 
     /**
      * 手机品牌
      */
+    @Size(min = 1, max = 16, message = "手机品牌长度最长为8位")
+    @NotBlank(message = "手机品牌不能为空")
     private String phoneBrand;
 
     /**
      * 手机型号
      */
+    @Size(min = 1, max = 16, message = "手机型号长度最长为8位")
+    @NotBlank(message = "手机型号不能为空")
     private String phoneModel;
 
     /**
      * 个人化信息和标定数据,用于界面展示
      */
+    @NotBlank(message = "标定数据不能为空")
+    @Size(min = 64, max = 64, message = "标定数据必须是32字节")
     private String personalAndCalibrationString;
 
     /**
@@ -54,10 +65,12 @@ public class DkmPhoneCalibrationData extends BaseEntity {
     /**
      * 车型
      */
+    @Size(min = 1, max = 16, message = "车型长度最长为8位")
     private String vehicleType;
     /**
      * 车辆品牌
      */
+    @Size(min = 1, max = 16, message = "车辆品牌长度最长为8位")
     private String vehicleBrand;
 
 }
