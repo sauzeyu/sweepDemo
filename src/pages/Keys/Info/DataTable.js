@@ -218,6 +218,7 @@ class DataTable extends Component {
     applyEndTime: '',
     dkState: 1,
     keyResource: 1,
+    vin: '',
   };
 
   columns = [
@@ -410,18 +411,17 @@ class DataTable extends Component {
   };
   enableKey = (col, isEnableKey) => {
     let txt = isEnableKey ? '解冻' : '冻结';
-    console.log(
-      'props.that.state.subTableRefList ',
-      this.state.subTableRefList['subTable_' + col.id],
-    );
+
     Modal.confirm({
       title: txt + '钥匙',
       content: `确定${txt}钥匙？`,
       onOk: () => {
+        console.log('this.props', this.props);
         return this.props
           .dispatch({
             type: 'keysManage/enableKey',
             payload: {
+              vin: col.vin,
               keyId: col.id,
               dkState: isEnableKey ? 1 : 3,
               userId: col.userId,
