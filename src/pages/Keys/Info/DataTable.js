@@ -421,10 +421,10 @@ class DataTable extends Component {
           .dispatch({
             type: 'keysManage/enableKey',
             payload: {
-              vin: col.vin,
               keyId: col.id,
               dkState: isEnableKey ? 1 : 3,
               userId: col.userId,
+              vin: col.vin,
             },
           })
           .then(
