@@ -82,7 +82,7 @@ export default class AddForm extends Component {
   };
   onKeypress = () => {
     let s = /[\d]/.test(String.fromCharCode(event.keyCode));
-    debugger;
+
     return /[\d]/.test(String.fromCharCode(event.keyCode));
   };
   render() {

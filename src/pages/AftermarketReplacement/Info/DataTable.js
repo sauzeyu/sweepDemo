@@ -150,7 +150,7 @@ class DataTable extends Component {
     if (vin) {
       param.append('vin', vin);
     }
-    debugger;
+
     if (startTime) {
       let startTime1 = moment(startTime[0]).format('YYYY-MM-DD');
       let endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
