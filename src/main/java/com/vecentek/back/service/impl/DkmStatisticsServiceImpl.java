@@ -6,6 +6,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.vecentek.back.config.ProConfig;
@@ -26,6 +27,7 @@ import com.vecentek.common.response.PageResp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -245,22 +247,25 @@ public class DkmStatisticsServiceImpl {
                         .eq(DkmKey::getParentId, "0"));
 
         // 子钥匙
+
         int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda()
                 .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
                 .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime)
                 .ne(DkmKey::getParentId, "0"));
+
         // 车主钥匙占比
+        BigDecimal divide = null;
+        try {
+            divide = new BigDecimal(masterCount * 100).divide(new BigDecimal((masterCount + childCount)), 2, BigDecimal.ROUND_HALF_UP);
+        } catch (ArithmeticException e) {
+            divide = BigDecimal.valueOf(0);
+            e.printStackTrace();
+        }
 
-        // 创建一个数值格式化对象
-        NumberFormat numberFormat = NumberFormat.getInstance();
-        // 设置精确到小数点后2位
-        numberFormat.setMaximumFractionDigits(2);
-        String result = numberFormat.format((float) masterCount / (float) (masterCount + childCount) * 100) + "%";
-
-
-        JSONObject res = new JSONObject().set("masterCount", masterCount).set("childCount", childCount).set("proportion", result);
+        JSONObject res = new JSONObject().set("masterCount", masterCount).set("childCount", childCount).set("proportion", divide+"%");
         return PageResp.success("查询成功", res);
     }
+
 
     public PageResp selectErrorStatusTotal(Date startTime, Date endTime) {
         if (ObjectUtil.isNull(startTime) || ObjectUtil.isNull(endTime)) {

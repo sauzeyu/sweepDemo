@@ -29,12 +29,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -85,10 +91,8 @@ public class DkmPhoneCalibrationDataServiceImpl {
         if (dkmPhoneCalibrationData.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
             return PageResp.fail("标定数据必须是32字节");
         }
-        try {
-            byte[] bytes = HexUtil.parseHex(dkmPhoneCalibrationData.getPersonalAndCalibrationString());
-        } catch (Exception e) {
-            return PageResp.fail("标定数据解析错误！请检查数据是否正常");
+        if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmPhoneCalibrationData.getPersonalAndCalibrationString())) {
+            return PageResp.fail("标定数据解析错误！请检查数据是否正常！");
         }
         dkmPhoneCalibrationDataMapper.updateById(dkmPhoneCalibrationData);
 
@@ -104,6 +108,11 @@ public class DkmPhoneCalibrationDataServiceImpl {
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp importByExcel(MultipartFile file) {
+        // 创建Validator工厂
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        // 获取Validator实例
+        Validator validator = factory.getValidator();
+
         try {
             PageResp pageResp = UploadUtil.checkFile(file);
             if (pageResp != null) {
@@ -122,30 +131,45 @@ public class DkmPhoneCalibrationDataServiceImpl {
                 return PageResp.fail("导入失败，请检查excel文件！");
             }
             int rowIndex = 1;
+            //车辆型号 + 手机型号 形成的联合主键放入set结构去重
+            Set<String> hashSet = new HashSet<>();
             for (DkmPhoneCalibrationData calibration : calibrationList) {
+
+                // 使用Validator的validate方法校验单个实体
+                Set<ConstraintViolation<DkmPhoneCalibrationData>> violations  = validator.validate(calibration);
+
+                // 如果校验不通过，则打印错误信息
+                if (violations.size() > 0) {
+                    System.out.println("Error occurred at index: " + rowIndex);
+                    for (ConstraintViolation<DkmPhoneCalibrationData> violation : violations) {
+                        return PageResp.fail("第"+ rowIndex + "行: " + violation.getMessage());
+                    }
+                }
+
+                String afterID = calibration.getVehicleModel() + calibration.getPhoneModel();
+                if (!hashSet.add(afterID)) {
+                    return PageResp.fail("车辆型号【" + calibration.getVehicleModel() + "】与手机型号【" + calibration.getPhoneModel() + "】有重复数据");
+                }
                 rowIndex++;
                 String personalAndCalibrationString = calibration.getPersonalAndCalibrationString().replace(" ", "");
                 calibration.setPersonalAndCalibrationString(personalAndCalibrationString);
                 calibration.setCreateTime(new Date());
-                if (StringUtils.isBlank(calibration.getVehicleModel())) {
-                    return PageResp.fail("第 " + rowIndex + " 行导入的车型数据不能为空！");
-                }
-                if (calibration.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
-                    return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
-                }
-                try {
-                    byte[] bytes = HexUtil.parseHex(calibration.getPersonalAndCalibrationString());
-                } catch (Exception e) {
+
+                if (!com.vecentek.back.util.HexUtil.isAsciiHexString(calibration.getPersonalAndCalibrationString())) {
                     return PageResp.fail("第 " + rowIndex + " 行标定数据解析错误！请检查数据是否正常！");
                 }
 
+
             }
+
+
+
+
             for (DkmPhoneCalibrationData calibrationData : calibrationList) {
+
                 // 查询已经存在的手机标定数据
                 LambdaQueryWrapper<DkmPhoneCalibrationData> queryWrapper = Wrappers.<DkmPhoneCalibrationData>lambdaQuery()
                         .eq(DkmPhoneCalibrationData::getVehicleModel, calibrationData.getVehicleModel())
-                        .eq(DkmPhoneCalibrationData::getVehicleBrand, calibrationData.getVehicleBrand())
-                        .eq(DkmPhoneCalibrationData::getVehicleType, calibrationData.getVehicleType())
                         .eq(DkmPhoneCalibrationData::getPhoneModel, calibrationData.getPhoneModel());
 
                 DkmPhoneCalibrationData alreadyExist = dkmPhoneCalibrationDataMapper.selectOne(queryWrapper);
@@ -157,9 +181,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     redisUtils.setCacheObject(CalibrationDataConstant.DEFAULT, calibrationData.getPersonalAndCalibrationString());
                     DkmPhoneCalibrationData dkmPhoneCalibrationData = dkmPhoneCalibrationDataMapper.selectOne(new QueryWrapper<DkmPhoneCalibrationData>().lambda()
                             .eq(DkmPhoneCalibrationData::getPhoneModel, CalibrationDataConstant.DEFAULT)
-                            .eq(DkmPhoneCalibrationData::getVehicleBrand, CalibrationDataConstant.DEFAULT)
-                            .eq(DkmPhoneCalibrationData::getVehicleType, CalibrationDataConstant.DEFAULT)
-                            .eq(DkmPhoneCalibrationData::getPhoneBrand, CalibrationDataConstant.DEFAULT));
+                            .eq(DkmPhoneCalibrationData::getVehicleBrand, CalibrationDataConstant.DEFAULT));
                     if (dkmPhoneCalibrationData == null) {
                         // 插入一行
                         DkmPhoneCalibrationData phoneCalibrationData = new DkmPhoneCalibrationData();
@@ -279,4 +301,6 @@ public class DkmPhoneCalibrationDataServiceImpl {
         }
 
     }
+
+
 }

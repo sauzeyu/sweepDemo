@@ -167,7 +167,7 @@ public class DkmAdminServiceImpl {
                     .eq(DkmAdmin::getUsername, username));
             return PageResp.success("修改成功");
         }
-        return PageResp.fail("修改失败");
+        return PageResp.fail("密码错误，修改密码失败");
     }
 
     @Transactional(rollbackFor = Exception.class)

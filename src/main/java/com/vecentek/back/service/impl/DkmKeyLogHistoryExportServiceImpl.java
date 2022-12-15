@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -25,8 +26,10 @@ import java.util.List;
  */
 @Service("dkmKeyLogHistoryExportService")
 public class DkmKeyLogHistoryExportServiceImpl extends ServiceImpl<DkmKeyLogHistoryExportMapper, DkmKeyLogHistoryExport> implements DkmKeyLogHistoryExportService {
-@Resource
-DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+    @Resource
+    private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+
+
     public void downloadExcel(String fileName, HttpServletResponse response) {
 
         // 设置响应头信息
@@ -38,7 +41,7 @@ DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/vnd.ms-excel");
 
-        String filePath = ("/excel/" + fileName + ExcelConstant.EXCEL_SUFFIX_XLSX);
+        String filePath = (File.separatorChar + "excel" + File.separatorChar + fileName + ExcelConstant.EXCEL_SUFFIX_XLSX);
         //String filePath = ("/excel/" + fileName + ExcelConstant.EXCEL_SUFFIX_XLSX);
         //ExcelWriter writer = ExcelUtil.getBigWriter(filePath);
         FileInputStream input = null;
@@ -70,6 +73,7 @@ DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
     /**
      * 根据具体用户和excel类型查询历史下载记录列表
+     *
      * @param creator
      * @param type
      * @return

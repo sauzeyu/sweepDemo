@@ -159,7 +159,8 @@ public class DkmRoleServiceImpl {
                         // 根据用户名找到token 然后删除
                         Boolean delete = redisTemplate.delete(username);
                         if (!delete) {
-                            return PageResp.fail("有关联用户token删除失败，请联系管理员或让用户主动下线重登！");
+                            return PageResp.fail("有关联用户token" +
+                                    "删除失败，请联系管理员或让用户主动下线重登！");
                         }
                     }
                 }
@@ -186,6 +187,7 @@ public class DkmRoleServiceImpl {
         role.setCode(roleVO.getCode());
         role.setIntro(roleVO.getIntro());
         role.setCreateTime(new Date());
+        role.setCreator(roleVO.getCreator());
         dkmRoleMapper.insert(role);
         for (String menuId : roleVO.getMenuList()) {
             DkmRoleMenu dkmRoleMenu = new DkmRoleMenu();

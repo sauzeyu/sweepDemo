@@ -4,11 +4,13 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.vecentek.back.entity.DkmBluetooths;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.entity.DkmUserVehicle;
 import com.vecentek.back.entity.DkmVehicle;
+import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmUserMapper;
@@ -46,6 +48,8 @@ public class DkmUserVehicleServiceImpl {
     private DkmUserMapper dkmUserMapper;
     @Resource
     private DkmVehicleMapper dkmVehicleMapper;
+    @Resource
+    private DkmBluetoothsMapper dkmBluetoothsMapper;
     @Resource
     private DkmKeyMapper dkmKeyMapper;
     @Resource
@@ -227,12 +231,6 @@ public class DkmUserVehicleServiceImpl {
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         String userId = revokeKeyVO.getUserId();
-        // 查询有无此用户
-        DkmUser dkmUser = dkmUserMapper.selectById(userId);
-        if (dkmUser == null) {
-            log.info("response：" + "/api/userVehicle/revokeKey " + "用户没有钥匙信息!");
-            return PageResp.fail(2106, "用户没有钥匙信息！");
-        }
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).eq(DkmKey::getDkState, "1"));
         // 返回【用户id-vin号】的list
@@ -244,16 +242,20 @@ public class DkmUserVehicleServiceImpl {
             dkmKeyMapper.updateById(key);
             // 钥匙生命周期
             // 封装生命周期对象
-            DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
-            dkmKeyLifecycle.setUserId(userId);
-            dkmKeyLifecycle.setKeyId(key.getId());
-            dkmKeyLifecycle.setVin(key.getVin());
-            // 操作来源
-            dkmKeyLifecycle.setKeySource(3);
             String parentId = key.getParentId();
             int keyType;
             // 车主钥匙
             if (Objects.equals("0", parentId)) {
+                // 设备激活状态改为未激活
+                DkmVehicle vehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, key.getVin()));
+                if (!Objects.isNull(vehicle)){
+                    DkmBluetooths dkmBluetooths = dkmBluetoothsMapper.selectOne(new LambdaQueryWrapper<DkmBluetooths>().eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
+                    if (!Objects.isNull(dkmBluetooths)){
+                        dkmBluetooths.setDeviceStatus(0);
+                        dkmBluetooths.setUpdateTime(new Date());
+                        dkmBluetoothsMapper.updateById(dkmBluetooths);
+                    }
+                }
                 keyType = 1;
                 // 查询子钥匙吊销
                 List<DkmKey> childList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getParentId, key.getId()).eq(DkmKey::getDkState, "1"));
@@ -270,21 +272,14 @@ public class DkmUserVehicleServiceImpl {
                     childLifecycle.setVin(child.getVin());
                     // 操作来源
                     childLifecycle.setKeySource(3);
-                    dkmKeyLifecycle.setKeyType(2);
-                    dkmKeyLifecycle.setKeyStatus(5);
-                    dkmKeyLifecycle.setCreateTime(new Date());
-                    dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
+                    keyLifecycleUtil.insert(key, keyType, 3, 5);
                     // 加入list
                     list.add(child.getUserId() + "-" + child.getVin());
                 }
             } else { // 分享钥匙
                 keyType = 2;
+                keyLifecycleUtil.insert(key, keyType, 3, 5);
             }
-            dkmKeyLifecycle.setKeyType(keyType);
-            // 吊销
-            dkmKeyLifecycle.setKeyStatus(5);
-            dkmKeyLifecycle.setCreateTime(new Date());
-            dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
             // 加入list
             list.add(key.getUserId() + "-" + key.getVin());
         }

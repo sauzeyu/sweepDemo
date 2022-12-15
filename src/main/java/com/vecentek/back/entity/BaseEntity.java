@@ -11,10 +11,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author ：EdgeYu
- * @version ：1.0
- * @since 2022-01-18 9:56
+ * Entity 基本类，所有 Entity 的父类
+ *
+ * @author EdgeYu
  */
+
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Data
 @AllArgsConstructor

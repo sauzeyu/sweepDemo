@@ -8,7 +8,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.HMac;
 import cn.hutool.crypto.digest.HmacAlgorithm;
-import cn.hutool.http.HttpRequest;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -48,9 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -204,6 +201,7 @@ public class DkmOfflineCheckServiceImpl {
                 .filter(dkmVehicle -> alreadyExistsVehicleVinList.contains(dkmVehicle.getVin()))
                 .collect(Collectors.toList());
         //当新增车辆存在时，插入新增车辆与蓝牙信息
+
         if (newVehicleBluetoothList.size() > 0) {
             newVehicleBluetoothList.forEach(vehicleBluetooth -> {
                 DkmVehicle vehicle = new DkmVehicle();
@@ -213,11 +211,16 @@ public class DkmOfflineCheckServiceImpl {
                 dkmVehicleMapper.insert(vehicle);
                 BeanUtil.copyProperties(vehicleBluetooth, bluetooth);
                 bluetooth.setCreateTime(new Date());
-                bluetooth.setFlag(0);
+                bluetooth.setFlag(1);
+                bluetooth.setDeviceStatus(0);
+                // TODO: 从密码机中获取密钥并放置到Hmac算法中
+                HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
+                String digKey = hMac.digestHex(bluetooth.getHwDeviceSn());
+                bluetooth.setDigKey(digKey);
+                bluetooth.setMasterKey(digKey.substring(32));
                 dkmBluetoothsMapper.insert(bluetooth);
             });
         }
-        ArrayList<Map> resList = new ArrayList<>();
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
         if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
 
@@ -272,17 +275,6 @@ public class DkmOfflineCheckServiceImpl {
                         dkmKeyLifecycle.setKeySource(3);
                         dkmKeyLifecycle.setUserId(dkmKey.getUserId());
                         dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
-                        // 2.6 发送用户消息（换件后） 钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台
-                        // “vin“: “ ASDCSDASDADA1“,
-                        // “userList”:[18202828282,15982637777,17237378989]
-                        // 新增一个map返回给前端作为测试结果，正式环境删除
-                        // TODO 上线删除
-//                        HashMap<String, Object> paramMap = new HashMap<>(16);
-//                        paramMap.put("vin", dkmKey.getVin());
-//                        paramMap.put("userList", userList);
-//                        resList.add(paramMap);
-//                        String urlString = "http://localhost:8007/dkserver-icce/dkm/wechat/recv";
-//                        HttpRequest.post(urlString).form(paramMap).execute().body();
                         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台");
                     });
                 }
@@ -291,20 +283,29 @@ public class DkmOfflineCheckServiceImpl {
                 dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
                 DkmBluetooths newBluetooth = new DkmBluetooths();
                 DkmBluetooths oldBluetooth = new DkmBluetooths();
+                oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
                 BeanUtil.copyProperties(vehicleBluetooth, vehicle);
                 BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
                 vehicle.setUpdateTime(new Date());
                 newBluetooth.setCreateTime(new Date());
                 newBluetooth.setFlag(1); // 启用
-                oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
                 oldBluetooth.setFlag(0); // 报废
                 oldBluetooth.setUpdateTime(new Date());
+
+                // TODO: 从密码机中获取密钥并放置到Hmac算法中
+                newBluetooth.setDeviceStatus(0);
+                HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
+                String digKey = hMac.digestHex(newBluetooth.getHwDeviceSn());
+                newBluetooth.setDigKey(digKey);
+                newBluetooth.setMasterKey(digKey.substring(32));
                 dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
-                        .eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
+                        .eq(DkmBluetooths::getHwDeviceSn, oldBluetooth.getHwDeviceSn()));
 
                 dkmBluetoothsMapper.insert(newBluetooth);
                 dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
+
                 dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
+
                 dkmAftermarketReplacement.setNewBluetoothSn(vehicleBluetooth.getHwDeviceSn());
                 dkmAftermarketReplacement.setReplacementTime(new Date());
                 dkmAftermarketReplacement.setCreateTime(new Date());
@@ -312,7 +313,7 @@ public class DkmOfflineCheckServiceImpl {
             });
         }
         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传成功");
-        return PageResp.success("上传成功", resList);
+        return PageResp.success("上传成功");
     }
 
     /**
@@ -370,6 +371,7 @@ public class DkmOfflineCheckServiceImpl {
         int endNum = dkmBluetooths.size();
         for (DkmBluetooths bluetooth : dkmBluetooths) {
             // TODO: 从密码机中获取密钥并放置到Hmac算法中
+            bluetooth.setDeviceStatus(0);
             HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
             String digKey = hMac.digestHex(bluetooth.getHwDeviceSn());
             bluetooth.setDigKey(digKey);
