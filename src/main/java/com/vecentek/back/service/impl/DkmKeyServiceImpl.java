@@ -31,9 +31,14 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -217,7 +222,8 @@ public class DkmKeyServiceImpl {
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateStateById(String keyId, Integer dkState, String userId, String vin) {
         // 新增判断条件一个userId和一个vin号对应只能有一把钥匙dkState=1
-        AtomicInteger isSuccess = new AtomicInteger();
+
+        AtomicInteger isSuccess = null;
         if (dkState == null) {
             return PageResp.fail(500, "钥匙状态未传递");
         }
