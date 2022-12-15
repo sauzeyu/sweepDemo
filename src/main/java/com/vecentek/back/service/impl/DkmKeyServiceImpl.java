@@ -261,8 +261,10 @@ public class DkmKeyServiceImpl {
         if (unfreezeKeys.size() < keys.size()) {
             return PageResp.success("更新失败，当前用户车辆已存在钥匙正在使用，不可解冻选中钥匙");
         } else {
-
-            keys.stream().forEach(key -> {
+            // 只解冻 冻结 状态的钥匙
+            keys.stream()
+                    .filter(key -> key.equals(3))
+                    .forEach(key -> {
                 key.setDkState(1);
                 key.setUpdateTime(new Date());
                 int count = dkmKeyMapper.updateById(key);
