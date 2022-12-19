@@ -452,7 +452,10 @@ class DataTable extends Component {
         this.props
           .dispatch({
             type: 'keysManage/revokeKey',
-            payload: col.id,
+            payload: {
+              userId: col.userId,
+              vin: col.vin,
+            },
           })
           .then(
             () => {

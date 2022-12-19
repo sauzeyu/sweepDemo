@@ -11,8 +11,8 @@ export async function enableKey(params) {
 }
 
 // 吊销钥匙
-export async function revokeKey(data) {
-  return request.post('dkmKey/updateStateForRevokeById?id=' + data.id);
+export async function revokeKey(params) {
+  return request.post('dkmKey/updateStateForRevokeById?', params);
 }
 
 //通过id查询用户信息

@@ -13,7 +13,10 @@ export default {
       return yield call(enableKey, params);
     },
     *revokeKey({ payload }, { call }) {
-      return yield call(revokeKey, { id: payload });
+      const params = new URLSearchParams();
+      params.append('userId', payload.userId);
+      params.append('vin', payload.vin);
+      return yield call(revokeKey, params);
     },
   },
   reducers: {
