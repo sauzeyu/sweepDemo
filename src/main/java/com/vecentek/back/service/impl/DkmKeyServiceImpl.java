@@ -304,7 +304,9 @@ public class DkmKeyServiceImpl {
     public PageResp updateStateForRevokeById(String userId,String vin) {
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
                 .eq(DkmKey::getUserId, userId)
+                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
                 .eq(DkmKey::getVin, vin));
+
 
         for (DkmKey dkmKey : keys) {
             String id = dkmKey.getId();
