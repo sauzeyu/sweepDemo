@@ -8,7 +8,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
@@ -31,7 +30,6 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -58,8 +56,8 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-@Service("dkmKeyService")
-public class DkmKeyServiceImpl {
+@Service("dkmKey1Service")
+public class DkmKey1ServiceImpl {
     @Resource
     private DkmKeyMapper dkmKeyMapper;
     @Resource
@@ -152,7 +150,8 @@ public class DkmKeyServiceImpl {
                                   String valToEndTime,
                                   Integer keyType,
                                   Integer keyResource,
-                                  Integer[] dkState
+                                  Integer[] dkState,
+                                  Integer[] keyClassification
     ) {
         if (keyType == null) {
             keyType = 3;
@@ -178,6 +177,18 @@ public class DkmKeyServiceImpl {
             });
         }
 
+        if (keyClassification != null && keyClassification.length > 0) {
+            queryWrapper.and(wrapper -> {
+                wrapper.eq(DkmKey::getKeyClassification, keyClassification[0]);
+                if (keyClassification.length > 1) {
+                    for (int i = 1; i < keyClassification.length; i++) {
+                        wrapper.or().eq(DkmKey::getKeyClassification, keyClassification[i]);
+                    }
+                }
+            });
+        }
+
+
 
         page = dkmKeyMapper.selectPage(page, queryWrapper
                 .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
@@ -193,6 +204,7 @@ public class DkmKeyServiceImpl {
                 .eq(keyType == 1, DkmKey::getParentId, "0")
                 .ne(keyType == 2, DkmKey::getParentId, "0")
                 .eq(keyResource != null, DkmKey::getKeyResource, keyResource)
+                //.eq(keyClassification != null, DkmKey::getKeyClassification, keyClassification)
                 .orderByDesc(DkmKey::getVin)
                 .orderByAsc(DkmKey::getParentId)
                 .orderByAsc(DkmKey::getDkState)
