@@ -228,7 +228,7 @@ public class DkmKeyServiceImpl {
         } else if (dkState == 1) {
             //解冻
             return unfreezeKeys(dkState, userId, vin);
-        } else  {
+        } else {
             return PageResp.success("钥匙状态传参错误");
         }
 
@@ -301,19 +301,16 @@ public class DkmKeyServiceImpl {
      * @return 更新是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp updateStateForRevokeById(String userId,String vin) {
+    public PageResp updateStateForRevokeById(String userId, String vin) {
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
                 .eq(DkmKey::getUserId, userId)
                 .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
                 .eq(DkmKey::getVin, vin));
-
-
         for (DkmKey dkmKey : keys) {
             String id = dkmKey.getId();
             if (dkmKey != null) {
                 int update = dkmKeyMapper.update(dkmKey, Wrappers.<DkmKey>lambdaUpdate()
-                        .set(DkmKey::getDkState, 5));
-                        //.eq(DkmKey::getId, id));
+                        .set(DkmKey::getDkState, KeyStatusEnum.REVOKE.getCode()));
                 if (update > 0) {
                     // 生命周期
                     DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
@@ -332,16 +329,19 @@ public class DkmKeyServiceImpl {
                     // 检查是否为父钥匙，吊销全部分享钥匙
                     if (Objects.equals(dkmKey.getParentId(), "0")) {
                         List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getParentId, id)
-                                .eq(DkmKey::getDkState, 1));
+                                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
+                                .or()
+                                .eq(DkmKey::getDkState, KeyStatusEnum.FREEZE.getCode()));
                         for (DkmKey child : dkmKeys) {
-                            child.setDkState(5);
+                            child.setDkState(KeyStatusEnum.REVOKE.getCode());
                             child.setUpdateTime(new Date());
                             dkmKeyMapper.updateById(child);
                             // 生命周期
                             DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
                             dkmKeyLifecycle1.setKeyId(id);
                             dkmKeyLifecycle1.setCreateTime(new Date());
-                            dkmKeyLifecycle1.setKeySource(1); // WEB页面
+                            // WEB页面
+                            dkmKeyLifecycle1.setKeySource(1);
                             dkmKeyLifecycle1.setKeyType(2);
                             dkmKeyLifecycle1.setVin(dkmKey.getVin());
                             // 吊销
