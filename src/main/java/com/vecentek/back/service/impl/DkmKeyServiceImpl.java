@@ -18,6 +18,7 @@ import com.vecentek.back.dto.DkmKeyDTO;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
+import com.vecentek.back.entity.DkmMenu;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
@@ -34,6 +35,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -226,7 +228,7 @@ public class DkmKeyServiceImpl {
         } else if (dkState == 1) {
             //解冻
             return unfreezeKeys(dkState, userId, vin);
-        } else  {
+        } else {
             return PageResp.success("钥匙状态传参错误");
         }
 
@@ -295,59 +297,64 @@ public class DkmKeyServiceImpl {
     /**
      * 吊销钥匙,如为车主钥匙,则所有子钥匙均不可用
      *
-     * @param id 钥匙id,钥匙 id 为16位字符串
+     * @param
      * @return 更新是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp updateStateForRevokeById(String id) {
-        if (StrUtil.isBlank(id)) {
-            return PageResp.fail("钥匙id为空");
-        }
-        DkmKey dkmKey = this.dkmKeyMapper.selectById(id);
-        log.info("吊销钥匙id: {}", id);
-        if (dkmKey != null) {
-            int update = dkmKeyMapper.update(dkmKey, Wrappers.<DkmKey>lambdaUpdate()
-                    .set(DkmKey::getDkState, 5)
-                    .eq(DkmKey::getId, id));
-            if (update > 0) {
-                // 生命周期
-                DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
-                dkmKeyLifecycle.setKeyId(id);
-                dkmKeyLifecycle.setCreateTime(new Date());
-                dkmKeyLifecycle.setKeySource(1); // WEB页面
-                if (Objects.equals(dkmKey.getParentId(), "0")) {
-                    dkmKeyLifecycle.setKeyType(1);
-                } else {
-                    dkmKeyLifecycle.setKeyType(2);
-                }
-                dkmKeyLifecycle.setVin(dkmKey.getVin());
-                // 吊销
-                dkmKeyLifecycle.setKeyStatus(5);
-                dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
-                // 检查是否为父钥匙，吊销全部分享钥匙
-                if (Objects.equals(dkmKey.getParentId(), "0")) {
-                    List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getParentId, id)
-                            .eq(DkmKey::getDkState, 1));
-                    for (DkmKey child : dkmKeys) {
+    public PageResp updateStateForRevokeById(String userId, String vin) {
+        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
+                .eq(DkmKey::getUserId, userId)
+                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
+                .eq(DkmKey::getVin, vin));
+        for (DkmKey dkmKey : keys) {
+            String id = dkmKey.getId();
+            if (dkmKey != null) {
+                int update = dkmKeyMapper.update(dkmKey, Wrappers.<DkmKey>lambdaUpdate()
+                        .set(DkmKey::getDkState, KeyStatusEnum.REVOKE.getCode()));
+                if (update > 0) {
+                    // 生命周期
+                    DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
+                    dkmKeyLifecycle.setKeyId(id);
+                    dkmKeyLifecycle.setCreateTime(new Date());
+                    dkmKeyLifecycle.setKeySource(1); // WEB页面
+                    if (Objects.equals(dkmKey.getParentId(), "0")) {
+                        dkmKeyLifecycle.setKeyType(1);
+                    } else {
+                        dkmKeyLifecycle.setKeyType(2);
+                    }
+                    dkmKeyLifecycle.setVin(dkmKey.getVin());
+                    // 吊销
+                    dkmKeyLifecycle.setKeyStatus(5);
+                    dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
+                    // 检查是否为父钥匙，吊销全部分享钥匙
+                    if (Objects.equals(dkmKey.getParentId(), "0")) {
+                        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getParentId, id)
+                                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
+                                .or()
+                                .eq(DkmKey::getDkState, KeyStatusEnum.FREEZE.getCode()));
+                        for (DkmKey child : dkmKeys) {
+                            child.setDkState(KeyStatusEnum.REVOKE.getCode());
+                            child.setUpdateTime(new Date());
                         child.setDkState(5);
                         //child.setUpdateTime(new Date());
-                        dkmKeyMapper.updateById(child);
-                        // 生命周期
-                        DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
-                        dkmKeyLifecycle1.setKeyId(id);
-                        dkmKeyLifecycle1.setCreateTime(new Date());
-                        dkmKeyLifecycle1.setKeySource(1); // WEB页面
-                        dkmKeyLifecycle1.setKeyType(2);
-                        dkmKeyLifecycle1.setVin(dkmKey.getVin());
-                        // 吊销
-                        dkmKeyLifecycle1.setKeyStatus(5);
-                        dkmKeyLifecycleMapper.insert(dkmKeyLifecycle1);
+                            dkmKeyMapper.updateById(child);
+                            // 生命周期
+                            DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
+                            dkmKeyLifecycle1.setKeyId(id);
+                            dkmKeyLifecycle1.setCreateTime(new Date());
+                            // WEB页面
+                            dkmKeyLifecycle1.setKeySource(1);
+                            dkmKeyLifecycle1.setKeyType(2);
+                            dkmKeyLifecycle1.setVin(dkmKey.getVin());
+                            // 吊销
+                            dkmKeyLifecycle1.setKeyStatus(5);
+                            dkmKeyLifecycleMapper.insert(dkmKeyLifecycle1);
+                        }
                     }
+                    return PageResp.success("吊销成功");
                 }
-                return PageResp.success("吊销成功");
             }
         }
-
         return PageResp.fail("吊销失败");
 
     }
