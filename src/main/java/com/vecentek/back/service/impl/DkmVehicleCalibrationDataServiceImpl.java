@@ -87,10 +87,8 @@ public class DkmVehicleCalibrationDataServiceImpl {
         if (dkmVehicleCalibrationData.getVehicleAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
             return PageResp.fail("标定数据必须是32字节");
         }
-        try {
-            byte[] bytes = HexUtil.parseHex(dkmVehicleCalibrationData.getVehicleAndCalibrationString());
-        } catch (Exception e) {
-            return PageResp.fail("标定数据解析错误！请检查数据是否正常");
+        if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmVehicleCalibrationData.getVehicleAndCalibrationString())) {
+            return PageResp.fail("标定数据解析错误！请检查数据是否正常！");
         }
         dkmVehicleCalibrationDataMapper.updateById(dkmVehicleCalibrationData);
 
