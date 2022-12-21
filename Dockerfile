@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jdk-slim
 WORKDIR /
 COPY dkserver-back-1.0-SNAPSHOT.jar //
 ENV TZ='Asia/Shanghai'
