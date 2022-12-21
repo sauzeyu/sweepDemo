@@ -334,7 +334,7 @@ public class DkmKeyServiceImpl {
                                 .eq(DkmKey::getDkState, KeyStatusEnum.FREEZE.getCode()));
                         for (DkmKey child : dkmKeys) {
                             child.setDkState(KeyStatusEnum.REVOKE.getCode());
-                            child.setUpdateTime(new Date());
+                            //child.setUpdateTime(new Date());
                         child.setDkState(5);
                         //child.setUpdateTime(new Date());
                             dkmKeyMapper.updateById(child);
