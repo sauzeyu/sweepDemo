@@ -242,7 +242,7 @@ public class DkmKeyServiceImpl {
         for (int i = 0; i < dkmKeys.size(); i++) {
             DkmKey key = dkmKeys.get(i);
             key.setDkState(dkState);
-            key.setUpdateTime(new Date());
+            //key.setUpdateTime(new Date());
             int count = dkmKeyMapper.updateById(key);
             if (count == 0) {
                 throw new RuntimeException("Failed to update key in database");
@@ -277,7 +277,7 @@ public class DkmKeyServiceImpl {
         for (int i = 0; i < dkmKeys.size(); i++) {
             DkmKey key = dkmKeys.get(i);
             key.setDkState(1);
-            key.setUpdateTime(new Date());
+            //key.setUpdateTime(new Date());
             int count = dkmKeyMapper.updateById(key);
             if (count == 0) {
                 throw new RuntimeException("Failed to update key in database");
@@ -330,7 +330,7 @@ public class DkmKeyServiceImpl {
                             .eq(DkmKey::getDkState, 1));
                     for (DkmKey child : dkmKeys) {
                         child.setDkState(5);
-                        child.setUpdateTime(new Date());
+                        //child.setUpdateTime(new Date());
                         dkmKeyMapper.updateById(child);
                         // 生命周期
                         DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
