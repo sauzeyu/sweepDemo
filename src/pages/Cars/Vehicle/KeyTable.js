@@ -23,7 +23,7 @@ const SubTable = (props) => {
       },
     },
     {
-      title: '吊销来源',
+      title: '操作来源',
       dataIndex: 'keySource',
       width: 160,
       render: (text) => {
