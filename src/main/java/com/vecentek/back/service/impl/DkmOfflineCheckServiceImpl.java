@@ -234,7 +234,7 @@ public class DkmOfflineCheckServiceImpl {
                 if (keyList.size() > 0) {
                     keyList.forEach(dkmKey -> {
                         dkmKey.setDkState(5);
-                        dkmKey.setUpdateTime(new Date());
+                        //dkmKey.setUpdateTime(new Date());
                         dkmKeyMapper.updateById(dkmKey);
                         DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
                         dkmKeyLifecycle.setKeyId(dkmKey.getId());
@@ -250,7 +250,7 @@ public class DkmOfflineCheckServiceImpl {
                             for (DkmKey child : childList) {
                                 // 吊销子钥匙
                                 child.setDkState(5);
-                                child.setUpdateTime(new Date());
+                                //child.setUpdateTime(new Date());
                                 dkmKeyMapper.updateById(child);
                                 // 钥匙生命周期
                                 // 封装生命周期对象

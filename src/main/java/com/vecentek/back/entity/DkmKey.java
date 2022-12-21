@@ -18,11 +18,11 @@ import java.util.Date;
  * @version ：1.0
  * @since 2021-11-30 17:30:08
  */
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode()
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DkmKey extends BaseEntity implements Serializable {
+public class DkmKey  implements Serializable {
 
     private static final long serialVersionUID = 559081210876573507L;
 
@@ -59,18 +59,12 @@ public class DkmKey extends BaseEntity implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date valTo;
-    /**
-     * 签名值: 用服务端私钥对信息( server_cnt+user_id+手机设备指纹+VIN号+key_id+dk_state+val_from+val_to+permit+server_info) 做RSA2048的SHA256位的签名算法，得到签名值，转成Base64字符串，320位
-     */
-    private String serverSig;
+
     /**
      * 离线可用操作次数
      */
     private Integer activateTimes;
-    /**
-     * 随机数
-     */
-    private String random;
+
     /**
      * 钥匙信息kr
      */
