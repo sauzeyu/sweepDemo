@@ -309,8 +309,10 @@ public class DkmKeyServiceImpl {
         for (DkmKey dkmKey : keys) {
             String id = dkmKey.getId();
             if (dkmKey != null) {
-                int update = dkmKeyMapper.update(dkmKey, Wrappers.<DkmKey>lambdaUpdate()
-                        .set(DkmKey::getDkState, KeyStatusEnum.REVOKE.getCode()));
+                int update = dkmKeyMapper.update(null, Wrappers.<DkmKey>lambdaUpdate()
+                        .set(DkmKey::getDkState, KeyStatusEnum.REVOKE.getCode())
+                        .eq(DkmKey::getId,dkmKey.getId())
+                );
                 if (update > 0) {
                     // 生命周期
                     DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
