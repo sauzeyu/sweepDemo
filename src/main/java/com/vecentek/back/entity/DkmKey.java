@@ -22,7 +22,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DkmKey  implements Serializable {
+public class DkmKey implements Serializable {
 
     private static final long serialVersionUID = 559081210876573507L;
 
@@ -113,93 +113,93 @@ public class DkmKey  implements Serializable {
     @TableField(exist = false)
     private String keyResourceVO;
 
-        /**
-         * 钥匙分类，icce或者ccc
-         */
-        private Integer keyClassification;
+    /**
+     * 钥匙分类，icce或者ccc
+     */
+    private Integer keyClassification;
 
-        /**
-         * 钥匙类型，车主或者非车主
-         */
-        private String keyType;
+    /**
+     * 钥匙类型，车主或者非车主
+     */
+    private String keyType;
 
-        /**
-         * 手机设备类型
-         */
-        private String deviceType;
+    /**
+     * 手机设备类型
+     */
+    private String deviceType;
 
-        /**
-         * 设备OEM账户ID的hash
-         */
-        private String accountIdHash;
+    /**
+     * 设备OEM账户ID的hash
+     */
+    private String accountIdHash;
 
-        /**
-         * 用于标识数字钥匙，在创建DK时会用到，由device进行管理和生成
-         */
-        private String endpointId;
+    /**
+     * 用于标识数字钥匙，在创建DK时会用到，由device进行管理和生成
+     */
+    private String endpointId;
 
-        /**
-         * 由device在创建Instance CA时生成，用于标识签名当前DK所用的Instance CA
-         */
-        private String slotId;
+    /**
+     * 由device在创建Instance CA时生成，用于标识签名当前DK所用的Instance CA
+     */
+    private String slotId;
 
-        /**
-         * 标识当前DK允许执行的交互类型（fast/standard，或者通过有线接口进行交互），并不属于访问权限类
-         */
-        private String keyOptions;
+    /**
+     * 标识当前DK允许执行的交互类型（fast/standard，或者通过有线接口进行交互），并不属于访问权限类
+     */
+    private String keyOptions;
 
-        /**
-         * 在standard交互中使用，具有唯一性，在创建endpoint时生成，并存储在车端。存放在endpoint certificate的subjectPublicKey字段中，不等于Device.Enc.PK
-         */
-        private String devicePublicKey;
+    /**
+     * 在standard交互中使用，具有唯一性，在创建endpoint时生成，并存储在车端。存放在endpoint certificate的subjectPublicKey字段中，不等于Device.Enc.PK
+     */
+    private String devicePublicKey;
 
-        /**
-         * 在standard交互中使用，针对绑定到同一车辆的所有device都是用同一对公私钥对
-         */
-        private String vehiclePublicKey;
+    /**
+     * 在standard交互中使用，针对绑定到同一车辆的所有device都是用同一对公私钥对
+     */
+    private String vehiclePublicKey;
 
-        /**
-         * 由车端提供，在分享钥匙校验校验朋友公钥证书链时作为根证书
-         */
-        private String authorizedPublicKeys;
+    /**
+     * 由车端提供，在分享钥匙校验校验朋友公钥证书链时作为根证书
+     */
+    private String authorizedPublicKeys;
 
-        /**
-         * 一段缓存区，在NFC交互过程中可以传输给车端，或者由车端写入
-         */
-        private String privateMailbox;
-
-
-        /**
-         * 一段缓存区，不允许在NFC交互过程中传输给车端，或者由车端写入
-         */
-        private String confidentialMailbox;
+    /**
+     * 一段缓存区，在NFC交互过程中可以传输给车端，或者由车端写入
+     */
+    private String privateMailbox;
 
 
-        /**
-         * 由朋友device创建，
-         */
-        private String friendDeviceHandle;
-
-        /**
-         * 由朋友device创建，
-         */
-        private String friendPublicKey;
-
-        /**
-         * 包含用于车端生成分享密码的种子。还包括车主device关于车辆在朋友激活分享钥匙时是否要求提供分享密码的策略
-         */
-        private String sharingPasswordInformation;
-
-        /**
-         * 由钥匙分享的发起者选择
-         */
-        private String profile;
+    /**
+     * 一段缓存区，不允许在NFC交互过程中传输给车端，或者由车端写入
+     */
+    private String confidentialMailbox;
 
 
-        /**
-         * 分享对象的名称。可以是分享时车主选择的联系人，需要支持车主编辑
-         */
-        private String keyFriendlyName;
+    /**
+     * 由朋友device创建，
+     */
+    private String friendDeviceHandle;
+
+    /**
+     * 由朋友device创建，
+     */
+    private String friendPublicKey;
+
+    /**
+     * 包含用于车端生成分享密码的种子。还包括车主device关于车辆在朋友激活分享钥匙时是否要求提供分享密码的策略
+     */
+    private String sharingPasswordInformation;
+
+    /**
+     * 由钥匙分享的发起者选择
+     */
+    private String profile;
+
+
+    /**
+     * 分享对象的名称。可以是分享时车主选择的联系人，需要支持车主编辑
+     */
+    private String keyFriendlyName;
 
 
 }

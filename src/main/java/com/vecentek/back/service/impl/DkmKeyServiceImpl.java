@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
+import com.vecentek.back.constant.KeyClassificationConstant;
 import com.vecentek.back.constant.KeyResourceConstant;
 import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.DkmKeyDTO;
@@ -425,7 +426,8 @@ public class DkmKeyServiceImpl {
                                     Integer[] dkState,
                                     Integer keyResource,
                                     String creator,
-                                    String excelName
+                                    String excelName,
+                                    Integer[] keyClassification
     ) {
 
 
@@ -459,6 +461,16 @@ public class DkmKeyServiceImpl {
                 if (dkState.length > 1) {
                     for (int i = 1; i < dkState.length; i++) {
                         wrapper.or().eq(DkmKey::getDkState, dkState[i]);
+                    }
+                }
+            });
+        }
+        if (keyClassification != null && keyClassification.length > 0) {
+            queryWrapper.and(wrapper -> {
+                wrapper.eq(DkmKey::getKeyClassification, keyClassification[0]);
+                if (keyClassification.length > 1) {
+                    for (int i = 1; i < keyClassification.length; i++) {
+                        wrapper.or().eq(DkmKey::getKeyClassification, keyClassification[i]);
                     }
                 }
             });
@@ -510,6 +522,7 @@ public class DkmKeyServiceImpl {
                         valToEndTime,
                         dkState,
                         keyResource,
+                        keyClassification,
                         start,
                         end);
 
@@ -581,12 +594,12 @@ public class DkmKeyServiceImpl {
 
         writer.addHeaderAlias("parentId", "钥匙类型");
         writer.addHeaderAlias("userId", "用户id");
-        writer.addHeaderAlias("vin", "车辆vin号");
+        writer.addHeaderAlias("vin", "车辆标识符");
         writer.addHeaderAlias("personalAndCalibration", "钥匙状态");
         writer.addHeaderAlias("valFrom", "生效时间");
         writer.addHeaderAlias("valTo", "失效时间");
         writer.addHeaderAlias("applyTime", "申请时间");
-        writer.addHeaderAlias("period", "周期(分钟)");
+        writer.addHeaderAlias("keyClassification", "钥匙分类");
         writer.addHeaderAlias("keyResourceVO", "钥匙来源");
     }
 
@@ -609,18 +622,11 @@ public class DkmKeyServiceImpl {
                                           String valToEndTime,
                                           Integer[] dkState,
                                           Integer keyResource,
+                                          Integer[] keyClassification,
                                           Integer start,
                                           Integer end) {
 
-        //if (keyType == null) {
-        //    keyType = 3;
-        //}
-        //if (periodMax != null) {
-        //    periodMax = checkTimeUnit(periodMax, periodUnit);
-        //}
-        //if (periodMin != null) {
-        //    periodMin = checkTimeUnit(periodMin, periodUnit);
-        //}
+
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.lambdaQuery();
         // 是否需要dkStates条件
         if (dkState != null && dkState.length > 0) {
@@ -629,6 +635,16 @@ public class DkmKeyServiceImpl {
                 if (dkState.length > 1) {
                     for (int i = 1; i < dkState.length; i++) {
                         wrapper.or().eq(DkmKey::getDkState, dkState[i]);
+                    }
+                }
+            });
+        }
+        if (keyClassification != null && keyClassification.length > 0) {
+            queryWrapper.and(wrapper -> {
+                wrapper.eq(DkmKey::getKeyClassification, keyClassification[0]);
+                if (keyClassification.length > 1) {
+                    for (int i = 1; i < keyClassification.length; i++) {
+                        wrapper.or().eq(DkmKey::getKeyClassification, keyClassification[i]);
                     }
                 }
             });
@@ -667,6 +683,12 @@ public class DkmKeyServiceImpl {
                 }
                 if (KeyResourceConstant.SMALLPROGRAM.equals(key.getKeyResource())) {
                     key.setKeyResourceVO("小程序");
+                }
+                if (KeyClassificationConstant.ICCE.equals(key.getKeyClassification())) {
+                    key.setKeyResourceVO("ICCE");
+                }
+                if (KeyClassificationConstant.CCC.equals(key.getKeyClassification())) {
+                    key.setKeyResourceVO("CCC");
                 }
                 key.setPersonalAndCalibration(KeyStatusEnum.matchName(key.getDkState()));
             });

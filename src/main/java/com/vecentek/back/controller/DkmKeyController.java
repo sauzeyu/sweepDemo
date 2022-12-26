@@ -189,7 +189,9 @@ public class DkmKeyController {
                                          String valToEndTime,
                                          Integer[] dkState,
                                          Integer keyResource,
-                                         String creator) {
+                                         String creator,
+                                         Integer[] keyClassification
+                                         ) {
         // 1.3形成文件名
         String excelName = "钥匙信息记录-" + System.currentTimeMillis();
 
@@ -218,7 +220,8 @@ public class DkmKeyController {
                 dkState,
                 keyResource,
                 creator,
-                excelName
+                excelName,
+                keyClassification
                 );
         return PageResp.success("正在导出");
 
@@ -258,7 +261,8 @@ public class DkmKeyController {
                                  Integer[] dkStates,
                                  Integer keyResource,
                                  String creator,
-                                 String excelName
+                                 String excelName,
+                                 Integer[] keyClassification
                                  ) {
         this.dkmKeyServiceImpl.downloadKeyLogExcel(
                 vin,
@@ -276,7 +280,8 @@ public class DkmKeyController {
                 dkStates,
                 keyResource,
                 creator,
-                excelName
+                excelName,
+                keyClassification
                 );
 
 
