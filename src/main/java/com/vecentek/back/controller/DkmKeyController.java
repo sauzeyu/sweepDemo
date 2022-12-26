@@ -57,7 +57,8 @@ public class DkmKeyController {
                                   String valToEndTime,
                                   Integer keyType,
                                   Integer keyResource,
-                                  Integer[] dkState
+                                  Integer[] dkState,
+                                  Integer[] keyClassification
     ) {
         return this.dkmKeyServiceImpl.selectForPage(pageIndex,
                 pageSize,
@@ -74,7 +75,9 @@ public class DkmKeyController {
                 valToEndTime,
                 keyType,
                 keyResource,
-                dkState);
+                dkState,
+                keyClassification
+                );
     }
 
 

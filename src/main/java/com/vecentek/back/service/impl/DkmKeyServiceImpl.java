@@ -152,7 +152,8 @@ public class DkmKeyServiceImpl {
                                   String valToEndTime,
                                   Integer keyType,
                                   Integer keyResource,
-                                  Integer[] dkState
+                                  Integer[] dkState,
+                                  Integer[] keyClassification
     ) {
         if (keyType == null) {
             keyType = 3;
@@ -177,7 +178,16 @@ public class DkmKeyServiceImpl {
                 }
             });
         }
-
+        if (keyClassification != null && keyClassification.length > 0) {
+            queryWrapper.and(wrapper -> {
+                wrapper.eq(DkmKey::getKeyClassification, keyClassification[0]);
+                if (keyClassification.length > 1) {
+                    for (int i = 1; i < keyClassification.length; i++) {
+                        wrapper.or().eq(DkmKey::getKeyClassification, keyClassification[i]);
+                    }
+                }
+            });
+        }
 
         page = dkmKeyMapper.selectPage(page, queryWrapper
                 .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
