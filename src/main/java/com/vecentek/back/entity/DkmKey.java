@@ -18,11 +18,11 @@ import java.util.Date;
  * @version ：1.0
  * @since 2021-11-30 17:30:08
  */
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode()
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DkmKey extends BaseEntity implements Serializable {
+public class DkmKey  implements Serializable {
 
 
 

@@ -257,7 +257,7 @@ public class DkmKeyServiceImpl {
     private PageResp freezeKeys(List<DkmKey> keys,AtomicInteger successCount) {
         keys.stream().forEach(key -> {
             key.setDkState(3);
-            key.setUpdateTime(new Date());
+            //key.setUpdateTime(new Date());
             int count = dkmKeyMapper.updateById(key);
             successCount.addAndGet(count);
 
@@ -283,7 +283,7 @@ public class DkmKeyServiceImpl {
 
             keys.stream().forEach(key -> {
                 key.setDkState(1);
-                key.setUpdateTime(new Date());
+                //key.setUpdateTime(new Date());
                 int count = dkmKeyMapper.updateById(key);
                 successCount.addAndGet(count);
 
@@ -341,7 +341,7 @@ public class DkmKeyServiceImpl {
                                     .eq(DkmKey::getDkState, 1));
                             for (DkmKey child : dkmKeys) {
                                 child.setDkState(5);
-                                child.setUpdateTime(new Date());
+                                //child.setUpdateTime(new Date());
                                 dkmKeyMapper.updateById(child);
                                 // 生命周期
                                 DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
