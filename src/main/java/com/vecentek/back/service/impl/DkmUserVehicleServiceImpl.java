@@ -190,7 +190,7 @@ public class DkmUserVehicleServiceImpl {
         ArrayList<String> userList = new ArrayList<>();
         for (DkmKey key : keys) {
             key.setDkState(5);
-            key.setUpdateTime(new Date());
+            //key.setUpdateTime(new Date());
             dkmKeyMapper.updateById(key);
             // 钥匙生命周期
             // 封装生命周期对象
@@ -238,7 +238,7 @@ public class DkmUserVehicleServiceImpl {
         for (DkmKey key : keys) {
             // 吊销
             key.setDkState(5);
-            key.setUpdateTime(new Date());
+            //key.setUpdateTime(new Date());
             dkmKeyMapper.updateById(key);
             // 钥匙生命周期
             // 封装生命周期对象
@@ -262,7 +262,7 @@ public class DkmUserVehicleServiceImpl {
                 for (DkmKey child : childList) {
                     // 吊销子钥匙
                     child.setDkState(5);
-                    child.setUpdateTime(new Date());
+                    //child.setUpdateTime(new Date());
                     dkmKeyMapper.updateById(child);
                     // 钥匙生命周期
                     // 封装生命周期对象

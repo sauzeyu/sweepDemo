@@ -121,7 +121,6 @@ public class DkmKeyController {
     }
 
 
-    @GetMapping(value = "/selectUserByKeyId")
     public PageResp selectUserByKeyId(@RequestParam String keyId) {
         return this.dkmKeyServiceImpl.selectUserByKeyId(keyId);
     }
@@ -129,13 +128,13 @@ public class DkmKeyController {
     /**
      * 吊销钥匙
      *
-     * @param id 钥匙id,钥匙 id 为16位字符串
-     * @return 单条数据
+     * @param userId 用户id,vin 车辆标识符
+     * @return 多条数据
      */
 
     @PostMapping(value = "/updateStateForRevokeById")
-    public PageResp updateStateForRevokeById(@NotBlank(message = "id 不能为空") @RequestParam String id) {
-        return this.dkmKeyServiceImpl.updateStateForRevokeById(id);
+    public PageResp updateStateForRevokeById(@RequestParam String userId,@RequestParam String vin) {
+        return this.dkmKeyServiceImpl.updateStateForRevokeById(userId,vin);
     }
 
     /**
