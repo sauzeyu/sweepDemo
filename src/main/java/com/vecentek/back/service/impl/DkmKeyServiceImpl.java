@@ -345,9 +345,7 @@ public class DkmKeyServiceImpl {
                                 .eq(DkmKey::getDkState, KeyStatusEnum.FREEZE.getCode()));
                         for (DkmKey child : dkmKeys) {
                             child.setDkState(KeyStatusEnum.REVOKE.getCode());
-                            //child.setUpdateTime(new Date());
                         child.setDkState(5);
-                        //child.setUpdateTime(new Date());
                             dkmKeyMapper.updateById(child);
                             // 生命周期
                             DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
@@ -362,11 +360,11 @@ public class DkmKeyServiceImpl {
                             dkmKeyLifecycleMapper.insert(dkmKeyLifecycle1);
                         }
                     }
-                    return PageResp.success("吊销成功");
+
                 }
             }
         }
-        return PageResp.fail("吊销失败");
+        return PageResp.success("吊销成功");
 
     }
 
