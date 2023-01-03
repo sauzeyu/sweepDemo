@@ -59,6 +59,7 @@ public class DkmAdminServiceImpl {
         return PageResp.success("查询成功", page.getTotal(), dkmAdminPage.getRecords());
     }
 
+
     public PageResp selectRoleNameListById(int id) {
         DkmRole roleNameList = dkmAdminMapper.selectRoleNameListById(id);
         return PageResp.success("查询成功", roleNameList);
@@ -79,11 +80,11 @@ public class DkmAdminServiceImpl {
         if (StringUtils.isBlank(adminVO.getUsername()) || Objects.isNull(adminVO.getRoleId())) {
             return PageResp.fail("用户名或权限不能为空");
         }
-        if (Objects.isNull(adminVO.getId())){
+        if (Objects.isNull(adminVO.getId())) {
             return PageResp.fail("用户名id为空");
         }
         DkmAdmin dkmAdmin1 = dkmAdminMapper.selectById(adminVO.getId());
-        if (Objects.isNull(dkmAdmin1)){
+        if (Objects.isNull(dkmAdmin1)) {
             return PageResp.fail("用户已不存在");
         }
         DkmAdmin dkmAdmin = dkmAdminMapper.selectOne(new QueryWrapper<DkmAdmin>().lambda().eq(DkmAdmin::getUsername, adminVO.getUsername()));
@@ -92,10 +93,11 @@ public class DkmAdminServiceImpl {
         }
         LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>()
                 .eq(DkmAdmin::getId, adminVO.getId())
+                .set(DkmAdmin::getPassword, adminVO.getPassword())
                 .set(DkmAdmin::getExtraInfo, adminVO.getExtraInfo())
                 .set(DkmAdmin::getUsername, adminVO.getUsername())
                 .set(DkmAdmin::getUpdateTime, adminVO.getUpdateTime())
-                .set(DkmAdmin::getUpdator,adminVO.getUpdator());
+                .set(DkmAdmin::getUpdator, adminVO.getUpdator());
         try {
             dkmAdminMapper.update(null, lambdaUpdateWrapper);
         } catch (Exception e) {
@@ -114,7 +116,7 @@ public class DkmAdminServiceImpl {
         // 涉及到权限需要清除redis中的token
         // 检查是否有用户token
         Boolean aBoolean = redisTemplate.hasKey(dkmAdmin1.getUsername());
-        if (aBoolean){ // 如果有才删除，没有就不管
+        if (aBoolean) { // 如果有才删除，没有就不管
             // 根据用户名找到token 然后删除
             Boolean delete = redisTemplate.delete(dkmAdmin1.getUsername());
             if (!delete) {
@@ -147,7 +149,7 @@ public class DkmAdminServiceImpl {
         // 根据用户名找到token 然后删除
         // 检查是否有用户token
         Boolean aBoolean = redisTemplate.hasKey(username);
-        if (aBoolean){ // 如果有才删除，没有就不管
+        if (aBoolean) { // 如果有才删除，没有就不管
             // 根据用户名找到token 然后删除
             Boolean delete = redisTemplate.delete(username);
             if (!delete) {

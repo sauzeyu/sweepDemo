@@ -288,21 +288,24 @@ public class DkmKeyServiceImpl {
         for (int i = 0; i < dkmKeys.size(); i++) {
             DkmKey key = dkmKeys.get(i);
             key.setDkState(1);
-            //key.setUpdateTime(new Date());
             int count = dkmKeyMapper.updateById(key);
             if (count == 0) {
                 throw new RuntimeException("Failed to update key in database");
             }
             if (Objects.equals("0", key.getParentId())) {
-                keyLifecycleUtil.insert(key, 1, 0, 2);
+                keyLifecycleUtil.insert(key, 1, 0, KeyStatusEnum.FREEZE.getCode());
             } else {
-                keyLifecycleUtil.insert(key, 2, 0, 3);
+                keyLifecycleUtil.insert(key, 2, 0, KeyStatusEnum.FREEZE.getCode());
             }
         }
         return PageResp.success("更新成功");
     }
 
-
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println(new Date());
+        }
+    }
     /**
      * 吊销钥匙,如为车主钥匙,则所有子钥匙均不可用
      *
