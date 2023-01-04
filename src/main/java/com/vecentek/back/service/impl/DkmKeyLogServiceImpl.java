@@ -1,6 +1,6 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.core.date.DateUtil;
+
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -11,22 +11,23 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.vecentek.back.config.ProConfig;
-import com.vecentek.back.config.TestProperties;
-import com.vecentek.back.config.YearMonthShardingAlgorithm;
+
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.constant.FileConstant;
+
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
+
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
+import com.vecentek.back.mapper.DkmSystemConfigurationExpiredMapper;
 import com.vecentek.back.util.DownLoadUtil;
-import com.vecentek.back.util.SpringContextUtil;
+
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -35,14 +36,12 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import javax.annotation.Resource;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
 /**
@@ -57,6 +56,8 @@ public class DkmKeyLogServiceImpl {
     private DkmKeyLogMapper dkmKeyLogMapper;
     @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+
+
 
 
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String userId, String startTime, String endTime, String phoneBrand, String phoneModel, List<String> statusCode, Integer flag, String vehicleBrand, String vehicleModel, String vehicleType) {
@@ -367,6 +368,5 @@ public class DkmKeyLogServiceImpl {
 
         return keyLogList;
     }
-
 
 }

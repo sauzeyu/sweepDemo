@@ -38,9 +38,9 @@ public class DkmKeyLogController {
     @Resource
     private DkmKeyLogServiceImpl dkmKeyUseLogService;
     @Resource
-    private DkmKeyLogMapper dkmKeyLogMapper;
-    @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
+
+
 
 
     @GetMapping("/selectForPage")
