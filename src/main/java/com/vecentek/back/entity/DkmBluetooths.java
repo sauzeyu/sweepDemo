@@ -1,5 +1,7 @@
 package com.vecentek.back.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,6 +23,7 @@ public class DkmBluetooths extends BaseEntity {
     /**
      * 设备序列号
      */
+    @TableId
     private String hwDeviceSn;
 
     /**

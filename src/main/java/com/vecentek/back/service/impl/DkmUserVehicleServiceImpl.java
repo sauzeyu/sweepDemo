@@ -1,6 +1,5 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -236,7 +235,7 @@ public class DkmUserVehicleServiceImpl {
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).eq(DkmKey::getDkState, "1"));
         // 返回【用户id-vin号】的list
         ArrayList<String> list = new ArrayList<>();
-        if (CollectionUtils.isEmpty(list)) {
+        if (CollectionUtils.isEmpty(keys)) {
             return PageResp.fail(1001, "吊销失败,该用户下没有启动状态的钥匙");
         }
         for (DkmKey key : keys) {
