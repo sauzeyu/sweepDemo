@@ -89,12 +89,12 @@ public class DkmStatisticsServiceImpl {
         String startTime = DownLoadUtil.getCurrYearFirst();
         String endTime = DownLoadUtil.getTommorwYearFirst();
         String sysDate = DownLoadUtil.getSysDate();
-        String now = DownLoadUtil.getNow();
+        String tommorw = DownLoadUtil.getNextDay();
         int totalVehicles = dkmVehicleMapper.selectCount(null);
         int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
                 .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
                 .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
-                .le(ObjectUtil.isNotNull(now), DkmKey::getApplyTime, now));
+                .le(ObjectUtil.isNotNull(tommorw), DkmKey::getApplyTime, tommorw));
         int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
                 .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
                 .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
@@ -239,13 +239,13 @@ public class DkmStatisticsServiceImpl {
      */
     public PageResp keyStatistics() {
         String sysDate = DownLoadUtil.getSysDate();
-        String now = DownLoadUtil.getNow();
+        String tommorw = DownLoadUtil.getNextDay();
         // 车主钥匙
         int masterCount = dkmKeyMapper.selectCount(
                 new QueryWrapper<DkmKey>().lambda()
                         .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
                         .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
-                        .le(ObjectUtil.isNotNull(now), DkmKey::getApplyTime, now)
+                        .le(ObjectUtil.isNotNull(tommorw), DkmKey::getApplyTime, tommorw)
                         .eq(DkmKey::getParentId, "0"));
 
         // 子钥匙
@@ -253,7 +253,7 @@ public class DkmStatisticsServiceImpl {
         int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda()
                 .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
                 .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
-                .le(ObjectUtil.isNotNull(now), DkmKey::getApplyTime, now)
+                .le(ObjectUtil.isNotNull(tommorw), DkmKey::getApplyTime, tommorw)
                 .ne(DkmKey::getParentId, "0"));
 
         // 车主钥匙占比
