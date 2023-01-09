@@ -6,12 +6,12 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.vecentek.back.config.ProConfig;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
+import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.CountDTO;
 import com.vecentek.back.dto.MonthCountDTO;
 import com.vecentek.back.dto.StatisticsDTO;
@@ -88,11 +88,13 @@ public class DkmStatisticsServiceImpl {
         // 获取分表字段的开始日期与结束日期
         String startTime = DownLoadUtil.getCurrYearFirst();
         String endTime = DownLoadUtil.getTommorwYearFirst();
+        String sysDate = DownLoadUtil.getSysDate();
+        String now = DownLoadUtil.getNow();
         int totalVehicles = dkmVehicleMapper.selectCount(null);
         int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
-                .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime));
-
+                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
+                .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
+                .le(ObjectUtil.isNotNull(now), DkmKey::getApplyTime, now));
         int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
                 .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
                 .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
@@ -236,21 +238,22 @@ public class DkmStatisticsServiceImpl {
      * @return
      */
     public PageResp keyStatistics() {
-        Date[] time = getTime();
-        Date startTime = time[0];
-        Date endTime = time[1];
+        String sysDate = DownLoadUtil.getSysDate();
+        String now = DownLoadUtil.getNow();
         // 车主钥匙
         int masterCount = dkmKeyMapper.selectCount(
                 new QueryWrapper<DkmKey>().lambda()
-                        .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
-                        .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime)
+                        .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
+                        .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
+                        .le(ObjectUtil.isNotNull(now), DkmKey::getApplyTime, now)
                         .eq(DkmKey::getParentId, "0"));
 
         // 子钥匙
 
         int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda()
-                .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime)
+                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
+                .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
+                .le(ObjectUtil.isNotNull(now), DkmKey::getApplyTime, now)
                 .ne(DkmKey::getParentId, "0"));
 
         // 车主钥匙占比
