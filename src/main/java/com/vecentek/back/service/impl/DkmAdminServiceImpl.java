@@ -93,7 +93,6 @@ public class DkmAdminServiceImpl {
         }
         LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>()
                 .eq(DkmAdmin::getId, adminVO.getId())
-                .set(DkmAdmin::getPassword, adminVO.getPassword())
                 .set(DkmAdmin::getExtraInfo, adminVO.getExtraInfo())
                 .set(DkmAdmin::getUsername, adminVO.getUsername())
                 .set(DkmAdmin::getUpdateTime, adminVO.getUpdateTime())
