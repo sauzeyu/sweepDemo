@@ -36,6 +36,11 @@ class SearchForm extends Component {
             (prev, current) => prev + current,
           );
         }
+
+        if (values.keyClassification && values.keyClassification.length > 0) {
+          values.keyClassification = values.keyClassification.toString();
+        }
+
         if (values.dkState && values.dkState.length > 0) {
           values.dkState = values.dkState.toString();
         }
@@ -186,8 +191,11 @@ class SearchForm extends Component {
                 showArrow
                 allowClear={true}
               >
+                <Select.Option key={0} value={0}>
+                  未激活
+                </Select.Option>
                 <Select.Option key={1} value={1}>
-                  启用
+                  激活
                 </Select.Option>
                 <Select.Option key={3} value={3}>
                   冻结
@@ -257,52 +265,27 @@ class SearchForm extends Component {
           </Col>
 
           <Col {...colSpan}>
-            <div style={{ height: 56 }} wrap={true}>
-              <Form.Item label={'周期时长'}>
-                <Input.Group compact>
-                  <Form.Item name="periodMin">
-                    <InputNumber
-                      style={{
-                        width: 85,
-                      }}
-                      min={0}
-                      maxLength={5}
-                      placeholder="min"
-                    />
-                  </Form.Item>
-                  <Input
-                    style={{
-                      width: 30,
-                      pointerEvents: 'none',
-                    }}
-                    placeholder="~"
-                    disabled
-                  />
-                  <Form.Item name="periodMax">
-                    <InputNumber
-                      style={{
-                        width: 85,
-                      }}
-                      min={0}
-                      maxLength={5}
-                      placeholder="max"
-                    />
-                  </Form.Item>
-                  <Form.Item name="periodUnit" initialValue="minute">
-                    <Select style={{ width: 60 }}>
-                      <Select.Option value="minute">分</Select.Option>
-                      <Select.Option value="hour">时</Select.Option>
-                      <Select.Option value="day">天</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </Input.Group>
-              </Form.Item>
-            </div>
+            <Form.Item label={'钥匙分类'} name="keyClassification">
+              <Select
+                placeholder="钥匙分类"
+                mode={'multiple'}
+                style={{ width: 258 }}
+                allowClear={true}
+                showArrow
+              >
+                <Select.Option key={1} value={1}>
+                  icce
+                </Select.Option>
+                <Select.Option key={2} value={2}>
+                  ccc
+                </Select.Option>
+              </Select>
+            </Form.Item>
           </Col>
 
           <Col {...colSpan}>
-            <Form.Item label={'车辆vin号'} name="vin">
-              <Input placeholder="请输入车辆vin号" style={{ width: 258 }} />
+            <Form.Item label={'车辆标识符'} name="vin">
+              <Input placeholder="请输入车辆标识符" style={{ width: 258 }} />
             </Form.Item>
           </Col>
         </Row>
@@ -317,6 +300,7 @@ class SearchForm extends Component {
               <Select
                 placeholder="请选择钥匙类型"
                 mode={'multiple'}
+                style={{ width: 258 }}
                 allowClear={true}
                 showArrow
               >
@@ -331,7 +315,7 @@ class SearchForm extends Component {
           </Col>
           <Col {...colSpan}>
             <Form.Item label={'用户id'} name="userId">
-              <Input placeholder="请输入用户id" />
+              <Input style={{ width: 258 }} placeholder="请输入用户id" />
             </Form.Item>
           </Col>
         </Row>

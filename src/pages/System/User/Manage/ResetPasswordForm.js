@@ -1,11 +1,15 @@
 'use strict';
 import React, { Component } from 'react';
 import { Button, Col, Form, Input, Modal, Select, Spin, message } from 'antd';
-import { getAllRole, updateAdminById } from '@/services/admin';
+import {
+  getAllRole,
+  updateAdminById,
+  resetPasswordById,
+} from '@/services/admin';
 import moment from 'moment';
 import { getDvaApp } from '@@/plugin-dva/exports';
-
-export default class EditForm extends Component {
+import { getPublicPath, md5 } from '@/utils';
+export default class ResetPasswordForm extends Component {
   form = React.createRef();
   state = {
     roles: [],
@@ -13,7 +17,7 @@ export default class EditForm extends Component {
 
   componentDidMount() {
     this.fetchRoles();
-    this.props.editFormRef && this.props.editFormRef(this);
+    this.props.resetPasswordRef && this.props.resetPasswordRef(this);
   }
 
   handleSubmit = () => {
@@ -26,10 +30,11 @@ export default class EditForm extends Component {
       }
 
       // values.roleList = values.roleList[0];
+      values.password = md5(values.password);
       values.updator =
         getDvaApp()._store.getState()?.user?.currentUser?.username;
       values.updateTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-      updateAdminById(values).then(
+      resetPasswordById(values).then(
         (res) => {
           message.success(res.msg);
           this.props.dataTableRef.reload();
@@ -84,34 +89,19 @@ export default class EditForm extends Component {
         <Form.Item name="id" hidden>
           <Input type="hidden" />
         </Form.Item>
-        <Form.Item
-          label={'姓名'}
-          name="username"
-          rules={[
-            { required: true, message: '姓名不能为空' },
-            {
-              // pattern: new RegExp(/^(?!(\s+$))^[\w\s]+$/),
-              pattern: new RegExp(/^[\u4e00-\u9fa5_a-zA-Z0-9]+$/),
-
-              message: '用户名不能有特殊字符',
-            },
-          ]}
-        >
-          <Input maxLength={40} placeholder={'用户姓名'} id="editUserName" />
-        </Form.Item>
 
         <Form.Item
           label={'密码'}
           name="password"
           rules={[
             { required: true, message: '密码不能为空' },
-            // {
-            //   pattern: new RegExp(
-            //     /(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?=.*[A-Z])(?=.*[a-z])(?!.*\n).*$/,
-            //   ),
-            //   message:
-            //     '密码必须由数字/大写字母/小写字母/特殊字符组成,长度在8位以上',
-            // },
+            {
+              pattern: new RegExp(
+                /(?=^.{8,}$)(?=.*\d)(?=.*\W+)(?=.*[A-Z])(?=.*[a-z])(?!.*\n).*$/,
+              ),
+              message:
+                '密码必须由数字/大写字母/小写字母/特殊字符组成,长度在8位以上',
+            },
           ]}
         >
           <Input.Password
@@ -119,27 +109,6 @@ export default class EditForm extends Component {
             placeholder={'请输入密码'}
             id="addPassword"
           />
-        </Form.Item>
-
-        <Spin spinning={loadingRoles}>
-          <Form.Item
-            label={'权限角色'}
-            name="roleId"
-            rules={[{ required: true, message: '权限角色不能为空' }]}
-          >
-            <Select allowClear>
-              {roles.map((role) => {
-                return (
-                  <Select.Option key={role?.id} value={role?.id}>
-                    {role?.roleName}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-        </Spin>
-        <Form.Item {...formItemLayout} label={'描述'} name="extraInfo">
-          <Input.TextArea maxLength={200} />
         </Form.Item>
       </Form>
       // </Spin>

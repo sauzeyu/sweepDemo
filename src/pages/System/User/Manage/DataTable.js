@@ -17,18 +17,20 @@ import {
   deleteById,
 } from '@/services/admin';
 import EditForm from '@/pages/System/User/Manage/EditForm';
+import ResetPasswordForm from '@/pages/System/User/Manage/ResetPasswordForm';
 import { UserAddOutlined } from '@ant-design/icons';
 import AddUserForm from '@/pages/System/User/Manage/AddUserForm';
 import {
   SYSTEM_USER_DELETE,
   SYSTEM_USER_INSERT,
   SYSTEM_USER_UPDATE,
+  SYSTEM_USER_RESET_PASSWORD,
 } from '@/components/Authorized/AuthMap';
 import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
-
 export class DataTable extends Component {
   state = {
     userInfoVisible: false,
+    userPasswordInfoVisible: false,
     addUserVisible: false,
     userId: '',
     userInfo: {},
@@ -44,6 +46,7 @@ export class DataTable extends Component {
         return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
+
     {
       title: '用户名',
       dataIndex: 'username',
@@ -97,6 +100,16 @@ export class DataTable extends Component {
                   删除
                 </a>
               </Authorized>
+
+              <Authorized route={SYSTEM_USER_RESET_PASSWORD}>
+                <a
+                  onClick={() => {
+                    this.resetPassword(col);
+                  }}
+                >
+                  重置密码
+                </a>
+              </Authorized>
             </div>
           </>
         );
@@ -123,6 +136,34 @@ export class DataTable extends Component {
               }
               // this.editForm.current?.setFieldsValue(user);
               this.editForm?.setFieldsValue(user);
+            }
+          },
+        );
+      },
+      (error) => {
+        message.error('服务器繁忙,请稍后再试！');
+      },
+    );
+  };
+  resetPassword = (user) => {
+    let roleList;
+    getAdminRoleNameById(user.id).then(
+      (res) => {
+        // if (res?.data) {
+        roleList = res?.data?.id;
+        // }
+        this.setState(
+          {
+            userPasswordInfoVisible: true,
+          },
+          () => {
+            if (user) {
+              // user.roleId
+              if (roleList) {
+                user.roleId = roleList;
+              }
+              // this.editForm.current?.setFieldsValue(user);
+              this.resetPasswordForm?.setFieldsValue(user);
             }
           },
         );
@@ -169,6 +210,19 @@ export class DataTable extends Component {
     this.editForm?.resetFields();
   };
 
+  onResetPasswordOk = () => {
+    this.setState({
+      userPasswordInfoVisible: false,
+    });
+    this.resetPasswordForm.submit();
+  };
+  onResetPasswordCancel = () => {
+    this.setState({
+      userPasswordInfoVisible: false,
+    });
+    this.resetPasswordForm?.resetFields();
+  };
+
   render() {
     const { searchFormValue } = this.state.addUserVisible;
     const onClick = (value) => {};
@@ -179,6 +233,10 @@ export class DataTable extends Component {
     const editFinishFailed = (value) => {
       this.setState({ userInfoVisible: value });
       this.setState({ userInfoVisible: value });
+    };
+    const resetPasswordFinishFailed = (value) => {
+      this.setState({ userPasswordInfoVisible: value });
+      this.setState({ userPasswordInfoVisible: value });
     };
     return (
       <>
@@ -218,6 +276,23 @@ export class DataTable extends Component {
             dataTableRef={this.dataTable}
             editFormRef={(ref) => (this.editForm = ref.form.current)}
             finish={editFinishFailed}
+          />
+        </Modal>
+
+        <Modal
+          title="重置密码"
+          visible={this.state.userPasswordInfoVisible}
+          onOk={this.onResetPasswordOk}
+          onCancel={this.onResetPasswordCancel}
+          okText="确认"
+          cancelText="取消"
+        >
+          <ResetPasswordForm
+            dataTableRef={this.dataTable}
+            resetPasswordRef={(ref) =>
+              (this.resetPasswordForm = ref.form.current)
+            }
+            finish={resetPasswordFinishFailed}
           />
         </Modal>
 

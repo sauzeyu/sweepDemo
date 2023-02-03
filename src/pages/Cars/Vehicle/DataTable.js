@@ -1,299 +1,157 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
-import { Button, Modal, message, Tag, Tooltip } from 'antd';
-import DrawerConfirm from '@/components/DrawerConfirm';
-import EditForm from './EditForm';
-import { getVehicles, stopVehicle, discardVehicle } from '@/services/cars';
-import { connect } from 'dva';
-import DescriptionList from '@/components/DescriptionList';
-import KeyTable from './KeyTable';
-import { windowType, sunroofType, color } from '@/constants/cars';
-import { exportVehicle } from '@/services/exportVehicle';
-import { PlusCircleOutlined, DownloadOutlined } from '@ant-design/icons';
-import Authorized from '@/components/Authorized';
-import { CARS_VEHICLE_EXPORT } from '@/components/Authorized/AuthMap';
-import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
+import { Table, Card } from 'antd';
+import { UpOutlined, DownOutlined } from '@ant-design/icons';
+import { keyLifecycleList, keyListById } from '@/services/cars';
+import { DKState, KeyState, KeyType, KeySource } from '@/constants/keys';
+import { useMemo } from 'react';
 
-const { Description } = DescriptionList;
+const SubTable = (props) => {
+  const dataList = React.useRef();
+  const columns = [
+    {
+      title: '操作时间',
+      dataIndex: 'createTime',
+      width: 350,
+    },
+    {
+      title: '操作状态',
+      dataIndex: 'keyStatus',
+      width: 160,
+      render: (text) => {
+        return KeyState[text];
+      },
+    },
+    {
+      title: '操作来源',
+      dataIndex: 'keySource',
+      width: 160,
+      render: (text) => {
+        return KeySource[text];
+      },
+    },
+  ];
+  const name = useMemo(() => `carSubModelsDataTable_${props.id}`, [props.id]);
+  return (
+    <Card>
+      <EasyTable
+        columns={columns}
+        rowKey={'id'}
+        source={keyLifecycleList}
+        name={name}
+        autoFetch
+        fixedParams={{ keyId: props.id }}
+        renderHeader={() => null}
+        wrappedComponentRef={() => {
+          return dataList;
+        }}
+      />
+    </Card>
+  );
+};
 
-@connect(({ carsVehicle, loading }) => ({
-  carsVehicle,
-  upserting: loading.effects['carsVehicle/upsert'],
-  importVehicle: loading.effects['carsVehicle/importVehicle'],
-}))
-class DataTable extends Component {
-  state = {
-    // 新增/修改
-    showUserInfo: false,
-    showKeysInfo: false,
-    editFormVisible: false,
-    keysFormVisible: false,
-    selectedRowKeys: [],
-    userInfo: {},
-    keysInfo: {},
-    selectedVehicleId: '',
-    selectedVehicleVin: '',
-  };
+class KeyTable extends Component {
   columns = [
     {
       title: '序号',
       width: 80,
       render: (text, record, index) => {
-        return TableHeaderColumn(text, record, index, this.dataTable);
+        let currentIndex = this.carsKeyListDataTable?.state?.currentIndex;
+        let currentPageSize = this.carsKeyListDataTable?.state?.currentPageSize;
+        return (currentIndex - 1) * currentPageSize + (index + 1);
       },
     },
     {
-      title: '车辆vin号',
-      dataIndex: 'vin',
+      title: '用户id',
+      dataIndex: 'userId',
       width: 200,
-      ellipsis: {
-        showTitle: false,
+    },
+    {
+      title: '钥匙类型',
+      dataIndex: 'parentId',
+      width: 160,
+      render: (text) => {
+        return KeyType(text);
       },
-      render: (text) => (
-        <Tooltip placement="topLeft" title={text}>
-          {text}
-        </Tooltip>
-      ),
     },
     {
-      title: '车型',
-      dataIndex: 'vehicleType',
-    },
-    {
-      title: '车辆品牌',
-      dataIndex: 'vehicleBrand',
-    },
-    {
-      title: '车辆型号',
-      dataIndex: 'vehicleModel',
-    },
-    {
-      title: '蓝牙设备序列号',
-      dataIndex: 'hwDeviceSn',
-      width: 300,
-      ellipsis: {
-        showTitle: false,
+      title: '具体状态',
+      dataIndex: 'dkState',
+      width: 200,
+      render: (text) => {
+        return DKState[text];
       },
-      render: (text) => (
-        <Tooltip placement="topLeft" title={text}>
-          {text}
-        </Tooltip>
-      ),
     },
     {
-      title: '蓝牙检索号',
-      dataIndex: 'searchNumber',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (text) => (
-        <Tooltip placement="topLeft" title={text}>
-          {text}
-        </Tooltip>
-      ),
+      title: '生效时间',
+      dataIndex: 'valFrom',
+      width: 200,
     },
     {
-      title: '蓝牙供应商编号',
-      dataIndex: 'hwDeviceProviderNo',
-    },
-    {
-      title: '蓝牙Mac地址',
-      dataIndex: 'bleMacAddress',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (text) => (
-        <Tooltip placement="topLeft" title={text}>
-          {text}
-        </Tooltip>
-      ),
-    },
-    {
-      title: '操作',
-      fixed: 'right',
-      width: 300,
-      render: (col) => {
-        if (col.isValid === 0) {
-          return null;
-        }
-        return (
-          <div className={'link-group'}>
-            <a onClick={() => this.keysInfo(col)}>查看钥匙</a>
-          </div>
-        );
-      },
+      title: '失效时间',
+      dataIndex: 'valTo',
+      width: 200,
     },
   ];
 
-  keysInfo = (col) => {
-    this.setState({
-      keysFormVisible: true,
-      selectedVehicleId: col.id,
-      selectedVehicleVin: col.vin,
-    });
-  };
-
-  revokeCar = (col) => {
-    Modal.confirm({
-      title: '吊销车辆',
-      content: (
-        <span style={{ color: 'red' }}>
-          <br />
-          确定吊销车辆？吊销后将无法恢复
-        </span>
-      ),
-      onOk: () => {
-        discardVehicle(col.id).then(() => {
-          this.dataTable.reload();
-        });
-      },
-    });
-  };
-
-  del = (model) => {
-    Modal.confirm({
-      title: '删除车辆',
-      content: `确定删除？`,
-    });
-  };
-  //
-  upsert = () => {
-    this.editForm.validateFields().then((data) => {
-      this.props
-        .dispatch({
-          type: 'carsVehicle/upsert',
-          payload: data,
-        })
-        .then((res) => {
-          this.setState({ editFormVisible: false });
-          this.dataTable.reload();
-          if (res.code === 200) {
-            message.success(res.msg);
-          } else {
-            message.error(res.msg);
-          }
-        });
-    });
-  };
-  onCancel = () => {
-    this.setState({
-      editFormVisible: false,
-      keysFormVisible: false,
-      showUserInfo: false,
-      showKeysInfo: false,
-    });
-  };
-  exportExcel = () => {
-    const { hwDeviceSn, vin, vehicleType, vehicleBrand, vehicleModel } =
-      this.props.searchFormValues;
-
-    let fileName = '车辆信息.xlsx';
-    let param = new URLSearchParams();
-    if (hwDeviceSn) {
-      param.append('hwDeviceSn', hwDeviceSn);
-    }
-    if (vin) {
-      param.append('vin', vin);
-    }
-    if (vehicleModel) {
-      param.append('vehicleModel', vehicleModel);
-    }
-    if (vehicleBrand) {
-      param.append('vehicleBrand', vehicleBrand);
-    }
-    if (vehicleType) {
-      param.append('vehicleType', vehicleType);
-    }
-    exportVehicle(param).then((res) => {
-      let blob = new Blob([res.data]);
-      let link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = fileName;
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-    });
-  };
-
   render() {
-    const {
-      editFormVisible,
-      keysFormVisible,
-      userInfo = {},
-      showUserInfo,
-    } = this.state;
+    const { selectedVehicleId, selectedVehicleVin } = this.props;
     return (
       <div>
         <EasyTable
           autoFetch
-          source={getVehicles}
+          columnWidth={200}
+          source={keyListById}
           dataProp={'data'}
-          name={'carsVehicleDataTable'}
+          name={'carsKeyListDataTable'}
           rowKey={'id'}
+          wrappedComponentRef={(ref) => (this.carsKeyListDataTable = ref)}
+          renderHeader={(title, extra, page) => {
+            let total = page.total;
+            total = '共 ' + total + ' 条记录';
+            return (
+              <>
+                <p>当前车辆 vin 号：{selectedVehicleVin}</p>
+                <p>{total}</p>
+              </>
+            );
+          }}
           columns={this.columns}
-          scroll={{ x: 1300 }}
-          onChange={this.handleTableChange}
-          wrappedComponentRef={(ref) => (this.dataTable = ref)}
-          extra={
-            <Authorized route={CARS_VEHICLE_EXPORT}>
-              <Button
-                type={'ghost'}
-                size={'large'}
-                icon={<DownloadOutlined />}
-                onClick={() => this.exportExcel()}
-              >
-                导出车辆信息
-              </Button>
-            </Authorized>
-          }
+          fixedParams={{ vehicleId: selectedVehicleId }}
+          expandIconAsCell={false}
+          expandIconColumnIndex={6}
+          expandable={{
+            expandedRowRender: (record) => {
+              return <SubTable {...record} />;
+            },
+            expandIcon: (props) => {
+              if (props.expanded) {
+                return (
+                  <a
+                    onClick={(e) => {
+                      props.onExpand(props.record, e);
+                    }}
+                  >
+                    生命周期 <UpOutlined />
+                  </a>
+                );
+              } else {
+                return (
+                  <a
+                    onClick={(e) => {
+                      props.onExpand(props.record, e);
+                    }}
+                  >
+                    生命周期 <DownOutlined />
+                  </a>
+                );
+              }
+            },
+          }}
         />
-        <Modal
-          footer={null}
-          title={'车主信息'}
-          visible={showUserInfo}
-          onCancel={this.onCancel}
-          destroyOnClose={true}
-        >
-          <DescriptionList col={1}>
-            <Description term={'电话'}>{userInfo?.phone}</Description>
-            <Description term={'姓名'}>{userInfo?.username}</Description>
-          </DescriptionList>
-        </Modal>
-
-        <DrawerConfirm
-          title={'汽车'}
-          width={650}
-          visible={editFormVisible}
-          onOk={this.upsert}
-          onCancel={this.onCancel}
-          confirmLoading={this.props.upserting}
-          destroyOnClose
-        >
-          <EditForm
-            editFormRef={(ref) => (this.editForm = ref.form.current)}
-            wrappedComponentRef={(ref) => (this.editFormWrapper = ref)}
-          />
-        </DrawerConfirm>
-
-        <DrawerConfirm
-          title={'钥匙列表'}
-          width={1200}
-          visible={keysFormVisible}
-          onOk={this.onCancel}
-          confirmLoading={false}
-          onCancel={this.onCancel}
-          hiddenOk={true}
-          destroyOnClose
-        >
-          <KeyTable
-            selectedVehicleId={this.state.selectedVehicleId}
-            selectedVehicleVin={this.state.selectedVehicleVin}
-            editFormRef={(ref) => (this.editForm = ref.form.current)}
-            wrappedComponentRef={(ref) => (this.editFormWrapper = ref)}
-          />
-        </DrawerConfirm>
       </div>
     );
   }
 }
 
-export default DataTable;
+export default KeyTable;

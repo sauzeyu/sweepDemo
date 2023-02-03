@@ -3,7 +3,13 @@ import EasyTable from '@/components/EasyTable';
 import { Table, Card } from 'antd';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 import { keyLifecycleList, keyListById } from '@/services/cars';
-import { DKState, KeyState, KeyType, KeySource } from '@/constants/keys';
+import {
+  DKState,
+  KeyState,
+  KeyType,
+  KeySource,
+  KeyClassification,
+} from '@/constants/keys';
 import { useMemo } from 'react';
 
 const SubTable = (props) => {
@@ -23,7 +29,7 @@ const SubTable = (props) => {
       },
     },
     {
-      title: '操作来源',
+      title: '吊销来源',
       dataIndex: 'keySource',
       width: 160,
       render: (text) => {
@@ -80,6 +86,15 @@ class KeyTable extends Component {
       width: 200,
       render: (text) => {
         return DKState[text];
+      },
+    },
+
+    {
+      title: '钥匙分类',
+      width: 100,
+      dataIndex: 'keyClassification',
+      render: (text) => {
+        return KeyClassification(text);
       },
     },
     {

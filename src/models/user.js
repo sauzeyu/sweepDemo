@@ -155,6 +155,7 @@ function extUserAuthMap(userInfo) {
     dnaMap = {};
 
   const menus = userInfo.menus || [];
+
   // 处理菜单 将嵌套格式的router扁平化
   /* 例如:
     { route: /parts,
