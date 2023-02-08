@@ -18,10 +18,12 @@ import com.vecentek.back.util.KeyLifecycleUtil;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
+import com.vecentek.back.vo.ShareKeyVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -286,5 +288,24 @@ public class DkmUserVehicleServiceImpl {
         }
         log.info("response：" + "/api/userVehicle/revokeKey " + "吊销钥匙成功!" + list);
         return PageResp.success("吊销钥匙成功!", list);
+    }
+
+    public PageResp shareKey(ShareKeyVO shareKeyVO) {
+        // 非空检验
+        if(StringUtils.isEmpty(shareKeyVO.getUserId()) ||
+                StringUtils.isEmpty(shareKeyVO.getVin()) ||
+                StringUtils.isEmpty(shareKeyVO.getKeyId()) ||
+                StringUtils.isEmpty(shareKeyVO.getShareUserId()) ||
+                StringUtils.isEmpty(shareKeyVO.getPhoneFingerprint()) ||
+                StringUtils.isEmpty(shareKeyVO.getValFrom()) ||
+                StringUtils.isEmpty(shareKeyVO.getValTo()) ||
+                Objects.isNull(shareKeyVO.getKeyPermit())){
+            return PageResp.fail("传参中存在空值!");
+        }
+        // 时间格式校验
+
+
+
+        return null;
     }
 }

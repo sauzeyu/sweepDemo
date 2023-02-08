@@ -4,6 +4,7 @@ import com.vecentek.back.service.impl.DkmUserVehicleServiceImpl;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
+import com.vecentek.back.vo.ShareKeyVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
@@ -70,5 +71,17 @@ public class DkmUserVehicleController {
     @RequestMapping(value = "/revokeKey", method = RequestMethod.POST)
     public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) {
         return dkmUserVehicleService.revokeKey(revokeKeyVO);
+    }
+
+    /**
+     * 分享钥匙
+     * 车主钥匙用户对目标用户进行分享操作时，TSP平台会通知钥匙平台创建分享钥匙。如果识别到分享用户没有注册，待分享用户注册成功之后，在调用此接口生成分享钥匙信息
+     *
+     * @param shareKeyVO
+     * @return
+     */
+    @RequestMapping(value = "/shareKey", method = RequestMethod.POST)
+    public PageResp shareKey(@RequestBody ShareKeyVO shareKeyVO) {
+        return dkmUserVehicleService.shareKey(shareKeyVO);
     }
 }
