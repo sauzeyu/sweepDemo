@@ -119,6 +119,12 @@ public class DkmKey implements Serializable {
     private Integer keyClassification;
 
     /**
+     * 钥匙分类，icce或者ccc excelIO对象
+     */
+    @TableField(exist = false)
+    private String keyClassificationVO;
+
+    /**
      * 钥匙类型，车主或者非车主
      */
     private String keyType;

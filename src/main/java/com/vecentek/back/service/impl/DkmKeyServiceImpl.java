@@ -8,7 +8,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.ExcelConstant;
@@ -42,8 +41,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * 钥匙信息(DkmKey)表服务实现类
@@ -301,11 +298,6 @@ public class DkmKeyServiceImpl {
         return PageResp.success("更新成功");
     }
 
-    public static void main(String[] args) {
-        while (true) {
-            System.out.println(new Date());
-        }
-    }
     /**
      * 吊销钥匙,如为车主钥匙,则所有子钥匙均不可用
      *
@@ -347,12 +339,13 @@ public class DkmKeyServiceImpl {
                                 .or()
                                 .eq(DkmKey::getDkState, KeyStatusEnum.FREEZE.getCode()));
                         for (DkmKey child : dkmKeys) {
+                            String childId = child.getId();
                             child.setDkState(KeyStatusEnum.REVOKE.getCode());
                         child.setDkState(5);
                             dkmKeyMapper.updateById(child);
                             // 生命周期
                             DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
-                            dkmKeyLifecycle1.setKeyId(id);
+                            dkmKeyLifecycle1.setKeyId(childId);
                             dkmKeyLifecycle1.setCreateTime(new Date());
                             // WEB页面
                             dkmKeyLifecycle1.setKeySource(1);
@@ -686,10 +679,10 @@ public class DkmKeyServiceImpl {
                     key.setKeyResourceVO("小程序");
                 }
                 if (KeyClassificationConstant.ICCE.equals(key.getKeyClassification())) {
-                    key.setKeyResourceVO("ICCE");
+                    key.setKeyClassificationVO("ICCE");
                 }
                 if (KeyClassificationConstant.CCC.equals(key.getKeyClassification())) {
-                    key.setKeyResourceVO("CCC");
+                    key.setKeyClassificationVO("CCC");
                 }
                 key.setPersonalAndCalibration(KeyStatusEnum.matchName(key.getDkState()));
             });

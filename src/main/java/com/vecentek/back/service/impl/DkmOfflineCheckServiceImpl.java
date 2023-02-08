@@ -108,9 +108,7 @@ public class DkmOfflineCheckServiceImpl {
                     vehicle.getHwDeviceSn(),
                     vehicle.getSearchNumber(),
                     vehicle.getBleMacAddress(),
-                    vehicle.getPubKey(),
-                    vehicle.getDkSecUnitId(),
-                    vehicle.getHwDeviceProviderNo())) {
+                    vehicle.getPubKey())) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
                 throw new VecentException(1001, "必填参数未传递！");
             }
@@ -330,7 +328,7 @@ public class DkmOfflineCheckServiceImpl {
         List<UploadBluetoothsErrorDTO> errorList = new ArrayList<>();
         int startNum = dkmBluetooths.size();
         for (DkmBluetooths bluetooth : dkmBluetooths) {
-            if (CharSequenceUtil.hasBlank(bluetooth.getHwDeviceSn(), bluetooth.getHwDeviceProviderNo(), bluetooth.getDkSdkVersion(), bluetooth.getDkSecUnitId(), bluetooth.getBleMacAddress())) {
+            if (CharSequenceUtil.hasBlank(bluetooth.getHwDeviceSn(), bluetooth.getDkSdkVersion(), bluetooth.getBleMacAddress())) {
                 throw new ParameterValidationException();
             }
         }
@@ -394,9 +392,7 @@ public class DkmOfflineCheckServiceImpl {
             log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "必填参数未传递或传入的参数格式不正确！");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        //String startTime = sdf.format(keyLogDetailVO.getStartTime());
-        //String endTime = sdf.format(keyLogDetailVO.getEndTime());
+
         Page<DkmKeyLog> page = new Page<>(keyLogDetailVO.getPageIndex(), keyLogDetailVO.getPageSize());
         LambdaQueryWrapper<DkmKeyLog> dkmKeyLogLambdaQueryWrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .eq(StrUtil.isNotBlank(keyLogDetailVO.getVin()), DkmKeyLog::getVin, keyLogDetailVO.getVin())

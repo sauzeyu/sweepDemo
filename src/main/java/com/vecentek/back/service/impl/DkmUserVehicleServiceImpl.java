@@ -3,7 +3,6 @@ package com.vecentek.back.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.vecentek.back.entity.DkmBluetooths;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
@@ -249,15 +248,15 @@ public class DkmUserVehicleServiceImpl {
             // 车主钥匙
             if (Objects.equals("0", parentId)) {
                 // 设备激活状态改为未激活
-                DkmVehicle vehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, key.getVin()));
-                if (!Objects.isNull(vehicle)) {
-                    DkmBluetooths dkmBluetooths = dkmBluetoothsMapper.selectOne(new LambdaQueryWrapper<DkmBluetooths>().eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
-                    if (!Objects.isNull(dkmBluetooths)) {
-                        dkmBluetooths.setDeviceStatus(0);
-                        dkmBluetooths.setUpdateTime(new Date());
-                        dkmBluetoothsMapper.updateById(dkmBluetooths);
-                    }
-                }
+                //DkmVehicle vehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, key.getVin()));
+                //if (!Objects.isNull(vehicle)) {
+                //    DkmBluetooths dkmBluetooths = dkmBluetoothsMapper.selectOne(new LambdaQueryWrapper<DkmBluetooths>().eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
+                //    if (!Objects.isNull(dkmBluetooths)) {
+                //        dkmBluetooths.setDeviceStatus(0);
+                //        dkmBluetooths.setUpdateTime(new Date());
+                //        dkmBluetoothsMapper.updateById(dkmBluetooths);
+                //    }
+                //}
                 keyType = 1;
                 // 查询子钥匙吊销
                 List<DkmKey> childList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getParentId, key.getId()).eq(DkmKey::getDkState, "1"));
