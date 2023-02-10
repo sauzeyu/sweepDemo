@@ -33,7 +33,7 @@ function createDefaultRequest() {
           type: 'RequestError',
         });
       }
-      return response.data;
+      return response;
     },
     (r) => {
       message.config({
