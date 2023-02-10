@@ -3,6 +3,7 @@ import { Tag, Badge } from 'antd';
 import React from 'react';
 
 export const DKState = {
+  0: <Badge color="green" text="未激活" />,
   1: <Badge color="green" text="启用" />,
   3: <Badge color="blue" text="冻结" />,
   4: <Badge color="yellow" text="过期" />,
@@ -26,13 +27,22 @@ export const KeyState = {
 export const KeySource = {
   1: 'web 端',
   2: 'app 端',
-  3: '换件',
+  3: '变更车主|售后换机|更换手机',
+  4: '小程序',
 };
 export const KeyType = (text) => {
   if (text === '0') {
     return <Tag color="green">车主钥匙</Tag>;
   } else {
     return <Tag color="blue">分享钥匙</Tag>;
+  }
+};
+
+export const KeyClassification = (text) => {
+  if (text === 1) {
+    return <Tag color="blue">icce</Tag>;
+  } else if (text === 2) {
+    return <Tag color="green">ccc</Tag>;
   }
 };
 

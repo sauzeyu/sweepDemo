@@ -14,6 +14,11 @@ export async function getAllRole() {
 export async function updateAdminById(params) {
   return request.post('dkmAdmin/updateAdminById', params);
 }
+
+export async function resetPasswordById(params) {
+  return request.post('dkmAdmin/resetPasswordById', params);
+}
+
 export async function deleteById(id) {
   return request.post('dkmAdmin/deleteById?id=' + id);
 }

@@ -183,6 +183,39 @@ class DataTable extends Component {
       showKeysInfo: false,
     });
   };
+
+  confirmExportExcel = () => {
+    const { hwDeviceSn, vin, vehicleType, vehicleBrand, vehicleModel } =
+      this.props.searchFormValues;
+    Modal.confirm({
+      title: '确定导出车辆信息?',
+
+      content: (
+        <>
+          蓝牙设备序列号:&nbsp;
+          {hwDeviceSn}
+          <br />
+          车辆vin号:&nbsp;
+          {vin}
+          <br />
+          车型:&nbsp;
+          {vehicleType}
+          <br />
+          车辆品牌:&nbsp;
+          {vehicleBrand}
+          <br />
+          车辆型号:&nbsp;
+          {vehicleModel}
+        </>
+      ),
+
+      onOk: () => {
+        return this.exportExcel();
+      },
+      okText: '导出',
+    });
+  };
+
   exportExcel = () => {
     const { hwDeviceSn, vin, vehicleType, vehicleBrand, vehicleModel } =
       this.props.searchFormValues;
@@ -239,7 +272,7 @@ class DataTable extends Component {
                 type={'ghost'}
                 size={'large'}
                 icon={<DownloadOutlined />}
-                onClick={() => this.exportExcel()}
+                onClick={() => this.confirmExportExcel()}
               >
                 导出车辆信息
               </Button>

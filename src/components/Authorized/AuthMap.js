@@ -5,6 +5,8 @@ export const SYSTEM_USER_MANAGE = '/sys/userManage';
 export const SYSTEM_USER_INSERT = '/sys/userManage/insert';
 export const SYSTEM_USER_UPDATE = '/sys/userManage/update';
 export const SYSTEM_USER_DELETE = '/sys/userManage/delete';
+export const SYSTEM_USER_RESET_PASSWORD = '/sys/userManage/reset';
+
 export const SYSTEM_USER_MANAGE_TABLE = '/sys/userManage/table';
 export const SYSTEM_USER_MANAGE_SELECT = '/sys/userManage/select';
 

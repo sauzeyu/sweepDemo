@@ -172,6 +172,31 @@ class DataTable extends Component {
     this.editForm.resetFields();
     this.setState({ editFormVisible: false });
   };
+
+  confirmExportExcel = () => {
+    const { hwDeviceSn, searchNumber, flag } = this.props.searchFormValues;
+    Modal.confirm({
+      title: '确定导出蓝牙信息?',
+
+      content: (
+        <>
+          蓝牙设备序列号:&nbsp;
+          {hwDeviceSn}
+          <br />
+          蓝牙检索号:&nbsp;
+          {searchNumber}
+          <br />
+          设备状态:&nbsp;
+          {flag}
+        </>
+      ),
+
+      onOk: () => {
+        return this.exportExcel();
+      },
+      okText: '导出',
+    });
+  };
   exportExcel = () => {
     const { hwDeviceSn, searchNumber, flag } = this.props.searchFormValues;
     let fileName = '蓝牙信息.xlsx';
@@ -214,7 +239,8 @@ class DataTable extends Component {
                 type={'ghost'}
                 size={'large'}
                 icon={<DownloadOutlined />}
-                onClick={() => this.exportExcel()}
+                // onClick={() => this.exportExcel()}
+                onClick={() => this.confirmExportExcel()}
               >
                 导出蓝牙信息
               </Button>

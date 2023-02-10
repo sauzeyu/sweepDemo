@@ -113,6 +113,14 @@ class SearchForm extends Component {
     for (let i = 0; i < Code.length; i++) {
       children.push(<Option key={Code[i][0]}> {Code[i][1]}</Option>);
     }
+
+    for (let i = 0; i < children.length; i++) {
+      for (let j = i + 1; j < children.length; j++) {
+        if (children[i]?.key == children[j]?.key) {
+          delete children[j];
+        }
+      }
+    }
     return (
       <Form
         {...formItemLayout}

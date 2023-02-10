@@ -31,7 +31,9 @@ import {
   KeyState,
   KeyType,
   KeyResource,
+  KeyClassification,
 } from '@/constants/keys';
+
 import { exportStatus } from '@/constants/export';
 import { keyLifecycleList, keyUseListById } from '@/services/cars';
 import { useMemo } from 'react';
@@ -82,15 +84,6 @@ const SubTable2 = () => {
   };
 
   const columns1 = [
-    // {
-    //   title: '序号',
-    //   width: 80,
-    //   render: (text, record, index) => {
-    //     let currentIndex = this.checkKeyUseLogTable?.state?.currentIndex;
-    //     let currentPageSize = this.checkKeyUseLogTable?.state?.currentPageSize;
-    //     return (currentIndex - 1) * currentPageSize + (index + 1);
-    //   },
-    // },
     {
       title: '导出状态',
       dataIndex: 'exportStatus',
@@ -149,7 +142,7 @@ const SubTable2 = () => {
       dataProp={'data'}
       name={'checkKeyUseLogTable'}
       columns={columns1}
-      // wrappedComponentRef={(ref) => (this?.checkKeyUseLogTable = ref)}
+      // wrappedComponentRef={(ref) => (this.checkKeyUseLogTable = ref)}
     />
   );
 };
@@ -240,10 +233,18 @@ class DataTable extends Component {
     },
     {
       title: '用户id',
+      ellipsis: {
+        showTitle: false,
+      },
       dataIndex: 'userId',
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
     },
     {
-      title: '车辆vin号',
+      title: '车辆标识符',
       dataIndex: 'vin',
       width: 180,
       ellipsis: {
@@ -255,6 +256,7 @@ class DataTable extends Component {
         </Tooltip>
       ),
     },
+
     {
       title: '钥匙状态',
       width: 100,
@@ -263,6 +265,7 @@ class DataTable extends Component {
         return DKState[text];
       },
     },
+
     {
       title: '生效时间',
       dataIndex: 'valFrom',
@@ -300,11 +303,19 @@ class DataTable extends Component {
       ),
     },
     {
-      title: '周期时长',
+      title: '钥匙分类',
       width: 100,
-      dataIndex: 'period',
-      render: (col) => this.time(col),
+      dataIndex: 'keyClassification',
+      render: (text) => {
+        return KeyClassification(text);
+      },
     },
+    // {
+    //   title: '周期时长',
+    //   width: 100,
+    //   dataIndex: 'period',
+    //   render: (col) => this.time(col),
+    // },
     {
       title: '钥匙来源',
       dataIndex: 'keyResource',
@@ -312,6 +323,19 @@ class DataTable extends Component {
         return KeyResource(text);
       },
     },
+    // {
+    //   title: '终端ID',
+    //   dataIndex: 'accountIdHash',
+    //   width: 180,
+    //   ellipsis: {
+    //     showTitle: false,
+    //   },
+    //   render: (text) => (
+    //     <Tooltip placement="topLeft" title={text}>
+    //       {text}
+    //     </Tooltip>
+    //   ),
+    // },
     {
       title: '操作',
       fixed: 'right',
@@ -613,7 +637,7 @@ class DataTable extends Component {
       <div>
         <EasyTable
           scroll={{ x: '1200px' }}
-          autoFetch
+          // autoFetch
           source={getKeysList}
           fixedParams={{
             // applyStartTime: this.state.applyStartTime,

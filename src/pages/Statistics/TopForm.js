@@ -376,7 +376,7 @@ class TopForm extends React.Component {
               title={
                 <>
                   <Statistic
-                    title="钥匙使用次数"
+                    title="本年钥匙使用次数"
                     value={keyUseCount}
                     {...valueStyle}
                   />
@@ -399,7 +399,7 @@ class TopForm extends React.Component {
               title={
                 <>
                   <Statistic
-                    title="钥匙故障次数"
+                    title="本年钥匙故障次数"
                     value={keyErrorCount}
                     {...valueStyle}
                   />

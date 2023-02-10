@@ -112,7 +112,34 @@ class DataTable extends Component {
       },
     },
   ];
+  confirmExportExcel = () => {
+    const { vehicleType, vehicleBrand, vehicleModel, phoneBrand } =
+      this.props.searchFormValues;
+    Modal.confirm({
+      title: '确定导出手机标定信息?',
 
+      content: (
+        <>
+          车型:&nbsp;
+          {vehicleType}
+          <br />
+          车辆品牌:&nbsp;
+          {vehicleBrand}
+          <br />
+          车辆型号:&nbsp;
+          {vehicleModel}
+          <br />
+          手机品牌:&nbsp;
+          {phoneBrand}
+        </>
+      ),
+
+      onOk: () => {
+        return this.exportExcel(true);
+      },
+      okText: '导出',
+    });
+  };
   exportExcel = (isXlsx) => {
     const { vehicleType, vehicleBrand, vehicleModel, phoneBrand } =
       this.props.searchFormValues;
@@ -149,39 +176,39 @@ class DataTable extends Component {
     });
   };
 
-  openModalExport = () => {
-    return Modal.info({
-      width: 450,
-      icon: '',
-      title: '选择导出 Excel 文件格式',
-      okText: '取消',
-      closable: true,
-      content: (
-        <Row>
-          <Col span={12}>
-            <Button
-              type={'dashed'}
-              onClick={() => this.exportExcel(true)}
-              icon={<DownloadOutlined style={{ fontSize: '50px' }} />}
-              style={{ width: '200px', height: '150px' }}
-            >
-              导出 xlsx 文件
-            </Button>
-          </Col>
-          <Col span={12}>
-            <Button
-              type={'dashed'}
-              icon={<CloudDownloadOutlined style={{ fontSize: '50px' }} />}
-              onClick={() => this.exportExcel(false)}
-              style={{ width: '200px', height: '150px' }}
-            >
-              导出 xls 文件
-            </Button>
-          </Col>
-        </Row>
-      ),
-    });
-  };
+  // openModalExport = () => {
+  //   return Modal.info({
+  //     width: 450,
+  //     icon: '',
+  //     title: '选择导出 Excel 文件格式',
+  //     okText: '取消',
+  //     closable: true,
+  //     content: (
+  //       <Row>
+  //         <Col span={12}>
+  //           <Button
+  //             type={'dashed'}
+  //             onClick={() => this.exportExcel(true)}
+  //             icon={<DownloadOutlined style={{ fontSize: '50px' }} />}
+  //             style={{ width: '200px', height: '150px' }}
+  //           >
+  //             导出 xlsx 文件
+  //           </Button>
+  //         </Col>
+  //         <Col span={12}>
+  //           <Button
+  //             type={'dashed'}
+  //             icon={<CloudDownloadOutlined style={{ fontSize: '50px' }} />}
+  //             onClick={() => this.exportExcel(false)}
+  //             style={{ width: '200px', height: '150px' }}
+  //           >
+  //             导出 xls 文件
+  //           </Button>
+  //         </Col>
+  //       </Row>
+  //     ),
+  //   });
+  // };
 
   openDownloadTemplate = () => {
     return Modal.info({
@@ -297,7 +324,7 @@ class DataTable extends Component {
               </Authorized>
               <Authorized route={CARS_PHONE_EXPORT}>
                 <Button
-                  onClick={() => this.openModalExport()}
+                  onClick={() => this.confirmExportExcel()}
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
