@@ -143,6 +143,34 @@ class DataTable extends Component {
       historyAftermarketDataTableVisible: false,
     });
   };
+  confirmExportExcel = () => {
+    const { vin, startTime } = this.props.searchFormValues;
+    if (startTime) {
+      let startTime1 = moment(startTime[0]).format('YYYY-MM-DD');
+      let endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
+    } else {
+      startTime1 = null;
+      endTime = null;
+    }
+    Modal.confirm({
+      title: '确定导出换件信息?',
+
+      content: (
+        <>
+          车辆vin号:&nbsp;
+          {vin}
+          <br />
+          换件时间:&nbsp;
+          {startTime1} ~ {endTime}
+        </>
+      ),
+
+      onOk: () => {
+        return this.exportExcel();
+      },
+      okText: '导出',
+    });
+  };
   exportExcel = () => {
     const { vin, startTime } = this.props.searchFormValues;
     let fileName = '换件信息.xlsx';
@@ -191,7 +219,7 @@ class DataTable extends Component {
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
-                  onClick={() => this.exportExcel()}
+                  onClick={() => this.confirmExportExcel()}
                 >
                   导出换件信息
                 </Button>

@@ -106,7 +106,27 @@ class DataTable extends Component {
       },
     },
   ];
+  confirmExportExcel = () => {
+    const { vehicleModel, level } = this.props.searchFormValues;
+    Modal.confirm({
+      title: '确定导出用户自标定信息?',
 
+      content: (
+        <>
+          车型:&nbsp;
+          {vehicleModel}
+          <br />
+          蓝牙灵敏度:&nbsp;
+          {level}
+        </>
+      ),
+
+      onOk: () => {
+        return this.exportExcel(true);
+      },
+      okText: '导出',
+    });
+  };
   exportExcel = (isXlsx) => {
     const { vehicleModel, level } = this.props.searchFormValues;
     let fileName;
@@ -283,7 +303,7 @@ class DataTable extends Component {
               </Authorized>
               <Authorized route={CARS_VEHICLE_CALIBRATION_EXPORT}>
                 <Button
-                  onClick={() => this.openModalExport()}
+                  onClick={() => this.confirmExportExcel()}
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
