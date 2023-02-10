@@ -24,7 +24,7 @@ public class DkmDkmKeyLifecycleServiceImpl {
         Page<DkmKeyLifecycle> page = new Page<>(pageIndex, pageSize);
         LambdaQueryWrapper<DkmKeyLifecycle> wrapper = Wrappers.<DkmKeyLifecycle>lambdaQuery()
                 .eq(DkmKeyLifecycle::getKeyId, keyId)
-                .orderByAsc(DkmKeyLifecycle::getKeyType);
+                .orderByDesc(DkmKeyLifecycle::getCreateTime);
         page = dkmKeyLifecycleMapper.selectPage(page, wrapper);
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
