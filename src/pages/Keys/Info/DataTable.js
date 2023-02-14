@@ -187,7 +187,6 @@ const SubTable = (props) => {
         renderHeader={() => null}
         wrappedComponentRef={(ref) => {
           props.that.state.subTableRefList['subTable_' + props.id] = ref;
-
           props.that.setState({
             subTableRefList: props.that.state.subTableRefList,
           });
@@ -345,7 +344,7 @@ class DataTable extends Component {
         let isDisable = col.dkState === 3;
         let disableStyle = {};
 
-        if (col.dkState === 5 || col.dkState === 4) {
+        if (col.dkState === 5 || col.dkState === 4 || col.dkState === 0) {
           disableStyle = {
             onClick: () => {},
             style: { opacity: 0.2, cursor: 'not-allowed', color: 'gray' },
