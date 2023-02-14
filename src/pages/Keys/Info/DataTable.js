@@ -42,6 +42,7 @@ import {
   KEYS_INFO_FREEZE,
   KEYS_INFO_REVOKE,
   KEYS_INFO_THAW,
+  LOG_USE,
 } from '@/components/Authorized/AuthMap';
 import { exportKey } from '@/services/exportKey';
 import { downloadExcel } from '@/services/downloadExcel';
@@ -186,7 +187,6 @@ const SubTable = (props) => {
         renderHeader={() => null}
         wrappedComponentRef={(ref) => {
           props.that.state.subTableRefList['subTable_' + props.id] = ref;
-
           props.that.setState({
             subTableRefList: props.that.state.subTableRefList,
           });
@@ -344,7 +344,7 @@ class DataTable extends Component {
         let isDisable = col.dkState === 3;
         let disableStyle = {};
 
-        if (col.dkState === 5 || col.dkState === 4) {
+        if (col.dkState === 5 || col.dkState === 4 || col.dkState === 0) {
           disableStyle = {
             onClick: () => {},
             style: { opacity: 0.2, cursor: 'not-allowed', color: 'gray' },
@@ -503,6 +503,110 @@ class DataTable extends Component {
       showUserInfo: true,
     });
   };
+  confirmExportExcel = () => {
+    console.log('this.props.searchFormValues;', this.props.searchFormValues);
+    const {
+      applyTime,
+      dkState,
+      keyClassification,
+      keyResource,
+      keyType,
+      userId,
+      valFromTime,
+      valToTime,
+      vin,
+    } = this.props.searchFormValues;
+    let applyStartTime;
+    let applyEndTime;
+    let valFromStartTime;
+    let valFromEndTime;
+    let valToStartTime;
+    let valToEndTime;
+    let dkStateEnum = [];
+    let keyResourceEnum;
+    let keyClassificationEnum = [];
+    let keyTypeEnum = [];
+
+    if (applyTime) {
+      applyStartTime = moment(applyTime[0])?.format('YYYY-MM-DD');
+      applyEndTime = moment(applyTime[1])?.add(1, 'days').format('YYYY-MM-DD');
+    }
+
+    if (valFromTime) {
+      valFromStartTime = moment(valFromTime[0])?.format('YYYY-MM-DD');
+      valFromEndTime = moment(valFromTime[1])
+        ?.add(1, 'days')
+        .format('YYYY-MM-DD');
+    }
+
+    if (valToTime) {
+      valToStartTime = moment(valToTime[0])?.format('YYYY-MM-DD');
+
+      valToEndTime = moment(valToTime[1])?.add(1, 'days').format('YYYY-MM-DD');
+    }
+
+    if (dkState != null) {
+      for (let i = 0; i < dkState.length; i++) {
+        dkStateEnum.push(DKState[dkState[i]]);
+      }
+    }
+    if (keyResource != null) {
+      keyResourceEnum = KeyResource(keyResource);
+    }
+
+    if (keyClassification != null) {
+      for (let i = 0; i < keyClassification.length; i++) {
+        keyClassificationEnum.push(KeyClassification(keyClassification[i]));
+      }
+    }
+
+    if (keyType != null) {
+      for (let i = 0; i < keyType.length; i++) {
+        keyTypeEnum.push(KeyType(keyType[i]));
+      }
+    }
+
+    Modal.confirm({
+      title: '确定导出钥匙信息?',
+
+      content: (
+        <>
+          申请时间:&nbsp;
+          {applyStartTime} ~ {applyEndTime}
+          <br />
+          钥匙状态:&nbsp;
+          {dkStateEnum}
+          <br />
+          钥匙来源:&nbsp;
+          {keyResourceEnum}
+          <br />
+          生效时间:&nbsp;
+          {valFromStartTime} ~ {valFromEndTime}
+          <br />
+          钥匙分类:&nbsp;
+          {keyClassificationEnum}
+          <br />
+          车辆标识符:&nbsp;
+          {vin}
+          <br />
+          失效时间:&nbsp;
+          {valToStartTime} ~ {valToEndTime}
+          <br />
+          钥匙类型:&nbsp;
+          {keyTypeEnum}
+          <br />
+          用户id：&nbsp;
+          {userId}
+          <br />
+        </>
+      ),
+
+      onOk: () => {
+        return this.exportExcel();
+      },
+      okText: '导出',
+    });
+  };
 
   exportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
@@ -510,16 +614,14 @@ class DataTable extends Component {
     // console.log('this.props.searchFormValues;', this.props.searchFormValues);
     const {
       applyTime,
-      vin,
-      periodMin,
-      periodMax,
-      periodUnit,
+      dkState,
+      keyClassification,
+      keyResource,
+      keyType,
       userId,
       valFromTime,
       valToTime,
-      keyType,
-      dkState,
-      keyResource,
+      vin,
     } = this.props.searchFormValues;
     let fileName = '钥匙信息.xlsx';
     let param = new URLSearchParams();
@@ -533,18 +635,13 @@ class DataTable extends Component {
     if (vin) {
       param.append('vin', vin);
     }
-
-    if (periodMin != null) {
-      param.append('periodMin', periodMin);
+    if (keyClassification) {
+      if (keyClassification?.length < 1) {
+      } else {
+        param.append('keyClassification', keyClassification);
+      }
     }
 
-    if (periodMax != null) {
-      param.append('periodMax', periodMax);
-    }
-
-    if (periodUnit) {
-      param.append('periodUnit', periodUnit);
-    }
     if (tempKeyType) {
       param.append('keyType', tempKeyType);
     }
@@ -657,7 +754,7 @@ class DataTable extends Component {
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
-                  onClick={() => this.exportExcel()}
+                  onClick={() => this.confirmExportExcel()}
                 >
                   导出钥匙信息
                 </Button>
