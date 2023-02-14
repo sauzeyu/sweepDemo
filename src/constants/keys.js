@@ -18,8 +18,9 @@ export const keyLogFlagBadge = {
   1: <Badge color="green" text="成功" />,
 };
 export const KeyState = {
-  1: <Badge color="green" text="开通" />,
-  2: <Badge color="blue" text="冻结" />,
+  0: <Badge color="green" text="开通" />,
+  1: <Badge color="blue" text="激活" />,
+  2: <Badge color="#2db7f5" text="冻结" />,
   3: <Badge color="#2db7f5" text="解冻" />,
   4: <Badge color="yellow" text="过期" />,
   5: <Badge color="red" text="吊销" />,
