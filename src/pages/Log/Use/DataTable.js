@@ -1,7 +1,7 @@
 import React, { Component, useState } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { connect } from 'dva';
-
+import { Code } from '@/constants/statusCode';
 import { getKeyLogList, checkKeyUseLog } from '@/services/keys';
 
 import {
@@ -259,10 +259,88 @@ class DataTable extends Component {
       showUserInfo: true,
     });
   };
+  confirmExportExcel = () => {
+    let creator = getDvaApp()._store.getState().user.currentUser.username;
 
+    const {
+      startTime,
+      phoneBrand,
+      phoneModel,
+      statusCode,
+      vin,
+      flag,
+      userId,
+      vehicleBrand,
+      vehicleModel,
+      vehicleType,
+    } = this.props.searchFormValues;
+    let beginTime;
+    let endTime;
+    let statusCodeEnmu = [];
+    let flagEnmu;
+    if (startTime?.length === 2) {
+      beginTime = moment(startTime[0]).format('YYYY-MM-DD');
+      endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
+    }
+    if (statusCode) {
+      for (let i = 0; i < Code.length; i++) {
+        for (let index = 0; index < statusCode.length; index++) {
+          if (statusCode[index] == Code[i][0]) {
+            statusCodeEnmu.push(Code[i][1]);
+          }
+        }
+      }
+    }
+
+    if (flag != null) {
+      flagEnmu = keyLogFlagBadge[flag];
+    }
+    Modal.confirm({
+      title: '确定导出钥匙信息?',
+
+      content: (
+        <>
+          操作时间:&nbsp;
+          {beginTime} ~ {endTime}
+          <br />
+          手机品牌:&nbsp;
+          {phoneBrand}
+          <br />
+          手机型号:&nbsp;
+          {phoneModel}
+          <br />
+          操作类型:&nbsp;
+          {statusCodeEnmu}
+          <br />
+          车辆vin号:&nbsp;
+          {vin}
+          <br />
+          操作结果:&nbsp;
+          {flagEnmu}
+          <br />
+          用户id:&nbsp;
+          {userId}
+          <br />
+          车辆品牌:&nbsp;
+          {vehicleBrand}
+          <br />
+          车辆型号&nbsp;
+          {vehicleModel}
+          <br />
+          车型&nbsp;
+          {vehicleType}
+          <br />
+        </>
+      ),
+
+      onOk: () => {
+        return this.exportExcel();
+      },
+      okText: '导出',
+    });
+  };
   exportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
-    console.log('this.props.searchFormValues;', this.props.searchFormValues);
 
     const {
       startTime,
@@ -407,7 +485,7 @@ class DataTable extends Component {
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
-                  onClick={() => this.exportExcel()}
+                  onClick={() => this.confirmExportExcel()}
                 >
                   导出钥匙使用记录
                 </Button>

@@ -145,12 +145,11 @@ class DataTable extends Component {
   };
   confirmExportExcel = () => {
     const { vin, startTime } = this.props.searchFormValues;
+    let startTime1;
+    let endTime;
     if (startTime) {
-      let startTime1 = moment(startTime[0]).format('YYYY-MM-DD');
-      let endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
-    } else {
-      startTime1 = null;
-      endTime = null;
+      startTime1 = moment(startTime[0]).format('YYYY-MM-DD');
+      endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
     }
     Modal.confirm({
       title: '确定导出换件信息?',

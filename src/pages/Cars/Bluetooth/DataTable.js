@@ -175,6 +175,10 @@ class DataTable extends Component {
 
   confirmExportExcel = () => {
     const { hwDeviceSn, searchNumber, flag } = this.props.searchFormValues;
+    let flagEnum;
+    if (flag != null) {
+      flagEnum = overdue[flag];
+    }
     Modal.confirm({
       title: '确定导出蓝牙信息?',
 
@@ -187,7 +191,7 @@ class DataTable extends Component {
           {searchNumber}
           <br />
           设备状态:&nbsp;
-          {flag}
+          {flagEnum}
         </>
       ),
 

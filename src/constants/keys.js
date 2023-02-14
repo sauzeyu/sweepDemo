@@ -4,7 +4,7 @@ import React from 'react';
 
 export const DKState = {
   0: <Badge color="green" text="未激活" />,
-  1: <Badge color="green" text="启用" />,
+  1: <Badge color="green" text="激活" />,
   3: <Badge color="blue" text="冻结" />,
   4: <Badge color="yellow" text="过期" />,
   5: <Badge color="red" text="吊销" />,
