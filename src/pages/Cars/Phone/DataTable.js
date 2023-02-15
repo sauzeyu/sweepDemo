@@ -324,7 +324,8 @@ class DataTable extends Component {
               </Authorized>
               <Authorized route={CARS_PHONE_EXPORT}>
                 <Button
-                  onClick={() => this.confirmExportExcel()}
+                  // onClick={() => this.confirmExportExcel()}
+                  onClick={() => this.exportExcel()}
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
