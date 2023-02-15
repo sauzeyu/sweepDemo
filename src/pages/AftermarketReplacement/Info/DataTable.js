@@ -219,6 +219,7 @@ class DataTable extends Component {
                   size={'large'}
                   icon={<DownloadOutlined />}
                   // onClick={() => this.confirmExportExcel()}
+
                   onClick={() => this.exportExcel()}
                 >
                   导出换件信息
