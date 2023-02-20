@@ -2,25 +2,16 @@ spring:
   application:
     name: dkserver-back
   profiles:
-    active: dev
+    active: saic-test
   cloud:
     nacos:
       config:
-        username: nacos
         password: vecent123!@#
+        username: nacos
         server-addr: 172.16.13.13:8888  #  配置中心地址
         file-extension: yaml # 指定配置文件类型
         namespace: ${spring.profiles.active}
-        group: liujz
         shared-configs:
           - data-id: common.yaml
             refresh: true
             group: common
-mybatis-plus:
-  mapper-locations: mapper/*Mapper.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    #默认不显示SQL日志
-    #    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    local-cache-scope: statement
