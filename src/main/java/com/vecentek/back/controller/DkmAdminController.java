@@ -77,6 +77,16 @@ public class DkmAdminController {
         return this.dkmAdminService.updateAdminById(adminVO);
     }
 
+    /**
+     * 管理员重置密码
+     *
+     * @return 角色列表
+     */
+    @PostMapping(value = "/resetPasswordById")
+    public PageResp resetPasswordById(@RequestBody AdminVO adminVO) {
+        return this.dkmAdminService.resetPasswordById(adminVO);
+    }
+
     @PostMapping(value = "/modifyPassword")
     public PageResp modifyPassword(@RequestParam String username, @RequestParam String password, @RequestParam String newPassword) {
         return this.dkmAdminService.modifyPassword(username, password, newPassword);
