@@ -529,20 +529,18 @@ class DataTable extends Component {
 
     if (applyTime) {
       applyStartTime = moment(applyTime[0])?.format('YYYY-MM-DD');
-      applyEndTime = moment(applyTime[1])?.add(1, 'days').format('YYYY-MM-DD');
+      applyEndTime = moment(applyTime[1])?.format('YYYY-MM-DD');
     }
 
     if (valFromTime) {
       valFromStartTime = moment(valFromTime[0])?.format('YYYY-MM-DD');
-      valFromEndTime = moment(valFromTime[1])
-        ?.add(1, 'days')
-        .format('YYYY-MM-DD');
+      valFromEndTime = moment(valFromTime[1])?.format('YYYY-MM-DD');
     }
 
     if (valToTime) {
       valToStartTime = moment(valToTime[0])?.format('YYYY-MM-DD');
 
-      valToEndTime = moment(valToTime[1])?.add(1, 'days').format('YYYY-MM-DD');
+      valToEndTime = moment(valToTime[1])?.format('YYYY-MM-DD');
     }
 
     if (dkState != null) {

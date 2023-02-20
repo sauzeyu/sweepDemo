@@ -1,12 +1,18 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, setLocale, getLocale, getDvaApp } from 'umi';
-import { Menu, Dropdown, Avatar } from 'antd';
+import { Menu, Dropdown, Avatar, Modal, DatePicker } from 'antd';
 import { SettingOutlined, LogoutOutlined } from '@ant-design/icons';
 import styles from './index.less';
 // import router from 'umi/router';
 import { history } from 'umi';
+import AddForm from '@/pages/System/User/Roles/AddForm';
+import EditForm from '@/pages/System/Logs/EditForm';
 
 export default class RightContent extends PureComponent {
+  state = {
+    configurationExpiredVisible: false,
+  };
+
   handleUserMenuClick = ({ key }) => {
     switch (key) {
       case 'logout':
@@ -17,9 +23,40 @@ export default class RightContent extends PureComponent {
       case 'modifyPassword':
         history.push('/user/changePassword');
         break;
+      case 'configurationExpired':
+        this.showExportExcelModal();
+        // history.push('/user/saveOrUpdateConfigExpired');
+        break;
+      default:
+        break;
     }
   };
+
+  showExportExcelModal = () => {
+    this.setState({
+      configurationExpiredVisible: true,
+    });
+  };
+
+  handleExportExcelCancel = () => {
+    this.setState({
+      configurationExpiredVisible: false,
+    });
+  };
+
+  handleExportExcelOk = () => {
+    console.log('this ', this);
+    console.log('this.props ', this.props);
+    console.log('this.editForm ', this.editForm);
+    // 提交表单
+    this.editForm?.submit();
+    this.handleExportExcelCancel();
+  };
+
   render() {
+    const onFinishFailed = (value) => {
+      this.setState({ configurationExpiredVisible: value });
+    };
     const { currentUser, theme, isMobile } = this.props;
     let className = styles.right;
     if (theme === 'dark') {
@@ -41,6 +78,12 @@ export default class RightContent extends PureComponent {
         <Menu.Item key="logout">
           <LogoutOutlined />{' '}
           <FormattedMessage id={'Component.globalHeader.menu.logout'} />
+        </Menu.Item>
+        <Menu.Item key="configurationExpired">
+          <LogoutOutlined />{' '}
+          <FormattedMessage
+            id={'Component.globalHeader.menu.configurationExpired'}
+          />
         </Menu.Item>
       </Menu>
     );
@@ -64,6 +107,23 @@ export default class RightContent extends PureComponent {
             {/*<span className={styles.name}>{currentUser.real_name}</span>*/}
           </div>
         </Dropdown>
+
+        <Modal
+          destroyOnClose={true}
+          title={'过期日志定时清理'}
+          visible={this.state.configurationExpiredVisible}
+          onOk={this.handleExportExcelOk}
+          onCancel={this.handleExportExcelCancel}
+          okText="确认"
+          cancelText="取消"
+        >
+          <EditForm
+            editFormRef={(ref) => {
+              this.editForm = ref.editForm.current;
+            }}
+            finish={onFinishFailed}
+          />
+        </Modal>
       </div>
     );
   }

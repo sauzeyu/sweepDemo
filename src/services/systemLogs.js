@@ -11,3 +11,10 @@ export async function auditLog(params) {
 export async function putFile(params) {
   return request.post('sysLog/delete?number=2000', params);
 }
+
+export async function saveOrUpdateConfigExpired(params) {
+  return request.post(
+    'dkmSystemConfigurationExpired/saveOrUpdateConfigExpired',
+    params,
+  );
+}

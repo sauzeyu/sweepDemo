@@ -259,6 +259,7 @@ class DataTable extends Component {
       showUserInfo: true,
     });
   };
+
   confirmExportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
 
@@ -280,7 +281,7 @@ class DataTable extends Component {
     let flagEnmu;
     if (startTime?.length === 2) {
       beginTime = moment(startTime[0]).format('YYYY-MM-DD');
-      endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
+      endTime = moment(startTime[1]).format('YYYY-MM-DD');
     }
     if (statusCode) {
       for (let i = 0; i < Code.length; i++) {
