@@ -218,8 +218,9 @@ class DataTable extends Component {
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
-                  // onClick={() => this.confirmExportExcel()}
-                  onClick={() => this.exportExcel()}
+                  onClick={() => this.confirmExportExcel()}
+
+                  // onClick={() => this.exportExcel()}
                 >
                   导出换件信息
                 </Button>
