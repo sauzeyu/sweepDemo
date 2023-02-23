@@ -100,7 +100,7 @@ export default class EditForm extends Component {
           <Input maxLength={40} placeholder={'用户姓名'} id="editUserName" />
         </Form.Item>
 
-        <Form.Item
+        {/* <Form.Item
           label={'密码'}
           name="password"
           rules={[
@@ -119,7 +119,7 @@ export default class EditForm extends Component {
             placeholder={'请输入密码'}
             id="addPassword"
           />
-        </Form.Item>
+        </Form.Item> */}
 
         <Spin spinning={loadingRoles}>
           <Form.Item
