@@ -18,7 +18,6 @@ import org.apache.curator.shaded.com.google.common.util.concurrent.ThreadFactory
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.servlet.Servlet;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,11 +43,6 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class DkmSystemConfigurationExpiredServiceImpl {
-    Servlet
-
-     void init (){
-
-    }
 
     @Resource
     private DkmKeyLogMapper dkmKeyLogMapper;
@@ -56,16 +50,12 @@ public class DkmSystemConfigurationExpiredServiceImpl {
     @Resource
     private DkmSystemConfigurationExpiredMapper dkmSystemConfigurationExpiredMapper;
 
-    private final DateTime initTime = DateUtil.parse(SpringContextUtil.getBean(ProConfig.class).getSysDate(), "yyyy-MM-dd");
-
     private static final ThreadFactory NAMED_FACTORY = new ThreadFactoryBuilder().setNameFormat("线程-删除key-%d").build();
 
-    private static final ScheduledThreadPoolExecutor SCHEDULED_THREAD_POOL_EXECUTOR = new ScheduledThreadPoolExecutor(1, NAMED_FACTORY);
-
     public PageResp selectForExpiration() {
-
+        DateTime configInitTime = DateUtil.parse(SpringContextUtil.getBean(ProConfig.class).getSysDate(), "yyyy-MM-dd");
         // 获取系统配置的初始日期
-        LocalDateTime configDateTime = LocalDateTime.ofInstant(initTime.toInstant(), ZoneId.systemDefault());
+        LocalDateTime configDateTime = LocalDateTime.ofInstant(configInitTime.toInstant(), ZoneId.systemDefault());
         LocalDate configDate = configDateTime.toLocalDate();
         LocalDate deadLine = getDeadLine();
         LambdaQueryWrapper<DkmKeyLog> queryWrapper = Wrappers.lambdaQuery();
@@ -126,8 +116,11 @@ public class DkmSystemConfigurationExpiredServiceImpl {
         return PageResp.success("修改配置成功");
     }
 
-
     {
+
+        ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1, NAMED_FACTORY);
+
+
         Runnable task = () -> {
 
             LocalDate deadLine = getDeadLine();
@@ -140,16 +133,17 @@ public class DkmSystemConfigurationExpiredServiceImpl {
             } else {
                 log.info(nowDate + " 和 " + deadLine + " 不是同一天");
             }
+            DateTime configInitTime = DateUtil.parse(SpringContextUtil.getBean(ProConfig.class).getSysDate(), "yyyy-MM-dd");
             if (deleteLogs) {
                 // 执行过期钥匙使用记录删除操作
                 dkmKeyLogMapper.delete(Wrappers.<DkmKeyLog>lambdaQuery()
-                        .ge(DkmKeyLog::getOperateTime, initTime)
+                        .ge(DkmKeyLog::getOperateTime, configInitTime)
                         .le(DkmKeyLog::getOperateTime, deadLine)
                 );
             }
         };
         //安排在指定的时间执行指定的任务。task 将在每天的3点执行一次
-        SCHEDULED_THREAD_POOL_EXECUTOR.scheduleAtFixedRate(task, getSpecifiedTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS), TimeUnit.MILLISECONDS);
+        scheduledExecutor.scheduleAtFixedRate(task, getSpecifiedTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS), TimeUnit.MILLISECONDS);
     }
 
     public long getSpecifiedTime() {
