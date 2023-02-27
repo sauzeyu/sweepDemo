@@ -1,16 +1,23 @@
 import React, { PureComponent } from 'react';
 import { FormattedMessage, setLocale, getLocale, getDvaApp } from 'umi';
 import { Menu, Dropdown, Avatar, Modal, DatePicker } from 'antd';
-import { SettingOutlined, LogoutOutlined } from '@ant-design/icons';
+import {
+  SettingOutlined,
+  LogoutOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import styles from './index.less';
 // import router from 'umi/router';
 import { history } from 'umi';
 import AddForm from '@/pages/System/User/Roles/AddForm';
 import EditForm from '@/pages/System/Logs/EditForm';
 
+import { selectForLast } from '@/services/systemLogs';
+
 export default class RightContent extends PureComponent {
   state = {
     configurationExpiredVisible: false,
+    validityPeriod: 0,
   };
 
   handleUserMenuClick = ({ key }) => {
@@ -19,6 +26,7 @@ export default class RightContent extends PureComponent {
         getDvaApp()._store.dispatch({
           type: 'user/logout',
         });
+        localStorage.removeItem('expiredModalFirst');
         break;
       case 'modifyPassword':
         history.push('/user/changePassword');
@@ -33,8 +41,11 @@ export default class RightContent extends PureComponent {
   };
 
   showExportExcelModal = () => {
-    this.setState({
-      configurationExpiredVisible: true,
+    selectForLast().then((res) => {
+      this.setState({
+        validityPeriod: res.data,
+        configurationExpiredVisible: true,
+      });
     });
   };
 
@@ -80,7 +91,7 @@ export default class RightContent extends PureComponent {
           <FormattedMessage id={'Component.globalHeader.menu.logout'} />
         </Menu.Item>
         <Menu.Item key="configurationExpired">
-          <LogoutOutlined />{' '}
+          <DeleteOutlined />{' '}
           <FormattedMessage
             id={'Component.globalHeader.menu.configurationExpired'}
           />
@@ -121,6 +132,7 @@ export default class RightContent extends PureComponent {
             editFormRef={(ref) => {
               this.editForm = ref.editForm.current;
             }}
+            validityPeriod={this.state.validityPeriod}
             finish={onFinishFailed}
           />
         </Modal>

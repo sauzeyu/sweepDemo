@@ -18,3 +18,7 @@ export async function saveOrUpdateConfigExpired(params) {
     params,
   );
 }
+
+export async function selectForLast() {
+  return request.get('dkmSystemConfigurationExpired/selectForLast');
+}

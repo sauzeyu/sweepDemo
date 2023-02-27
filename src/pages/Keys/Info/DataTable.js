@@ -32,6 +32,10 @@ import {
   KeyType,
   KeyResource,
   KeyClassification,
+  SimpleDKState,
+  SimpleKeyType,
+  SimplekeyResource,
+  SimplekeyClassification,
 } from '@/constants/keys';
 
 import { exportStatus } from '@/constants/export';
@@ -542,25 +546,40 @@ class DataTable extends Component {
 
       valToEndTime = moment(valToTime[1])?.format('YYYY-MM-DD');
     }
-
     if (dkState != null) {
-      for (let i = 0; i < dkState.length; i++) {
-        dkStateEnum.push(DKState[dkState[i]]);
+      if (dkState instanceof Array) {
+        for (let i = 0; i < dkState.length; i++) {
+          dkStateEnum.push(SimpleDKState[dkState[i]]);
+        }
+      } else {
+        dkStateEnum.push(SimpleDKState[dkState]);
       }
     }
+
     if (keyResource != null) {
-      keyResourceEnum = KeyResource(keyResource);
+      keyResourceEnum = SimplekeyResource[keyResource];
     }
 
     if (keyClassification != null) {
-      for (let i = 0; i < keyClassification.length; i++) {
-        keyClassificationEnum.push(KeyClassification(keyClassification[i]));
+      if (keyClassification instanceof Array) {
+        for (let i = 0; i < keyClassification.length; i++) {
+          keyClassificationEnum.push(
+            SimplekeyClassification(keyClassification[i]),
+          );
+        }
+      } else {
+        keyClassificationEnum.push(SimplekeyClassification(keyClassification));
       }
     }
 
     if (keyType != null) {
-      for (let i = 0; i < keyType.length; i++) {
-        keyTypeEnum.push(KeyType(keyType[i]));
+      console.log('keyType', keyType);
+      if (keyType instanceof Array) {
+        for (let i = 0; i < keyType.length; i++) {
+          keyTypeEnum.push(SimpleKeyType[keyType[i]]);
+        }
+      } else {
+        keyTypeEnum.push(SimpleKeyType[keyType]);
       }
     }
 
