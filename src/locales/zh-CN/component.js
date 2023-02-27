@@ -11,6 +11,7 @@ export default {
   'Component.googleMap.search.placeholder': '搜索地址',
   'Component.googleMap.addressPreviewTitle': '地址预览',
   'Component.globalHeader.menu.logout': '退出登录',
+  'Component.globalHeader.menu.configurationExpired': '配置系统日志',
   'Component.globalHeader.menu.ChooseLanguage': '语言',
   'Component.globalHeader.menu.changePassword': '修改密码',
   'Component.statusIcon.task.emptyText': '暂无任务',

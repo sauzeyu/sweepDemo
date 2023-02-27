@@ -31,3 +31,7 @@ export async function selectKeyErrorLogByAllPhoneBrand() {
 export async function selectKeyErrorLogByPhoneBrand(params) {
   return request.get('dkmStatistics/selectKeyErrorLogByPhoneBrand', { params });
 }
+
+export async function selectForExpiration() {
+  return request.get('dkmSystemConfigurationExpired/selectForExpiration');
+}

@@ -6,7 +6,7 @@ import DrawerConfirm from '@/components/DrawerConfirm';
 import EditForm from './EditForm';
 import { connect } from 'dva';
 import { getBluetooth, delBluetooth } from '@/services/cars';
-import { overdue } from '@/constants/cars';
+import { overdue, Simpleoverdue } from '@/constants/cars';
 import { exportBluetooth } from '@/services/exportBluetooth';
 import { CARS_BLUETOOTH_EXPORT } from '@/components/Authorized/AuthMap';
 import Authorized from '@/components/Authorized';
@@ -177,7 +177,7 @@ class DataTable extends Component {
     const { hwDeviceSn, searchNumber, flag } = this.props.searchFormValues;
     let flagEnum;
     if (flag != null) {
-      flagEnum = overdue[flag];
+      flagEnum = Simpleoverdue[flag];
     }
     Modal.confirm({
       title: '确定导出蓝牙信息?',
