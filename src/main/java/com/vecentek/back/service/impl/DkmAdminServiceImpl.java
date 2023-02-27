@@ -158,6 +158,42 @@ public class DkmAdminServiceImpl {
         return PageResp.success("删除成功");
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public PageResp resetPasswordById(AdminVO adminVO) {
+
+
+        if (Objects.isNull(adminVO.getId())){
+            return PageResp.fail("用户名id为空");
+        }
+        DkmAdmin dkmAdmin = dkmAdminMapper.selectById(adminVO.getId());
+        if (Objects.isNull(dkmAdmin)){
+            return PageResp.fail("用户已不存在");
+        }
+
+        LambdaUpdateWrapper<DkmAdmin> lambdaUpdateWrapper = new LambdaUpdateWrapper<DkmAdmin>()
+                .eq(DkmAdmin::getId, adminVO.getId())
+                .set(DkmAdmin::getPassword, adminVO.getPassword())
+                .set(DkmAdmin::getUpdateTime, adminVO.getUpdateTime())
+                .set(DkmAdmin::getUpdator,adminVO.getUpdator());
+        try {
+            dkmAdminMapper.update(null, lambdaUpdateWrapper);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return PageResp.fail("更新失败");
+        }
+        // 涉及到权限需要清除redis中的token
+        // 检查是否有用户token
+        Boolean aBoolean = redisTemplate.hasKey(dkmAdmin.getUsername());
+        if (aBoolean){ // 如果有才删除，没有就不管
+            // 根据用户名找到token 然后删除
+            Boolean delete = redisTemplate.delete(dkmAdmin.getUsername());
+            if (!delete) {
+                return PageResp.fail("有关联用户token删除失败，请联系管理员或让用户主动下线重登！");
+            }
+        }
+        return PageResp.success("更新成功");
+    }
+
     public PageResp modifyPassword(String username, String password, String newPassword) {
 
         DkmAdmin admin = dkmAdminMapper.selectOne(Wrappers.<DkmAdmin>lambdaQuery()
