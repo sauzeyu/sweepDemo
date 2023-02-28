@@ -48,7 +48,9 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -116,6 +118,17 @@ public class DkmOfflineCheckServiceImpl {
                     log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号长度不正确！");
                     throw new VecentException(1001, "蓝牙检索号长度不正确！");
                 }
+                List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(null);
+                    // 将 dkmBluetooths 转换为 Map 类型，以便快速查找
+                Map<String, DkmBluetooths> bluetoothMap = dkmBluetooths.stream()
+                        .collect(Collectors.toMap(DkmBluetooths::getSearchNumber, Function.identity()));
+
+                    // 查找是否存在相同的搜索号
+                if (bluetoothMap.containsKey(vehicle.getSearchNumber())) {
+                    log.info("response：/api/offlineCheck/insertOrUpdateVehicleBatch 蓝牙检索号不是唯一的！");
+                    throw new VecentException(1001, "蓝牙检索号不是唯一的！");
+                }
+
             }
 
             if (vehicle.getVin().length() != 17) {
