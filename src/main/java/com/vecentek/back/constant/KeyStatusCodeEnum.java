@@ -63,7 +63,7 @@ public enum KeyStatusCodeEnum {
 
     // 2022.7.5 修改后 新加一个Tag byte
     SAFE_LOCK("0100", "解闭锁-解锁"),
-    SAFE_UNLOCK("0100", "解闭锁-闭锁"),
+    SAFE_UNLOCK("0101", "解闭锁-闭锁"),
 
     SAFE_FIND_CAR("0300", "寻车"),
 
