@@ -106,24 +106,33 @@ public class DkmOfflineCheckServiceImpl {
             if (CharSequenceUtil.hasBlank(vehicle.getVin(),
                     vehicle.getVehicleModel(),
                     vehicle.getHwDeviceSn(),
-                    vehicle.getSearchNumber(),
                     vehicle.getBleMacAddress(),
                     vehicle.getPubKey())) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
                 throw new VecentException(1001, "必填参数未传递！");
             }
+            if (CharSequenceUtil.isNotBlank(vehicle.getSearchNumber())) {
+                if (vehicle.getSearchNumber().length() != 38) {
+                    log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号长度不正确！");
+                    throw new VecentException(1001, "蓝牙检索号长度不正确！");
+                }
+
+                LambdaQueryWrapper<DkmBluetooths> queryWrapper = Wrappers.lambdaQuery(DkmBluetooths.class)
+                 .eq(DkmBluetooths::getSearchNumber, vehicle.getSearchNumber());
+
+                // 根据SearchNumberWrapper条件查找是否存在相同的搜索号
+                if (dkmBluetoothsMapper.selectCount(queryWrapper) > 0) {
+                    log.info("response：/api/offlineCheck/insertOrUpdateVehicleBatch 蓝牙检索号不是唯一的！");
+                    throw new VecentException(1001, "蓝牙检索号不是唯一的！");
+                }
+
+            }
+
             if (vehicle.getVin().length() != 17) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "VIN长度不正确！");
                 throw new VecentException(1001, "VIN长度不正确！");
             }
-            if (vehicle.getHwDeviceSn().length() != 40) {
-                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙设备序列号长度不正确！");
-                throw new VecentException(1001, "蓝牙设备序列号长度不正确！");
-            }
-            if (vehicle.getSearchNumber().length() != 38) {
-                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号长度不正确！");
-                throw new VecentException(1001, "蓝牙检索号长度不正确！");
-            }
+
 
             if (vehicle.getBleMacAddress().length() != 12) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址长度不正确！");
@@ -133,15 +142,19 @@ public class DkmOfflineCheckServiceImpl {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙公钥长度不正确！");
                 throw new VecentException(1001, "蓝牙公钥长度不正确！");
             }
+
+
             if (HexUtil.decodeHex(vehicle.getHwDeviceSn()) == null) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙设备序列号格式不正确！");
                 throw new VecentException(1001, "蓝牙设备序列号格式不正确！");
             }
-            if (HexUtil.decodeHex(vehicle.getSearchNumber()) == null) {
-                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号格式不正确！");
-                throw new VecentException(1001, "蓝牙检索号格式不正确！");
-            }
 
+            if (CharSequenceUtil.isNotBlank(vehicle.getSearchNumber())) {
+                if (HexUtil.decodeHex(vehicle.getSearchNumber()) == null) {
+                    log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号格式不正确！");
+                    throw new VecentException(1001, "蓝牙检索号格式不正确！");
+                }
+            }
             if (HexUtil.decodeHex(vehicle.getBleMacAddress()) == null) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址格式不正确！");
                 throw new VecentException(1001, "蓝牙Mac地址格式不正确！");
@@ -190,8 +203,17 @@ public class DkmOfflineCheckServiceImpl {
         log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());
         //校验车辆蓝牙信息
         verifyVehicleBluetoothVO(dkmVehicles);
+        dkmVehicles.stream().filter(vehicle -> CharSequenceUtil.isBlank(vehicle.getSearchNumber()))
+                .forEach(vehicle -> {
+                            HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
+                            String hashSearchNumber = hMac.digestHex(vehicle.getHwDeviceSn());
+                            String searchNumber = hashSearchNumber.substring(hashSearchNumber.length() - 19);
+                            vehicle.setSearchNumber(searchNumber);
+                        }
+                );
         //划分换件车辆和新增车辆
         List<String> alreadyExistsVehicleVinList = dkmOfflineCheckMapper.selectVehicleByVin(dkmVehicles);
+
         List<VehicleBluetoothVO> newVehicleBluetoothList = dkmVehicles.stream()
                 .filter(dkmVehicle -> !alreadyExistsVehicleVinList.contains(dkmVehicle.getVin()))
                 .collect(Collectors.toList());
