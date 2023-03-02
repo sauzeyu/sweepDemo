@@ -143,6 +143,11 @@ export default [
             title: '使用日志',
             component: './Log/Use',
           },
+          {
+            path: '/log/error',
+            title: '诊断日志',
+            component: './Log/Error',
+          },
         ],
       },
     ],

@@ -67,6 +67,7 @@ export const AFTERMARKET_REPLACEMENT_INFO_SELECT =
   '/aftermarketReplacement/info/select';
 // ------ 日志管理 ------
 export const LOG_USE = '/log/use';
+export const LOG_ERROR = '/log/error';
 export const LOG_USE_EXPORT = '/log/use/export';
 export const LOG_USE_TABLE = '/log/use/table';
 export const LOG_USE_SELECT = '/log/use/select';

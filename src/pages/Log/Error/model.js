@@ -1,5 +1,5 @@
 export default {
-  namespace: 'keyUseLogDataTable',
+  namespace: 'keysErrorLog',
   state: {},
   effects: {},
   reducers: {

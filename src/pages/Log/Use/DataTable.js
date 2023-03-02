@@ -474,7 +474,7 @@ class DataTable extends Component {
           // autoFetch
           source={getKeyLogList}
           dataProp={'data'}
-          name={'keyErrorLogDataTable'}
+          name={'keyUseLogDataTable'}
           columns={this.columns}
           // fixedParams={{ startTime: startTime, endTime: endTime }}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}

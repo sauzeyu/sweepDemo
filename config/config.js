@@ -14,7 +14,7 @@ export default defineConfig({
       // target: 'https://cd.vecentek.com:20611',
       // target: 'http://172.16.6.106:9001/vecentek',
       // target: 'http://localhost:9001/vecentek',
-      target: 'http://172.16.39.217:8000/vecentek',
+      target: 'http://172.16.70.50:8000/vecentek',
       // target: 'http://172.16.6.107:8000/vecentek',
       // target: 'http://172.16.13.12:9002/vecentek',
       // target: 'http://172.16.13.13:9001/vecentek',
