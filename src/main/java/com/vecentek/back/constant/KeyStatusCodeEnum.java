@@ -48,6 +48,17 @@ public enum KeyStatusCodeEnum {
 
     SAFE_VEHICLE_NOT_POWERED_OFF("16", "车辆未下电"),
 
+    //  日志调试
+    COMMAND_EXECUTED_SUCCESSFULLY("0x00", "指令执行成功"),
+
+    COMMAND_EXECUTION_FAILED("0x01", "指令执行失败"),
+
+    RESEND("0x02", "重发"),
+
+    CLOCK_RESET("0x07", "时钟已重置"),
+
+    BLUETOOTH_DISCONNECTED("0x08", "蓝牙断开"),
+
     /**
      * 4.14 遥控指令 REMOTE
      */

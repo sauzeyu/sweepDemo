@@ -11,23 +11,17 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
-
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
-
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
-import com.vecentek.back.mapper.DkmSystemConfigurationExpiredMapper;
 import com.vecentek.back.util.DownLoadUtil;
-
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -37,11 +31,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import javax.annotation.Resource;
-
 import java.io.File;
-
 import java.util.List;
 
 /**
@@ -76,7 +67,6 @@ public class DkmKeyLogServiceImpl {
 
 
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
-                //.like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
@@ -103,7 +93,6 @@ public class DkmKeyLogServiceImpl {
                 }
             });
         }
-
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
@@ -121,7 +110,6 @@ public class DkmKeyLogServiceImpl {
      * @param vehicleBrand
      * @param vehicleModel
      * @param vehicleType
-     * @param creator
      */
     @Async
     @Transactional(rollbackFor = Exception.class)
@@ -136,7 +124,6 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator,
                                     String excelName
     ) {
         try {
@@ -159,7 +146,6 @@ public class DkmKeyLogServiceImpl {
             }
 
 
-            //ExcelWriter writer = ExcelUtil.getWriter(filePath);
             BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
             //按数据量大小拆分成不同的sheet页，每页数据量的大小设置小于rowAccessWindowSize
             //BigExcelWriter excelWriter = (BigExcelWriter) ExcelUtil.getBigWriter(200);
