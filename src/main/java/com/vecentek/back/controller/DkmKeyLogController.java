@@ -1,14 +1,9 @@
 package com.vecentek.back.controller;
 
-import cn.hutool.core.util.IdUtil;
-import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
-import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.service.impl.DkmKeyLogServiceImpl;
 import com.vecentek.common.response.PageResp;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +15,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -171,7 +164,6 @@ public class DkmKeyLogController {
                         vehicleBrand,
                         vehicleModel,
                         vehicleType,
-                        creator,
                         excelName
                 );
 
