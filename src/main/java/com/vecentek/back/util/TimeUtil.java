@@ -2,7 +2,6 @@ package com.vecentek.back.util;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.StrUtil;
 import com.vecentek.back.config.ProConfig;
@@ -18,7 +17,7 @@ import java.util.List;
  * @date 2022/7/6
  * @apiNote
  */
-public class DateUtil {
+public class TimeUtil {
     /**
      * 默认日期格式
      */

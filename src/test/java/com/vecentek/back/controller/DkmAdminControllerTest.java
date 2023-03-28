@@ -1,7 +1,7 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmAdminServiceImpl;
-import com.vecentek.back.util.DateUtil;
+import com.vecentek.back.util.TimeUtil;
 import com.vecentek.common.response.PageResp;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,8 +83,8 @@ class DkmAdminControllerTest {
     }
     @Test
             void testDay() {
-        String now = DateUtil.getNow();
-        String nextDay = DateUtil.getNextDay();
+        String now = TimeUtil.getNow();
+        String nextDay = TimeUtil.getNextDay();
         System.out.println("DkmAdminControllerTest.testDay");
     }
 
