@@ -63,9 +63,8 @@ public class DkmStatisticsController {
 
     /**
      * 根据各手机品牌查询对应错误日志占比
-     *
-     * @param
-     * @return
+     * @author EdgeYu
+     * @date 2022-06-28 15:56
      */
     @GetMapping("/selectKeyErrorLogByAllPhoneBrand")
     public PageResp selectKeyErrorLogByAllPhoneBrand() {
@@ -123,6 +122,7 @@ public class DkmStatisticsController {
      *
      * @return
      */
+
     @GetMapping(value = "/keyErrorTimeStatistics")
     public PageResp keyErrorTimeStatistics() {
         return echartsServiceImpl.keyErrorTimeStatistics();

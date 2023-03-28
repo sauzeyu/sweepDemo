@@ -18,7 +18,7 @@ import java.util.List;
  * @date 2022/7/6
  * @apiNote
  */
-public class DownLoadUtil {
+public class DateUtil {
     /**
      * 默认日期格式
      */
@@ -37,7 +37,7 @@ public class DownLoadUtil {
         //对时间参数进行校验
         if (CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)) {
             //获取当前月和下一个月
-            String now = DateUtil.now();
+            String now = cn.hutool.core.date.DateUtil.now();
             DateTime dateTime = new DateTime(now, DatePattern.NORM_DATETIME_FORMAT);
             int month = dateTime.getMonth() + 1;
             int nextMonth;
@@ -62,11 +62,11 @@ public class DownLoadUtil {
 
 
         //导出的excel按月份以时间命名 如2022-6-1~2022-7-1钥匙使用记录
-        DateTime startName = DateUtil.parse(startTime);
-        String startFileName = DateUtil.format(startName, "yyyy-MM-dd");
+        DateTime startName = cn.hutool.core.date.DateUtil.parse(startTime);
+        String startFileName = cn.hutool.core.date.DateUtil.format(startName, "yyyy-MM-dd");
 
-        DateTime endName = DateUtil.parse(endTime);
-        String endFileName = DateUtil.format(endName, "yyyy-MM-dd");
+        DateTime endName = cn.hutool.core.date.DateUtil.parse(endTime);
+        String endFileName = cn.hutool.core.date.DateUtil.format(endName, "yyyy-MM-dd");
         String fileName = startFileName + "~" + endFileName;
 
         String username = "";

@@ -16,5 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminVO extends DkmAdmin {
+    /**
+     * 角色ID
+     */
     private Integer roleId;
 }

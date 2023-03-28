@@ -262,8 +262,14 @@ public class DkmKeyServiceImpl {
 
     private PageResp unfreezeKeys(Integer dkState, String userId, String vin) {
         // 查询是否有钥匙正在使用
-        List<DkmKey> runDkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getDkState,
-                dkState).eq(DkmKey::getUserId, userId).eq(DkmKey::getVin, vin));
+
+        List<DkmKey> runDkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
+                .eq(DkmKey::getDkState, dkState)
+                .or()
+                .eq(DkmKey::getDkState, 0)
+                .eq(DkmKey::getUserId, userId)
+                .eq(DkmKey::getVin, vin)
+        );
         if (runDkmKeys.size() > 0) {
             return PageResp.success("更新失败，当前用户车辆已存在钥匙正在使用，不可解冻选中钥匙");
         }
