@@ -86,12 +86,11 @@ public class DkmKeyServiceImpl {
      */
     public PageResp selectForPageByVehicleId(int pageIndex, int pageSize, Integer vehicleId) {
         Page<DkmKey> page = new Page<>(pageIndex, pageSize);
-        page = dkmKeyMapper.selectPage(page, Wrappers.<DkmKey>lambdaQuery()
-                .eq(true, DkmKey::getVehicleId, vehicleId)
-                .orderByDesc(DkmKey::getVin)
-                .orderByAsc(DkmKey::getParentId)
-                .orderByAsc(DkmKey::getDkState)
-                .orderByDesc(DkmKey::getApplyTime));
+        page = dkmKeyMapper.selectPage(page,
+                Wrappers.<DkmKey>lambdaQuery().eq(true,
+                        DkmKey::getVehicleId,
+                        vehicleId).orderByDesc(DkmKey::getVin).orderByAsc(DkmKey::getParentId).orderByAsc(DkmKey::getDkState).orderByDesc(
+                        DkmKey::getApplyTime));
 
         ArrayList<DkmKeyDTO> keyList = new ArrayList<>();
 
@@ -143,8 +142,7 @@ public class DkmKeyServiceImpl {
                                   Integer keyType,
                                   Integer keyResource,
                                   Integer[] dkState,
-                                  Integer[] keyClassification
-    ) {
+                                  Integer[] keyClassification) {
         if (keyType == null) {
             keyType = 3;
         }
@@ -179,25 +177,26 @@ public class DkmKeyServiceImpl {
             });
         }
 
-        page = dkmKeyMapper.selectPage(page, queryWrapper
-                .like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
-                .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
-                .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
-                .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
-                .ge(StrUtil.isNotBlank(valFromStartTime), DkmKey::getValFrom, valFromStartTime)
-                .le(StrUtil.isNotBlank(valFromEndTime), DkmKey::getValFrom, valFromEndTime)
-                .ge(StrUtil.isNotBlank(valToStartTime), DkmKey::getValTo, valToStartTime)
-                .le(StrUtil.isNotBlank(valToEndTime), DkmKey::getValTo, valToEndTime)
-                .ge(periodMin != null, DkmKey::getPeriod, periodMin)
-                .le(periodMax != null, DkmKey::getPeriod, periodMax)
-                .eq(keyType == 1, DkmKey::getParentId, "0")
-                .ne(keyType == 2, DkmKey::getParentId, "0")
-                .eq(keyResource != null, DkmKey::getKeyResource, keyResource)
-                .orderByDesc(DkmKey::getVin)
-                .orderByAsc(DkmKey::getParentId)
-                .orderByAsc(DkmKey::getDkState)
-                .orderByDesc(DkmKey::getApplyTime)
-        );
+        page = dkmKeyMapper.selectPage(page,
+                queryWrapper.like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin).like(StrUtil.isNotBlank(userId),
+                        DkmKey::getUserId,
+                        userId).ge(StrUtil.isNotBlank(applyStartTime),
+                        DkmKey::getApplyTime,
+                        applyStartTime).le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime).ge(
+                        StrUtil.isNotBlank(valFromStartTime),
+                        DkmKey::getValFrom,
+                        valFromStartTime).le(StrUtil.isNotBlank(valFromEndTime), DkmKey::getValFrom, valFromEndTime).ge(
+                        StrUtil.isNotBlank(valToStartTime),
+                        DkmKey::getValTo,
+                        valToStartTime).le(StrUtil.isNotBlank(valToEndTime), DkmKey::getValTo, valToEndTime).ge(
+                        periodMin != null,
+                        DkmKey::getPeriod,
+                        periodMin).le(periodMax != null, DkmKey::getPeriod, periodMax).eq(keyType == 1,
+                        DkmKey::getParentId,
+                        "0").ne(keyType == 2, DkmKey::getParentId, "0").eq(keyResource != null,
+                        DkmKey::getKeyResource,
+                        keyResource).orderByDesc(DkmKey::getVin).orderByAsc(DkmKey::getParentId).orderByAsc(DkmKey::getDkState).orderByDesc(
+                        DkmKey::getApplyTime));
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
@@ -209,9 +208,8 @@ public class DkmKeyServiceImpl {
      */
     public PageResp selectForPageByUserId(int pageIndex, int pageSize, Integer id) {
         Page<DkmKey> page = new Page<>(pageIndex, pageSize);
-        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery()
-                .eq(DkmKey::getUserId, id)
-                .orderByDesc(DkmKey::getApplyTime);
+        LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, id).orderByDesc(
+                DkmKey::getApplyTime);
         page = dkmKeyMapper.selectPage(page, queryWrapper);
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
@@ -229,10 +227,10 @@ public class DkmKeyServiceImpl {
             return PageResp.fail(500, "钥匙状态未传递");
         }
         if (dkState == 3) {
-            //冻结
+            // 冻结
             return freezeKeys(dkState, userId, vin);
         } else if (dkState == 1) {
-            //解冻
+            // 解冻
             return unfreezeKeys(dkState, userId, vin);
         } else {
             return PageResp.success("钥匙状态传参错误");
@@ -241,16 +239,13 @@ public class DkmKeyServiceImpl {
     }
 
     private PageResp freezeKeys(Integer dkState, String userId, String vin) {
-        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
-                .eq(DkmKey::getDkState, 1)
-                .eq(DkmKey::getUserId, userId)
-                .eq(DkmKey::getVin, vin)
-        );
+        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getDkState, 1).eq(
+                DkmKey::getUserId,
+                userId).eq(DkmKey::getVin, vin));
 
-        for (int i = 0; i < dkmKeys.size(); i++) {
-            DkmKey key = dkmKeys.get(i);
+        for (DkmKey key : dkmKeys) {
             key.setDkState(dkState);
-            //key.setUpdateTime(new Date());
+            // key.setUpdateTime(new Date());
             int count = dkmKeyMapper.updateById(key);
             if (count == 0) {
                 throw new RuntimeException("Failed to update key in database");
@@ -267,23 +262,17 @@ public class DkmKeyServiceImpl {
 
     private PageResp unfreezeKeys(Integer dkState, String userId, String vin) {
         // 查询是否有钥匙正在使用
-        List<DkmKey> runDkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
-                .eq(DkmKey::getDkState, dkState)
-                .eq(DkmKey::getUserId, userId)
-                .eq(DkmKey::getVin, vin)
-        );
+        List<DkmKey> runDkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getDkState,
+                dkState).eq(DkmKey::getUserId, userId).eq(DkmKey::getVin, vin));
         if (runDkmKeys.size() > 0) {
             return PageResp.success("更新失败，当前用户车辆已存在钥匙正在使用，不可解冻选中钥匙");
         }
         // 解冻状态为"冻结"的钥匙
-        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
-                .eq(DkmKey::getDkState, 3)
-                .eq(DkmKey::getUserId, userId)
-                .eq(DkmKey::getVin, vin)
-        );
+        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getDkState, 3).eq(
+                DkmKey::getUserId,
+                userId).eq(DkmKey::getVin, vin));
 
-        for (int i = 0; i < dkmKeys.size(); i++) {
-            DkmKey key = dkmKeys.get(i);
+        for (DkmKey key : dkmKeys) {
             key.setDkState(1);
             int count = dkmKeyMapper.updateById(key);
             if (count == 0) {
@@ -301,23 +290,21 @@ public class DkmKeyServiceImpl {
     /**
      * 吊销钥匙,如为车主钥匙,则所有子钥匙均不可用
      *
-     * @param
      * @return 更新是否成功
      */
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateStateForRevokeById(String userId, String vin) {
-        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
-                .eq(DkmKey::getUserId, userId)
-                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
-                .eq(DkmKey::getVin, vin));
+        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).eq(
+                DkmKey::getDkState,
+                KeyStatusEnum.ACTIVATED.getCode()).eq(DkmKey::getVin, vin));
         for (DkmKey dkmKey : keys) {
-            String id = dkmKey.getId();
             if (dkmKey != null) {
-                int update = dkmKeyMapper.update(null, Wrappers.<DkmKey>lambdaUpdate()
-                        .set(DkmKey::getDkState, KeyStatusEnum.REVOKE.getCode())
-                        .eq(DkmKey::getId,dkmKey.getId())
-                );
+                int update = dkmKeyMapper.update(null,
+                        Wrappers.<DkmKey>lambdaUpdate().set(DkmKey::getDkState, KeyStatusEnum.REVOKE.getCode()).eq(
+                                DkmKey::getId,
+                                dkmKey.getId()));
                 if (update > 0) {
+                    String id = dkmKey.getId();
                     // 生命周期
                     DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
                     dkmKeyLifecycle.setKeyId(id);
@@ -334,14 +321,14 @@ public class DkmKeyServiceImpl {
                     dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
                     // 检查是否为父钥匙，吊销全部分享钥匙
                     if (Objects.equals(dkmKey.getParentId(), "0")) {
-                        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getParentId, id)
-                                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
-                                .or()
-                                .eq(DkmKey::getDkState, KeyStatusEnum.FREEZE.getCode()));
+                        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getParentId,
+                                id).eq(DkmKey::getDkState,
+                                KeyStatusEnum.ACTIVATED.getCode()).or().eq(DkmKey::getDkState,
+                                KeyStatusEnum.FREEZE.getCode()));
                         for (DkmKey child : dkmKeys) {
                             String childId = child.getId();
                             child.setDkState(KeyStatusEnum.REVOKE.getCode());
-                        child.setDkState(5);
+                            child.setDkState(5);
                             dkmKeyMapper.updateById(child);
                             // 生命周期
                             DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();
@@ -374,14 +361,18 @@ public class DkmKeyServiceImpl {
         return PageResp.fail("查询失败");
     }
 
-    public PageResp selectForPageByVal(int pageIndex, int pageSize, String valFrom, String valTo, Long
-            period, Long dkState) {
+    public PageResp selectForPageByVal(int pageIndex,
+                                       int pageSize,
+                                       String valFrom,
+                                       String valTo,
+                                       Long period,
+                                       Long dkState) {
         Page<DkmKey> page = new Page<>(pageIndex, pageSize);
-        page = dkmKeyMapper.selectPage(page, Wrappers.<DkmKey>lambdaQuery()
-                .eq(ObjectUtil.isNotNull(dkState), DkmKey::getDkState, dkState)
-                .le(StrUtil.isNotBlank(valFrom), DkmKey::getValFrom, valFrom)
-                .ge(StrUtil.isNotBlank(valTo), DkmKey::getValTo, valTo)
-                .le(ObjectUtil.isNotNull(period), DkmKey::getPeriod, period));
+        page = dkmKeyMapper.selectPage(page,
+                Wrappers.<DkmKey>lambdaQuery().eq(ObjectUtil.isNotNull(dkState),
+                        DkmKey::getDkState,
+                        dkState).le(StrUtil.isNotBlank(valFrom), DkmKey::getValFrom, valFrom).ge(StrUtil.isNotBlank(
+                        valTo), DkmKey::getValTo, valTo).le(ObjectUtil.isNotNull(period), DkmKey::getPeriod, period));
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
@@ -421,8 +412,7 @@ public class DkmKeyServiceImpl {
                                     Integer keyResource,
                                     String creator,
                                     String excelName,
-                                    Integer[] keyClassification
-    ) {
+                                    Integer[] keyClassification) {
 
 
         // 1.5 使用1.1处文件名(时间戳)进行文件命名 并指定到服务器路径
@@ -470,22 +460,26 @@ public class DkmKeyServiceImpl {
             });
         }
 
-        queryWrapper.like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
-                .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
-                .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
-                .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
-                .ge(StrUtil.isNotBlank(valFromStartTime), DkmKey::getValFrom, valFromStartTime)
-                .le(StrUtil.isNotBlank(valFromEndTime), DkmKey::getValFrom, valFromEndTime)
-                .ge(StrUtil.isNotBlank(valToStartTime), DkmKey::getValTo, valToStartTime)
-                .le(StrUtil.isNotBlank(valToEndTime), DkmKey::getValTo, valToEndTime)
-                .ge(periodMin != null, DkmKey::getPeriod, periodMin)
-                .le(periodMax != null, DkmKey::getPeriod, periodMax)
-                .eq(keyType == 1, DkmKey::getParentId, "0")
-                .ne(keyType == 2, DkmKey::getParentId, "0")
-                .eq(keyResource != null, DkmKey::getKeyResource, keyResource)
-                .orderByDesc(DkmKey::getVin)
-                .orderByAsc(DkmKey::getParentId)
-                .orderByDesc(DkmKey::getApplyTime);
+        queryWrapper.like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin).like(StrUtil.isNotBlank(userId),
+                DkmKey::getUserId,
+                userId).ge(StrUtil.isNotBlank(applyStartTime),
+                DkmKey::getApplyTime,
+                applyStartTime).le(StrUtil.isNotBlank(applyEndTime),
+                DkmKey::getApplyTime,
+                applyEndTime).ge(StrUtil.isNotBlank(valFromStartTime),
+                DkmKey::getValFrom,
+                valFromStartTime).le(StrUtil.isNotBlank(valFromEndTime),
+                DkmKey::getValFrom,
+                valFromEndTime).ge(StrUtil.isNotBlank(valToStartTime),
+                DkmKey::getValTo,
+                valToStartTime).le(StrUtil.isNotBlank(valToEndTime),
+                DkmKey::getValTo,
+                valToEndTime).ge(periodMin != null, DkmKey::getPeriod, periodMin).le(periodMax != null,
+                DkmKey::getPeriod,
+                periodMax).eq(keyType == 1, DkmKey::getParentId, "0").ne(keyType == 2, DkmKey::getParentId, "0").eq(
+                keyResource != null,
+                DkmKey::getKeyResource,
+                keyResource).orderByDesc(DkmKey::getVin).orderByAsc(DkmKey::getParentId).orderByDesc(DkmKey::getApplyTime);
 
         Integer sum = dkmKeyMapper.selectCount(queryWrapper);
 
@@ -538,14 +532,18 @@ public class DkmKeyServiceImpl {
         } catch (Exception e) {
             e.printStackTrace();
             dkmKeyLogHistoryExportMapper.update(null,
-                    Wrappers.<DkmKeyLogHistoryExport>lambdaUpdate().set(DkmKeyLogHistoryExport::getExportStatus, 2).eq(DkmKeyLogHistoryExport::getMissionName, excelName));
+                    Wrappers.<DkmKeyLogHistoryExport>lambdaUpdate().set(DkmKeyLogHistoryExport::getExportStatus, 2).eq(
+                            DkmKeyLogHistoryExport::getMissionName,
+                            excelName));
         } finally {
             writer.close();
         }
 
         // 5将历史记录中该条数据记录根据导出情况进行修改
         dkmKeyLogHistoryExportMapper.update(null,
-                Wrappers.<DkmKeyLogHistoryExport>lambdaUpdate().set(DkmKeyLogHistoryExport::getExportStatus, 1).eq(DkmKeyLogHistoryExport::getMissionName, excelName));
+                Wrappers.<DkmKeyLogHistoryExport>lambdaUpdate().set(DkmKeyLogHistoryExport::getExportStatus, 1).eq(
+                        DkmKeyLogHistoryExport::getMissionName,
+                        excelName));
 
     }
 
@@ -623,6 +621,7 @@ public class DkmKeyServiceImpl {
 
         LambdaQueryWrapper<DkmKey> queryWrapper = Wrappers.lambdaQuery();
         // 是否需要dkStates条件
+
         if (dkState != null && dkState.length > 0) {
             queryWrapper.and(wrapper -> {
                 wrapper.eq(DkmKey::getDkState, dkState[0]);
@@ -643,23 +642,27 @@ public class DkmKeyServiceImpl {
                 }
             });
         }
-        queryWrapper.like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin)
-                .like(StrUtil.isNotBlank(userId), DkmKey::getUserId, userId)
-                .ge(StrUtil.isNotBlank(applyStartTime), DkmKey::getApplyTime, applyStartTime)
-                .le(StrUtil.isNotBlank(applyEndTime), DkmKey::getApplyTime, applyEndTime)
-                .ge(StrUtil.isNotBlank(valFromStartTime), DkmKey::getValFrom, valFromStartTime)
-                .le(StrUtil.isNotBlank(valFromEndTime), DkmKey::getValFrom, valFromEndTime)
-                .ge(StrUtil.isNotBlank(valToStartTime), DkmKey::getValTo, valToStartTime)
-                .le(StrUtil.isNotBlank(valToEndTime), DkmKey::getValTo, valToEndTime)
-                .ge(periodMin != null, DkmKey::getPeriod, periodMin)
-                .le(periodMax != null, DkmKey::getPeriod, periodMax)
-                .eq(keyType == 1, DkmKey::getParentId, "0")
-                .ne(keyType == 2, DkmKey::getParentId, "0")
-                .eq(keyResource != null, DkmKey::getKeyResource, keyResource)
-                .orderByDesc(DkmKey::getVin)
-                .orderByAsc(DkmKey::getParentId)
-                .orderByDesc(DkmKey::getApplyTime)
-                .last("limit " + start + "," + end);
+        queryWrapper.like(StrUtil.isNotBlank(vin), DkmKey::getVin, vin).like(StrUtil.isNotBlank(userId),
+                DkmKey::getUserId,
+                userId).ge(StrUtil.isNotBlank(applyStartTime),
+                DkmKey::getApplyTime,
+                applyStartTime).le(StrUtil.isNotBlank(applyEndTime),
+                DkmKey::getApplyTime,
+                applyEndTime).ge(StrUtil.isNotBlank(valFromStartTime),
+                DkmKey::getValFrom,
+                valFromStartTime).le(StrUtil.isNotBlank(valFromEndTime),
+                DkmKey::getValFrom,
+                valFromEndTime).ge(StrUtil.isNotBlank(valToStartTime),
+                DkmKey::getValTo,
+                valToStartTime).le(StrUtil.isNotBlank(valToEndTime),
+                DkmKey::getValTo,
+                valToEndTime).ge(periodMin != null, DkmKey::getPeriod, periodMin).le(periodMax != null,
+                DkmKey::getPeriod,
+                periodMax).eq(keyType == 1, DkmKey::getParentId, "0").ne(keyType == 2, DkmKey::getParentId, "0").eq(
+                keyResource != null,
+                DkmKey::getKeyResource,
+                keyResource).orderByDesc(DkmKey::getVin).orderByAsc(DkmKey::getParentId).orderByDesc(DkmKey::getApplyTime).last(
+                "limit " + start + "," + end);
         List<DkmKey> keyList = dkmKeyMapper.selectList(queryWrapper);
 
         // 4.1.2执行库中部分字段二次封装

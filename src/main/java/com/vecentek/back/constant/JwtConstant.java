@@ -14,7 +14,8 @@ public class JwtConstant {
     // JWT 中存储用户信息的key
     public static final String JWT_USER_INFO_KEY = "dkserver-user";
     // JWT 中存储用户信息的key
-    public static final String JWT_FACTORY_INFO_KEY = "Authorization";
+
+    public static final String JWT_FACTORY_INFO_KEY = "Authori1zation";
 
     // 授权中心服务ID
     public static final String AUTHORITY_CENTER_SERVICE_ID = "dkserver-authority-center";

@@ -9,3 +9,4 @@
         <result property="creator" column="creator" jdbcType="VARCHAR"/>
     </resultMap>
 </mapper>
+ 

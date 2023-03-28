@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.lang.management.ManagementFactory;
+
 /**
  * @author ：EdgeYu
  * @version ：1.0
@@ -15,6 +17,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class BackApplication {
     public static void main(String[] args) {
+        ManagementFactory.getClassLoadingMXBean();
         SpringApplication.run(BackApplication.class, args);
     }
 }
