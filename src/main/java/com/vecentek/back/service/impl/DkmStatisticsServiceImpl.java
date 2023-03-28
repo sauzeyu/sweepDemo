@@ -329,12 +329,12 @@ public class DkmStatisticsServiceImpl {
 
     public PageResp keyErrorTimeStatistics() {
         String now = DownLoadUtil.getNow();
-        String lastDay = DownLoadUtil.getLastDay();
+        String nextDay = DownLoadUtil.getNextDay();
         String yearFirstDay = DownLoadUtil.getCurrYearFirst();
         String yearLastDay = DownLoadUtil.getCurrYearLast();
         // 今日故障次数
 
-        int countErrorToday = dkmKeyLogMapper.countErrorToday(now, lastDay);
+        int countErrorToday = dkmKeyLogMapper.countErrorToday(now, nextDay);
         // 每个月的使用数
         List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(yearFirstDay, yearLastDay));
         List<Integer> countList = MonthCountDTO.countToList(errorMonthList);

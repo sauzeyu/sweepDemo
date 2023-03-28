@@ -269,6 +269,8 @@ public class DkmKeyServiceImpl {
         // 查询是否有钥匙正在使用
         List<DkmKey> runDkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
                 .eq(DkmKey::getDkState, dkState)
+                .or()
+                .eq(DkmKey::getDkState, 0)
                 .eq(DkmKey::getUserId, userId)
                 .eq(DkmKey::getVin, vin)
         );
@@ -315,7 +317,7 @@ public class DkmKeyServiceImpl {
             if (dkmKey != null) {
                 int update = dkmKeyMapper.update(null, Wrappers.<DkmKey>lambdaUpdate()
                         .set(DkmKey::getDkState, KeyStatusEnum.REVOKE.getCode())
-                        .eq(DkmKey::getId,dkmKey.getId())
+                        .eq(DkmKey::getId, dkmKey.getId())
                 );
                 if (update > 0) {
                     // 生命周期
@@ -341,7 +343,7 @@ public class DkmKeyServiceImpl {
                         for (DkmKey child : dkmKeys) {
                             String childId = child.getId();
                             child.setDkState(KeyStatusEnum.REVOKE.getCode());
-                        child.setDkState(5);
+                            child.setDkState(5);
                             dkmKeyMapper.updateById(child);
                             // 生命周期
                             DkmKeyLifecycle dkmKeyLifecycle1 = new DkmKeyLifecycle();

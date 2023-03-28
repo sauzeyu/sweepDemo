@@ -61,7 +61,9 @@ public class DkmPhoneCalibrationDataController {
 
     @PostMapping(value = "/downloadCalibrationExcel")
     public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
+
         this.dkmPhoneCalibrationDataServiceImpl.downloadCalibrationExcel(phoneBrand, vehicleModel, vehicleType, vehicleBrand, isXlsx, response);
+
     }
 
 

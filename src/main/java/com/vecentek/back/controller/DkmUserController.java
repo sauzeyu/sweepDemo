@@ -2,6 +2,7 @@ package com.vecentek.back.controller;
 
 import com.vecentek.back.service.impl.DkmUserServiceImpl;
 import com.vecentek.common.response.PageResp;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,16 @@ public class DkmUserController {
     @GetMapping(value = "/selectById")
     public PageResp selectById(@RequestParam Integer id) {
         return this.dkmUserServiceImpl.selectById(id);
+    }
+
+    @GetMapping(value = "/token")
+    public PageResp token(@RequestParam String token) {
+        if (ObjectUtils.isNotEmpty(token)){
+
+            return PageResp.success("令牌验证成功");
+        }else {
+            return PageResp.fail("令牌验证失败");
+        }
     }
 
 }
