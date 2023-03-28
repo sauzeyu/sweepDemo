@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -257,15 +258,18 @@ public class DkmStatisticsServiceImpl {
                 .ne(DkmKey::getParentId, "0"));
 
         // 车主钥匙占比
-        BigDecimal divide = null;
+        BigDecimal divide;
         try {
-            divide = new BigDecimal(masterCount * 100).divide(new BigDecimal((masterCount + childCount)), 2, BigDecimal.ROUND_HALF_UP);
+            divide = new BigDecimal(masterCount * 100).divide(new BigDecimal((masterCount + childCount)),
+                    2,
+                    RoundingMode.HALF_UP);
         } catch (ArithmeticException e) {
             divide = BigDecimal.valueOf(0);
             e.printStackTrace();
         }
 
-        JSONObject res = new JSONObject().set("masterCount", masterCount).set("childCount", childCount).set("proportion", divide+"%");
+        JSONObject res = new JSONObject().set("masterCount", masterCount).set("childCount",
+                childCount).set("proportion", divide + "%");
         return PageResp.success("查询成功", res);
     }
 
@@ -286,7 +290,9 @@ public class DkmStatisticsServiceImpl {
         List<CountDTO> vehicleList = dkmKeyLogMapper.selectVehicleErrorCountByTime(startTime, endTime);
         vehicleData = count(vehicleList);
 
-        JSONObject res = new JSONObject().set("phoneData", phoneData).set("statusCodeData", statusCodeData).set("vehicleData", vehicleData);
+        JSONObject res = new JSONObject().set("phoneData", phoneData).set("statusCodeData", statusCodeData).set(
+                "vehicleData",
+                vehicleData);
         return PageResp.success("查询成功", res);
     }
 
@@ -321,7 +327,8 @@ public class DkmStatisticsServiceImpl {
         // 今日使用次数
         int countUseToday = dkmKeyLogMapper.countUseToday(now, lastDay);
         // 每个月的使用数
-        List<MonthCountDTO> useMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countUseByMonth(yearFirstDay, yearLastDay));
+        List<MonthCountDTO> useMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countUseByMonth(yearFirstDay,
+                yearLastDay));
         List<Integer> countList = MonthCountDTO.countToList(useMonthList);
         JSONObject res = new JSONObject().set("countUseToday", countUseToday).set("useMonthList", countList);
         return PageResp.success("查询成功", res);
@@ -336,7 +343,9 @@ public class DkmStatisticsServiceImpl {
 
         int countErrorToday = dkmKeyLogMapper.countErrorToday(now, nextDay);
         // 每个月的使用数
-        List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(yearFirstDay, yearLastDay));
+        List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(
+                yearFirstDay,
+                yearLastDay));
         List<Integer> countList = MonthCountDTO.countToList(errorMonthList);
         JSONObject res = new JSONObject().set("countErrorToday", countErrorToday).set("errorMonthList", countList);
         return PageResp.success("查询成功", res);
@@ -391,8 +400,7 @@ public class DkmStatisticsServiceImpl {
                     data.add(countDTO);
                 } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), statusCode)
                         && ObjectUtil.notEqual(StrUtil.sub(countDTO.getName(), 2, 4), "00")) { // 开启
-                    Integer value = countDTO.getValue();
-                    int intValue = value.intValue();
+                    int intValue = countDTO.getValue();
                     OpenInt += intValue;
                 }
             }
@@ -430,8 +438,7 @@ public class DkmStatisticsServiceImpl {
                     data.add(countDTO);
                 } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C")
                         && Convert.toInt(StrUtil.sub(countDTO.getName(), 2, 4)) <= 12) { // 主驾通风加热开启
-                    Integer value = countDTO.getValue();
-                    int intValue = value.intValue();
+                    int intValue = countDTO.getValue();
                     mainOpenInt += intValue;
                 }
 
@@ -444,8 +451,7 @@ public class DkmStatisticsServiceImpl {
                 } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C")
                         && Convert.toInt(StrUtil.sub(countDTO.getName(), 2, 4)) >= 14
                         && Convert.toInt(StrUtil.sub(countDTO.getName(), 2, 4)) <= 25) { // 主驾通风加热开启
-                    Integer value = countDTO.getValue();
-                    int intValue = value.intValue();
+                    int intValue = countDTO.getValue();
                     secOpenInt += intValue;
                 }
 

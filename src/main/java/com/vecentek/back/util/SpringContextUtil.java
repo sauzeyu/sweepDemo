@@ -18,19 +18,15 @@ public class SpringContextUtil implements ApplicationContextAware {
     }
 
     public static <T> T getBean(Class<T> clazz) {
-        return (T) applicationContext.getBean(clazz);
+        return applicationContext.getBean(clazz);
     }
 
     /**
      * 获取所有实现类
      */
     public static <T> List<T> getBeanListOfType(Class<T> clazz) {
-        List result = new ArrayList<>();
         Map<String, T> map = applicationContext.getBeansOfType(clazz);
-        if (null != map) {
-            result.addAll(map.values());
-        }
-        return result;
+        return new ArrayList<>(map.values());
     }
 
     public ApplicationContext getApplicationContext() {
