@@ -20,7 +20,7 @@ import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
-import com.vecentek.back.util.DateUtil;
+import com.vecentek.back.util.TimeUtil;
 import com.vecentek.back.util.SpringContextUtil;
 import com.vecentek.common.response.PageResp;
 import org.springframework.stereotype.Service;
@@ -86,10 +86,10 @@ public class DkmStatisticsServiceImpl {
 
     public PageResp selectVehicleAndKeyAndKeyLogTotal() {
         // 获取分表字段的开始日期与结束日期
-        String startTime = DateUtil.getCurrYearFirst();
-        String endTime = DateUtil.getTommorwYearFirst();
-        String sysDate = DateUtil.getSysDate();
-        String tommorw = DateUtil.getNextDay();
+        String startTime = TimeUtil.getCurrYearFirst();
+        String endTime = TimeUtil.getTommorwYearFirst();
+        String sysDate = TimeUtil.getSysDate();
+        String tommorw = TimeUtil.getNextDay();
         int totalVehicles = dkmVehicleMapper.selectCount(null);
         int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
                 .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
@@ -116,8 +116,8 @@ public class DkmStatisticsServiceImpl {
     public PageResp selectKeyLogByMonth() {
         List<String> monthList = MonthCountDTO.generateMonthList();
 
-        String startTime = DateUtil.getMonthYearLast();
-        String endTime = DateUtil.getPerFirstDayOfMonth();
+        String startTime = TimeUtil.getMonthYearLast();
+        String endTime = TimeUtil.getPerFirstDayOfMonth();
         List<MonthCountDTO> useLogCount = dkmKeyLogMapper.selectUseLogCountByMonth(startTime, endTime);
 
         useLogCount = MonthCountDTO.checkMonthCount(useLogCount, monthList);
@@ -238,8 +238,8 @@ public class DkmStatisticsServiceImpl {
      * @return
      */
     public PageResp keyStatistics() {
-        String sysDate = DateUtil.getSysDate();
-        String tommorw = DateUtil.getNextDay();
+        String sysDate = TimeUtil.getSysDate();
+        String tommorw = TimeUtil.getNextDay();
         // 车主钥匙
         int masterCount = dkmKeyMapper.selectCount(
                 new QueryWrapper<DkmKey>().lambda()
@@ -319,10 +319,10 @@ public class DkmStatisticsServiceImpl {
     public PageResp keyUseTimeStatistics() {
 
 
-        String now = DateUtil.getNow();
-        String lastDay = DateUtil.getLastDay();
-        String yearFirstDay = DateUtil.getCurrYearFirst();
-        String yearLastDay = DateUtil.getCurrYearLast();
+        String now = TimeUtil.getNow();
+        String lastDay = TimeUtil.getLastDay();
+        String yearFirstDay = TimeUtil.getCurrYearFirst();
+        String yearLastDay = TimeUtil.getCurrYearLast();
         // 今日使用次数
         int countUseToday = dkmKeyLogMapper.countUseToday(now, lastDay);
         // 每个月的使用数
@@ -334,10 +334,10 @@ public class DkmStatisticsServiceImpl {
     }
 
     public PageResp keyErrorTimeStatistics() {
-        String now = DateUtil.getNow();
-        String nextDay = DateUtil.getNextDay();
-        String yearFirstDay = DateUtil.getCurrYearFirst();
-        String yearLastDay = DateUtil.getCurrYearLast();
+        String now = TimeUtil.getNow();
+        String nextDay = TimeUtil.getNextDay();
+        String yearFirstDay = TimeUtil.getCurrYearFirst();
+        String yearLastDay = TimeUtil.getCurrYearLast();
         // 今日故障次数
 
         int countErrorToday = dkmKeyLogMapper.countErrorToday(now, nextDay);
