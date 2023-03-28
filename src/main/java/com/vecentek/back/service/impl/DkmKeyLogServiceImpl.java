@@ -19,7 +19,7 @@ import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
-import com.vecentek.back.util.DownLoadUtil;
+import com.vecentek.back.util.DateUtil;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -60,8 +60,8 @@ public class DkmKeyLogServiceImpl {
 
         ) {
 
-            startTime = DownLoadUtil.getSysDate();
-            endTime = DownLoadUtil.getNextDay();
+            startTime = DateUtil.getSysDate();
+            endTime = DateUtil.getNextDay();
 
         }
 
@@ -130,10 +130,10 @@ public class DkmKeyLogServiceImpl {
 
 
             if (CharSequenceUtil.isBlank(startTime)) {
-                startTime = DownLoadUtil.getSysDate();
+                startTime = DateUtil.getSysDate();
             }
             if (CharSequenceUtil.isBlank(endTime)) {
-                endTime = DownLoadUtil.getNextDay();
+                endTime = DateUtil.getNextDay();
             }
 
 
