@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 车辆(DkmVehicle)表数据库访问层
@@ -76,5 +77,11 @@ public interface DkmVehicleMapper extends BaseMapper<DkmVehicle> {
 
     @Select("select DATE_FORMAT(operate_time, '%m') as month, count(1) as count from dkm_key_log where flag = 0 and operate_time >=  #{yearFirstDay} and operate_time <=  #{yearLastDay} group by month")
     List<MonthCountDTO> countErrorByMonth(String yearFirstDay, String yearLastDay);
+    @Select("SELECT master_key,ble.ble_mac_address from dkm_bluetooths ble left join dkm_vehicle ve on ble.hw_device_sn=ve.hw_device_sn\n" +
+            "        where ve.vin= #{vin}")
+    Map selectMasterKeyAndBleAddressByVin(@Param("vin") String vin);
+    @Select("SELECT master_key from dkm_bluetooths ble left join dkm_vehicle ve on ble.hw_device_sn=ve.hw_device_sn\n" +
+            "        where ve.vin= #{vin}")
+    String selectMasterKeyByVin(@Param("vin") String vin);
 
 }

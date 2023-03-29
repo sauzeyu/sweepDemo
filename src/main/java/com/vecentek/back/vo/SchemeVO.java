@@ -2,11 +2,8 @@ package com.vecentek.back.vo;
 
 import lombok.Data;
 
-/**
- * 分享钥匙传参实体
- */
 @Data
-public class ShareKeyVO {
+public class SchemeVO {
     //  车主用户ID
     private String userId;
     //  被分享用户ID（来源于TSP后台）
