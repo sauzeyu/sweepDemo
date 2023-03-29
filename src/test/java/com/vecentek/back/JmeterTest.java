@@ -255,61 +255,36 @@ public class JmeterTest {
      */
     @Test
     public void uploadKeyLog() throws IOException{
-//        for (int i = 0; i <= 250; i++) {
-//            // 使用日志 statusCode 1 byte
-//            // 使用日志 statusCode 2 byte
-//            // 错误日志 statusCode 1 byte
-//            // 错误日志 statusCode 2 byte
-//            OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_1byte" + i));
-//            BerTlvBuilder tlv = new BerTlvBuilder();
-//            // VIN
-//            tlv.addBytes(new BerTag(0X9F, 0X62), RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
-//            // keyId
-//            tlv.addBytes(new BerTag(0X07), (i + "").getBytes(StandardCharsets.UTF_8));
-//            // statusCode 1个byte
-//            ArrayList<String> list = CollUtil.newArrayList("08", "0A", "0B", "0C", "0D", "03", "04", "05", "06", "09", "0E");
-//            tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
-//            // operateTime
-//            tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406T163929Z".getBytes(StandardCharsets.UTF_8));
-//            // userId
-//            tlv.addBytes(new BerTag(0X1b), (i + "").getBytes(StandardCharsets.UTF_8));
-//            // phoneBrand
-//            tlv.addBytes(new BerTag(0X9F, 0X16), ("压测手机").getBytes(StandardCharsets.UTF_8));
-//            // phoneModel
-//            tlv.addBytes(new BerTag(0X9F, 0X17), ("压测手机").getBytes(StandardCharsets.UTF_8));
-//            // errorReason 为空 为使用日志
-////            tlv.addBytes(new BerTag(0X9F, 0X3C), ("压测手机").getBytes(StandardCharsets.UTF_8));
-//            byte[] bytes = tlv.buildArray();
-//            os.write(bytes);
-//            os.flush();
-//            os.close();
-//        }
-
-        OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_1byte" + 123));
-        BerTlvBuilder tlv = new BerTlvBuilder();
-        // VIN
-        tlv.addBytes(new BerTag(0X9F, 0X62), ("ABCDE000000000003").getBytes(StandardCharsets.UTF_8));
-        // keyId
-        tlv.addBytes(new BerTag(0X07), ("0130172256251270").getBytes(StandardCharsets.UTF_8));
-        // statusCode 1个byte
-        ArrayList<String> list = CollUtil.newArrayList("08", "0A", "0B", "0C", "0D", "03", "04", "05", "06", "09", "0E");
-        tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
-        // operateTime
-        tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406163929".getBytes(StandardCharsets.UTF_8));
-        // userId
-        tlv.addBytes(new BerTag(0X1b), (123 + "").getBytes(StandardCharsets.UTF_8));
-        // phoneBrand
-        tlv.addBytes(new BerTag(0X9F, 0X16), ("压测手机").getBytes(StandardCharsets.UTF_8));
-        // phoneModel
-        tlv.addBytes(new BerTag(0X9F, 0X17), ("压测手机").getBytes(StandardCharsets.UTF_8));
-        // errorReason 为空 为使用日志
-        tlv.addBytes(new BerTag(0X9F, 0X3C), ("压测手机").getBytes(StandardCharsets.UTF_8));
-        byte[] bytes = tlv.buildArray();
-        os.write(bytes);
-        os.flush();
-        os.close();
+        for (int i = 0; i <= 250; i++) {
+            // 使用日志 statusCode 1 byte
+            // 使用日志 statusCode 2 byte
+            // 错误日志 statusCode 1 byte
+            // 错误日志 statusCode 2 byte
+            OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_1byte" + i));
+            BerTlvBuilder tlv = new BerTlvBuilder();
+            // VIN
+            tlv.addBytes(new BerTag(0X9F, 0X62), RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
+            // keyId
+            tlv.addBytes(new BerTag(0X07), (i + "").getBytes(StandardCharsets.UTF_8));
+            // statusCode 1个byte
+            ArrayList<String> list = CollUtil.newArrayList("08", "0A", "0B", "0C", "0D", "03", "04", "05", "06", "09", "0E");
+            tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
+            // operateTime
+            tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406T163929Z".getBytes(StandardCharsets.UTF_8));
+            // userId
+            tlv.addBytes(new BerTag(0X1b), (i + "").getBytes(StandardCharsets.UTF_8));
+            // phoneBrand
+            tlv.addBytes(new BerTag(0X9F, 0X16), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // phoneModel
+            tlv.addBytes(new BerTag(0X9F, 0X17), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // errorReason 为空 为使用日志
+//            tlv.addBytes(new BerTag(0X9F, 0X3C), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = tlv.buildArray();
+            os.write(bytes);
+            os.flush();
+            os.close();
+        }
     }
-
     @Test
     public void uploadKeyLog2() throws IOException{
         for (int i = 0; i <= 250; i++) {

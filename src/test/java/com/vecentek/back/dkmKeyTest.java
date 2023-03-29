@@ -1,6 +1,5 @@
 package com.vecentek.back;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import org.apache.commons.lang.RandomStringUtils;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -28,18 +26,15 @@ public class dkmKeyTest {
     @Test
     public static void testInsert() {
 
-//        for (int i = 0; i < 100000; i++) {
-//            Date randomDate = randomDate("2020-09-20", "2022-09-22");
-//            DkmKey dkmKey = new DkmKey();
-//            dkmKey.setVehicleId(getRandom2(10));
-//            dkmKey.setDkState(getRandom2(1));
-//            dkmKey.setPermissions(getRandom2(1));
-//            dkmKey.setApplyTime(randomDate);
-//            dkmKeyMapper.insert(dkmKey);
-//        }
-
-        List<DkmKey> dkmKeys = dkmKeyMapper.selectList(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId,1));
-        System.out.println(dkmKeys);
+        for (int i = 0; i < 100000; i++) {
+            Date randomDate = randomDate("2020-09-20", "2022-09-22");
+            DkmKey dkmKey = new DkmKey();
+            dkmKey.setVehicleId(getRandom2(10));
+            dkmKey.setDkState(getRandom2(1));
+            dkmKey.setPermissions(getRandom2(1));
+            dkmKey.setApplyTime(randomDate);
+            dkmKeyMapper.insert(dkmKey);
+        }
     }
 
     public static Integer getRandom2(int len) {
