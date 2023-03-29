@@ -61,8 +61,8 @@ export default class EditForm extends Component {
           <InputNumber
             addonAfter="月"
             defaultValue={validityPeriod}
-            min={1}
-            max={100000}
+            min={24}
+            max={180}
           />
         </Form.Item>
       </Form>

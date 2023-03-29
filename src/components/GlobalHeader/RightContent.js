@@ -75,6 +75,8 @@ export default class RightContent extends PureComponent {
     }
     if (!currentUser) return null;
     currentUser.avatar.content = currentUser.username;
+
+    const admin = localStorage.getItem('last_username');
     const menu = (
       <Menu
         theme={theme}
@@ -86,16 +88,19 @@ export default class RightContent extends PureComponent {
           <SettingOutlined />{' '}
           <FormattedMessage id={'Component.globalHeader.menu.changePassword'} />
         </Menu.Item>
+
         <Menu.Item key="logout">
           <LogoutOutlined />{' '}
           <FormattedMessage id={'Component.globalHeader.menu.logout'} />
         </Menu.Item>
-        <Menu.Item key="configurationExpired">
-          <DeleteOutlined />{' '}
-          <FormattedMessage
-            id={'Component.globalHeader.menu.configurationExpired'}
-          />
-        </Menu.Item>
+        {admin === 'admin' ? ( // Use ternary operator for conditional rendering
+          <Menu.Item key="configurationExpired">
+            <DeleteOutlined />{' '}
+            <FormattedMessage
+              id={'Component.globalHeader.menu.configurationExpired'}
+            />
+          </Menu.Item>
+        ) : null}
       </Menu>
     );
     return (
