@@ -37,28 +37,29 @@ class TopForm extends React.Component {
           this.setState({
             expiredLogsModat: true,
           });
-        }
-        console.log('res', res);
-        localStorage.setItem('expiredModalFirst', 'true');
-        Modal.info({
-          title: '数据过期提醒',
 
-          content: (
-            <>
-              {res.msg},请联系管理人员及时对数据进行备份操作：&nbsp;
-              <br />
-              <ul>
-                {res.data &&
-                  Object.keys(res.data).map((key) => (
-                    <li key={key}>
-                      {key}月过期数据{res.data[key]}条
-                    </li>
-                  ))}
-              </ul>
-            </>
-          ),
-          okText: '确认',
-        });
+          console.log('res', res);
+          localStorage.setItem('expiredModalFirst', 'true');
+          Modal.info({
+            title: '数据过期提醒',
+
+            content: (
+              <>
+                {res.msg},请联系管理人员及时对数据进行备份操作：&nbsp;
+                <br />
+                <ul>
+                  {res.data &&
+                    Object.keys(res.data).map((key) => (
+                      <li key={key}>
+                        {key}月过期数据{res.data[key]}条
+                      </li>
+                    ))}
+                </ul>
+              </>
+            ),
+            okText: '确认',
+          });
+        }
       });
     }
     selectTotal().then((res) => {
