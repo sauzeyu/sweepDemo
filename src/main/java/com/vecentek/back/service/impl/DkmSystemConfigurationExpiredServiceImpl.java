@@ -165,7 +165,7 @@ public class DkmSystemConfigurationExpiredServiceImpl {
         // 获取当前日期
         LocalDate now = LocalDate.now();
         // 根据系统配置过期表最新配置 钥匙使用记录保存时间（月） 和当前时间 计算过期时间
-        Period period = Period.ofMonths(-validityPeriod);
+        Period period = Period.ofMonths(-(validityPeriod + 3));
         return now.plus(period);
     }
 }
