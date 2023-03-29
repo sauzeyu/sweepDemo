@@ -4,15 +4,20 @@ import com.vecentek.back.service.impl.DkmUserVehicleServiceImpl;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
+
+import com.vecentek.back.vo.SchemeVO;
+import com.vecentek.back.vo.ShareKeyVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
 
 /**
  * @author ：EdgeYu
@@ -70,5 +75,51 @@ public class DkmUserVehicleController {
     @RequestMapping(value = "/revokeKey", method = RequestMethod.POST)
     public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) {
         return dkmUserVehicleService.revokeKey(revokeKeyVO);
+    }
+
+    /**
+     * 网页链接Link的形式的分享钥匙
+     * 车主钥匙用户对目标用户进行分享操作时，TSP平台会通知钥匙平台创建分享钥匙。如果识别到分享用户没有注册，待分享用户注册成功之后，在调用此接口生成分享钥匙信息
+     *
+     * @param shareKeyVO
+     * @return
+     */
+    @RequestMapping(value = "/shareKey", method = RequestMethod.POST)
+    public PageResp shareKey(@RequestBody ShareKeyVO shareKeyVO) {
+        return dkmUserVehicleService.shareKey(shareKeyVO);
+    }
+
+    /**
+     * 生成AppScheme接口
+     * 浏览器拉活App
+     *
+     * @return
+     */
+//    @RequestMapping(value = "/getAppScheme", method = RequestMethod.POST)
+//    public String getAppScheme(@RequestBody SchemeVO schemeVO) {
+//        return dkmUserVehicleService.getAppScheme(schemeVO);
+//    }
+
+//    @RequestMapping(value = "/getAppScheme", method = RequestMethod.POST)
+//    public String getAppScheme(@RequestBody ShareKeyVO shareKeyVO) {
+//        return dkmUserVehicleService.getAppScheme(shareKeyVO);
+//    }
+
+    /**
+     * 安卓拉活
+     * @return
+     */
+    @RequestMapping(value = "/getAppScheme", method = RequestMethod.GET)
+    public String getAppScheme() {
+        return dkmUserVehicleService.getAppScheme();
+    }
+
+    /**
+     * IOS拉活
+     * @return
+     */
+    @RequestMapping(value = "/getIOSScheme", method = RequestMethod.GET)
+    public String getIOSScheme() {
+        return dkmUserVehicleService.getIOSScheme();
     }
 }

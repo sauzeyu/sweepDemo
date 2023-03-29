@@ -207,5 +207,7 @@ public class DkmKey implements Serializable {
      */
     private String keyFriendlyName;
 
+    private String bleMacAddress;
+
 
 }
