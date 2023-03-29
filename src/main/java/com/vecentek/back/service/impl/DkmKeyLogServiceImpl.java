@@ -65,19 +65,18 @@ public class DkmKeyLogServiceImpl {
 
         }
 
-
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
-                .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
-                .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
-                .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
-                .like(StrUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
-                .like(StrUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
-                .like(StrUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
-                .like(StrUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
+                .like(CharSequenceUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
+                .like(CharSequenceUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
+                .like(CharSequenceUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
+                .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
+                .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
+                .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
+                .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
                 .eq(ObjectUtil.isNotNull(flag), DkmKeyLog::getFlag, flag)
-                .ge(StrUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(StrUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
+                .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
+                .le(CharSequenceUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
                 .orderByDesc(DkmKeyLog::getOperateTime);
         page = dkmKeyLogMapper.selectPage(page, wrapper);
 
@@ -99,17 +98,17 @@ public class DkmKeyLogServiceImpl {
     /**
      * 异步下载单表分页钥匙记录信息
      *
-     * @param vin
-     * @param userId
-     * @param startTime
-     * @param endTime
-     * @param phoneBrand
-     * @param phoneModel
-     * @param statusCode
-     * @param flag
-     * @param vehicleBrand
-     * @param vehicleModel
-     * @param vehicleType
+     * @param vin 车架号
+     * @param userId 用户Id
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param phoneBrand 手机品牌
+     * @param phoneModel 手机型号
+     * @param statusCode 状态码
+     * @param vehicleBrand 车辆品牌
+     * @param vehicleModel 车辆型号
+     * @param vehicleType 车辆类型
+     * @param flag 信号量
      */
     @Async
     @Transactional(rollbackFor = Exception.class)
@@ -285,20 +284,20 @@ public class DkmKeyLogServiceImpl {
     /**
      * 根据分页条件去查询钥匙记录
      *
-     * @param vin
-     * @param userId
-     * @param startTime
-     * @param endTime
-     * @param phoneBrand
-     * @param phoneModel
-     * @param statusCode
-     * @param flag
-     * @param vehicleBrand
-     * @param vehicleModel
-     * @param vehicleType
-     * @param start
-     * @param end
-     * @return
+     * @param vin 车架号
+     * @param userId 用户Id
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param phoneBrand 手机品牌
+     * @param phoneModel 手机型号
+     * @param statusCode 状态码
+     * @param vehicleBrand 车辆品牌
+     * @param vehicleModel 车辆型号
+     * @param vehicleType 车辆类型
+     * @param flag 信号量
+     * @param start 分页开始
+     * @param end 分页结束
+     * @return List<DkmKeyLog>
      */
     private List<DkmKeyLog> getDkmKeyLogs(String vin,
                                           String userId,
