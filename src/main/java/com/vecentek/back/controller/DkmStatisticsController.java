@@ -3,14 +3,13 @@ package com.vecentek.back.controller;
 import com.vecentek.back.service.impl.DkmStatisticsServiceImpl;
 import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author ：EdgeYu
@@ -24,6 +23,65 @@ public class DkmStatisticsController {
 
     @Resource
     private DkmStatisticsServiceImpl echartsServiceImpl;
+
+    @Resource
+    private RestTemplate restTemplate;
+
+    /**
+     * 查询最近的日志
+     *
+     * @return {@link PageResp}
+     * @author EdgeYu
+     * @date 2023-03-29 17:04
+     */
+    @GetMapping("/selectRecentLogs")
+    public PageResp selectRecentLogs() {
+        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectRecentLogs", PageResp.class);
+    }
+
+    /**
+     * 通过时间，userId，vin 分页查询日志
+     *
+     * @return {@link PageResp}
+     * @author EdgeYu
+     * @date 2023-03-29 17:05
+     */
+    @GetMapping("/selectForPage")
+    public PageResp selectForPage(String startTime, String endTime, String userId, String vin) {
+
+        Map<String, Object> parameters = new HashMap<>(4);
+        Optional.ofNullable(startTime).ifPresent(parameter -> parameters.put("startTime", parameter));
+        Optional.ofNullable(endTime).ifPresent(parameter -> parameters.put("endTime", parameter));
+        Optional.ofNullable(userId).ifPresent(parameter -> parameters.put("userId", parameter));
+        Optional.ofNullable(vin).ifPresent(parameter -> parameters.put("vin", parameter));
+        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectForPage",
+                PageResp.class,
+                parameters);
+    }
+
+    @GetMapping("/selectFaultLogs")
+    public PageResp selectFaultLogs() {
+        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectFaultLogs", PageResp.class);
+    }
+
+
+    /**
+     * 查询今日日志总数
+     *
+     * @return {@link PageResp}
+     * @author EdgeYu
+     * @date 2023-03-29 17:13
+     */
+    @GetMapping("/selectTodayLogsCount")
+    public PageResp selectTodayLogsCount() {
+        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectTodayLogsCount", PageResp.class);
+    }
+
+    @GetMapping("/selectPhoneBrandLogs")
+    public PageResp selectPhoneBrandLogs() {
+        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectPhoneBrandLogs", PageResp.class);
+    }
+
 
     /**
      * 面向TSP
@@ -63,6 +121,7 @@ public class DkmStatisticsController {
 
     /**
      * 根据各手机品牌查询对应错误日志占比
+     *
      * @author EdgeYu
      * @date 2022-06-28 15:56
      */
