@@ -37,14 +37,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
 
-    private final Date configDate;
 
-    {
+
+    public Date getConfigDate(){
         ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
         if (CharSequenceUtil.isEmpty(proConfig.getSysDate())) {
             throw new IllegalArgumentException("未设置系统初始时间");
         }
-        configDate =  DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
+       return  DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
     }
 
     /**
@@ -151,7 +151,7 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
     private List<String> getTableNames(String lowerDate, String upperDate, String logicTableName) {
         List<String> tableNames = new ArrayList<>();
         //系统时间
-        Date sysStartTime = configDate;
+        Date sysStartTime = getConfigDate();
         DateTime sst = DateUtil.parseDateTime(lowerDate);
         if (sysStartTime.compareTo(sst) > 0) {
             lowerDate = DateUtil.format(sysStartTime, "yyyy-MM-dd 00:00:00");
