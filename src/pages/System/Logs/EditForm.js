@@ -56,14 +56,20 @@ export default class EditForm extends Component {
         <Form.Item
           name="validityPeriod"
           label="钥匙使用记录保存时间"
-          rules={[{ required: true, message: '请输入钥匙使用记录保存时间' }]}
+          rules={[
+            { required: true, message: '请输入钥匙使用记录保存时间' },
+            {
+              validator: (_, value) => {
+                if (value >= 24 && value <= 180) {
+                  return Promise.resolve();
+                }
+                return Promise.reject('请输入24到180之间的数字');
+              },
+            },
+          ]}
+          initialValue={validityPeriod}
         >
-          <InputNumber
-            addonAfter="月"
-            defaultValue={validityPeriod}
-            min={24}
-            max={180}
-          />
+          <InputNumber addonAfter="月" />
         </Form.Item>
       </Form>
     );
