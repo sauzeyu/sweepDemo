@@ -37,11 +37,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
 
-    private Date configDate;
+    private final Date configDate;
 
-
-
-
+    {
+        ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
+        if (CharSequenceUtil.isEmpty(proConfig.getSysDate())) {
+            throw new IllegalArgumentException("未设置系统初始时间");
+        }
+        configDate =  DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
+    }
 
     /**
      * 获取分表时间集
@@ -54,11 +58,7 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
 
     @Override
     public void init() {
-        ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
-        if (CharSequenceUtil.isEmpty(proConfig.getSysDate())) {
-            throw new IllegalArgumentException("未设置系统初始时间");
-        }
-        configDate =  DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
+        // 在这里进行分片算法的初始化操作，例如读取配置文件、创建数据结构等
     }
 
     @Override
