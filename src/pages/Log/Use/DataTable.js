@@ -84,6 +84,7 @@ const SubTable = () => {
     //     let currentIndex = this.checkKeyUseLogTable?.state?.currentIndex;
     //     let currentPageSize = this.checkKeyUseLogTable?.state?.currentPageSize;
     //     return (currentIndex - 1) * currentPageSize + (index + 1);
+    //
     //   },
     // },
     {
@@ -478,7 +479,7 @@ class DataTable extends Component {
           // autoFetch
           source={getKeyLogList}
           dataProp={'data'}
-          name={'keyErrorLogDataTable'}
+          name={'keyUseLogDataTable'}
           columns={this.columns}
           // fixedParams={{ startTime: startTime, endTime: endTime }}
           wrappedComponentRef={(ref) => (this.dataTable = ref)}

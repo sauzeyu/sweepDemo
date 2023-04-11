@@ -1,22 +1,14 @@
 import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts';
-import { Card, Col, Row, Statistic, Spin, Progress, Modal } from 'antd';
-import Icon, {
-  KeyOutlined,
-  CarOutlined,
-  UserOutlined,
-  CloseCircleOutlined,
-  CheckCircleOutlined,
-} from '@ant-design/icons';
-import { icon_bluetooth } from '@/assets/icon';
+import { Card, Col, Modal, Row, Spin, Statistic } from 'antd';
 import {
-  selectTotal,
-  vehicleStatistics,
+  keyErrorTimeStatistics,
   keyStatistics,
   keyUseTimeStatistics,
-  keyErrorTimeStatistics,
   selectForExpiration,
+  selectTotal,
+  vehicleStatistics,
 } from '@/services/statistics';
 
 class TopForm extends React.Component {
@@ -38,7 +30,6 @@ class TopForm extends React.Component {
             expiredLogsModat: true,
           });
 
-          console.log('res', res);
           localStorage.setItem('expiredModalFirst', 'true');
           Modal.info({
             title: '数据过期提醒',

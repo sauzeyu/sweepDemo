@@ -67,15 +67,18 @@ export const AFTERMARKET_REPLACEMENT_INFO_SELECT =
   '/aftermarketReplacement/info/select';
 // ------ 日志管理 ------
 export const LOG_USE = '/log/use';
+export const LOG_ERROR = '/log/error';
 export const LOG_USE_EXPORT = '/log/use/export';
 export const LOG_USE_TABLE = '/log/use/table';
 export const LOG_USE_SELECT = '/log/use/select';
 
 // ------ 页面权限 ------
 export const DASHBOARD_ZIPKIN = '/dashboard/zipkin';
+export const DASHBOARD_DIAGNOSIS = '/dashboard/diagnosis';
 export const DASHBOARD_ADMIN = '/dashboard/admin';
 export const DASHBOARD_ADMIN_INFO = '/dashboard/admin/info';
 export const DASHBOARD_ZIPKIN_INFO = '/dashboard/zipkin/info';
+export const DASHBOARD_DIAGNOSIS_INFO = '/dashboard/diagnosis/info';
 
 export const STATISTICS = '/statistics';
 export const STATISTICS_TOP = '/statistics/top';

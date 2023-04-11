@@ -78,12 +78,6 @@ class SearchForm extends Component {
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    //   this.props.keyErrorLogDataTable,
-    //   'this.props.keyErrorLogDataTable',
-    //   prevProps,
-    //   prevState,
-    // );
-
     if (this.props.keysDataTable && this.state.flag) {
       this.handleSubmit();
       this.setState({ flag: false });
