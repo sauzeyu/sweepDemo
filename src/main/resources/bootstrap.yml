@@ -2,7 +2,7 @@ spring:
   application:
     name: dkserver-back
   profiles:
-    active: dev
+    active: saic-test
   cloud:
     nacos:
       config:
@@ -13,5 +13,11 @@ spring:
         namespace: ${spring.profiles.active}
         shared-configs:
           - data-id: common.yaml
+            refresh: true
+            group: common
+          - data-id: redis.yaml
+            refresh: true
+            group: common
+          - data-id: sharding-jdbc.yaml
             refresh: true
             group: common

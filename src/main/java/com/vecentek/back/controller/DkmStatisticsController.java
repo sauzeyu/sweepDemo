@@ -1,5 +1,6 @@
 package com.vecentek.back.controller;
 
+import com.vecentek.back.service.impl.DkmFunctionalAbnormalServiceImpl;
 import com.vecentek.back.service.impl.DkmStatisticsServiceImpl;
 import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
@@ -21,12 +22,6 @@ import java.util.Optional;
 @RequestMapping(value = "/dkmStatistics")
 public class DkmStatisticsController {
 
-    @Resource
-    private DkmStatisticsServiceImpl echartsServiceImpl;
-
-    @Resource
-    private RestTemplate restTemplate;
-
     /**
      * 查询最近的日志
      *
@@ -34,9 +29,31 @@ public class DkmStatisticsController {
      * @author EdgeYu
      * @date 2023-03-29 17:04
      */
+
+    @Resource
+    private DkmFunctionalAbnormalServiceImpl dkmFunctionalAbnormalServiceImpl;
+    @Resource
+    private DkmStatisticsServiceImpl echartsServiceImpl;
+    @Resource
+    private RestTemplate restTemplate;
+
+    /**
+     * 查询所有业务id和业务
+     *
+     * @return {@link PageResp}
+     * @author liujz
+     * @date 2023/4/10 15:03
+     */
+    @GetMapping("/selectBusiness")
+    public PageResp selectBusiness() {
+
+        return dkmFunctionalAbnormalServiceImpl.selectBusiness();
+
+    }
+
     @GetMapping("/selectRecentLogs")
     public PageResp selectRecentLogs() {
-        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectRecentLogs", PageResp.class);
+        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectRecentLogs", PageResp.class);
     }
 
     /**
@@ -47,21 +64,22 @@ public class DkmStatisticsController {
      * @date 2023-03-29 17:05
      */
     @GetMapping("/selectForPage")
-    public PageResp selectForPage(String startTime, String endTime, String userId, String vin) {
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
+                                  @RequestParam(name = "pageSize") int pageSize, String startTime, String endTime, String userId, String vin) {
 
         Map<String, Object> parameters = new HashMap<>(4);
+        parameters.put("pageIndex", pageIndex);
+        parameters.put("pageSize", pageSize);
         Optional.ofNullable(startTime).ifPresent(parameter -> parameters.put("startTime", parameter));
         Optional.ofNullable(endTime).ifPresent(parameter -> parameters.put("endTime", parameter));
         Optional.ofNullable(userId).ifPresent(parameter -> parameters.put("userId", parameter));
         Optional.ofNullable(vin).ifPresent(parameter -> parameters.put("vin", parameter));
-        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectForPage",
-                PageResp.class,
-                parameters);
+        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectForPage", PageResp.class, parameters);
     }
 
     @GetMapping("/selectFaultLogs")
     public PageResp selectFaultLogs() {
-        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectFaultLogs", PageResp.class);
+        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectFaultLogs", PageResp.class);
     }
 
 
@@ -74,12 +92,12 @@ public class DkmStatisticsController {
      */
     @GetMapping("/selectTodayLogsCount")
     public PageResp selectTodayLogsCount() {
-        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectTodayLogsCount", PageResp.class);
+        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectTodayLogsCount", PageResp.class);
     }
 
     @GetMapping("/selectPhoneBrandLogs")
     public PageResp selectPhoneBrandLogs() {
-        return restTemplate.getForObject("http://dkserver-es/dkserver-es/dkmLog/selectPhoneBrandLogs", PageResp.class);
+        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectPhoneBrandLogs", PageResp.class);
     }
 
 
