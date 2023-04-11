@@ -74,9 +74,11 @@ export const LOG_USE_SELECT = '/log/use/select';
 
 // ------ 页面权限 ------
 export const DASHBOARD_ZIPKIN = '/dashboard/zipkin';
+export const DASHBOARD_DIAGNOSIS = '/dashboard/diagnosis';
 export const DASHBOARD_ADMIN = '/dashboard/admin';
 export const DASHBOARD_ADMIN_INFO = '/dashboard/admin/info';
 export const DASHBOARD_ZIPKIN_INFO = '/dashboard/zipkin/info';
+export const DASHBOARD_DIAGNOSIS_INFO = '/dashboard/diagnosis/info';
 
 export const STATISTICS = '/statistics';
 export const STATISTICS_TOP = '/statistics/top';

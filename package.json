@@ -2,9 +2,9 @@
   "private": true,
   "scripts": {
     "start": "umi dev",
-    "dev": "cross-env APP_TYPE=site MOCK=none BROWSER=none umi dev",
+    "dev": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env APP_TYPE=site MOCK=none BROWSER=none umi dev",
     "dev:mock": "cross-env APP_TYPE=site BROWSER=none umi dev",
-    "build": "umi build",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
@@ -24,6 +24,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@ant-design/pro-layout": "^6.5.0",
+    "@jiaminghi/data-view-react": "^1.0.7",
     "antd-pro-merge-less": "^3.0.11",
     "antd-pro-theme-webpack-plugin": "^1.1.8",
     "axios": "^0.21.1",
@@ -31,17 +32,18 @@
     "deep-diff": "^1.0.2",
     "echarts": "^5.2.0",
     "echarts-for-react": "^3.0.1",
+    "echarts-liquidfill": "^3.1.0",
     "enquire-js": "^0.2.1",
     "immutability-helper": "^3.1.1",
     "join-path": "^1.1.1",
     "js-cookie": "^3.0.0",
     "lodash-decorators": "^6.0.1",
-    "react": "17.x",
+    "react": "^16.9.0",
     "react-container-query": "^0.12.0",
     "react-dnd": "^14.0.3",
     "react-dnd-html5-backend": "^14.0.1",
     "react-document-title": "^2.0.3",
-    "react-dom": "17.x",
+    "react-dom": "^16.9.0",
     "react-json-view": "^1.21.3",
     "react-router-config": "^5.1.1",
     "react-viewer": "^3.2.2",
@@ -71,6 +73,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "__npminstall_done": false
+  "license": "ISC"
 }

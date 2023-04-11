@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import EasyTable from '@/components/EasyTable';
 import { connect } from 'dva';
-import { getKeyLogList } from '@/services/keys';
 
 import { Popover, Tooltip, Typography } from 'antd';
 import { TableHeaderColumn } from '@/utils/TableHeaderColumn';
+import { selectForPage } from '@/services/diagnosis';
 
-@connect(({ keysLog, loading }) => ({
-  keysLog,
+@connect(({ Diagnosis, loading }) => ({
+  Diagnosis,
 }))
 class DataTable extends Component {
   state = {
-    endTime: '',
-    flag: true,
+    businessList: [],
   };
   columns = [
     {
@@ -64,19 +63,43 @@ class DataTable extends Component {
     },
     {
       title: '业务类型',
-      dataIndex: 'vehicleType',
+      dataIndex: 'functionalAbnormality',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (functionalAbnormality) => (
+        <Tooltip placement="topLeft" title={functionalAbnormality.business}>
+          {functionalAbnormality.business}
+        </Tooltip>
+      ),
     },
     {
       title: '故障原因',
-      dataIndex: 'vehicleBrand',
+      dataIndex: 'functionalAbnormality',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (functionalAbnormality) => (
+        <Tooltip placement="topLeft" title={functionalAbnormality.fault}>
+          {functionalAbnormality.fault}
+        </Tooltip>
+      ),
     },
     {
       title: '日志记录方',
-      dataIndex: 'vehicleModel',
+      dataIndex: 'functionalAbnormality',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (functionalAbnormality) => (
+        <Tooltip placement="topLeft" title={functionalAbnormality.source}>
+          {functionalAbnormality.source}
+        </Tooltip>
+      ),
     },
     {
       title: '记录时间',
-      dataIndex: 'operateTime',
+      dataIndex: 'time',
       ellipsis: {
         showTitle: false,
       },
@@ -90,7 +113,9 @@ class DataTable extends Component {
       title: '操作',
       fixed: 'right',
       width: 300,
-      render: () => {
+      render: (col) => {
+        console.log('cokl--', col);
+        let solutionList = col?.functionalAbnormality?.solution;
         return (
           <Popover
             content={
@@ -104,8 +129,13 @@ class DataTable extends Component {
                   解决方案
                 </Typography.Title>
                 <p />
-                <p>1：联系云端人员，确认该VIN号车辆是否下线</p>
-                <p>2：查看手机日志，确认上传的VIN号是否匹配</p>
+                {solutionList?.map((item, index) => {
+                  return (
+                    <p key={index}>
+                      {index + 1}：{item}
+                    </p>
+                  );
+                })}
               </>
             }
             title=""
@@ -117,6 +147,25 @@ class DataTable extends Component {
       },
     },
   ];
+
+  selectBusiness = () => {
+    this.props
+      .dispatch({
+        type: 'Diagnosis/selectBusiness',
+        payload: {},
+      })
+      .then((res) => {
+        if (res && res.code === 200) {
+          this.setState({
+            businessList: res.data,
+          });
+        }
+      });
+  };
+
+  componentWillMount() {
+    this.selectBusiness();
+  }
 
   onCancel = () => {
     this.setState({
@@ -133,7 +182,7 @@ class DataTable extends Component {
       <>
         <EasyTable
           scroll={{ x: '1200px' }}
-          source={getKeyLogList}
+          source={selectForPage}
           dataProp={'data'}
           name={'keyErrorLogDataTable'}
           columns={this.columns}
