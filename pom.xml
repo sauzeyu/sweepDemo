@@ -126,7 +126,6 @@
         </dependency>
 
 
-
         <dependency>
             <groupId>com.vecentek.dkserver</groupId>
             <artifactId>dkserver-common</artifactId>
@@ -162,7 +161,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
 
 
         </plugins>

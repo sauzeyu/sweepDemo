@@ -15,3 +15,9 @@ spring:
           - data-id: common.yaml
             refresh: true
             group: common
+          - data-id: redis.yaml
+            refresh: true
+            group: common
+          - data-id: sharding-jdbc.yaml
+            refresh: true
+            group: common

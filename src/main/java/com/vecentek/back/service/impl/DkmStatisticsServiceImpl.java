@@ -20,10 +20,11 @@ import com.vecentek.back.entity.DkmVehicle;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
-import com.vecentek.back.util.TimeUtil;
 import com.vecentek.back.util.SpringContextUtil;
+import com.vecentek.back.util.TimeUtil;
 import com.vecentek.common.response.PageResp;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -43,7 +44,6 @@ import java.util.List;
  */
 @Service
 public class DkmStatisticsServiceImpl {
-
     @Resource
     private DkmVehicleMapper dkmVehicleMapper;
     @Resource
@@ -55,20 +55,21 @@ public class DkmStatisticsServiceImpl {
         if (ObjectUtil.isNull(startTime) || ObjectUtil.isNull(endTime)) {
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
-        int totalVehicles = dkmVehicleMapper.selectCount(Wrappers.<DkmVehicle>lambdaQuery()
-                .ge(ObjectUtil.isNotNull(startTime), DkmVehicle::getCreateTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmVehicle::getCreateTime, endTime));
-        int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
-                .ge(ObjectUtil.isNotNull(startTime), DkmKey::getApplyTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime));
-        int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
-                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
-                .eq(DkmKeyLog::getFlag, 0));
-        int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
-                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
-                .eq(DkmKeyLog::getFlag, 1));
+        int totalVehicles = dkmVehicleMapper.selectCount(Wrappers.<DkmVehicle>lambdaQuery().ge(ObjectUtil.isNotNull(
+                startTime), DkmVehicle::getCreateTime, startTime).le(ObjectUtil.isNotNull(endTime),
+                DkmVehicle::getCreateTime,
+                endTime));
+        int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery().ge(ObjectUtil.isNotNull(startTime),
+                DkmKey::getApplyTime,
+                startTime).le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime));
+        int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery().ge(ObjectUtil.isNotNull(
+                startTime), DkmKeyLog::getOperateTime, startTime).le(ObjectUtil.isNotNull(endTime),
+                DkmKeyLog::getOperateTime,
+                endTime).eq(DkmKeyLog::getFlag, 0));
+        int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery().ge(ObjectUtil.isNotNull(
+                startTime), DkmKeyLog::getOperateTime, startTime).le(ObjectUtil.isNotNull(endTime),
+                DkmKeyLog::getOperateTime,
+                endTime).eq(DkmKeyLog::getFlag, 1));
         StatisticsDTO statisticsDTO = new StatisticsDTO();
         statisticsDTO.setKeyErrorCount(totalKeyError);
         statisticsDTO.setVehicleCount(totalVehicles);
@@ -91,18 +92,19 @@ public class DkmStatisticsServiceImpl {
         String sysDate = TimeUtil.getSysDate();
         String tommorw = TimeUtil.getNextDay();
         int totalVehicles = dkmVehicleMapper.selectCount(null);
-        int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery()
-                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
-                .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
-                .le(ObjectUtil.isNotNull(tommorw), DkmKey::getApplyTime, tommorw));
-        int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
-                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
-                .eq(DkmKeyLog::getFlag, 0));
-        int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery()
-                .ge(ObjectUtil.isNotNull(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(ObjectUtil.isNotNull(endTime), DkmKeyLog::getOperateTime, endTime)
-                .eq(DkmKeyLog::getFlag, 1));
+        int totalKeys = dkmKeyMapper.selectCount(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getDkState,
+                KeyStatusEnum.ACTIVATED.getCode()).ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate).le(
+                ObjectUtil.isNotNull(tommorw),
+                DkmKey::getApplyTime,
+                tommorw));
+        int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery().ge(ObjectUtil.isNotNull(
+                startTime), DkmKeyLog::getOperateTime, startTime).le(ObjectUtil.isNotNull(endTime),
+                DkmKeyLog::getOperateTime,
+                endTime).eq(DkmKeyLog::getFlag, 0));
+        int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery().ge(ObjectUtil.isNotNull(
+                startTime), DkmKeyLog::getOperateTime, startTime).le(ObjectUtil.isNotNull(endTime),
+                DkmKeyLog::getOperateTime,
+                endTime).eq(DkmKeyLog::getFlag, 1));
 
         StatisticsDTO statisticsDTO = new StatisticsDTO();
         statisticsDTO.setKeyErrorCount(totalKeyError);
@@ -128,10 +130,9 @@ public class DkmStatisticsServiceImpl {
         errorLogCount = MonthCountDTO.checkMonthCount(errorLogCount, monthList);
         List<Integer> errorLogCountList = MonthCountDTO.countToList(errorLogCount);
 
-        JSONObject total = new JSONObject()
-                .set("monthList", monthList)
-                .set("useLogCount", useLogCountList)
-                .set("errorLogCount", errorLogCountList);
+        JSONObject total = new JSONObject().set("monthList", monthList).set("useLogCount", useLogCountList).set(
+                "errorLogCount",
+                errorLogCountList);
         return PageResp.success("查询成功", total);
     }
 
@@ -241,20 +242,19 @@ public class DkmStatisticsServiceImpl {
         String sysDate = TimeUtil.getSysDate();
         String tommorw = TimeUtil.getNextDay();
         // 车主钥匙
-        int masterCount = dkmKeyMapper.selectCount(
-                new QueryWrapper<DkmKey>().lambda()
-                        .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
-                        .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
-                        .le(ObjectUtil.isNotNull(tommorw), DkmKey::getApplyTime, tommorw)
-                        .eq(DkmKey::getParentId, "0"));
+        int masterCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().eq(DkmKey::getDkState,
+                KeyStatusEnum.ACTIVATED.getCode()).ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate).le(
+                ObjectUtil.isNotNull(tommorw),
+                DkmKey::getApplyTime,
+                tommorw).eq(DkmKey::getParentId, "0"));
 
         // 子钥匙
 
-        int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda()
-                .eq(DkmKey::getDkState, KeyStatusEnum.ACTIVATED.getCode())
-                .ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate)
-                .le(ObjectUtil.isNotNull(tommorw), DkmKey::getApplyTime, tommorw)
-                .ne(DkmKey::getParentId, "0"));
+        int childCount = dkmKeyMapper.selectCount(new QueryWrapper<DkmKey>().lambda().eq(DkmKey::getDkState,
+                KeyStatusEnum.ACTIVATED.getCode()).ge(ObjectUtil.isNotNull(sysDate), DkmKey::getApplyTime, sysDate).le(
+                ObjectUtil.isNotNull(tommorw),
+                DkmKey::getApplyTime,
+                tommorw).ne(DkmKey::getParentId, "0"));
 
         // 车主钥匙占比
         BigDecimal divide;
@@ -392,13 +392,14 @@ public class DkmStatisticsServiceImpl {
                     type = "遮阳罩";
                 }
 
-                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), statusCode)
-                        && ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 2, 4), "00")) { // 关闭
+                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2),
+                        statusCode) && ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 2, 4), "00")) { // 关闭
                     countDTO.setName(type + "关闭");
                     countDTO.setValue(countDTO.getValue());
                     data.add(countDTO);
-                } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), statusCode)
-                        && ObjectUtil.notEqual(StrUtil.sub(countDTO.getName(), 2, 4), "00")) { // 开启
+                } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), statusCode) && ObjectUtil.notEqual(
+                        StrUtil.sub(countDTO.getName(), 2, 4),
+                        "00")) { // 开启
                     int intValue = countDTO.getValue();
                     OpenInt += intValue;
                 }
@@ -430,26 +431,33 @@ public class DkmStatisticsServiceImpl {
         for (CountDTO countDTO : countDTOs) {
             if (countDTO.getName().length() == 4) {
                 // 主驾通风加热特殊处理
-                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C")
-                        && ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 2, 4), "00")) { // 主驾通风加热关闭
+                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C") && ObjectUtil.equals(StrUtil.sub(
+                        countDTO.getName(),
+                        2,
+                        4), "00")) { // 主驾通风加热关闭
                     countDTO.setName("主驾" + type + "关闭");
                     countDTO.setValue(countDTO.getValue());
                     data.add(countDTO);
-                } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C")
-                        && Convert.toInt(StrUtil.sub(countDTO.getName(), 2, 4)) <= 12) { // 主驾通风加热开启
+                } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C") && Convert.toInt(StrUtil.sub(
+                        countDTO.getName(),
+                        2,
+                        4)) <= 12) { // 主驾通风加热开启
                     int intValue = countDTO.getValue();
                     mainOpenInt += intValue;
                 }
 
                 // 副驾通风加热特殊处理
-                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C")
-                        && ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 2, 4), "13")) { // 主驾通风加热关闭
+                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C") && ObjectUtil.equals(StrUtil.sub(
+                        countDTO.getName(),
+                        2,
+                        4), "13")) { // 主驾通风加热关闭
                     countDTO.setName("副驾" + type + "关闭");
                     countDTO.setValue(countDTO.getValue());
                     data.add(countDTO);
-                } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C")
-                        && Convert.toInt(StrUtil.sub(countDTO.getName(), 2, 4)) >= 14
-                        && Convert.toInt(StrUtil.sub(countDTO.getName(), 2, 4)) <= 25) { // 主驾通风加热开启
+                } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), "0C") && Convert.toInt(StrUtil.sub(
+                        countDTO.getName(),
+                        2,
+                        4)) >= 14 && Convert.toInt(StrUtil.sub(countDTO.getName(), 2, 4)) <= 25) { // 主驾通风加热开启
                     int intValue = countDTO.getValue();
                     secOpenInt += intValue;
                 }
@@ -489,4 +497,6 @@ public class DkmStatisticsServiceImpl {
         }
         return data;
     }
+
+
 }
