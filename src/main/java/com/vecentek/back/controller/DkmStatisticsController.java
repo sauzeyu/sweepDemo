@@ -6,10 +6,9 @@ import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -21,6 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/dkmStatistics")
 public class DkmStatisticsController {
+    private static final String LOG_SERVICE = "http://dkserver-log/dkserver-log/dkmLog";
 
     /**
      * 查询最近的日志
@@ -53,7 +53,7 @@ public class DkmStatisticsController {
 
     @GetMapping("/selectRecentLogs")
     public PageResp selectRecentLogs() {
-        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectRecentLogs", PageResp.class);
+        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectRecentLogs").build().toUriString(), PageResp.class);
     }
 
     /**
@@ -64,22 +64,18 @@ public class DkmStatisticsController {
      * @date 2023-03-29 17:05
      */
     @GetMapping("/selectForPage")
-    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
-                                  @RequestParam(name = "pageSize") int pageSize, String startTime, String endTime, String userId, String vin) {
-
-        Map<String, Object> parameters = new HashMap<>(4);
-        parameters.put("pageIndex", pageIndex);
-        parameters.put("pageSize", pageSize);
-        Optional.ofNullable(startTime).ifPresent(parameter -> parameters.put("startTime", parameter));
-        Optional.ofNullable(endTime).ifPresent(parameter -> parameters.put("endTime", parameter));
-        Optional.ofNullable(userId).ifPresent(parameter -> parameters.put("userId", parameter));
-        Optional.ofNullable(vin).ifPresent(parameter -> parameters.put("vin", parameter));
-        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectForPage", PageResp.class, parameters);
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String startTime, String endTime, String userId, String vin) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).queryParam("pageIndex", pageIndex).queryParam("pageSize", pageSize).path("/selectForPage");
+        Optional.ofNullable(startTime).ifPresent(parameter -> builder.queryParam("startTime", parameter));
+        Optional.ofNullable(endTime).ifPresent(parameter -> builder.queryParam("endTime", parameter));
+        Optional.ofNullable(userId).ifPresent(parameter -> builder.queryParam("userId", parameter));
+        Optional.ofNullable(vin).ifPresent(parameter -> builder.queryParam("vin", parameter));
+        return restTemplate.getForObject(builder.build().toUriString(), PageResp.class);
     }
 
     @GetMapping("/selectFaultLogs")
     public PageResp selectFaultLogs() {
-        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectFaultLogs", PageResp.class);
+        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectFaultLogs").build().toUriString(), PageResp.class);
     }
 
 
@@ -92,12 +88,13 @@ public class DkmStatisticsController {
      */
     @GetMapping("/selectTodayLogsCount")
     public PageResp selectTodayLogsCount() {
-        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectTodayLogsCount", PageResp.class);
+
+        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectTodayLogsCount").build().toUriString(), PageResp.class);
     }
 
     @GetMapping("/selectPhoneBrandLogs")
     public PageResp selectPhoneBrandLogs() {
-        return restTemplate.getForObject("http://dkserver-log/dkserver-log/dkmLog/selectPhoneBrandLogs", PageResp.class);
+        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectPhoneBrandLogs").build().toUriString(), PageResp.class);
     }
 
 
