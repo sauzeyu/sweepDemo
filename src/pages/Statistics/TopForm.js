@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts';
-import { Card, Col, Row, Statistic, Spin, Progress } from 'antd';
+import { Card, Col, Row, Statistic, Spin, Progress, Modal } from 'antd';
 import Icon, {
   KeyOutlined,
   CarOutlined,
@@ -16,6 +16,7 @@ import {
   keyStatistics,
   keyUseTimeStatistics,
   keyErrorTimeStatistics,
+  selectForExpiration,
 } from '@/services/statistics';
 
 class TopForm extends React.Component {
@@ -26,9 +27,41 @@ class TopForm extends React.Component {
     keyUseTimeTotal: {},
     keyErrorTimeTotal: {},
     keyTotal: {},
+    expiredLogsModat: false,
   };
 
   componentDidMount() {
+    if (!localStorage.getItem('expiredModalFirst')) {
+      selectForExpiration().then((res) => {
+        if (res?.data) {
+          this.setState({
+            expiredLogsModat: true,
+          });
+
+          console.log('res', res);
+          localStorage.setItem('expiredModalFirst', 'true');
+          Modal.info({
+            title: '数据过期提醒',
+
+            content: (
+              <>
+                {res.msg},请联系管理人员及时对数据进行备份操作：&nbsp;
+                <br />
+                <ul>
+                  {res.data &&
+                    Object.keys(res.data).map((key) => (
+                      <li key={key}>
+                        {key}月过期数据{res.data[key]}条
+                      </li>
+                    ))}
+                </ul>
+              </>
+            ),
+            okText: '确认',
+          });
+        }
+      });
+    }
     selectTotal().then((res) => {
       this.setState({
         statisticsTotal: res.data,
@@ -322,100 +355,102 @@ class TopForm extends React.Component {
       },
     };
     return (
-      <Row gutter={24}>
-        <Col {...colSpan}>
-          <Spin spinning={spinningVisible}>
-            <Card
-              {...cardStyle}
-              title={
-                <>
-                  <Statistic
-                    title="车辆总数"
-                    value={vehicleCount}
-                    {...valueStyle}
-                  />
-                  <ReactEcharts
-                    option={this.vehicleCountOption()}
-                    notMerge={true}
-                    style={{ width: '100%', height: '50%' }}
-                  />
-                </>
-              }
-            >
-              今日新增车辆 {newToday}
-            </Card>
-          </Spin>
-        </Col>
-        <Col {...colSpan}>
-          <Spin spinning={spinningVisible}>
-            <Card
-              {...cardStyle}
-              title={
-                <>
-                  <Statistic
-                    title={'钥匙总量'}
-                    value={keyCount}
-                    {...valueStyle}
-                  />
-                  <ReactEcharts
-                    option={this.keyStateCountOption()}
-                    notMerge={true}
-                    style={{ width: '100%', height: '50%' }}
-                  />
-                </>
-              }
-            >
-              车主钥匙占比 {proportion}
-            </Card>
-          </Spin>
-        </Col>
-        <Col {...colSpan}>
-          <Spin spinning={spinningVisible}>
-            <Card
-              {...cardStyle}
-              title={
-                <>
-                  <Statistic
-                    title="本年钥匙使用次数"
-                    value={keyUseCount}
-                    {...valueStyle}
-                  />
-                  <ReactEcharts
-                    option={this.keyUseCountOption()}
-                    notMerge={true}
-                    style={{ width: '100%', height: '50%' }}
-                  />
-                </>
-              }
-            >
-              今日使用次数 {countUseToday}
-            </Card>
-          </Spin>
-        </Col>
-        <Col {...colSpan}>
-          <Spin spinning={spinningVisible}>
-            <Card
-              {...cardStyle}
-              title={
-                <>
-                  <Statistic
-                    title="本年钥匙故障次数"
-                    value={keyErrorCount}
-                    {...valueStyle}
-                  />
-                  <ReactEcharts
-                    option={this.keyErrorCountOption()}
-                    notMerge={true}
-                    style={{ width: '100%', height: '50%' }}
-                  />
-                </>
-              }
-            >
-              今日故障次数 {countErrorToday}
-            </Card>
-          </Spin>
-        </Col>
-      </Row>
+      <div>
+        <Row gutter={24}>
+          <Col {...colSpan}>
+            <Spin spinning={spinningVisible}>
+              <Card
+                {...cardStyle}
+                title={
+                  <>
+                    <Statistic
+                      title="车辆总数"
+                      value={vehicleCount}
+                      {...valueStyle}
+                    />
+                    <ReactEcharts
+                      option={this.vehicleCountOption()}
+                      notMerge={true}
+                      style={{ width: '100%', height: '50%' }}
+                    />
+                  </>
+                }
+              >
+                今日新增车辆 {newToday}
+              </Card>
+            </Spin>
+          </Col>
+          <Col {...colSpan}>
+            <Spin spinning={spinningVisible}>
+              <Card
+                {...cardStyle}
+                title={
+                  <>
+                    <Statistic
+                      title={'钥匙总量'}
+                      value={keyCount}
+                      {...valueStyle}
+                    />
+                    <ReactEcharts
+                      option={this.keyStateCountOption()}
+                      notMerge={true}
+                      style={{ width: '100%', height: '50%' }}
+                    />
+                  </>
+                }
+              >
+                车主钥匙占比 {proportion}
+              </Card>
+            </Spin>
+          </Col>
+          <Col {...colSpan}>
+            <Spin spinning={spinningVisible}>
+              <Card
+                {...cardStyle}
+                title={
+                  <>
+                    <Statistic
+                      title="本年钥匙使用次数"
+                      value={keyUseCount}
+                      {...valueStyle}
+                    />
+                    <ReactEcharts
+                      option={this.keyUseCountOption()}
+                      notMerge={true}
+                      style={{ width: '100%', height: '50%' }}
+                    />
+                  </>
+                }
+              >
+                今日使用次数 {countUseToday}
+              </Card>
+            </Spin>
+          </Col>
+          <Col {...colSpan}>
+            <Spin spinning={spinningVisible}>
+              <Card
+                {...cardStyle}
+                title={
+                  <>
+                    <Statistic
+                      title="本年钥匙故障次数"
+                      value={keyErrorCount}
+                      {...valueStyle}
+                    />
+                    <ReactEcharts
+                      option={this.keyErrorCountOption()}
+                      notMerge={true}
+                      style={{ width: '100%', height: '50%' }}
+                    />
+                  </>
+                }
+              >
+                今日故障次数 {countErrorToday}
+              </Card>
+            </Spin>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }

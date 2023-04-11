@@ -2,6 +2,14 @@
 import { Tag, Badge } from 'antd';
 import React from 'react';
 
+export const SimpleDKState = {
+  0: '未激活 ',
+  1: '激活 ',
+  3: '冻结 ',
+  4: '过期 ',
+  5: '吊销 ',
+};
+
 export const DKState = {
   0: <Badge color="green" text="未激活" />,
   1: <Badge color="green" text="激活" />,
@@ -9,6 +17,12 @@ export const DKState = {
   4: <Badge color="yellow" text="过期" />,
   5: <Badge color="red" text="吊销" />,
 };
+
+export const SimplekeyLogFlag = {
+  0: '失败',
+  1: '成功',
+};
+
 export const keyLogFlag = {
   0: <Tag color="red">失败</Tag>,
   1: <Tag color="green">成功</Tag>,
@@ -31,11 +45,25 @@ export const KeySource = {
   3: '变更车主|售后换机|更换手机',
   4: '小程序',
 };
+
+export const SimpleKeyType = {
+  1: '车主钥匙 ',
+  2: '分享钥匙 ',
+};
+
 export const KeyType = (text) => {
   if (text === '0') {
     return <Tag color="green">车主钥匙</Tag>;
   } else {
     return <Tag color="blue">分享钥匙</Tag>;
+  }
+};
+
+export const SimplekeyClassification = (text) => {
+  if (text === 1) {
+    return 'icce ';
+  } else if (text === 2) {
+    return 'ccc ';
   }
 };
 
@@ -45,6 +73,12 @@ export const KeyClassification = (text) => {
   } else if (text === 2) {
     return <Tag color="green">ccc</Tag>;
   }
+};
+
+export const SimplekeyResource = {
+  1: 'App',
+
+  2: '小程序',
 };
 
 export const KeyResource = (text) => {

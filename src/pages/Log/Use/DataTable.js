@@ -24,7 +24,11 @@ import {
   BarsOutlined,
 } from '@ant-design/icons';
 import Authorized from '@/components/Authorized';
-import { keyLogFlag, keyLogFlagBadge } from '@/constants/keys';
+import {
+  keyLogFlag,
+  keyLogFlagBadge,
+  SimplekeyLogFlag,
+} from '@/constants/keys';
 import { LOG_USE_EXPORT } from '@/components/Authorized/AuthMap';
 import DescriptionList from '@/components/DescriptionList';
 import { exportKeyUseLog } from '@/services/exportKeyUseLog';
@@ -260,6 +264,7 @@ class DataTable extends Component {
       showUserInfo: true,
     });
   };
+
   confirmExportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
 
@@ -281,7 +286,7 @@ class DataTable extends Component {
     let flagEnmu;
     if (startTime?.length === 2) {
       beginTime = moment(startTime[0]).format('YYYY-MM-DD');
-      endTime = moment(startTime[1]).add(1, 'days').format('YYYY-MM-DD');
+      endTime = moment(startTime[1]).format('YYYY-MM-DD');
     }
     if (statusCode) {
       for (let i = 0; i < Code.length; i++) {
@@ -294,7 +299,7 @@ class DataTable extends Component {
     }
 
     if (flag != null) {
-      flagEnmu = keyLogFlagBadge[flag];
+      flagEnmu = SimplekeyLogFlag[flag];
     }
     Modal.confirm({
       title: '确定导出钥匙信息?',
@@ -311,7 +316,7 @@ class DataTable extends Component {
           {phoneModel}
           <br />
           操作类型:&nbsp;
-          {statusCodeEnmu}
+          {statusCodeEnmu.map((statusCode) => statusCode + ' ')}
           <br />
           车辆vin号:&nbsp;
           {vin}
@@ -486,8 +491,8 @@ class DataTable extends Component {
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
-                  // onClick={() => this.confirmExportExcel()}
-                  onClick={() => this.exportExcel()}
+                  onClick={() => this.confirmExportExcel()}
+                  // onClick={() => this.exportExcel()}
                 >
                   导出钥匙使用记录
                 </Button>

@@ -32,6 +32,10 @@ import {
   KeyType,
   KeyResource,
   KeyClassification,
+  SimpleDKState,
+  SimpleKeyType,
+  SimplekeyResource,
+  SimplekeyClassification,
 } from '@/constants/keys';
 
 import { exportStatus } from '@/constants/export';
@@ -529,40 +533,53 @@ class DataTable extends Component {
 
     if (applyTime) {
       applyStartTime = moment(applyTime[0])?.format('YYYY-MM-DD');
-      applyEndTime = moment(applyTime[1])?.add(1, 'days').format('YYYY-MM-DD');
+      applyEndTime = moment(applyTime[1])?.format('YYYY-MM-DD');
     }
 
     if (valFromTime) {
       valFromStartTime = moment(valFromTime[0])?.format('YYYY-MM-DD');
-      valFromEndTime = moment(valFromTime[1])
-        ?.add(1, 'days')
-        .format('YYYY-MM-DD');
+      valFromEndTime = moment(valFromTime[1])?.format('YYYY-MM-DD');
     }
 
     if (valToTime) {
       valToStartTime = moment(valToTime[0])?.format('YYYY-MM-DD');
 
-      valToEndTime = moment(valToTime[1])?.add(1, 'days').format('YYYY-MM-DD');
+      valToEndTime = moment(valToTime[1])?.format('YYYY-MM-DD');
     }
-
     if (dkState != null) {
-      for (let i = 0; i < dkState.length; i++) {
-        dkStateEnum.push(DKState[dkState[i]]);
+      if (dkState instanceof Array) {
+        for (let i = 0; i < dkState.length; i++) {
+          dkStateEnum.push(SimpleDKState[dkState[i]]);
+        }
+      } else {
+        dkStateEnum.push(SimpleDKState[dkState]);
       }
     }
+
     if (keyResource != null) {
-      keyResourceEnum = KeyResource(keyResource);
+      keyResourceEnum = SimplekeyResource[keyResource];
     }
 
     if (keyClassification != null) {
-      for (let i = 0; i < keyClassification.length; i++) {
-        keyClassificationEnum.push(KeyClassification(keyClassification[i]));
+      if (keyClassification instanceof Array) {
+        for (let i = 0; i < keyClassification.length; i++) {
+          keyClassificationEnum.push(
+            SimplekeyClassification(keyClassification[i]),
+          );
+        }
+      } else {
+        keyClassificationEnum.push(SimplekeyClassification(keyClassification));
       }
     }
 
     if (keyType != null) {
-      for (let i = 0; i < keyType.length; i++) {
-        keyTypeEnum.push(KeyType(keyType[i]));
+      console.log('keyType', keyType);
+      if (keyType instanceof Array) {
+        for (let i = 0; i < keyType.length; i++) {
+          keyTypeEnum.push(SimpleKeyType[keyType[i]]);
+        }
+      } else {
+        keyTypeEnum.push(SimpleKeyType[keyType]);
       }
     }
 
@@ -754,8 +771,8 @@ class DataTable extends Component {
                   type={'ghost'}
                   size={'large'}
                   icon={<DownloadOutlined />}
-                  // onClick={() => this.confirmExportExcel()}
-                  onClick={() => this.exportExcel()}
+                  onClick={() => this.confirmExportExcel()}
+                  // onClick={() => this.exportExcel()}
                 >
                   导出钥匙信息
                 </Button>
