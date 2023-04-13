@@ -30,7 +30,7 @@ public class DkmExceptionLogController {
     public PageResp selectBusiness(
     ) {
 
-        return this.dkmFunctionalAbnormalService.selectBusiness();
+        return dkmFunctionalAbnormalService.selectBusiness();
 
     }
 }

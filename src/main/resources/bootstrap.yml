@@ -2,7 +2,7 @@ spring:
   application:
     name: dkserver-back
   profiles:
-    active: saic-test
+    active: dev
   cloud:
     nacos:
       config:
@@ -11,6 +11,7 @@ spring:
         server-addr: 172.16.13.13:8888  #  配置中心地址
         file-extension: yaml # 指定配置文件类型
         namespace: ${spring.profiles.active}
+        group: liujz
         shared-configs:
           - data-id: common.yaml
             refresh: true
