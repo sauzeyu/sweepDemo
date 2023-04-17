@@ -69,10 +69,21 @@ export default class RightContent extends React.Component {
     todayLogsCount: [],
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.selectPhoneBrandLogs();
     this.selectFaultLogs();
     this.selectTodayLogsCount();
+    // 设置定时器，30s更新一次
+    this.timer = setInterval(() => {
+      this.selectPhoneBrandLogs();
+      this.selectFaultLogs();
+      this.selectTodayLogsCount();
+    }, 1000 * 30);
+  }
+
+  componentWillUnmount() {
+    //  组件卸载时清除定时器
+    clearInterval(this.timer);
   }
 
   selectTodayLogsCount = () => {
