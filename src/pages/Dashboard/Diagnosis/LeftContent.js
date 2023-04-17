@@ -19,8 +19,17 @@ export default class LeftContent extends Component {
     logList: [],
   };
 
-  componentWillMount() {
+  componentDidMount() {
     this.selectRecentLogs();
+    // 设置定时器，30s更新一次
+    this.timer = setInterval(() => {
+      this.selectRecentLogs();
+    }, 1000 * 30);
+  }
+
+  componentWillUnmount() {
+    //  组件卸载时清除定时器
+    clearInterval(this.timer);
   }
 
   selectRecentLogs = () => {
@@ -44,6 +53,7 @@ export default class LeftContent extends Component {
             type: 'Diagnosis/changeLogDetail',
             payload: res?.data[0],
           });
+          console.log('logs', logs);
         }
       });
   };
