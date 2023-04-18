@@ -18,37 +18,47 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- *  根据年月分表规则
+ * 根据年月分表规则
  *
- *  @author ：liubo
- *  @version ：1.0
- *  @since 2022-02-10 14:59
- *
+ * @author ：liubo
+ * @version ：1.0
+ * @since 2022-02-10 14:59
  */
 @Component
 @Slf4j
 public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
 
 
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final Map<Class<?>, Function<Object, String>> FORMATTER_MAP = new HashMap<>();
 
-    public Date getConfigDate(){
+    static {
+        FORMATTER_MAP.put(String.class, Object::toString);
+        FORMATTER_MAP.put(Timestamp.class, date -> new SimpleDateFormat(DATE_FORMAT).format((Timestamp) date));
+        FORMATTER_MAP.put(LocalDate.class, date -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+            LocalDateTime localDateTime = LocalDateTime.of((LocalDate) date, LocalTime.MIN);
+            return formatter.format(localDateTime);
+        });
+    }
+
+
+    public Date getConfigDate() {
         ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
         if (CharSequenceUtil.isEmpty(proConfig.getSysDate())) {
             throw new IllegalArgumentException("未设置系统初始时间");
         }
-       return  DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
+        return DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
     }
 
     /**
      * 获取分表时间集
+     *
      * @return Integer
      */
     public Integer getSubTable() {
@@ -94,29 +104,20 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
 
         return tableName;
     }
+
+
     @Override
     public Collection<String> doSharding(Collection availableTargetNames, RangeShardingValue rangeShardingValue) {
         // 方法实现没法指定泛型
-        Range valueRange = rangeShardingValue.getValueRange();
+        Range<?> valueRange = rangeShardingValue.getValueRange();
 
         String lowerDate;
         String upperDate;
-        if (valueRange.lowerEndpoint() instanceof String) {
-            lowerDate = (String) valueRange.lowerEndpoint();
-            upperDate = (String) valueRange.upperEndpoint();
-        } else if (valueRange.lowerEndpoint() instanceof Timestamp) {
-            Timestamp lowerTime = (Timestamp) valueRange.lowerEndpoint();
-            Timestamp upperTime = (Timestamp) valueRange.upperEndpoint();
-            lowerDate = formatDate(lowerTime);
-            upperDate = formatDate(upperTime);
-        } else if (valueRange.lowerEndpoint() instanceof LocalDate) {
-            LocalDate lowerTime = (LocalDate) valueRange.lowerEndpoint();
-            LocalDate upperTime = (LocalDate) valueRange.upperEndpoint();
-            lowerDate = formatLocalDate(lowerTime);
-            upperDate = formatLocalDate(upperTime);
-        } else {
+        if (!FORMATTER_MAP.containsKey(valueRange.lowerEndpoint().getClass())) {
             throw new IllegalArgumentException("不支持的时间类型");
         }
+        lowerDate = FORMATTER_MAP.get(valueRange.lowerEndpoint().getClass()).apply(valueRange.lowerEndpoint());
+        upperDate = FORMATTER_MAP.get(valueRange.upperEndpoint().getClass()).apply(valueRange.upperEndpoint());
 
         // 获取数据库节点名称
         List<String> tableNames = getTableNames(lowerDate, upperDate, rangeShardingValue.getLogicTableName());
@@ -128,22 +129,6 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
         return new ArrayList<>(tableNames);
     }
 
-    /**
-     * 格式化Timestamp类型的时间
-     */
-    private String formatDate(Timestamp time) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return df.format(time);
-    }
-
-    /**
-     * 格式化LocalDate类型的时间
-     */
-    private String formatLocalDate(LocalDate date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime localDateTime = LocalDateTime.of(date, LocalTime.MIN);
-        return formatter.format(localDateTime);
-    }
 
     /**
      * 获取符合时间段的数据库节点名称列表
@@ -188,8 +173,7 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
         }
 
 
-        return list.stream()
-                .filter(time -> Integer.parseInt(time.substring(time.length() - 2)) % subTable == 0).collect(Collectors.toList());
+        return list.stream().filter(time -> Integer.parseInt(time.substring(time.length() - 2)) % subTable == 0).collect(Collectors.toList());
     }
 
 }

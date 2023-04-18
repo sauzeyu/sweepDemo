@@ -20,10 +20,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 
 @Configuration
-@MapperScan({"com.vecentek.back.mapper"})
+@MapperScan({MybatisPlusConfig.BASE_PACKAGE})
 @EnableTransactionManagement
 public class MybatisPlusConfig {
 
+    public static final String BASE_PACKAGE = "com.vecentek.back.mapper";
 
     /**
      * 防止修改与删除时对全表进行操作
@@ -52,16 +53,15 @@ public class MybatisPlusConfig {
         return interceptor;
     }
 
-
     /**
-     * ConfigurationCustomizer,这里引用的是 MyBatisPlus 自定义的一个和 MyBatis 同名的接口 ConfigurationCustomizer
-     * 因此必须使用 MyBatisPlus 的 ConfigurationCustomizer
+     * 配置 MyBatis
      *
      * @return {@link ConfigurationCustomizer}
      * @author EdgeYu
-     * @date 2023-03-28 15:40
+     * @date 2023-04-18 14:27
      */
-    public ConfigurationCustomizer configurationCustomizer() {
+    @Bean
+    public ConfigurationCustomizer mybatisConfigurationCustomizer() {
         return configuration -> {
             configuration.setCacheEnabled(true);
             configuration.setMapUnderscoreToCamelCase(true);
@@ -69,5 +69,4 @@ public class MybatisPlusConfig {
             configuration.setJdbcTypeForNull(JdbcType.NULL);
         };
     }
-
 }
