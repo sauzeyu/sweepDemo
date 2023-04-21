@@ -2,6 +2,7 @@ import { defineConfig, utils } from 'umi';
 import pageRoutes from './router.config';
 import webpackplugin from './plugin.config';
 import defaultSettings from '../src/defaultSettings';
+
 const APP_METADATA = getGlobalParams();
 // global ?
 global['APP_METADATA'] = APP_METADATA;
@@ -10,15 +11,7 @@ export default defineConfig({
   // 代理请求
   proxy: {
     '/dkserver-back': {
-      // target: 'http://172.16.11.210:8008/',
-      // target: 'https://cd.vecentek.com:20611',
-      // target: 'http://172.16.6.106:9001/vecentek',
-      target: 'http://localhost:9001/vecentek',
-      // target: 'http://172.16.70.50:8000/vecentek',
-      // target: 'http://172.16.6.107:8000/vecentek',
-      // target: 'http://172.16.13.12:9002/vecentek',
-      // target: 'http://172.16.13.13:9001/vecentek',
-      // target: 'http://172.16.13.12:8000/vecentek',
+      target: 'http://172.16.70.50:8000/vecentek/',
       changeOrigin: true,
       // pathRewrite: { '^/api': '' },
       logLevel: 'debug',

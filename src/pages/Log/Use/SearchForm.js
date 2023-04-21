@@ -9,8 +9,8 @@ const { RangePicker } = DatePicker;
 const dateFormat = 'YYYY/MM/DD';
 const { Option } = Select;
 const children = [];
-@EasyTable.connect(({ keyErrorLogDataTable }) => ({
-  keyErrorLogDataTable,
+@EasyTable.connect(({ keyUseLogDataTable }) => ({
+  keyUseLogDataTable,
 }))
 class SearchForm extends Component {
   state = {
@@ -34,7 +34,7 @@ class SearchForm extends Component {
             .add(1, 'days')
             .format('YYYY-MM-DD 00:00:00');
         }
-        this.props.keyErrorLogDataTable.fetch(values);
+        this.props.keyUseLogDataTable.fetch(values);
       })
       .catch((errors) => {
         if (errors) return;
@@ -46,13 +46,7 @@ class SearchForm extends Component {
   // componentWillUnmount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    //   this.props.keyErrorLogDataTable,
-    //   'this.props.keyErrorLogDataTable',
-    //   prevProps,
-    //   prevState,
-    // );
-
-    if (this.props.keyErrorLogDataTable && this.state.flag) {
+    if (this.props.keyUseLogDataTable && this.state.flag) {
       this.handleSubmit();
       this.setState({ flag: false });
     }

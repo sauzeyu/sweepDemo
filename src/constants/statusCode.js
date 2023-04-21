@@ -1,3 +1,7 @@
+import React from 'react';
+import { Select } from 'antd';
+
+const { Option } = Select;
 export const Code = [
   ['08', '蓝牙断开'],
   ['0A', '自动迎宾'],
@@ -17,4 +21,9 @@ export const Code = [
   ['14', '车辆未熄火'],
   ['15', '车辆未闭锁'],
   ['16', '车辆未下电'],
+];
+export const keyStatusCode = [
+  <Option key={0}>钥匙激活</Option>,
+  <Option key={1}>钥匙开通</Option>,
+  <Option key={2}>分享钥匙</Option>,
 ];

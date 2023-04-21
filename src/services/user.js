@@ -1,5 +1,5 @@
 import request from '../utils/request';
-import { PermissionsUtil, joinPath } from '../utils';
+import { joinPath, PermissionsUtil } from '../utils';
 import { getPublicPath } from '@/utils';
 import Cookies from 'js-cookie';
 import { message } from 'antd';
@@ -45,6 +45,7 @@ function decorateUserInfo(res) {
   const menus = PermissionsUtil.structureByDNA(res.menus);
   _initMenus(menus);
   userInfo.menus = menus;
+  console.log('userInfo.menus ', userInfo.menus);
 
   return userInfo;
 }
