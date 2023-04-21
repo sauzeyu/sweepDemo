@@ -2,19 +2,10 @@ package com.vecentek.back.config;
 
 import com.netflix.loadbalancer.IRule;
 import com.netflix.loadbalancer.WeightedResponseTimeRule;
-import com.vecentek.back.log.LoggingClientHttpRequestInterceptor;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Collections;
 
 /**
  * @author EdgeYu
@@ -32,33 +23,33 @@ public class RibbonConfig {
     @Bean
     @LoadBalanced
     public RestTemplate restTemplate() {
-        // 创建连接池，设置最大连接数和每个路由的最大连接数
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
-        connectionManager.setMaxTotal(200);
-        connectionManager.setDefaultMaxPerRoute(20);
-
-        // 配置请求超时时间
-        // 连接超时时间
-        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(1000)
-                // 请求超时时间
-                .setConnectionRequestTimeout(1000)
-                // 响应超时时间
-                .setSocketTimeout(5000).build();
-
-        // 使用HttpClient创建RestTemplate，设置超时时间和连接池
-        HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig).build();
-
-        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
-        factory.setConnectTimeout(1000);
-        factory.setReadTimeout(5000);
-        factory.setConnectionRequestTimeout(1000);
-
-        RestTemplate restTemplate = new RestTemplate(factory);
+//        // 创建连接池，设置最大连接数和每个路由的最大连接数
+//        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager();
+//        connectionManager.setMaxTotal(200);
+//        connectionManager.setDefaultMaxPerRoute(20);
+//
+//        // 配置请求超时时间
+//        // 连接超时时间
+//        RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(1000)
+//                // 请求超时时间
+//                .setConnectionRequestTimeout(1000)
+//                // 响应超时时间
+//                .setSocketTimeout(5000).build();
+//
+//        // 使用HttpClient创建RestTemplate，设置超时时间和连接池
+//        HttpClient httpClient = HttpClientBuilder.create().setConnectionManager(connectionManager).setDefaultRequestConfig(requestConfig).build();
+//
+//        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory(httpClient);
+//        factory.setConnectTimeout(1000);
+//        factory.setReadTimeout(5000);
+//        factory.setConnectionRequestTimeout(1000);
+//        factory.setBufferRequestBody(false);
+//        RestTemplate restTemplate = new RestTemplate(factory);
         // 设置错误处理器
-        restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
+//        restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
         // 设置日志拦截器
-        restTemplate.setInterceptors(Collections.singletonList(new LoggingClientHttpRequestInterceptor()));
-        return restTemplate;
+//        restTemplate.setInterceptors(Collections.singletonList(new LoggingClientHttpRequestInterceptor()));
+        return new RestTemplate();
     }
 
 
