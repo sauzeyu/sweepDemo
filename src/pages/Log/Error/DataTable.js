@@ -114,7 +114,6 @@ class DataTable extends Component {
       fixed: 'right',
       width: 300,
       render: (col) => {
-        console.log('cokl--', col);
         let solutionList = col?.functionalAbnormality?.solution;
         return (
           <Popover
@@ -129,13 +128,15 @@ class DataTable extends Component {
                   解决方案
                 </Typography.Title>
                 <p />
-                {solutionList?.map((item, index) => {
-                  return (
-                    <p key={index}>
-                      {index + 1}：{item}
-                    </p>
-                  );
-                })}
+                {solutionList &&
+                  solutionList instanceof Array &&
+                  solutionList?.map((item, index) => {
+                    return (
+                      <p key={index}>
+                        {index + 1}：{item}
+                      </p>
+                    );
+                  })}
               </>
             }
             title=""
