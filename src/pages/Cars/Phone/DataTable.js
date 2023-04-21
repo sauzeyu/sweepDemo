@@ -86,6 +86,18 @@ class DataTable extends Component {
       ),
     },
     {
+      title: '特征点数据',
+      dataIndex: 'featureData',
+      ellipsis: {
+        showTitle: false,
+      },
+      render: (text) => (
+        <Tooltip placement="topLeft" title={text}>
+          {text}
+        </Tooltip>
+      ),
+    },
+    {
       title: '手机标定数据',
       dataIndex: 'personalAndCalibrationString',
       width: 650,
@@ -373,6 +385,9 @@ class DataTable extends Component {
               <Input readOnly={true} />
             </Form.Item>
             <Form.Item name="phoneModel" label={'手机型号'}>
+              <Input readOnly={true} />
+            </Form.Item>
+            <Form.Item name="featureData" label={'特征点数据'}>
               <Input readOnly={true} />
             </Form.Item>
             <Form.Item name="personalAndCalibrationString" label={'标定数据'}>
