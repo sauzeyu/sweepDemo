@@ -72,5 +72,10 @@ public class DkmPhoneCalibrationData extends BaseEntity {
      */
     @Size(min = 1, max = 16, message = "车辆品牌长度最长为16位")
     private String vehicleBrand;
+  
+    /**
+     * 特征点数据
+     */
+    private String featureData;
 
 }
