@@ -74,11 +74,11 @@ public class DkmVehicleServiceImpl {
     public PageResp selectForPage(int pageIndex, int pageSize, String vin, String hwDeviceSn, String vehicleModel, String vehicleBrand, String vehicleType) {
         Page<DkmVehicle> page = new Page<>(pageIndex, pageSize);
         page = dkmVehicleMapper.selectPage(page, Wrappers.<DkmVehicle>lambdaQuery()
-                .like(StrUtil.isNotBlank(vin), DkmVehicle::getVin, vin)
-                .like(StrUtil.isNotBlank(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn)
-                .like(StrUtil.isNotBlank(vehicleModel), DkmVehicle::getVehicleModel, vehicleModel)
-                .like(StrUtil.isNotBlank(vehicleBrand), DkmVehicle::getVehicleBrand, vehicleBrand)
-                .like(StrUtil.isNotBlank(vehicleType), DkmVehicle::getVehicleType, vehicleType)
+                .like(CharSequenceUtil.isNotBlank(vin), DkmVehicle::getVin, vin)
+                .like(CharSequenceUtil.isNotBlank(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn)
+                .like(CharSequenceUtil.isNotBlank(vehicleModel), DkmVehicle::getVehicleModel, vehicleModel)
+                .like(CharSequenceUtil.isNotBlank(vehicleBrand), DkmVehicle::getVehicleBrand, vehicleBrand)
+                .like(CharSequenceUtil.isNotBlank(vehicleType), DkmVehicle::getVehicleType, vehicleType)
                 .orderByDesc(DkmVehicle::getCreateTime));
 
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
