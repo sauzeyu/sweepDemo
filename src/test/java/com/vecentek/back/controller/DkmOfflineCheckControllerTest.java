@@ -20,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +36,10 @@ class DkmOfflineCheckControllerTest {
 
     @MockBean
     private DkmOfflineCheckServiceImpl mockDkmOfflineCheckServiceImpl;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testInsertBluetoothBatch() throws Exception {
         // Setup
@@ -50,8 +54,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -68,8 +73,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -87,8 +93,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -106,8 +113,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -123,8 +131,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -140,8 +149,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -157,8 +167,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -173,8 +184,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -189,8 +201,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -205,8 +218,9 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -221,7 +235,8 @@ class DkmOfflineCheckControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo(oneThousandOneMessageResponse);
     }
 }

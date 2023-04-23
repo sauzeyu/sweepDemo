@@ -31,7 +31,6 @@ import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmOfflineCheckMapper;
-import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.back.vo.KeyLogDataResVO;
 import com.vecentek.back.vo.KeyLogDataVO;
@@ -77,8 +76,6 @@ public class DkmOfflineCheckServiceImpl {
     private DkmKeyMapper dkmKeyMapper;
     @Resource
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
-    @Resource
-    private DkmUserMapper dkmUserMapper;
     @Resource
     private DkmKeyLogMapper dkmKeyLogMapper;
 

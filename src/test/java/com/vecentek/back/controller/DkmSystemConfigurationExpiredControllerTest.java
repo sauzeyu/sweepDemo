@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -31,11 +32,14 @@ class DkmSystemConfigurationExpiredControllerTest {
 
     @MockBean
     private DkmSystemConfigurationExpiredServiceImpl mockDkmSystemConfigurationExpiredService;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectForExpiration() throws Exception {
         // Setup
-        when(mockDkmSystemConfigurationExpiredService.selectForExpiration()).thenReturn(PageResp.success("msg"));
+        when(mockDkmSystemConfigurationExpiredService.selectForExpiration()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(
@@ -45,7 +49,7 @@ class DkmSystemConfigurationExpiredControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -61,13 +65,13 @@ class DkmSystemConfigurationExpiredControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectForLast() throws Exception {
         // Setup
-        when(mockDkmSystemConfigurationExpiredService.selectForLast()).thenReturn(PageResp.success("msg"));
+        when(mockDkmSystemConfigurationExpiredService.selectForLast()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmSystemConfigurationExpired/selectForLast")
@@ -76,7 +80,7 @@ class DkmSystemConfigurationExpiredControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -91,7 +95,7 @@ class DkmSystemConfigurationExpiredControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -100,7 +104,7 @@ class DkmSystemConfigurationExpiredControllerTest {
         when(mockDkmSystemConfigurationExpiredService.saveOrUpdateConfigExpired(
                 new DkmSystemConfigurationExpired(0, "username", 0,
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime())))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(
@@ -111,7 +115,7 @@ class DkmSystemConfigurationExpiredControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -130,6 +134,6 @@ class DkmSystemConfigurationExpiredControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 }

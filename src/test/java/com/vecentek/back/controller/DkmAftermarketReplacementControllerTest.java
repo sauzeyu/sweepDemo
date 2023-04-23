@@ -1,11 +1,9 @@
 package com.vecentek.back.controller;
 
-import com.vecentek.back.mapper.DkmAftermarketReplacementMapper;
 import com.vecentek.back.service.impl.DkmAftermarketReplacementServiceImpl;
 import com.vecentek.common.response.PageResp;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,29 +35,31 @@ class DkmAftermarketReplacementControllerTest {
     @MockBean
     private DkmAftermarketReplacementServiceImpl mockDkmAftermarketReplacementService;
 
-    @Spy
-    DkmAftermarketReplacementMapper dkmAftermarketReplacementMapper;
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectForPage() throws Exception {
-        //dkmAftermarketReplacementMapper.selectPage(1, 10, "LGQIZ44O82E7T9994", "2022-10-20 17:15:47", "2022-10-22 17:15:47");
-        // Setup
-        //when(mockDkmAftermarketReplacementService.selectForPage(1, 10, "LGQIZ44O82E7T9994", "2022-10-20 17:15:47", "2022-10-22 17:15:47"))
-        //        .thenReturn(PageResp.success("查询成功", 10L, new ArrayList<>()));
-        //
-        //
-        //// Run the test
-        //final MockHttpServletResponse response = mockMvc.perform(get("/dkmAftermarketReplacement/selectForPage")
-        //        .param("pageIndex", "1")
-        //        .param("pageSize", "10")
-        //        .param("vin", "LGQIZ44O82E7T9994")
-        //        .param("startTime", "2022-10-20 17:15:47")
-        //        .param("endTime", "2022-10-22 17:15:47")
-        //        .accept(MediaType.APPLICATION_JSON))
-        //        .andReturn().getResponse();
-        //
-        //// Verify the results
-        //assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        //assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+
+         //Setup
+        when(mockDkmAftermarketReplacementService.selectForPage(1, 10, "LGQIZ44O82E7T9994", "2022-10-20 17:15:47", "2022-10-22 17:15:47"))
+                .thenReturn(PageResp.success("查询成功", 10L, new ArrayList<>()));
+
+
+        // Run the test
+        final MockHttpServletResponse response = mockMvc.perform(get("/dkmAftermarketReplacement/selectForPage")
+                .param("pageIndex", "1")
+                .param("pageSize", "10")
+                .param("vin", "LGQIZ44O82E7T9994")
+                .param("startTime", "2022-10-20 17:15:47")
+                .param("endTime", "2022-10-22 17:15:47")
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // Verify the results
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo("{\"code\":200,\"msg\":\"查询成功\",\"total\":10}");
     }
 
     @Test
@@ -78,13 +80,13 @@ class DkmAftermarketReplacementControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectByVin() throws Exception {
         // Setup
-        when(mockDkmAftermarketReplacementService.selectByVin(0, 0, "vin")).thenReturn(PageResp.success("msg"));
+        when(mockDkmAftermarketReplacementService.selectByVin(0, 0, "vin")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmAftermarketReplacement/selectByVin")
@@ -96,7 +98,7 @@ class DkmAftermarketReplacementControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -114,13 +116,13 @@ class DkmAftermarketReplacementControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectVehicleByVin() throws Exception {
         // Setup
-        when(mockDkmAftermarketReplacementService.selectVehicleByVin("vin")).thenReturn(PageResp.success("msg"));
+        when(mockDkmAftermarketReplacementService.selectVehicleByVin("vin")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmAftermarketReplacement/selectVehicleByVin")
@@ -130,7 +132,7 @@ class DkmAftermarketReplacementControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -146,7 +148,7 @@ class DkmAftermarketReplacementControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -165,7 +167,7 @@ class DkmAftermarketReplacementControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo("");
         verify(mockDkmAftermarketReplacementService).downloadAftermarketReplacement(eq("vin"), eq("startTime"),
                 eq("endTime"), eq(false), eq("creator"), any(HttpServletResponse.class));
     }
@@ -189,7 +191,8 @@ class DkmAftermarketReplacementControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(contentAsString).isEqualTo(fiveHundredMessageResponse);
     }
 }

@@ -42,6 +42,10 @@ class DkmKeyLogHistoryExportControllerTest {
     @MockBean
     private DkmKeyLogHistoryExportService mockDkmKeyLogHistoryExportService;
 
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectAll() throws Exception {
         // Setup

@@ -14,8 +14,12 @@ import com.vecentek.back.util.SpringContextUtil;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
@@ -145,5 +149,7 @@ public class DkmSystemConfigurationExpiredServiceImpl {
         Period period = Period.ofMonths(-validityPeriod);
         return now.plus(period);
     }
+
+
 }
 

@@ -69,5 +69,4 @@ public class MybatisPlusConfig {
             configuration.setJdbcTypeForNull(JdbcType.NULL);
         };
     }
-
 }

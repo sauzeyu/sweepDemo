@@ -32,12 +32,15 @@ class DkmBluetoothsControllerTest {
 
     @MockBean
     private DkmBluetoothsServiceImpl mockDkmBluetoothsServiceImpl;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectForPage() throws Exception {
         // Setup
         when(mockDkmBluetoothsServiceImpl.selectForPage(0, 0, "hwDeviceSn", "searchNumber", 0))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmBluetooths/selectForPage")
@@ -51,7 +54,7 @@ class DkmBluetoothsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -72,13 +75,13 @@ class DkmBluetoothsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testDeleteById() throws Exception {
         // Setup
-        when(mockDkmBluetoothsServiceImpl.deleteById("hwDeviceSn")).thenReturn(PageResp.success("msg"));
+        when(mockDkmBluetoothsServiceImpl.deleteById("hwDeviceSn")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/dkmBluetooths/deleteById")
@@ -88,7 +91,7 @@ class DkmBluetoothsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -104,7 +107,7 @@ class DkmBluetoothsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -120,7 +123,7 @@ class DkmBluetoothsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo("");
         verify(mockDkmBluetoothsServiceImpl).downloadDkmBluetooths(eq("hwDeviceSn"), eq("searchNumber"), eq(0),
                 any(HttpServletResponse.class));
     }

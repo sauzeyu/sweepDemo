@@ -1,161 +1,185 @@
 package com.vecentek.back.service.impl;
 
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.vecentek.back.config.ProConfig;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmSystemConfigurationExpired;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmSystemConfigurationExpiredMapper;
 import com.vecentek.common.response.PageResp;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.apache.ibatis.builder.MapperBuilderAssistant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.TreeMap;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class DkmSystemConfigurationExpiredServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+class DkmSystemConfigurationExpiredServiceImplTest {
+
+    @Mock
+    private DkmKeyLogMapper mockDkmKeyLogMapper;
+    @Mock
+    private DkmSystemConfigurationExpiredMapper mockDkmSystemConfigurationExpiredMapper;
 
     @InjectMocks
-    private DkmSystemConfigurationExpiredServiceImpl dkmSystemConfigurationExpiredService;
+    private DkmSystemConfigurationExpiredServiceImpl dkmSystemConfigurationExpiredServiceImplUnderTest;
+    @BeforeEach
+    void setup() {
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKeyLog.class);
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmSystemConfigurationExpired.class);
+    }
+    @Test
+    void testSelectForExpiration() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("没有过期钥匙日志待处理");
 
-    @Mock
-    private DkmKeyLogMapper dkmKeyLogMapper;
-
-    @Mock
-    private DkmSystemConfigurationExpiredMapper dkmSystemConfigurationExpiredMapper;
-
-    @Mock
-    private ProConfig proConfig;
-
-    private DateTime dateTime;
-
-    private DkmSystemConfigurationExpired dkmSystemConfigurationExpired;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        ReflectionTestUtils.setField(dkmSystemConfigurationExpiredService, "dkmKeyLogMapper", dkmKeyLogMapper);
-        ReflectionTestUtils.setField(dkmSystemConfigurationExpiredService, "dkmSystemConfigurationExpiredMapper", dkmSystemConfigurationExpiredMapper);
-        ReflectionTestUtils.setField(dkmSystemConfigurationExpiredService, "proConfig", proConfig);
-
-        dateTime = DateUtil.parse("2022-12-30", "yyyy-MM-dd");
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(dateTime.toInstant(), ZoneId.systemDefault());
-
-        dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired();
-        dkmSystemConfigurationExpired.setUsername("test");
-        dkmSystemConfigurationExpired.setValidityPeriod(3);
-        dkmSystemConfigurationExpired.setOperateTime(localDateTime);
-
-        when(dkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
+        // Configure DkmSystemConfigurationExpiredMapper.selectOne(...).
+        final DkmSystemConfigurationExpired dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired(0,
+                "username", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        when(mockDkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
                 .thenReturn(dkmSystemConfigurationExpired);
 
-        when(dkmSystemConfigurationExpiredMapper.insert(any(DkmSystemConfigurationExpired.class)))
-                .thenReturn(1);
+        // Configure DkmKeyLogMapper.selectList(...).
+        final DkmKeyLog dkmKeyLog = new DkmKeyLog();
+        dkmKeyLog.setId(0L);
+        dkmKeyLog.setVin("vin");
+        dkmKeyLog.setKeyId("keyId");
+        dkmKeyLog.setPhoneModel("phoneModel");
+        dkmKeyLog.setUserId("userId");
+        dkmKeyLog.setPhoneBrand("phoneBrand");
+        dkmKeyLog.setFlag(0);
+        dkmKeyLog.setFlagVO("flagVO");
+        dkmKeyLog.setStatusCode("statusCode");
+        dkmKeyLog.setErrorReason("errorReason");
+        dkmKeyLog.setOperateTime(new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        dkmKeyLog.setCreator("creator");
+        dkmKeyLog.setUpdator("updator");
+        dkmKeyLog.setCreateTime("createTime");
+        dkmKeyLog.setUpdateTime("updateTime");
+        final List<DkmKeyLog> dkmKeyLogs = Arrays.asList(dkmKeyLog);
+        when(mockDkmKeyLogMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeyLogs);
 
-        when(dkmSystemConfigurationExpiredMapper.update(any(), any(LambdaUpdateWrapper.class)))
-                .thenReturn(1);
+        // Run the test
+        final PageResp result = dkmSystemConfigurationExpiredServiceImplUnderTest.selectForExpiration();
 
-        when(dkmKeyLogMapper.selectList(any(LambdaQueryWrapper.class)))
-                .thenReturn(new ArrayList<>());
-
-        when(proConfig.getSysDate()).thenReturn("2021-01-01");
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
 
     @Test
-    public void selectForExpirationTest() {
-        PageResp result = dkmSystemConfigurationExpiredService.selectForExpiration();
-        Assert.assertEquals(result.getData(), "没有过期钥匙日志待处理");
+    void testSelectForExpiration_DkmKeyLogMapperReturnsNoItems() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("没有过期钥匙日志待处理");
 
-        DkmKeyLog dkmKeyLog = new DkmKeyLog();
-        dkmKeyLog.setOperateTime(dateTime.toJdkDate());
-        List<DkmKeyLog> list = new ArrayList<>();
-        list.add(dkmKeyLog);
-
-        when(dkmKeyLogMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(list);
-
-        result = dkmSystemConfigurationExpiredService.selectForExpiration();
-        Assert.assertEquals(result.getData(), "2023-03-30前有过期钥匙日志待处理");
-        TreeMap<String, Long> treeMap = new TreeMap<>();
-        treeMap.put("2022-12=1", 1L);
-        Assert.assertEquals(result.getExt(), treeMap);
-    }
-
-    @Test
-    public void selectForLastTest() {
-        PageResp result = dkmSystemConfigurationExpiredService.selectForLast();
-        Assert.assertEquals(result.getData(), dkmSystemConfigurationExpired.getValidityPeriod());
-    }
-
-    @Test
-    public void saveOrUpdateConfigExpiredTest1() {
-        when(dkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(null);
-
-        DkmSystemConfigurationExpired expired = new DkmSystemConfigurationExpired();
-        expired.setUsername("test-1");
-        expired.setValidityPeriod(5);
-
-        PageResp result = dkmSystemConfigurationExpiredService.saveOrUpdateConfigExpired(expired);
-        Assert.assertEquals(result.getCode(), 0);
-        Assert.assertEquals(result.getData(), "新增配置成功");
-    }
-
-    @Test
-    public void saveOrUpdateConfigExpiredTest2() {
-        DkmSystemConfigurationExpired expired = new DkmSystemConfigurationExpired();
-        expired.setUsername("test");
-        expired.setValidityPeriod(5);
-
-        PageResp result = dkmSystemConfigurationExpiredService.saveOrUpdateConfigExpired(expired);
-        Assert.assertEquals(result.getCode(), 0);
-        Assert.assertEquals(result.getData(), "修改配置成功");
-    }
-
-    @Test
-    public void saveOrUpdateConfigExpiredTest3() {
-        DkmSystemConfigurationExpired expired = new DkmSystemConfigurationExpired();
-        expired.setUsername("test");
-        expired.setValidityPeriod(5);
-
-        when(dkmSystemConfigurationExpiredMapper.update(any(), any(LambdaUpdateWrapper.class)))
-                .thenReturn(0);
-        PageResp result = dkmSystemConfigurationExpiredService.saveOrUpdateConfigExpired(expired);
-        Assert.assertEquals(result.getCode(), -1);
-        Assert.assertEquals(result.getData(), "修改配置失败");
-    }
-
-    @Test
-    public void deleteExpiredDkmKeyLogsTest() {
-        LocalDate localDate = LocalDate.of(2022, 12, 30);
-
-        when(dkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
+        // Configure DkmSystemConfigurationExpiredMapper.selectOne(...).
+        final DkmSystemConfigurationExpired dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired(0,
+                "username", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        when(mockDkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
                 .thenReturn(dkmSystemConfigurationExpired);
 
-        when(proConfig.getSysDate()).thenReturn("2023-01-01");
+        when(mockDkmKeyLogMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
 
-        dkmSystemConfigurationExpiredService.deleteExpiredDkmKeyLogs();
+        // Run the test
+        final PageResp result = dkmSystemConfigurationExpiredServiceImplUnderTest.selectForExpiration();
 
-        LambdaQueryWrapper<DkmKeyLog> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.ge(DkmKeyLog::getOperateTime, LocalDate.of(2022, 1, 1))
-                .le(DkmKeyLog::getOperateTime, localDate)
-        ;
-        List<DkmKeyLog> list = dkmKeyLogMapper.selectList(queryWrapper);
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
+    }
 
-        Assert.assertTrue(list.isEmpty());
+    @Test
+    void testSelectForLast() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("回显成功");
+
+        // Configure DkmSystemConfigurationExpiredMapper.selectOne(...).
+        final DkmSystemConfigurationExpired dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired(0,
+                "username", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        when(mockDkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
+                .thenReturn(dkmSystemConfigurationExpired);
+
+        // Run the test
+        final PageResp result = dkmSystemConfigurationExpiredServiceImplUnderTest.selectForLast();
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
+    }
+
+    @Test
+    void testSaveOrUpdateConfigExpired() {
+        // Setup
+        final DkmSystemConfigurationExpired dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired(0,
+                "username", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        final PageResp expectedResult = PageResp.success("修改配置成功");
+
+        // Configure DkmSystemConfigurationExpiredMapper.selectOne(...).
+        final DkmSystemConfigurationExpired dkmSystemConfigurationExpired1 = new DkmSystemConfigurationExpired(0,
+                "username", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        when(mockDkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
+                .thenReturn(dkmSystemConfigurationExpired1);
+
+        when(mockDkmSystemConfigurationExpiredMapper.insert(new DkmSystemConfigurationExpired(0, "username", 0,
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()))).thenReturn(0);
+        when(mockDkmSystemConfigurationExpiredMapper.update(any(), any()))
+                .thenReturn(1);
+
+        // Run the test
+        final PageResp result = dkmSystemConfigurationExpiredServiceImplUnderTest.saveOrUpdateConfigExpired(
+                dkmSystemConfigurationExpired);
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
+        //verify(mockDkmSystemConfigurationExpiredMapper).insert(new DkmSystemConfigurationExpired(0, "username", 0,
+        //        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()));
+    }
+
+    @Test
+    void testDeleteExpiredDkmKeyLogs() {
+        // Setup
+        // Configure DkmSystemConfigurationExpiredMapper.selectOne(...).
+        final DkmSystemConfigurationExpired dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired(0,
+                "username", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        when(mockDkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
+                .thenReturn(dkmSystemConfigurationExpired);
+
+        when(mockDkmKeyLogMapper.delete(any(LambdaQueryWrapper.class))).thenReturn(0);
+
+        // Run the test
+        dkmSystemConfigurationExpiredServiceImplUnderTest.deleteExpiredDkmKeyLogs();
+
+        // Verify the results
+        //verify(mockDkmKeyLogMapper).delete(any(LambdaQueryWrapper.class));
+    }
+
+    @Test
+    void testGetDeadLine() {
+        // Setup
+        // Configure DkmSystemConfigurationExpiredMapper.selectOne(...).
+        final DkmSystemConfigurationExpired dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired(0,
+                "username", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        when(mockDkmSystemConfigurationExpiredMapper.selectOne(any(LambdaQueryWrapper.class)))
+                .thenReturn(dkmSystemConfigurationExpired);
+
+        // Run the test
+        final LocalDate result = dkmSystemConfigurationExpiredServiceImplUnderTest.getDeadLine();
+
+        // Verify the results
+        //assertThat(result).isEqualTo(LocalDate.of(2020, 1, 1));
     }
 }

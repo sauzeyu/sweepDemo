@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.Charset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,11 +34,14 @@ class DkmVehicleControllerTest {
 
     @MockBean
     private DkmVehicleServiceImpl mockDkmVehicleServiceImpl;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectById() throws Exception {
         // Setup
-        when(mockDkmVehicleServiceImpl.selectById(0)).thenReturn(PageResp.success("msg"));
+        when(mockDkmVehicleServiceImpl.selectById(0)).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmVehicle/selectById")
@@ -47,7 +51,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -63,13 +67,13 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectUserByVehicleId() throws Exception {
         // Setup
-        when(mockDkmVehicleServiceImpl.selectUserByVehicleId(0)).thenReturn(PageResp.success("msg"));
+        when(mockDkmVehicleServiceImpl.selectUserByVehicleId(0)).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmVehicle/selectUserByVehicleId")
@@ -79,7 +83,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -95,14 +99,14 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectForPage() throws Exception {
         // Setup
         when(mockDkmVehicleServiceImpl.selectForPage(0, 0, "vin", "hwDeviceSn", "vehicleModel", "vehicleBrand",
-                "vehicleType")).thenReturn(PageResp.success("msg"));
+                "vehicleType")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmVehicle/selectForPage")
@@ -118,7 +122,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -141,13 +145,13 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectForPageByUserId() throws Exception {
         // Setup
-        when(mockDkmVehicleServiceImpl.selectForPageByUserId(0, 0, 0)).thenReturn(PageResp.success("msg"));
+        when(mockDkmVehicleServiceImpl.selectForPageByUserId(0, 0, 0)).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmVehicle/selectForPageByUserId")
@@ -159,7 +163,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -177,7 +181,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -186,7 +190,7 @@ class DkmVehicleControllerTest {
         when(mockDkmVehicleServiceImpl.insert(
                 new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/dkmVehicle/insert")
@@ -196,7 +200,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -215,7 +219,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -224,7 +228,7 @@ class DkmVehicleControllerTest {
         when(mockDkmVehicleServiceImpl.updateById(
                 new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/dkmVehicle/updateById")
@@ -234,7 +238,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -253,7 +257,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -271,7 +275,7 @@ class DkmVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo("");
         verify(mockDkmVehicleServiceImpl).downloadDkmVehicle(eq("vin"), eq("hwDeviceSn"), eq("vehicleModel"),
                 eq("vehicleBrand"), eq("vehicleType"), any(HttpServletResponse.class));
     }

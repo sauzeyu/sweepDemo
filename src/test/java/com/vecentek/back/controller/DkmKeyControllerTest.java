@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -38,6 +39,10 @@ class DkmKeyControllerTest {
     @MockBean
     private DkmKeyLogHistoryExportMapper mockDkmKeyLogHistoryExportMapper;
 
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectForPage() throws Exception {
         // Setup
@@ -68,7 +73,7 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo("");
     }
 
     @Test
@@ -101,13 +106,13 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo("");
     }
 
     @Test
     void testSelectForPageByUserId() throws Exception {
         // Setup
-        when(mockDkmKeyServiceImpl.selectForPageByUserId(0, 0, 0)).thenReturn(PageResp.success("msg"));
+        when(mockDkmKeyServiceImpl.selectForPageByUserId(0, 0, 0)).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmKey/selectForPageByUserId")
@@ -119,7 +124,7 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -137,13 +142,13 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectForPageByVehicleId() throws Exception {
         // Setup
-        when(mockDkmKeyServiceImpl.selectForPageByVehicleId(0, 0, 0)).thenReturn(PageResp.success("msg"));
+        when(mockDkmKeyServiceImpl.selectForPageByVehicleId(0, 0, 0)).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmKey/selectForPageByVehicleId")
@@ -155,7 +160,7 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -173,13 +178,13 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testUpdateStateById() throws Exception {
         // Setup
-        when(mockDkmKeyServiceImpl.updateStateById("keyId", 0, "userId", "vin")).thenReturn(PageResp.success("msg"));
+        when(mockDkmKeyServiceImpl.updateStateById("keyId", 0, "userId", "vin")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/dkmKey/updateStateById")
@@ -192,7 +197,7 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -211,13 +216,13 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testUpdateStateForRevokeById() throws Exception {
         // Setup
-        when(mockDkmKeyServiceImpl.updateStateForRevokeById("userId", "vin")).thenReturn(PageResp.success("msg"));
+        when(mockDkmKeyServiceImpl.updateStateForRevokeById("userId", "vin")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/dkmKey/updateStateForRevokeById")
@@ -228,7 +233,7 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -245,14 +250,14 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectForPageByVal() throws Exception {
         // Setup
         when(mockDkmKeyServiceImpl.selectForPageByVal(0, 0, "valFrom", "valTo", 0L, 0L))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmKey/selectForPageByVal")
@@ -267,7 +272,7 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -288,7 +293,7 @@ class DkmKeyControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -320,8 +325,9 @@ class DkmKeyControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo("{\"code\":200,\"msg\":\"正在导出\"}");
         verify(mockDkmKeyLogHistoryExportMapper).insert(
                 new DkmKeyLogHistoryExport(0, "missionName", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "creator", 0));

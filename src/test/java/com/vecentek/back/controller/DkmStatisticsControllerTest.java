@@ -13,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -30,7 +31,10 @@ class DkmStatisticsControllerTest {
 
     @MockBean
     private DkmStatisticsServiceImpl mockEchartsServiceImpl;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectUserTotal() throws Exception {
         // Setup
@@ -45,7 +49,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -62,13 +66,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
     void testSelectVehicleAndKeyAndKeyLogTotal() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.selectVehicleAndKeyAndKeyLogTotal()).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.selectVehicleAndKeyAndKeyLogTotal()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/selectVehicleAndKeyAndKeyLogTotal")
@@ -77,7 +81,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -92,13 +96,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectKeyLogByMonth() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.selectKeyLogByMonth()).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.selectKeyLogByMonth()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/selectKeyLogByMonth")
@@ -107,7 +111,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -122,13 +126,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectKeyUseLogByTime() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.selectKeyUseLogByTime("startTime", "endTime")).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.selectKeyUseLogByTime("startTime", "endTime")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/selectKeyUseLogByTime")
@@ -139,7 +143,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -156,14 +160,14 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectKeyErrorLogByTime() throws Exception {
         // Setup
         when(mockEchartsServiceImpl.selectKeyErrorLogByTime("startTime", "endTime"))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/selectKeyErrorLogByTime")
@@ -174,7 +178,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -191,13 +195,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectKeyErrorLogByAllPhoneBrand() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.selectKeyErrorLogByAllPhoneBrand()).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.selectKeyErrorLogByAllPhoneBrand()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/selectKeyErrorLogByAllPhoneBrand")
@@ -206,7 +210,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -221,13 +225,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectKeyErrorLogByPhoneBrand() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.selectKeyErrorLogByPhoneBrand("phoneBrand")).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.selectKeyErrorLogByPhoneBrand("phoneBrand")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/selectKeyErrorLogByPhoneBrand")
@@ -237,7 +241,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -253,13 +257,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testVehicleStatistics() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.vehicleStatistics()).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.vehicleStatistics()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/vehicleStatistics")
@@ -268,7 +272,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -283,13 +287,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testKeyStatistics() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.keyStatistics()).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.keyStatistics()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/keyStatistics")
@@ -298,7 +302,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -313,13 +317,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testKeyUseTimeStatistics() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.keyUseTimeStatistics()).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.keyUseTimeStatistics()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/keyUseTimeStatistics")
@@ -328,7 +332,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -343,13 +347,13 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testKeyErrorTimeStatistics() throws Exception {
         // Setup
-        when(mockEchartsServiceImpl.keyErrorTimeStatistics()).thenReturn(PageResp.success("msg"));
+        when(mockEchartsServiceImpl.keyErrorTimeStatistics()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmStatistics/keyErrorTimeStatistics")
@@ -358,7 +362,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -373,7 +377,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -390,7 +394,7 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -407,6 +411,6 @@ class DkmStatisticsControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 }

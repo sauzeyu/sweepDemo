@@ -17,6 +17,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -33,14 +34,17 @@ class DkmUserVehicleControllerTest {
 
     @MockBean
     private DkmUserVehicleServiceImpl mockDkmUserVehicleService;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testInsertUserVehicle() throws Exception {
         // Setup
         when(mockDkmUserVehicleService.insertUserVehicle(
                 new UserVehicleVO("username", "userId", "license", "vehicleType", "vin",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime())))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/api/userVehicle/insertUserVehicle")
@@ -50,7 +54,7 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -68,14 +72,14 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
     void testLogoutUserVehicle() throws Exception {
         // Setup
         when(mockDkmUserVehicleService.logoutUserVehicle(new LogoutUserVehicleVO()))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/api/userVehicle/logoutUserVehicle")
@@ -85,7 +89,7 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -101,13 +105,13 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
     void testGetBluetoothVin() throws Exception {
         // Setup
-        when(mockDkmUserVehicleService.getBluetoothVin(new GetBluetoothVinVO())).thenReturn(PageResp.success("msg"));
+        when(mockDkmUserVehicleService.getBluetoothVin(new GetBluetoothVinVO())).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/api/userVehicle/getBluetoothVin")
@@ -117,7 +121,7 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -133,13 +137,13 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
     void testRevokeKey() throws Exception {
         // Setup
-        when(mockDkmUserVehicleService.revokeKey(new RevokeKeyVO())).thenReturn(PageResp.success("msg"));
+        when(mockDkmUserVehicleService.revokeKey(new RevokeKeyVO())).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(post("/api/userVehicle/revokeKey")
@@ -149,7 +153,7 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -165,6 +169,6 @@ class DkmUserVehicleControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 }

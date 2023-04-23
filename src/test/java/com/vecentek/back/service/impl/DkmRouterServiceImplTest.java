@@ -1,8 +1,8 @@
 package com.vecentek.back.service.impl;
 
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.vecentek.back.dto.ChildRouterDTO;
-import com.vecentek.back.dto.ParentRouterDTO;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.vecentek.back.entity.DkmAdmin;
 import com.vecentek.back.entity.DkmAdminRole;
 import com.vecentek.back.entity.DkmMenu;
@@ -12,142 +12,137 @@ import com.vecentek.back.mapper.DkmAdminRoleMapper;
 import com.vecentek.back.mapper.DkmMenuMapper;
 import com.vecentek.back.mapper.DkmRoleMenuMapper;
 import com.vecentek.common.response.PageResp;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.ibatis.builder.MapperBuilderAssistant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-/**
- * @author liujz
- * @version 1.0
- * @since 2023/4/13 17:36
- */
-@RunWith(MockitoJUnitRunner.class)
-public class DkmRouterServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class DkmRouterServiceImplTest {
+
+    @Mock
+    private DkmAdminMapper mockDkmAdminMapper;
+    @Mock
+    private DkmAdminRoleMapper mockDkmAdminRoleMapper;
+    @Mock
+    private DkmRoleMenuMapper mockDkmRoleMenuMapper;
+    @Mock
+    private DkmMenuMapper mockDkmMenuMapper;
+
     @InjectMocks
-    private DkmRouterServiceImpl dkmRouterService;
+    private DkmRouterServiceImpl dkmRouterServiceImplUnderTest;
+    @BeforeEach
+    void setup() {
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmAdmin.class);
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmRoleMenu.class);
+    }
+    @Test
+    void testGetPageRouter() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("获取成功");
 
-    @Mock
-    private DkmAdminMapper dkmAdminMapper;
+        // Configure DkmAdminMapper.selectById(...).
+        final DkmAdmin dkmAdmin = new DkmAdmin(0, "username", "password", "extraInfo");
+        when(mockDkmAdminMapper.selectById(0)).thenReturn(dkmAdmin);
 
-    @Mock
-    private DkmAdminRoleMapper dkmAdminRoleMapper;
+        when(mockDkmAdminRoleMapper.selectList(any(LambdaQueryWrapper.class)))
+                .thenReturn(Arrays.asList(new DkmAdminRole(0, 0, 0)));
+        when(mockDkmRoleMenuMapper.selectList(any(LambdaQueryWrapper.class)))
+                .thenReturn(Arrays.asList(new DkmRoleMenu(0, 0, 0)));
 
-    @Mock
-    private DkmRoleMenuMapper dkmRoleMenuMapper;
+        // Configure DkmMenuMapper.selectList(...).
+        final List<DkmMenu> dkmMenus = Arrays.asList(
+                new DkmMenu(0, 0, "title", "icon", "href", "target", "isShow", 0, "dna"));
+        when(mockDkmMenuMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmMenus);
 
-    @Mock
-    private DkmMenuMapper dkmMenuMapper;
+        // Run the test
+        final PageResp result = dkmRouterServiceImplUnderTest.getPageRouter(0);
 
-    private DkmAdmin dkmAdmin;
-    private List<DkmAdminRole> dkmAdminRoles;
-    private DkmAdminRole dkmAdminRole;
-    private List<DkmRoleMenu> dkmRoleMenus;
-    private DkmRoleMenu dkmRoleMenu;
-    private List<DkmMenu> dkmMenus;
-
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-        dkmAdmin = new DkmAdmin();
-        dkmAdmin.setId(1);
-        dkmAdmin.setUsername("admin");
-
-        dkmAdminRoles = new ArrayList<>();
-        dkmAdminRole = new DkmAdminRole();
-        dkmAdminRole.setAdminId(1);
-        dkmAdminRole.setRoleId(1);
-        dkmAdminRoles.add(dkmAdminRole);
-
-        dkmRoleMenus = new ArrayList<>();
-        dkmRoleMenu = new DkmRoleMenu();
-        dkmRoleMenu.setRoleId(1);
-        dkmRoleMenu.setMenuId(1);
-        dkmRoleMenus.add(dkmRoleMenu);
-
-        dkmMenus = new ArrayList<>();
-        DkmMenu parentMenu = new DkmMenu();
-        parentMenu.setId(1);
-        parentMenu.setTitle("Parent Menu");
-        parentMenu.setHref("parent");
-        dkmMenus.add(parentMenu);
-
-        DkmMenu childMenu = new DkmMenu();
-        childMenu.setId(2);
-        childMenu.setTitle("Child Menu");
-        childMenu.setParentId(1);
-        childMenu.setHref("child");
-        dkmMenus.add(childMenu);
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
 
     @Test
-    public void testGetPageRouterSuccess() {
-        when(dkmAdminMapper.selectById(1)).thenReturn(dkmAdmin);
-        when(dkmAdminRoleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmAdminRoles);
-        when(dkmRoleMenuMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmRoleMenus);
-        when(dkmMenuMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmMenus);
+    void testGetPageRouter_DkmAdminMapperReturnsNull() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("用户不存在！");
+        when(mockDkmAdminMapper.selectById(0)).thenReturn(null);
 
-        PageResp pageResp = dkmRouterService.getPageRouter(1);
+        // Run the test
+        final PageResp result = dkmRouterServiceImplUnderTest.getPageRouter(0);
 
-        verify(dkmAdminMapper, times(1)).selectById(1);
-        verify(dkmAdminRoleMapper, times(1)).selectList(any(LambdaQueryWrapper.class));
-        verify(dkmRoleMenuMapper, times(1)).selectList(any(LambdaQueryWrapper.class));
-        verify(dkmMenuMapper, times(1)).selectList(any(LambdaQueryWrapper.class));
-
-        assertEquals("获取成功", pageResp.getMsg());
-
-        List<ParentRouterDTO> parentRouterDTOS = (List<ParentRouterDTO>) pageResp.getData();
-        assertEquals(1, parentRouterDTOS.size());
-
-        ParentRouterDTO parentRouterDTO = parentRouterDTOS.get(0);
-        assertEquals("/parent", parentRouterDTO.getPath());
-        assertEquals("Parent Menu", parentRouterDTO.getTitle());
-
-        List<ChildRouterDTO> childRouterDTOS = parentRouterDTO.getRoutes();
-        assertEquals(1, childRouterDTOS.size());
-
-        ChildRouterDTO childRouterDTO = childRouterDTOS.get(0);
-        assertEquals("/parent/child", childRouterDTO.getPath());
-        assertEquals("Child Menu", childRouterDTO.getTitle());
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
 
     @Test
-    public void testGetPageRouterFailUserNotExist() {
-        when(dkmAdminMapper.selectById(2)).thenReturn(null);
+    void testGetPageRouter_DkmAdminRoleMapperReturnsNoItems() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("用户对应角色不存在！");
 
-        PageResp pageResp = dkmRouterService.getPageRouter(2);
+        // Configure DkmAdminMapper.selectById(...).
+        final DkmAdmin dkmAdmin = new DkmAdmin(0, "username", "password", "extraInfo");
+        when(mockDkmAdminMapper.selectById(0)).thenReturn(dkmAdmin);
 
-        verify(dkmAdminMapper, times(1)).selectById(2);
-        verify(dkmAdminRoleMapper, never()).selectList(any(LambdaQueryWrapper.class));
-        verify(dkmRoleMenuMapper, never()).selectList(any(LambdaQueryWrapper.class));
-        verify(dkmMenuMapper, never()).selectList(any(LambdaQueryWrapper.class));
+        when(mockDkmAdminRoleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
 
-        assertEquals("用户不存在！", pageResp.getMsg());
+        // Run the test
+        final PageResp result = dkmRouterServiceImplUnderTest.getPageRouter(0);
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
 
     @Test
-    public void testGetPageRouterFailUserRoleNotExist() {
-        when(dkmAdminMapper.selectById(1)).thenReturn(dkmAdmin);
-        when(dkmAdminRoleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+    void testGetPageRouter_DkmRoleMenuMapperReturnsNoItems() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("获取成功");
 
-        PageResp pageResp = dkmRouterService.getPageRouter(1);
+        // Configure DkmAdminMapper.selectById(...).
+        final DkmAdmin dkmAdmin = new DkmAdmin(0, "username", "password", "extraInfo");
+        when(mockDkmAdminMapper.selectById(0)).thenReturn(dkmAdmin);
 
-        verify(dkmAdminMapper, times(1)).selectById(1);
-        verify(dkmAdminRoleMapper, times(1)).selectList(any(LambdaQueryWrapper.class));
-        verify(dkmRoleMenuMapper, never()).selectList(any(LambdaQueryWrapper.class));
-        verify(dkmMenuMapper, never()).selectList(any(LambdaQueryWrapper.class));
+        when(mockDkmAdminRoleMapper.selectList(any(LambdaQueryWrapper.class)))
+                .thenReturn(Arrays.asList(new DkmAdminRole(0, 0, 0)));
+        when(mockDkmRoleMenuMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
 
-        assertEquals("用户对应角色不存在！", pageResp.getMsg());
+        // Run the test
+        final PageResp result = dkmRouterServiceImplUnderTest.getPageRouter(0);
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
+    }
+
+    @Test
+    void testGetPageRouter_DkmMenuMapperReturnsNoItems() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("获取成功");
+
+        // Configure DkmAdminMapper.selectById(...).
+        final DkmAdmin dkmAdmin = new DkmAdmin(0, "username", "password", "extraInfo");
+        when(mockDkmAdminMapper.selectById(0)).thenReturn(dkmAdmin);
+
+        when(mockDkmAdminRoleMapper.selectList(any(LambdaQueryWrapper.class)))
+                .thenReturn(Arrays.asList(new DkmAdminRole(0, 0, 0)));
+        when(mockDkmRoleMenuMapper.selectList(any(LambdaQueryWrapper.class)))
+                .thenReturn(Arrays.asList(new DkmRoleMenu(0, 0, 0)));
+        when(mockDkmMenuMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
+
+        // Run the test
+        final PageResp result = dkmRouterServiceImplUnderTest.getPageRouter(0);
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
 }

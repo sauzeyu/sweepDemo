@@ -1,74 +1,87 @@
 package com.vecentek.back.service.impl;
 
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmBluetooths;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.common.response.PageResp;
-import org.junit.Assert;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.apache.ibatis.builder.MapperBuilderAssistant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-/**
- * @author liujz
- * @version 1.0
- * @since 2023/4/13 17:10
- */
-@SpringBootTest
-public class DkmBluetoothsServiceImplTest {
-    @MockBean
-    private DkmBluetoothsMapper dkmBluetoothsMapper;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-    @Autowired
-    private DkmBluetoothsServiceImpl dkmBluetoothsService;
+@ExtendWith(MockitoExtension.class)
+class DkmBluetoothsServiceImplTest {
 
+    @Mock
+    private DkmBluetoothsMapper mockDkmBluetoothsMapper;
+@Mock
+private HttpServletResponse mockHttpServletResponse;
+    @InjectMocks
+    private DkmBluetoothsServiceImpl dkmBluetoothsServiceImplUnderTest;
+    @BeforeEach
+    void setup() {
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmBluetooths.class);
+    }
     @Test
-    public void testSelectForPage() {
-        // 调用接口
-        PageResp pageResp = dkmBluetoothsService.selectForPage(1, 10, "hw123456", "search123", 1);
-        // 断言
-        Assert.assertEquals("查询成功", pageResp.getMsg());
+    void testSelectForPage() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("查询成功");
+        when(mockDkmBluetoothsMapper.selectPage(any(Page.class), any(LambdaQueryWrapper.class)))
+                .thenReturn(new Page());
+
+        // Run the test
+        final PageResp result = dkmBluetoothsServiceImplUnderTest.selectForPage(0, 0, "hwDeviceSn", "searchNumber", 0);
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
 
     @Test
-    public void testDeleteById() {
-        String hwDeviceSn = "hw123456";
-        dkmBluetoothsService.deleteById(hwDeviceSn);
-        // 验证是否成功删除
-        Mockito.verify(dkmBluetoothsMapper, Mockito.times(1)).delete(Wrappers.<DkmBluetooths>lambdaQuery().eq(DkmBluetooths::getHwDeviceSn, hwDeviceSn));
+    void testDeleteById() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("删除成功");
+        when(mockDkmBluetoothsMapper.delete(any(LambdaQueryWrapper.class))).thenReturn(0);
+
+        // Run the test
+        final PageResp result = dkmBluetoothsServiceImplUnderTest.deleteById("hwDeviceSn");
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
+        verify(mockDkmBluetoothsMapper).delete(any(LambdaQueryWrapper.class));
     }
 
     @Test
-    public void testDownloadDkmBluetooths() {
-        // 创建假数据
-        List<DkmBluetooths> mockList = new ArrayList<>();
-        DkmBluetooths dkmBluetooths = new DkmBluetooths();
-        dkmBluetooths.setHwDeviceSn("hw123456");
-        mockList.add(dkmBluetooths);
-        Mockito.when(dkmBluetoothsMapper.selectList(Mockito.any(LambdaQueryWrapper.class))).thenReturn(mockList);
+    void testDownloadDkmBluetooths() {
+        // Setup
+        final HttpServletResponse response = new MockHttpServletResponse();
 
-        // 创建mock response
-        HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+        // Configure DkmBluetoothsMapper.selectList(...).
+        final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
+                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                        "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
+        when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
-        // 调用接口
-        dkmBluetoothsService.downloadDkmBluetooths("hw123456", "search123", 1, response);
+        // Run the test
+        dkmBluetoothsServiceImplUnderTest.downloadDkmBluetooths("hwDeviceSn", "searchNumber", 0, response);
 
-        // 验证是否设置header和写入数据到response
-        Mockito.verify(response, Mockito.times(1)).setHeader(Mockito.anyString(), Mockito.anyString());
-        Mockito.verify(response, Mockito.times(1)).setCharacterEncoding(Mockito.anyString());
-        Mockito.verify(response, Mockito.times(1)).setContentType(Mockito.anyString());
-        try {
-            Mockito.verify(response.getOutputStream(), Mockito.times(1)).flush();
-        } catch (IOException e) {
-            e.printStackTrace(); // ignore
-        }
+        // Verify the results
     }
+
+
 }

@@ -26,11 +26,14 @@ class DkmMenuControllerTest {
 
     @MockBean
     private DkmMenuServiceImpl mockDkmMenuService;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectAll() throws Exception {
         // Setup
-        when(mockDkmMenuService.selectAll()).thenReturn(PageResp.success("msg"));
+        when(mockDkmMenuService.selectAll()).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmMenu/selectAll")
@@ -39,7 +42,7 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -54,13 +57,13 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectForPage() throws Exception {
         // Setup
-        when(mockDkmMenuService.selectForPage(0, 0, "title", "icon", "href")).thenReturn(PageResp.success("msg"));
+        when(mockDkmMenuService.selectForPage(0, 0, "title", "icon", "href")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmMenu/selectForPage")
@@ -74,7 +77,7 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -94,13 +97,13 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectMenuByRoleId() throws Exception {
         // Setup
-        when(mockDkmMenuService.selectMenuByRoleId(0)).thenReturn(PageResp.success("msg"));
+        when(mockDkmMenuService.selectMenuByRoleId(0)).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmMenu/selectMenuByRoleId")
@@ -110,7 +113,7 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -126,13 +129,13 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 
     @Test
     void testSelectByParentId() throws Exception {
         // Setup
-        when(mockDkmMenuService.selectByParentId(0)).thenReturn(PageResp.success("msg"));
+        when(mockDkmMenuService.selectByParentId(0)).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmMenu/selectByParentId")
@@ -142,7 +145,7 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(successResponse);
     }
 
     @Test
@@ -158,6 +161,6 @@ class DkmMenuControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo(fiveHundredResponse);
     }
 }

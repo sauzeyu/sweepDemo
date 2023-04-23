@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,7 +37,10 @@ class DkmKeyLogControllerTest {
     private DkmKeyLogServiceImpl mockDkmKeyUseLogService;
     @MockBean
     private DkmKeyLogHistoryExportMapper mockDkmKeyLogHistoryExportMapper;
-
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
     @Test
     void testSelectForPage() throws Exception {
         // Setup
@@ -64,7 +68,7 @@ class DkmKeyLogControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo("");
     }
 
     @Test
@@ -94,7 +98,7 @@ class DkmKeyLogControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString()).isEqualTo("");
     }
 
     @Test
@@ -122,8 +126,9 @@ class DkmKeyLogControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+        String contentAsString = response.getContentAsString(Charset.defaultCharset());
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(contentAsString).isEqualTo("{\"code\":200,\"msg\":\"正在导出\"}");
         verify(mockDkmKeyLogHistoryExportMapper).insert(
                 new DkmKeyLogHistoryExport(0, "missionName", new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "creator", 0));

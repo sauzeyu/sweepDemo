@@ -1,48 +1,47 @@
 package com.vecentek.back.service.impl;
+
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.common.response.PageResp;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.apache.ibatis.builder.MapperBuilderAssistant;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-/**
- * @author liujz
- * @version 1.0
- * @since 2023/4/13 17:12
- */
-@SpringBootTest
-public class DkmDkmKeyLifecycleServiceImplTest {
-    @MockBean
-    private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
+@ExtendWith(MockitoExtension.class)
+class DkmDkmKeyLifecycleServiceImplTest {
 
-    @Autowired
-    private DkmDkmKeyLifecycleServiceImpl dkmDkmKeyLifecycleService;
+    @Mock
+    private DkmKeyLifecycleMapper mockDkmKeyLifecycleMapper;
 
+    @InjectMocks
+    private DkmDkmKeyLifecycleServiceImpl dkmDkmKeyLifecycleServiceImplUnderTest;
+    @BeforeEach
+    void setup() {
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKeyLifecycle.class);
+    }
     @Test
-    @Ignore
-    public void testSelectForPage() {
-        // 创建假数据
-        List<DkmKeyLifecycle> mockList = new ArrayList<>();
-        DkmKeyLifecycle lifecycle = new DkmKeyLifecycle();
-        lifecycle.setId(1L);
-        lifecycle.setKeyId("key001");
-        mockList.add(lifecycle);
-        // 设置模拟行为
-        //Mockito.when(dkmKeyLifecycleMapper.selectPage(Mockito.any(Page.class), Mockito.any(LambdaQueryWrapper.class))).thenReturn(new Page<DkmKeyLifecycle>(mockList));
-        // 调用接口
-        PageResp pageResp = dkmDkmKeyLifecycleService.selectForPage(1, 10, "key001");
-        // 断言
-        List<DkmKeyLifecycle> data = (List) pageResp.getData();
-        Assert.assertEquals("查询成功", pageResp.getMsg());
-        Assert.assertEquals(java.util.Optional.of(1), pageResp.getTotal());
-        Assert.assertEquals(1, data.size());
-        Assert.assertEquals("key001", data.get(0).getKeyId());
+    void testSelectForPage() {
+        // Setup
+        final PageResp expectedResult = PageResp.success("查询成功");
+        when(mockDkmKeyLifecycleMapper.selectPage(any(Page.class), any(LambdaQueryWrapper.class)))
+                .thenReturn(new Page<>(0L, 0L, 0L, false));
+
+        // Run the test
+        final PageResp result = dkmDkmKeyLifecycleServiceImplUnderTest.selectForPage(0, 0, "keyId");
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
 }

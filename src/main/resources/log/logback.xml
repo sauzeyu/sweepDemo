@@ -18,7 +18,7 @@
               value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
     <!-- 控制台输出 -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender" prudent="true">
         <encoder>
             <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
             <charset>UTF-8</charset> <!-- 此处设置字符集 -->
@@ -42,7 +42,7 @@
     <!--</appender>-->
 
     <!-- 时间滚动输出 level为 DEBUG 日志 -->
-    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender" prudent="true">
         <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${LOG_PATH}/log_debug.log</file>
         <!--日志文件输出格式-->
@@ -76,7 +76,7 @@
     </appender>
 
     <!-- 时间滚动输出 level为 INFO 日志 -->
-    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender" prudent="true">
         <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${LOG_PATH}/log_info.log</file>
         <!--日志文件输出格式-->
@@ -111,7 +111,7 @@
 
 
     <!-- 时间滚动输出 level为 WARN 日志 -->
-    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender" prudent="true">
         <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${LOG_PATH}/log_warn.log</file>
         <!--日志文件输出格式-->
@@ -146,7 +146,7 @@
 
 
     <!-- 时间滚动输出 level为 ERROR 日志 -->
-    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender" prudent="true">
         <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${LOG_PATH}/log_error.log</file>
         <!--日志文件输出格式-->

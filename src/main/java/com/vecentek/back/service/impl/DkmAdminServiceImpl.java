@@ -161,7 +161,6 @@ public class DkmAdminServiceImpl {
     @Transactional(rollbackFor = Exception.class)
     public PageResp resetPasswordById(AdminVO adminVO) {
 
-
         if (Objects.isNull(adminVO.getId())){
             return PageResp.fail("用户名id为空");
         }

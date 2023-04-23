@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,12 +35,16 @@ class DkmPhoneCalibrationDataControllerTest {
 
     @MockBean
     private DkmPhoneCalibrationDataServiceImpl mockDkmPhoneCalibrationDataServiceImpl;
+    private String fiveHundredResponse = "{\"code\":500}";
+    private String fiveHundredMessageResponse = "{\"code\":500,\"msg\":\"服务繁忙,请稍后...\"}";
+    private String successResponse = "{\"code\":200}";
+    private String oneThousandOneMessageResponse = "{\"code\":1001,\"msg\":\"必填参数未传递或传入的参数格式不正确！\"}";
 
     @Test
     void testSelectForPage() throws Exception {
         // Setup
         when(mockDkmPhoneCalibrationDataServiceImpl.selectForPage(0, 0, "phoneBrand", "vehicleModel", "vehicleType",
-                "vehicleBrand")).thenReturn(PageResp.success("msg"));
+                "vehicleBrand")).thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(get("/dkmPhoneCalibrationData/selectForPage")
@@ -53,8 +58,9 @@ class DkmPhoneCalibrationDataControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
+
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -76,7 +82,7 @@ class DkmPhoneCalibrationDataControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -84,7 +90,7 @@ class DkmPhoneCalibrationDataControllerTest {
         // Setup
         when(mockDkmPhoneCalibrationDataServiceImpl.updateDkmPhoneCalibrationDataById(
                 new DkmPhoneCalibrationData(0L, "vehicleModel", "phoneBrand", "phoneModel",
-                        "personalAndCalibrationString", "remarks", "vehicleType", "vehicleBrand")))
+                        "personalAndCalibrationString", "remarks", "vehicleType", "vehicleBrand","featureData")))
                 .thenReturn(PageResp.success("msg"));
 
         // Run the test
@@ -95,7 +101,7 @@ class DkmPhoneCalibrationDataControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
@@ -103,7 +109,7 @@ class DkmPhoneCalibrationDataControllerTest {
         // Setup
         when(mockDkmPhoneCalibrationDataServiceImpl.updateDkmPhoneCalibrationDataById(
                 new DkmPhoneCalibrationData(0L, "vehicleModel", "phoneBrand", "phoneModel",
-                        "personalAndCalibrationString", "remarks", "vehicleType", "vehicleBrand")))
+                        "personalAndCalibrationString", "remarks", "vehicleType", "vehicleBrand","featureData")))
                 .thenReturn(PageResp.fail());
 
         // Run the test
@@ -114,14 +120,14 @@ class DkmPhoneCalibrationDataControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(oneThousandOneMessageResponse);
     }
 
     @Test
     void testImportByExcel() throws Exception {
         // Setup
         when(mockDkmPhoneCalibrationDataServiceImpl.importByExcel(any(MultipartFile.class)))
-                .thenReturn(PageResp.success("msg"));
+                .thenReturn(PageResp.success());
 
         // Run the test
         final MockHttpServletResponse response = mockMvc.perform(multipart("/dkmPhoneCalibrationData/importByExcel")
@@ -132,7 +138,7 @@ class DkmPhoneCalibrationDataControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(successResponse);
     }
 
     @Test
@@ -150,7 +156,7 @@ class DkmPhoneCalibrationDataControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredResponse);
     }
 
     @Test
@@ -169,7 +175,7 @@ class DkmPhoneCalibrationDataControllerTest {
 
         // Verify the results
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo("");
         verify(mockDkmPhoneCalibrationDataServiceImpl).downloadCalibrationExcel(eq("phoneBrand"), eq("vehicleModel"),
                 eq("vehicleType"), eq("vehicleBrand"), eq(false), any(HttpServletResponse.class));
     }
@@ -193,7 +199,7 @@ class DkmPhoneCalibrationDataControllerTest {
                 .andReturn().getResponse();
 
         // Verify the results
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        assertThat(response.getContentAsString()).isEqualTo("expectedResponse");
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString(Charset.defaultCharset())).isEqualTo(fiveHundredMessageResponse);
     }
 }
