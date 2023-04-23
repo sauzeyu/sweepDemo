@@ -1,6 +1,7 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.entity.DkmBluetooths;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.exception.UploadOverMaximumException;
 import com.vecentek.back.exception.VecentException;
@@ -40,7 +41,7 @@ public class DkmOfflineCheckController {
     }
 
     @RequestMapping(value = "/insertOrUpdateVehicleBatch", method = RequestMethod.POST)
-    public PageResp insertOrUpdateVehicleBatch(@RequestBody List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
+    public PageResp insertOrUpdateVehicleBatch(@RequestBody List<VehicleBluetoothVO> dkmVehicles) throws VecentException, DiagnosticLogsException {
         return dkmOfflineCheckServiceImpl.insertOrUpdateVehicleBatch(dkmVehicles);
     }
 

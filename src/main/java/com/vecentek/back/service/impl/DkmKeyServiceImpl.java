@@ -19,6 +19,7 @@ import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.entity.DkmUser;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
@@ -221,7 +222,7 @@ public class DkmKeyServiceImpl {
      * @return 更新是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp updateStateById(String keyId, Integer dkState, String userId, String vin) {
+    public PageResp updateStateById(String keyId, Integer dkState, String userId, String vin) throws DiagnosticLogsException {
         // 新增判断条件一个userId和一个vin号对应只能有一把钥匙
         if (dkState == null) {
             return PageResp.fail(500, "钥匙状态未传递");
@@ -260,7 +261,7 @@ public class DkmKeyServiceImpl {
 
     }
 
-    private PageResp unfreezeKeys(Integer dkState, String userId, String vin) {
+    private PageResp unfreezeKeys(Integer dkState, String userId, String vin) throws DiagnosticLogsException {
         // 查询是否有钥匙正在使用
 
         List<DkmKey> runDkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
@@ -273,7 +274,8 @@ public class DkmKeyServiceImpl {
 
         );
         if (runDkmKeys.size() > 0) {
-            return PageResp.success("更新失败，当前用户车辆已存在钥匙正在使用，不可解冻选中钥匙");
+            throw new DiagnosticLogsException("04","6010");
+            //return PageResp.success("更新失败，当前用户车辆已存在钥匙正在使用，不可解冻选中钥匙");
         }
         // 解冻状态为"冻结"的钥匙
         List<DkmKey> dkmKeys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getDkState, 3).eq(
@@ -284,7 +286,8 @@ public class DkmKeyServiceImpl {
             key.setDkState(1);
             int count = dkmKeyMapper.updateById(key);
             if (count == 0) {
-                throw new RuntimeException("Failed to update key in database");
+                throw new DiagnosticLogsException("04","6011");
+                //throw new RuntimeException("Failed to update key in database");
             }
             if (Objects.equals("0", key.getParentId())) {
                 keyLifecycleUtil.insert(key, 1, 0, KeyStatusEnum.FREEZE.getCode());
@@ -301,10 +304,17 @@ public class DkmKeyServiceImpl {
      * @return 更新是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp updateStateForRevokeById(String userId, String vin) {
+    public PageResp updateStateForRevokeById(String userId, String vin) throws DiagnosticLogsException {
+        if (Objects.isNull(userId) || Objects.isNull(vin) ){
+            throw new DiagnosticLogsException("12","5071");
+        }
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).eq(
                 DkmKey::getDkState,
                 KeyStatusEnum.ACTIVATED.getCode()).eq(DkmKey::getVin, vin));
+        if (keys == null || keys.isEmpty()) {
+            throw new DiagnosticLogsException("12","5048");
+            //return PageResp.fail("没有可吊销的钥匙");
+        }
         for (DkmKey dkmKey : keys) {
             if (dkmKey != null) {
                 int update = dkmKeyMapper.update(null,

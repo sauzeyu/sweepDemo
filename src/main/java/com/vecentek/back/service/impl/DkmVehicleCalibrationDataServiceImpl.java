@@ -11,10 +11,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.entity.DkmPhoneCalibrationData;
 import com.vecentek.back.entity.DkmVehicleCalibrationData;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.VecentException;
-import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.mapper.DkmVehicleCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
 import com.vecentek.back.util.UploadUtil;
@@ -62,10 +61,13 @@ public class DkmVehicleCalibrationDataServiceImpl {
      *
      * @return 对象列表
      */
-    public PageResp selectForPage(int pageIndex, int pageSize, String vehicleModel,Integer level) {
+    public PageResp  selectForPage(int pageIndex, int pageSize, String vehicleModel,Integer level) throws DiagnosticLogsException {
         // 获取当前表中的总记录
         Page<DkmVehicleCalibrationData> page = new Page<>(pageIndex, pageSize);
 
+        if (Objects.isNull(vehicleModel) || Objects.isNull(level)){
+            throw new DiagnosticLogsException("24","5071");
+        }
         LambdaQueryWrapper<DkmVehicleCalibrationData> queryWrapper = Wrappers.<DkmVehicleCalibrationData>lambdaQuery()
                 .like(StrUtil.isNotBlank(vehicleModel), DkmVehicleCalibrationData::getVehicleModel, vehicleModel)
         .eq(level != null, DkmVehicleCalibrationData::getLevel, level);
@@ -81,11 +83,12 @@ public class DkmVehicleCalibrationDataServiceImpl {
      * @return 是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp updateDkmVehicleCalibrationDataById(DkmVehicleCalibrationData dkmVehicleCalibrationData) {
+    public PageResp updateDkmVehicleCalibrationDataById(DkmVehicleCalibrationData dkmVehicleCalibrationData) throws DiagnosticLogsException {
 
         dkmVehicleCalibrationData.setUpdateTime(new Date());
         if (dkmVehicleCalibrationData.getVehicleAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
-            return PageResp.fail("标定数据必须是32字节");
+            throw new DiagnosticLogsException("02","5052");
+            //return PageResp.fail("标定数据必须是32字节");
         }
         if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmVehicleCalibrationData.getVehicleAndCalibrationString())) {
             return PageResp.fail("标定数据解析错误！请检查数据是否正常！");
@@ -128,7 +131,8 @@ public class DkmVehicleCalibrationDataServiceImpl {
                     return PageResp.fail("第 " + rowIndex + " 行导入的车型数据不能为空！");
                 }
                 if (calibration.getVehicleAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
-                    return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
+                    throw new DiagnosticLogsException("02","5052");
+                    //return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
                 }
                 try {
                     byte[] bytes = HexUtil.parseHex(calibration.getVehicleAndCalibrationString());

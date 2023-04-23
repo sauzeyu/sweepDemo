@@ -1,5 +1,6 @@
 package com.vecentek.back.controller;
 
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.service.impl.DkmRouterServiceImpl;
 import com.vecentek.common.response.PageResp;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,11 @@ public class DkmRouterController {
     @RequestMapping(value = "/getPageRouter", method = RequestMethod.GET)
     public PageResp selectForPage(@RequestParam(name = "id") Integer id) {
         return dkmRouterService.getPageRouter(id);
+    }
+
+    @RequestMapping(value = "/testException", method = RequestMethod.GET)
+    public void testException() throws DiagnosticLogsException {
+        throw new DiagnosticLogsException("01","5004");
     }
 
 }

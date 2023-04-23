@@ -1,17 +1,31 @@
 package com.vecentek.back.exception;
 
+import com.vecentek.back.entity.DkmFunctionalAbnormal;
+import com.vecentek.back.mapper.DkmFunctionalAbnormalMapper;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.apache.tomcat.util.http.fileupload.impl.SizeLimitExceededException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 全局异常处理
@@ -24,6 +38,11 @@ import java.sql.SQLSyntaxErrorException;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Map<Integer, DkmFunctionalAbnormal> unfunctionalMap = new HashMap<>(512);
+    private static final Logger esLog = LoggerFactory.getLogger("esLog");
+
+    @Resource
+    DkmFunctionalAbnormalMapper dkmFunctionalAbnormalMapper;
 
     @ExceptionHandler(SQLException.class)
     public PageResp sqlException(SQLException e) {
@@ -85,10 +104,51 @@ public class GlobalExceptionHandler {
         return errorResult("上传数据量超过最大值！", 2107, e);
     }
 
+    @ExceptionHandler(DiagnosticLogsException.class)
+    public PageResp DiagnosticLogsException(DiagnosticLogsException e) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String dateTime = now.format(formatter);
+
+        String faultId = e.getFaultId();
+        String businessId = e.getBusinessId();
+        DkmFunctionalAbnormal thisDkmFunctionalAbnormal = null;
+        for (DkmFunctionalAbnormal dkmFunctionalAbnormal : unfunctionalMap.values()) {
+            if (dkmFunctionalAbnormal.getBusinessId().equals(businessId) && dkmFunctionalAbnormal.getFaultId().equals(faultId)) {
+                thisDkmFunctionalAbnormal = dkmFunctionalAbnormal;
+                break;
+            }
+        }
+        String separator = "|";
+        //esLog.info(thisDkmFunctionalAbnormal.getBusinessId() + Separator + thisDkmFunctionalAbnormal.getBusiness() + Separator
+        //        + thisDkmFunctionalAbnormal.getSourceId() + Separator + thisDkmFunctionalAbnormal.getSource() + Separator + thisDkmFunctionalAbnormal.getSourceId() + Separator + thisDkmFunctionalAbnormal.getSource()
+        //        + thisDkmFunctionalAbnormal.getFaultId() + Separator + thisDkmFunctionalAbnormal.getFault() + Separator
+        //        + thisDkmFunctionalAbnormal.getSolution()
+        //);
+        String[] values = {
+                dateTime,
+                thisDkmFunctionalAbnormal.getBusinessId(),
+                thisDkmFunctionalAbnormal.getBusiness(),
+                thisDkmFunctionalAbnormal.getSourceId(),
+                thisDkmFunctionalAbnormal.getSource(),
+                thisDkmFunctionalAbnormal.getSourceId(),
+                thisDkmFunctionalAbnormal.getSource(),
+                thisDkmFunctionalAbnormal.getFaultId(),
+                thisDkmFunctionalAbnormal.getFault(),
+                //TODO 按list存入
+                thisDkmFunctionalAbnormal.getSolution().get(0)
+        };
+        String join = String.join(separator, values);
+        esLog.info(join);
+        return errorResult(thisDkmFunctionalAbnormal.getFault(), Integer.parseInt(thisDkmFunctionalAbnormal.getFaultId()), e);
+    }
+
+
     @ExceptionHandler(ClassNotFoundException.class)
     public PageResp classNotFoundException(ClassNotFoundException e) {
         return errorResult("没有发现此类！", e);
     }
+
 
     @ExceptionHandler(Throwable.class)
     public PageResp throwable(Throwable e) {
@@ -103,6 +163,40 @@ public class GlobalExceptionHandler {
     private PageResp errorResult(String msg, int code, Throwable e) {
         e.printStackTrace();
         return PageResp.fail(code, msg);
+    }
+
+    @PostConstruct
+    public void init() {
+        List<Map> dkmFunctionalAbnormalList = dkmFunctionalAbnormalMapper.selectAll();
+
+        for (int i = 0; i < dkmFunctionalAbnormalList.size(); i++) {
+            Map map = dkmFunctionalAbnormalList.get(i);
+            Integer id = (Integer) map.get("id");
+            String businessId = (String) map.get("business_id");
+            String business = (String) map.get("business");
+            String faultId = (String) map.get("fault_id");
+            String fault = (String) map.get("fault");
+            String rawSolution = (String) map.get("solution");
+            String source = (String) map.get("terminal");
+            String sourceId = (String) map.get("terminal_id");
+            List<String> solution = null;
+            if (ObjectUtils.isNotEmpty(rawSolution)) {
+                String[] solutions = rawSolution.split("\r\n\r\n");
+                solution = new ArrayList<>(Arrays.asList(solutions));
+            }
+            DkmFunctionalAbnormal functionalAbnormality = DkmFunctionalAbnormal.builder()
+                    .id(id)
+                    .businessId(businessId)
+                    .business(business)
+                    .faultId(faultId)
+                    .fault(fault)
+                    .solution(solution)
+                    .source(source)
+                    .sourceId(sourceId)
+                    .build();
+
+            unfunctionalMap.put(id, functionalAbnormality);
+        }
     }
 }
 
