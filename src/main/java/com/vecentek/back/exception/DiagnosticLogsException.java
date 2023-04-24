@@ -11,10 +11,17 @@ import lombok.Data;
 public class DiagnosticLogsException extends Exception {
     private String businessId;
     private String faultId;
+    private Integer code;
 
 
     public DiagnosticLogsException(String businessId, String faultId) {
         this.businessId = businessId;
         this.faultId = faultId;
+    }
+
+    public DiagnosticLogsException(String businessId, String faultId, Integer code) {
+        this.businessId = businessId;
+        this.faultId = faultId;
+        this.code = code;
     }
 }

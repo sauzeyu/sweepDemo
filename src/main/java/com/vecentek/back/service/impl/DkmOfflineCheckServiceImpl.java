@@ -92,7 +92,7 @@ public class DkmOfflineCheckServiceImpl {
 
         if (startSize > MAX_DATA_TOTAL) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据量超过最大值，请控制在 50 条以内！");
-            throw new DiagnosticLogsException("0D", "5050");
+            throw new DiagnosticLogsException("0D", "5050",2107);
             //throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
         }
 
@@ -112,7 +112,7 @@ public class DkmOfflineCheckServiceImpl {
                     vehicle.getBleMacAddress(),
                     vehicle.getPubKey())) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
-                throw new DiagnosticLogsException("0D", "5071");
+                throw new DiagnosticLogsException("0D", "5071",1001);
                 //throw new VecentException(1001, "必填参数未传递！");
             }
             if (CharSequenceUtil.isNotBlank(vehicle.getSearchNumber())) {

@@ -75,7 +75,7 @@ public class DkmUserVehicleServiceImpl {
         log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
-            throw new DiagnosticLogsException("0E","5071");
+            throw new DiagnosticLogsException("0E","5071",2106);
             //return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getId, userVehicle.getUserId());
@@ -94,7 +94,7 @@ public class DkmUserVehicleServiceImpl {
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(vehicleWrapper);
         if (dkmVehicle == null) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
-            throw new DiagnosticLogsException("0E","5004");
+            throw new DiagnosticLogsException("0E","5004",2106);
             //return PageResp.fail(2106, "系统不存在该车辆信息！");
         }
         // 检查车辆vin唯一性
