@@ -1,6 +1,7 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
 import com.vecentek.common.response.PageResp;
@@ -116,7 +117,7 @@ public class DkmKeyController {
     public PageResp updateStateById(@RequestParam String keyId,
                                     @RequestParam Integer dkState,
                                     @RequestParam String userId,
-                                    @RequestParam String vin) {
+                                    @RequestParam String vin) throws DiagnosticLogsException {
         return this.dkmKeyServiceImpl.updateStateById(keyId, dkState, userId, vin);
     }
 
@@ -133,7 +134,7 @@ public class DkmKeyController {
      */
 
     @PostMapping(value = "/updateStateForRevokeById")
-    public PageResp updateStateForRevokeById(@RequestParam String userId, @RequestParam String vin) {
+    public PageResp updateStateForRevokeById(@RequestParam String userId, @RequestParam String vin) throws DiagnosticLogsException {
         return this.dkmKeyServiceImpl.updateStateForRevokeById(userId, vin);
     }
 

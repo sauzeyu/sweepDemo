@@ -20,5 +20,11 @@ public interface DkmFunctionalAbnormalMapper {
     @Select("select distinct business_id businessId, business from dkm_functional_abnormal ")
     List<Map> selectBusiness();
 
-
+    /**
+     * 查询所有业务id和业务
+     *
+     * @return 业务id和业务
+     */
+    @Select("SELECT * FROM `dkm_functional_abnormal` where terminal_id = '03'")
+    List<Map> selectAll();
 }

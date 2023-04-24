@@ -13,6 +13,7 @@ import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.entity.DkmUserVehicle;
 import com.vecentek.back.entity.DkmVehicle;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
@@ -25,22 +26,18 @@ import com.vecentek.back.util.KeyLifecycleUtil;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
-import com.vecentek.back.vo.SchemeVO;
 import com.vecentek.back.vo.ShareKeyVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.vecentek.back.util.ToolUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -74,11 +71,12 @@ public class DkmUserVehicleServiceImpl {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
+    public PageResp insertUserVehicle(UserVehicleVO userVehicle) throws DiagnosticLogsException {
         log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
-            return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
+            throw new DiagnosticLogsException("0E","5071",2106);
+            //return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getId, userVehicle.getUserId());
         DkmUser dkmUser = dkmUserMapper.selectOne(userWrapper);
@@ -96,7 +94,8 @@ public class DkmUserVehicleServiceImpl {
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(vehicleWrapper);
         if (dkmVehicle == null) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
-            return PageResp.fail(2106, "系统不存在该车辆信息！");
+            throw new DiagnosticLogsException("0E","5004",2106);
+            //return PageResp.fail(2106, "系统不存在该车辆信息！");
         }
         // 检查车辆vin唯一性
         LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -128,7 +127,8 @@ public class DkmUserVehicleServiceImpl {
         } else if (dkmUserVehicle.getBindStatus() == 1) {
             // 数据库中存在有绑定的车辆，要求先解绑再绑定
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-            return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定");
+            throw new DiagnosticLogsException("0E","5045");
+            //return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定");
         } else { // 绑定状态为解绑改为绑定，执行更新操作，可能是过户更换车主
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
             dkmUserVehicle.setUserId(dkmUser.getId());
@@ -309,7 +309,7 @@ public class DkmUserVehicleServiceImpl {
      * @param shareKeyVO
      * @return
      */
-    public PageResp shareKey(ShareKeyVO shareKeyVO) {
+    public PageResp shareKey(ShareKeyVO shareKeyVO) throws DiagnosticLogsException {
         // 非空检验
         if (StringUtils.isEmpty(shareKeyVO.getUserId()) ||
                 StringUtils.isEmpty(shareKeyVO.getVin()) ||
@@ -319,7 +319,8 @@ public class DkmUserVehicleServiceImpl {
                 StringUtils.isEmpty(shareKeyVO.getValFrom()) ||
                 StringUtils.isEmpty(shareKeyVO.getValTo()) ||
                 Objects.isNull(shareKeyVO.getKeyPermit())){
-            return PageResp.fail("传参中存在空值!");
+            throw new DiagnosticLogsException("10","5071");
+            //return PageResp.fail("传参中存在空值!");
         }
         // 时间格式校验
         DateTime valFrom;
@@ -329,26 +330,33 @@ public class DkmUserVehicleServiceImpl {
             valTo = DateUtil.parse(shareKeyVO.getValTo(), "yyyy-MM-dd HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
-            return PageResp.fail("钥匙生效或失效时间格式解析失败!");
+            throw new DiagnosticLogsException("10","5025");
+            //return PageResp.fail("钥匙生效或失效时间格式解析失败!");
         }
         // 检查是否自我分享
         if (Objects.equals(shareKeyVO.getUserId(),shareKeyVO.getShareUserId())){
-            return PageResp.fail("禁止自己分享给自己!");
+            throw new DiagnosticLogsException("10","504B");
+            //return PageResp.fail("禁止自己分享给自己!");
         }
         // 钥匙检查
         DkmKey dkmKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId, shareKeyVO.getKeyId()));
         if (Objects.isNull(dkmKey)){
-            return PageResp.fail("钥匙信息为空!");
+            throw new DiagnosticLogsException("10","5048");
+            //return PageResp.fail("钥匙信息为空!");
         }
         if (!Objects.equals(dkmKey.getParentId(),"0")){
-            return PageResp.fail("钥匙为分享钥匙不能进行分享!");
+            // TODO 钥匙为分享钥匙不能进行分享 没有定义 业务ID 和 故障ID
+            throw new DiagnosticLogsException("10","504A");
+            //return PageResp.fail("钥匙为分享钥匙不能进行分享!");
         }
         if (!Objects.equals(dkmKey.getDkState(),1)){
-            return PageResp.fail("钥匙状态异常不能分享!");
+            throw new DiagnosticLogsException("10","504A");
+            //return PageResp.fail("钥匙状态异常不能分享!");
         }
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, shareKeyVO.getVin()));
         if (Objects.isNull(dkmVehicle)){
-            return PageResp.fail("车辆信息为空!");
+            throw new DiagnosticLogsException("10","5004");
+            //return PageResp.fail("车辆信息为空!");
         }
         // 查询是否已存在分享钥匙，如果存在即更新，不存在即新建
         DkmKey shareKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>()
@@ -413,7 +421,8 @@ public class DkmUserVehicleServiceImpl {
             // 计算密钥K1
             String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
             if (StringUtils.isBlank(masterKey)) {
-                return PageResp.fail("蓝牙信息没有对应二级密钥!");
+                throw new DiagnosticLogsException("10","504E");
+                //return PageResp.fail("蓝牙信息没有对应二级密钥!");
             }
             dkmKeyMapper.insert(newKey);
             // 新增钥匙生命周期表吊销记录

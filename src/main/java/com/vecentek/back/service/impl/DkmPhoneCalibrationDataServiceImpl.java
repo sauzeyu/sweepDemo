@@ -8,16 +8,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
 import com.vecentek.back.util.UploadUtil;
 import com.vecentek.common.response.PageResp;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -85,11 +84,12 @@ public class DkmPhoneCalibrationDataServiceImpl {
      * @return 是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp updateDkmPhoneCalibrationDataById(DkmPhoneCalibrationData dkmPhoneCalibrationData) {
+    public PageResp updateDkmPhoneCalibrationDataById(DkmPhoneCalibrationData dkmPhoneCalibrationData) throws DiagnosticLogsException {
 
         dkmPhoneCalibrationData.setUpdateTime(new Date());
         if (dkmPhoneCalibrationData.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
-            return PageResp.fail("标定数据必须是32字节");
+            throw new DiagnosticLogsException("02","5052");
+            //return PageResp.fail("标定数据必须是32字节");
         }
         if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmPhoneCalibrationData.getPersonalAndCalibrationString())) {
             return PageResp.fail("标定数据解析错误！请检查数据是否正常！");

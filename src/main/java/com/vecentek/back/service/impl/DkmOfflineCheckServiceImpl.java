@@ -22,6 +22,7 @@ import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmVehicle;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.exception.UploadOverMaximumException;
 import com.vecentek.back.exception.VecentException;
@@ -82,7 +83,7 @@ public class DkmOfflineCheckServiceImpl {
     @Resource
     private DkmKeyLogMapper dkmKeyLogMapper;
 
-    private void verifyVehicleBluetoothVO(List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
+    private void verifyVehicleBluetoothVO(List<VehicleBluetoothVO> dkmVehicles) throws VecentException, DiagnosticLogsException {
         if (CollUtil.isEmpty(dkmVehicles)) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据不得为空！");
             throw new VecentException(1001, "上传数据不得为空！");
@@ -91,7 +92,8 @@ public class DkmOfflineCheckServiceImpl {
 
         if (startSize > MAX_DATA_TOTAL) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据量超过最大值，请控制在 50 条以内！");
-            throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
+            throw new DiagnosticLogsException("0D", "5050",2107);
+            //throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
         }
 
         //对 dkmVehicles 去重,根据 hashCode 与 equals 去重
@@ -99,7 +101,8 @@ public class DkmOfflineCheckServiceImpl {
         // 如果有重复参数,则抛出异常
         if (startSize != dkmVehicles.size()) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据包含重复参数，请检查后上传！");
-            throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
+            throw new DiagnosticLogsException("0D", "5045");
+            //throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
         }
 
         for (VehicleBluetoothVO vehicle : dkmVehicles) {
@@ -109,7 +112,8 @@ public class DkmOfflineCheckServiceImpl {
                     vehicle.getBleMacAddress(),
                     vehicle.getPubKey())) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
-                throw new VecentException(1001, "必填参数未传递！");
+                throw new DiagnosticLogsException("0D", "5071",1001);
+                //throw new VecentException(1001, "必填参数未传递！");
             }
             if (CharSequenceUtil.isNotBlank(vehicle.getSearchNumber())) {
                 if (vehicle.getSearchNumber().length() != 38) {
@@ -199,7 +203,7 @@ public class DkmOfflineCheckServiceImpl {
      * @return 是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp insertOrUpdateVehicleBatch(List<VehicleBluetoothVO> dkmVehicles) throws VecentException {
+    public PageResp insertOrUpdateVehicleBatch(List<VehicleBluetoothVO> dkmVehicles) throws VecentException, DiagnosticLogsException {
         log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());
         //校验车辆蓝牙信息
         verifyVehicleBluetoothVO(dkmVehicles);
