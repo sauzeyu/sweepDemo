@@ -341,8 +341,7 @@ public class DkmUserVehicleServiceImpl {
         // 钥匙检查
         DkmKey dkmKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId, shareKeyVO.getKeyId()));
         if (Objects.isNull(dkmKey)){
-            // TODO 业务ID 和 故障ID 组合不唯一
-            throw new DiagnosticLogsException("10","504B");
+            throw new DiagnosticLogsException("10","5048");
             //return PageResp.fail("钥匙信息为空!");
         }
         if (!Objects.equals(dkmKey.getParentId(),"0")){
