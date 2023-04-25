@@ -1,8 +1,4 @@
-package com.vecentek.back.util;/**
- * @author liujz
- * @date 2022/12/7
- * @apiNote
- */
+package com.vecentek.back.util;
 
 /**
  * @author liujz
