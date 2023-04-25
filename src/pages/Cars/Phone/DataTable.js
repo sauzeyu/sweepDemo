@@ -86,8 +86,9 @@ class DataTable extends Component {
       ),
     },
     {
-      title: '特征点数据',
-      dataIndex: 'featureData',
+      title: '手机标定数据',
+      dataIndex: 'personalAndCalibrationString',
+      width: 650,
       ellipsis: {
         showTitle: false,
       },
@@ -98,9 +99,8 @@ class DataTable extends Component {
       ),
     },
     {
-      title: '手机标定数据',
-      dataIndex: 'personalAndCalibrationString',
-      width: 650,
+      title: '特征点数据',
+      dataIndex: 'featureData',
       ellipsis: {
         showTitle: false,
       },
@@ -143,6 +143,7 @@ class DataTable extends Component {
           <br />
           手机品牌:&nbsp;
           {phoneBrand}
+          <br />
         </>
       ),
 
@@ -283,6 +284,8 @@ class DataTable extends Component {
     phoneCalibrationData.id = this.editForm?.current?.getFieldValue('id');
     phoneCalibrationData.personalAndCalibrationString =
       this.editForm?.current?.getFieldValue('personalAndCalibrationString');
+    phoneCalibrationData.featureData =
+      this.editForm?.current?.getFieldValue('featureData');
     updatePhone(phoneCalibrationData).then((res) => {
       if (res.code === 200) {
         message.success(res.msg);
@@ -387,10 +390,10 @@ class DataTable extends Component {
             <Form.Item name="phoneModel" label={'手机型号'}>
               <Input readOnly={true} />
             </Form.Item>
-            <Form.Item name="featureData" label={'特征点数据'}>
-              <Input readOnly={true} />
-            </Form.Item>
             <Form.Item name="personalAndCalibrationString" label={'标定数据'}>
+              <Input.TextArea autoSize={true} />
+            </Form.Item>
+            <Form.Item name="featureData" label={'特征点数据'}>
               <Input.TextArea autoSize={true} />
             </Form.Item>
           </Form>
