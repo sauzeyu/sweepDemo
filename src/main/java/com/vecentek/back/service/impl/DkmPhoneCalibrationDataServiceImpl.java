@@ -125,6 +125,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
             reader.addHeaderAlias("车辆品牌", "vehicleBrand");
             reader.addHeaderAlias("车型", "vehicleType");
             reader.addHeaderAlias("标定数据", "personalAndCalibrationString");
+            reader.addHeaderAlias("特征点数据", "featureData");
             List<DkmPhoneCalibrationData> calibrationList = reader.readAll(DkmPhoneCalibrationData.class);
             reader.close();
             if (calibrationList.size() == 0) {
@@ -282,6 +283,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
         writer.setColumnWidth(3, 30);
         writer.setColumnWidth(4, 30);
         writer.setColumnWidth(5, 150);
+        writer.setColumnWidth(6, 255);
 
         writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
@@ -289,7 +291,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
         writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleType", "车型");
         writer.addHeaderAlias("personalAndCalibrationString", "标定数据");
-
+        writer.addHeaderAlias("featureData", "特征点数据");
         writer.write(calibrationDataList, true);
 
         try {
