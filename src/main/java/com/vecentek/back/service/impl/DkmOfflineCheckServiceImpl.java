@@ -1,9 +1,8 @@
 package com.vecentek.back.service.impl;
-
+import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.HexUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.HMac;
@@ -149,23 +148,23 @@ public class DkmOfflineCheckServiceImpl {
             }
 
 
-            if (HexUtil.decodeHex(vehicle.getHwDeviceSn()) == null) {
+            if (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getHwDeviceSn()) || HexUtil.decodeHex(vehicle.getHwDeviceSn()) == null) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙设备序列号格式不正确！");
                 throw new VecentException(1001, "蓝牙设备序列号格式不正确！");
             }
 
             if (CharSequenceUtil.isNotBlank(vehicle.getSearchNumber())) {
-                if (HexUtil.decodeHex(vehicle.getSearchNumber()) == null) {
+                if (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getSearchNumber()) || HexUtil.decodeHex(vehicle.getSearchNumber()) == null) {
                     log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号格式不正确！");
                     throw new VecentException(1001, "蓝牙检索号格式不正确！");
                 }
             }
-            if (HexUtil.decodeHex(vehicle.getBleMacAddress()) == null) {
+            if (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getBleMacAddress()) || HexUtil.decodeHex(vehicle.getBleMacAddress()) == null) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址格式不正确！");
                 throw new VecentException(1001, "蓝牙Mac地址格式不正确！");
             }
 
-            if (HexUtil.decodeHex(vehicle.getPubKey()) == null) {
+            if (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getPubKey()) || HexUtil.decodeHex(vehicle.getPubKey()) == null) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙公钥格式不正确！");
                 throw new VecentException(1001, "蓝牙公钥格式不正确！");
             }
