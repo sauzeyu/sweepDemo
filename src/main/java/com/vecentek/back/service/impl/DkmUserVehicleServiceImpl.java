@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.payneteasy.tlv.HexUtil;
+import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
@@ -75,6 +76,7 @@ public class DkmUserVehicleServiceImpl {
         log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
+            // TODO 增加枚举类进行翻译 增加可读性
             throw new DiagnosticLogsException("0E","5071",2106);
             //return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         }
@@ -165,7 +167,7 @@ public class DkmUserVehicleServiceImpl {
     //}
 
     @Transactional(rollbackFor = Exception.class)
-    public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) {
+    public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) throws DiagnosticLogsException {
         log.info("request：" + "/api/userVehicle/logoutUserVehicle " + logoutUserVehicle.toString());
         String userId = logoutUserVehicle.getUserId();
         String vin = logoutUserVehicle.getVin();
@@ -177,7 +179,8 @@ public class DkmUserVehicleServiceImpl {
         }
         if (StrUtil.hasBlank(userId, vin)) {
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
-            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+            throw new DiagnosticLogsException("0F","5071",1001);
+            //return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         // 根据userId和vin查询中间表
         DkmUserVehicle dkmUserVehicle = dkmUserVehicleMapper.selectOne(Wrappers.<DkmUserVehicle>lambdaQuery()
@@ -187,14 +190,16 @@ public class DkmUserVehicleServiceImpl {
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "用户与车辆信息不匹配!");
-            return PageResp.fail(1001, "用户与车辆信息不匹配!");
+            throw new DiagnosticLogsException("0F","5046",1001);
+            //return PageResp.fail(1001, "用户与车辆信息不匹配!");
         }
         // 根据vin查询车辆表
         DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, vin));
         if (vehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "系统不存在该车辆信息!");
-            return PageResp.fail(2106, "系统不存在该车辆信息!");
+            throw new DiagnosticLogsException("0F","5004",2106);
+            //return PageResp.fail(2106, "系统不存在该车辆信息!");
         }
         // 解绑 首先改变bind_status 的状态为2 然后吊销当前车辆的所有钥匙 返回钥匙用户id
         dkmUserVehicle.setBindStatus(2);
@@ -239,11 +244,12 @@ public class DkmUserVehicleServiceImpl {
     }
 
 
-    public PageResp revokeKey(RevokeKeyVO revokeKeyVO) {
+    public PageResp revokeKey(RevokeKeyVO revokeKeyVO) throws DiagnosticLogsException {
         log.info("request：" + "/api/userVehicle/revokeKey " + revokeKeyVO.toString());
         if (StrUtil.hasBlank(revokeKeyVO.getUserId())) {
             log.info("response：" + "/api/userVehicle/revokeKey " + "必填参数未传递!");
-            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+            throw new DiagnosticLogsException("12","5071",1001);
+            //return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         String userId = revokeKeyVO.getUserId();
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5的全部吊销
@@ -251,7 +257,8 @@ public class DkmUserVehicleServiceImpl {
         // 返回【用户id-vin号】的list
         ArrayList<String> list = new ArrayList<>();
         if (CollectionUtils.isEmpty(keys)) {
-            return PageResp.fail(1001, "吊销失败,该用户下没有启动状态的钥匙");
+            throw new DiagnosticLogsException("12","5048",1001);
+            //return PageResp.fail(1001, "吊销失败,该用户下没有启动状态的钥匙");
         }
         for (DkmKey key : keys) {
             // 吊销
