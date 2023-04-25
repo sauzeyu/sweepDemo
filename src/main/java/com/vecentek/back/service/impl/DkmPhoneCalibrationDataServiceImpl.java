@@ -88,8 +88,8 @@ public class DkmPhoneCalibrationDataServiceImpl {
 
         dkmPhoneCalibrationData.setUpdateTime(new Date());
         if (dkmPhoneCalibrationData.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
-            throw new DiagnosticLogsException("02","5052");
-            //return PageResp.fail("标定数据必须是32字节");
+
+            return PageResp.fail("标定数据必须是32字节");
         }
         if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmPhoneCalibrationData.getPersonalAndCalibrationString())) {
             return PageResp.fail("标定数据解析错误！请检查数据是否正常！");

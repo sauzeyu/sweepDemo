@@ -3,9 +3,9 @@ package com.vecentek.back.exception;
 import lombok.Data;
 
 /**
- * @author ：EdgeYu
+ * @author ：liujz
  * @version ：1.0
- * @since 2022-01-17 18:15
+ * @since 2022-04-24 18:15
  */
 @Data
 public class DiagnosticLogsException extends Exception {

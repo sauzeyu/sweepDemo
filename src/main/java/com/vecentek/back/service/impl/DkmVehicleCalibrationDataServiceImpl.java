@@ -65,9 +65,6 @@ public class DkmVehicleCalibrationDataServiceImpl {
         // 获取当前表中的总记录
         Page<DkmVehicleCalibrationData> page = new Page<>(pageIndex, pageSize);
 
-        if (Objects.isNull(vehicleModel) || Objects.isNull(level)){
-            throw new DiagnosticLogsException("24","5071");
-        }
         LambdaQueryWrapper<DkmVehicleCalibrationData> queryWrapper = Wrappers.<DkmVehicleCalibrationData>lambdaQuery()
                 .like(StrUtil.isNotBlank(vehicleModel), DkmVehicleCalibrationData::getVehicleModel, vehicleModel)
         .eq(level != null, DkmVehicleCalibrationData::getLevel, level);
@@ -87,8 +84,7 @@ public class DkmVehicleCalibrationDataServiceImpl {
 
         dkmVehicleCalibrationData.setUpdateTime(new Date());
         if (dkmVehicleCalibrationData.getVehicleAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
-            throw new DiagnosticLogsException("02","5052");
-            //return PageResp.fail("标定数据必须是32字节");
+            return PageResp.fail("标定数据必须是32字节");
         }
         if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmVehicleCalibrationData.getVehicleAndCalibrationString())) {
             return PageResp.fail("标定数据解析错误！请检查数据是否正常！");
@@ -131,8 +127,7 @@ public class DkmVehicleCalibrationDataServiceImpl {
                     return PageResp.fail("第 " + rowIndex + " 行导入的车型数据不能为空！");
                 }
                 if (calibration.getVehicleAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
-                    throw new DiagnosticLogsException("02","5052");
-                    //return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
+                    return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
                 }
                 try {
                     byte[] bytes = HexUtil.parseHex(calibration.getVehicleAndCalibrationString());

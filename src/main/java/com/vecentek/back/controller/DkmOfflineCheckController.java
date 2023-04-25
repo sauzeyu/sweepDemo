@@ -36,7 +36,7 @@ public class DkmOfflineCheckController {
     private DkmOfflineCheckServiceImpl dkmOfflineCheckServiceImpl;
 
     @RequestMapping(value = "/insertBluetoothBatch", method = RequestMethod.POST)
-    public PageResp insertBluetoothBatch(@RequestBody List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException {
+    public PageResp insertBluetoothBatch(@RequestBody List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException, DiagnosticLogsException {
         return dkmOfflineCheckServiceImpl.insertBluetoothBatch(dkmBluetooths);
     }
 

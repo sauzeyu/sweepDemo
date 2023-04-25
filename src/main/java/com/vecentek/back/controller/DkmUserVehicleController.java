@@ -46,7 +46,7 @@ public class DkmUserVehicleController {
      * @return
      */
     @RequestMapping(value = "/logoutUserVehicle", method = RequestMethod.POST)
-    public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle) {
+    public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle) throws DiagnosticLogsException {
         return dkmUserVehicleService.logoutUserVehicle(logoutUserVehicle);
     }
 
@@ -70,7 +70,7 @@ public class DkmUserVehicleController {
      * @return
      */
     @RequestMapping(value = "/revokeKey", method = RequestMethod.POST)
-    public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) {
+    public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) throws DiagnosticLogsException {
         return dkmUserVehicleService.revokeKey(revokeKeyVO);
     }
 

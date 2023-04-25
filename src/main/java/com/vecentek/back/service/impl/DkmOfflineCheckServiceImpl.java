@@ -92,6 +92,7 @@ public class DkmOfflineCheckServiceImpl {
 
         if (startSize > MAX_DATA_TOTAL) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据量超过最大值，请控制在 50 条以内！");
+
             throw new DiagnosticLogsException("0D", "5050",2107);
             //throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
         }
@@ -347,7 +348,7 @@ public class DkmOfflineCheckServiceImpl {
      * @return 是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp insertBluetoothBatch(List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException {
+    public PageResp insertBluetoothBatch(List<DkmBluetooths> dkmBluetooths) throws ParameterValidationException, UploadOverMaximumException, DiagnosticLogsException {
         log.info("request：" + "/api/offlineCheck/insertBluetoothBatch " + dkmBluetooths.toString());
         List<String> insertDeviceSnList = new ArrayList<>();
         List<String> insertMacList = new ArrayList<>();
@@ -355,18 +356,21 @@ public class DkmOfflineCheckServiceImpl {
         int startNum = dkmBluetooths.size();
         for (DkmBluetooths bluetooth : dkmBluetooths) {
             if (CharSequenceUtil.hasBlank(bluetooth.getHwDeviceSn(), bluetooth.getDkSdkVersion(), bluetooth.getBleMacAddress())) {
-                throw new ParameterValidationException();
+                throw new DiagnosticLogsException("0D","5071",1001);
+                //throw new ParameterValidationException();
             }
         }
         int initSize = dkmBluetooths.size();
         if (initSize > MAX_DATA_TOTAL) {
-            throw new UploadOverMaximumException();
+            throw new DiagnosticLogsException("0D","5050",2107);
+            //throw new UploadOverMaximumException();
         }
         //对 dkmVehicles 去重,根据 hashCode 与 equals 去重
         dkmBluetooths = dkmBluetooths.stream().distinct().collect(Collectors.toList());
         // 如果有重复参数,则抛出异常
         if (initSize != dkmBluetooths.size()) {
-            throw new ParameterValidationException();
+            throw new DiagnosticLogsException("0D","5045",1001);
+            //throw new ParameterValidationException();
         }
         dkmBluetooths.forEach(bluetooth -> insertDeviceSnList.add(bluetooth.getHwDeviceSn()));
         dkmBluetooths.forEach(bluetooth -> insertMacList.add(bluetooth.getBleMacAddress()));
