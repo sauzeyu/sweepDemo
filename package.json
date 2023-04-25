@@ -2,9 +2,9 @@
   "private": true,
   "scripts": {
     "start": "umi dev",
-    "dev": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env APP_TYPE=site MOCK=none BROWSER=none umi dev",
+    "dev": "cross-env APP_TYPE=site MOCK=none BROWSER=none umi dev",
     "dev:mock": "cross-env APP_TYPE=site BROWSER=none umi dev",
-    "build": "set NODE_OPTIONS=--openssl-legacy-provider && umi build",
+    "build": "umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",
@@ -24,7 +24,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@ant-design/pro-layout": "^6.5.0",
-    "@jiaminghi/data-view-react": "^1.0.7",
+    "@jiaminghi/data-view-react": "^1.2.5",
     "antd-pro-merge-less": "^3.0.11",
     "antd-pro-theme-webpack-plugin": "^1.1.8",
     "axios": "^0.21.1",
