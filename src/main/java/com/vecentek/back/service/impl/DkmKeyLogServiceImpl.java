@@ -259,7 +259,7 @@ public class DkmKeyLogServiceImpl {
         writer.setColumnWidth(7, 20);
         writer.setColumnWidth(8, 20);
         writer.setColumnWidth(9, 20);
-
+        writer.setColumnWidth(10, 20);
 
         writer.addHeaderAlias("vin", "车辆vin号");
         writer.addHeaderAlias("userId", "用户id");
@@ -269,7 +269,7 @@ public class DkmKeyLogServiceImpl {
 
         writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleModel", "车辆型号");
-
+        writer.addHeaderAlias("quickFlagVO", "日志类型");
 
         writer.addHeaderAlias("operateTime", "操作时间");
 
@@ -346,6 +346,12 @@ public class DkmKeyLogServiceImpl {
                 }
                 if (keyLog.getFlag() == 1) {
                     keyLog.setFlagVO("成功");
+                }
+                if (keyLog.getQuickFlag() == 1) {
+                    keyLog.setFlagVO("普通");
+                }
+                if (keyLog.getQuickFlag() == 2) {
+                    keyLog.setFlagVO("快连");
                 }
             });
 

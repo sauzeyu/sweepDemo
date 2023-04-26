@@ -83,7 +83,16 @@ public class DkmKeyLog implements Serializable {
      * 车型
      */
     private String vehicleType;
+    /**
+     * 是否为快连日志，1为普通，2为快连
+     */
+    private int quickFlag;
 
+    /**
+     * 是否为快连日志，1为普通，2为快连
+     */
+    @TableField(exist = false)
+    private String quickFlagVO;
 
     /**
      * 操作类型
