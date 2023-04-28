@@ -136,7 +136,7 @@ export default class RightContent extends React.Component {
 
   render() {
     let logDetail = this.props.Diagnosis.logDetail;
-    let solution = logDetail?.functionalAbnormality?.solution;
+    let solutionList = logDetail?.functionalAbnormality?.solution;
 
     return (
       <div style={styles.rightContent}>
@@ -173,8 +173,9 @@ export default class RightContent extends React.Component {
                   <Typography.Title style={{ color: 'white' }}>
                     解决方案
                   </Typography.Title>
-                  {solution &&
-                    solution.map((item, index) => {
+                  {solutionList &&
+                    solutionList instanceof Array &&
+                    solutionList.map((item, index) => {
                       return (
                         <Typography.Title
                           level={5}
