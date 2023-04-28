@@ -59,6 +59,16 @@ export const KeyType = (text) => {
   }
 };
 
+export const QuickFlag = (text) => {
+  if (text === 1) {
+    return 'icce ';
+    // return <Tag color="green">普通</Tag>;
+  } else {
+    return 'ccc ';
+    // return <Tag color="blue">快连</Tag>;
+  }
+};
+
 export const SimplekeyClassification = (text) => {
   if (text === 1) {
     return 'icce ';
