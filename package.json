@@ -2,9 +2,9 @@
   "private": true,
   "scripts": {
     "start": "umi dev",
-    "dev": "cross-env APP_TYPE=site MOCK=none BROWSER=none umi dev",
+    "dev": "set NODE_OPTIONS=--openssl-legacy-provider && cross-env APP_TYPE=site MOCK=none BROWSER=none umi dev",
     "dev:mock": "cross-env APP_TYPE=site BROWSER=none umi dev",
-    "build": "umi build",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && umi build",
     "postinstall": "umi generate tmp",
     "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
     "test": "umi-test",

@@ -154,13 +154,13 @@ export default class RightContent extends React.Component {
                     level={5}
                     style={{ color: 'rgba(102, 255, 255, 1)' }}
                   >
-                    业务ID：{logDetail?.functionalAbnormalId}
+                    业务ID：{logDetail?.functionalAbnormality?.businessId}
                   </Typography.Title>
                   <Typography.Title
                     level={5}
                     style={{ color: 'rgba(102, 255, 255, 1)' }}
                   >
-                    故障ID：{logDetail?.functionalAbnormality?.businessId}
+                    故障ID：{logDetail?.functionalAbnormality?.faultId}
                   </Typography.Title>
                   <Typography.Paragraph style={{ color: 'white' }}>
                     在 {logDetail?.time}，
