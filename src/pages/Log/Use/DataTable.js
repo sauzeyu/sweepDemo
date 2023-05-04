@@ -27,6 +27,7 @@ import Authorized from '@/components/Authorized';
 import {
   keyLogFlag,
   keyLogFlagBadge,
+  QuickFlag,
   SimplekeyLogFlag,
 } from '@/constants/keys';
 import { LOG_USE_EXPORT } from '@/components/Authorized/AuthMap';
@@ -206,6 +207,18 @@ class DataTable extends Component {
       dataIndex: 'vehicleModel',
     },
     {
+      title: '日志类型',
+      dataIndex: 'quickFlag',
+      render: (text) => {
+        if (text === 1) {
+          return <Tag color="green">普通</Tag>;
+        } else {
+          return <Tag color="green">普通</Tag>;
+        }
+        // return QuickFlag[text];
+      },
+    },
+    {
       title: '操作时间',
       dataIndex: 'operateTime',
       ellipsis: {
@@ -359,6 +372,7 @@ class DataTable extends Component {
       vehicleBrand,
       vehicleModel,
       vehicleType,
+      // quickFlag,
     } = this.props.searchFormValues;
 
     let fileName = '钥匙记录.xlsx';
@@ -392,6 +406,9 @@ class DataTable extends Component {
     if (flag == 0 || flag == 1) {
       param.append('flag', flag);
     }
+    // if (quickFlag == 0 || quickFlag == 1) {
+    //   param.append('quickFlag', quickFlag);
+    // }
     if (userId) {
       param.append('userId', userId);
     }
