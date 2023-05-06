@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.vecentek.back.config.ProConfig;
 import com.vecentek.back.dto.CountDTO;
 import com.vecentek.back.dto.MonthCountDTO;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
+import com.vecentek.back.util.SpringContextUtil;
+import com.vecentek.back.util.TimeUtil;
 import com.vecentek.common.response.PageResp;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -42,13 +46,20 @@ class DkmStatisticsServiceImplTest {
     private DkmKeyMapper mockDkmKeyMapper;
     @Mock
     private DkmKeyLogMapper mockDkmKeyLogMapper;
+    @Mock
+    private TimeUtil mockTimeUtil;
+    @Mock
+    private SpringContextUtil mockSpringContextUtil;
 
     @InjectMocks
     private DkmStatisticsServiceImpl dkmStatisticsServiceImplUnderTest;
+    @Mock
+    private ProConfig proConfig;
     @BeforeEach
     void setup() {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKey.class);
     }
+
     @Test
     void testSelectTotal() {
         // Setup
@@ -81,7 +92,9 @@ class DkmStatisticsServiceImplTest {
         when(mockDkmVehicleMapper.selectCount(any(Wrapper.class))).thenReturn(0);
         when(mockDkmKeyMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0);
         when(mockDkmKeyLogMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0);
-
+        Mockito.
+        //proConfig.setSysDate("2021-01-01 00:00:00");
+        when(mockSpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         // Run the test
         final PageResp result = dkmStatisticsServiceImplUnderTest.selectVehicleAndKeyAndKeyLogTotal();
 

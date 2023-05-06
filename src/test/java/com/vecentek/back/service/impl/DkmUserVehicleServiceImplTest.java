@@ -32,6 +32,7 @@ import org.mockito.quality.Strictness;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -67,6 +68,16 @@ class DkmUserVehicleServiceImplTest {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKey.class);
     }
     @Test
+    void testInsertUserVehicle_fail() {
+        // Setup
+        final PageResp expectedResult = PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
+        final UserVehicleVO userVehicle = new UserVehicleVO("username", null, "license", "vehicleType", null,
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
+        final PageResp result = dkmUserVehicleServiceImplUnderTest.insertUserVehicle(userVehicle);
+        // Verify the results
+        assertThat(result).isEqualTo(expectedResult);
+    }
+    @Test
     void testInsertUserVehicle() {
         // Setup
         final UserVehicleVO userVehicle = new UserVehicleVO("username", "id", "license", "vehicleType", "vin",
@@ -98,8 +109,13 @@ class DkmUserVehicleServiceImplTest {
                         "vin", "ks", "vehicleType", "license"))).thenReturn(0);
 
         // Run the test
+        userVehicle.setBindTime(new Date());
         final PageResp result = dkmUserVehicleServiceImplUnderTest.insertUserVehicle(userVehicle);
-
+        userVehicle.setBindTime(null);
+        when(mockDkmUserVehicleMapper.insert(any())).thenReturn(1);
+        final PageResp result2 = dkmUserVehicleServiceImplUnderTest.insertUserVehicle(userVehicle);
+        when(mockDkmUserVehicleMapper.selectOne(any())).thenReturn(null);
+        final PageResp result1 = dkmUserVehicleServiceImplUnderTest.insertUserVehicle(userVehicle);
         // Verify the results
         //assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
@@ -368,7 +384,18 @@ class DkmUserVehicleServiceImplTest {
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
+    @Test
+    void testRevokeKey_fail() {
+        // Setup
+        final RevokeKeyVO revokeKeyVO = new RevokeKeyVO();
 
+        final PageResp expectedResult = PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+        // Run the test
+        final PageResp result = dkmUserVehicleServiceImplUnderTest.revokeKey(revokeKeyVO);
+
+        // Verify the results
+        assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
+    }
     @Test
     void testRevokeKey() {
         // Setup
@@ -381,7 +408,7 @@ class DkmUserVehicleServiceImplTest {
         final List<DkmKey> dkmKeys = Arrays.asList(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
-                        0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "parentId", 0,
+                        0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "0", 0,
                         "personalAndCalibration", 0L, 0, "keyResourceVO", 0, "keyClassificationVO", "keyType",
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",

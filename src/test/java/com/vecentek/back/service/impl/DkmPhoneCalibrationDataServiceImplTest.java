@@ -22,6 +22,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -83,9 +84,11 @@ class DkmPhoneCalibrationDataServiceImplTest {
     }
 
     @Test
-    void testImportByExcel() {
+    void testImportByExcel() throws IOException {
         // Setup
-        final MultipartFile file = new MockMultipartFile("test",new byte[123]);
+        byte[] bytes = {1, 2, 3, 4, 5};  // 创建大小为 5 的 byte 数组，并初始化元素为 1, 2, 3, 4, 5
+
+        final MultipartFile file = new MockMultipartFile("test", bytes);
 
         final PageResp expectedResult = PageResp.success("查询成功");
 
@@ -106,6 +109,8 @@ class DkmPhoneCalibrationDataServiceImplTest {
                 new DkmPhoneCalibrationData(0L, "vehicleModel", "phoneBrand", "phoneModel",
                         "personalAndCalibrationString", "remarks", "vehicleType", "vehicleBrand","featureData")))).thenReturn(0);
 
+
+        //when(ExcelUtil.getReader((File) any())).thenReturn(ExcelUtil.getReader(file.getInputStream()));
         // Run the test
         final PageResp result = dkmPhoneCalibrationDataServiceImplUnderTest.importByExcel(file);
 

@@ -39,6 +39,7 @@ class DkmMenuServiceImplTest {
     void setup() {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmMenu.class);
     }
+
     @Test
     void testSelectAll() {
         // Setup

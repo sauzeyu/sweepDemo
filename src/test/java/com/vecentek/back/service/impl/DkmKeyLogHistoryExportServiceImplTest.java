@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +44,19 @@ class DkmKeyLogHistoryExportServiceImplTest {
     void testDownloadExcel() {
         // Setup
         final HttpServletResponse response = new MockHttpServletResponse();
+
+        // Run the test
+        dkmKeyLogHistoryExportServiceImplUnderTest.downloadExcel("fileName", response);
+
+        // Verify the results
+    }
+    @Test
+    void testDownloadExcel_UnsupportedEncodingException() {
+        // Setup
+        final HttpServletResponse response = new MockHttpServletResponse();
+// Setup
+        doThrow(UnsupportedEncodingException.class).when(
+                response).setHeader(any(), any());
 
         // Run the test
         dkmKeyLogHistoryExportServiceImplUnderTest.downloadExcel("fileName", response);
