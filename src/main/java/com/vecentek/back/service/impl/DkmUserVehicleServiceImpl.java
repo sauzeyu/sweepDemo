@@ -8,7 +8,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.payneteasy.tlv.HexUtil;
-import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
@@ -129,7 +128,7 @@ public class DkmUserVehicleServiceImpl {
         } else if (dkmUserVehicle.getBindStatus() == 1) {
             // 数据库中存在有绑定的车辆，要求先解绑再绑定
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-            throw new DiagnosticLogsException("0E","5045");
+            throw new DiagnosticLogsException("0E","5045",200);
             //return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定");
         } else { // 绑定状态为解绑改为绑定，执行更新操作，可能是过户更换车主
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
