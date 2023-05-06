@@ -1,5 +1,6 @@
 package com.vecentek.back.exception;
 
+import com.vecentek.back.constant.DiagnosticLogsCodeEnum;
 import com.vecentek.back.entity.DkmFunctionalAbnormal;
 import com.vecentek.back.mapper.DkmFunctionalAbnormalMapper;
 import com.vecentek.common.response.PageResp;
@@ -136,12 +137,13 @@ public class GlobalExceptionHandler {
         String separator = "|";
         String[] values = {
                 dateTime,
+
+                DiagnosticLogsCodeEnum.FAULT_HANDLER_RECORD.getCode(),
+                DiagnosticLogsCodeEnum.FAULT_HANDLER_RECORD.getName(),
+                thisDkmFunctionalAbnormal.getSourceId(),
+                thisDkmFunctionalAbnormal.getSource(),
                 thisDkmFunctionalAbnormal.getBusinessId(),
                 thisDkmFunctionalAbnormal.getBusiness(),
-                thisDkmFunctionalAbnormal.getSourceId(),
-                thisDkmFunctionalAbnormal.getSource(),
-                thisDkmFunctionalAbnormal.getSourceId(),
-                thisDkmFunctionalAbnormal.getSource(),
                 thisDkmFunctionalAbnormal.getFaultId(),
                 thisDkmFunctionalAbnormal.getFault(),
                 //TODO 按list存入
