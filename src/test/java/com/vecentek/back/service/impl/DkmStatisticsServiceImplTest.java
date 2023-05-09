@@ -12,14 +12,15 @@ import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.back.util.SpringContextUtil;
-import com.vecentek.back.util.TimeUtil;
 import com.vecentek.common.response.PageResp;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -35,7 +36,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class DkmStatisticsServiceImplTest {
@@ -46,20 +46,25 @@ class DkmStatisticsServiceImplTest {
     private DkmKeyMapper mockDkmKeyMapper;
     @Mock
     private DkmKeyLogMapper mockDkmKeyLogMapper;
-    @Mock
-    private TimeUtil mockTimeUtil;
-    @Mock
-    private SpringContextUtil mockSpringContextUtil;
+    private MockedStatic springContextUtilMocked;
 
     @InjectMocks
     private DkmStatisticsServiceImpl dkmStatisticsServiceImplUnderTest;
-    @Mock
-    private ProConfig proConfig;
+
     @BeforeEach
     void setup() {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKey.class);
+        MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
+        springContextUtilMocked = springContextUtilMockedStatic;
+        ProConfig proConfig = new ProConfig();
+        proConfig.setSysDate("2021-01-01");
     }
 
+
+    @AfterEach
+    public void afterEach() {
+        springContextUtilMocked.close();
+    }
     @Test
     void testSelectTotal() {
         // Setup
@@ -92,9 +97,11 @@ class DkmStatisticsServiceImplTest {
         when(mockDkmVehicleMapper.selectCount(any(Wrapper.class))).thenReturn(0);
         when(mockDkmKeyMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0);
         when(mockDkmKeyLogMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0);
-        Mockito.
-        //proConfig.setSysDate("2021-01-01 00:00:00");
-        when(mockSpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
+        //MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
+        ProConfig proConfig = new ProConfig();
+        proConfig.setSysDate("2021-01-01");
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
+
         // Run the test
         final PageResp result = dkmStatisticsServiceImplUnderTest.selectVehicleAndKeyAndKeyLogTotal();
 
@@ -255,7 +262,10 @@ class DkmStatisticsServiceImplTest {
         when(mockDkmKeyLogMapper.selectKeyErrorLogByPhoneBrand("phoneBrand",
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime())).thenReturn(countDTOS1);
-
+        //MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
+        ProConfig proConfig = new ProConfig();
+        proConfig.setSysDate("2021-01-01");
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         // Run the test
         final PageResp result = dkmStatisticsServiceImplUnderTest.selectKeyErrorLogByPhoneBrand("phoneBrand");
 
@@ -266,6 +276,10 @@ class DkmStatisticsServiceImplTest {
     @Test
     void testSelectKeyErrorLogByPhoneBrand_DkmKeyLogMapperSelectKeyErrorLogReturnsNoItems() {
         // Setup
+        //MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
+        ProConfig proConfig = new ProConfig();
+        proConfig.setSysDate("2021-01-01");
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         final PageResp expectedResult = PageResp.success("查询成功");
         when(mockDkmKeyLogMapper.selectKeyErrorLog(new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime())).thenReturn(Collections.emptyList());
@@ -280,6 +294,10 @@ class DkmStatisticsServiceImplTest {
     @Test
     void testSelectKeyErrorLogByPhoneBrand_DkmKeyLogMapperSelectKeyErrorLogByPhoneBrandReturnsNoItems() {
         // Setup
+        //MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
+        ProConfig proConfig = new ProConfig();
+        proConfig.setSysDate("2021-01-01");
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         final PageResp expectedResult = PageResp.success("查询成功");
         when(mockDkmKeyLogMapper.selectKeyErrorLogByPhoneBrand("phoneBrand",
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
@@ -330,6 +348,10 @@ class DkmStatisticsServiceImplTest {
     @Test
     void testKeyStatistics() {
         // Setup
+        //MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
+        ProConfig proConfig = new ProConfig();
+        proConfig.setSysDate("2021-01-01");
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         final PageResp expectedResult = PageResp.success("查询成功");
         when(mockDkmKeyMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0);
 
@@ -593,16 +615,15 @@ class DkmStatisticsServiceImplTest {
         // Setup
         final CountDTO countDTO = new CountDTO();
         countDTO.setValue(0);
-        countDTO.setName("name");
+        countDTO.setName("st00");
         final List<CountDTO> countDTOs = Arrays.asList(countDTO);
         final CountDTO countDTO1 = new CountDTO();
         countDTO1.setValue(0);
-        countDTO1.setName("name");
+        countDTO1.setName("st01");
         final List<CountDTO> expectedResult = Arrays.asList(countDTO1);
 
         // Run the test
-        final List<CountDTO> result = dkmStatisticsServiceImplUnderTest.simpleLog(countDTOs, "statusCode");
-
+        final List<CountDTO> result = dkmStatisticsServiceImplUnderTest.simpleLog(countDTOs, "st");
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
     }
@@ -612,16 +633,20 @@ class DkmStatisticsServiceImplTest {
         // Setup
         final CountDTO countDTO = new CountDTO();
         countDTO.setValue(0);
-        countDTO.setName("name");
+        countDTO.setName("0C00");
+        countDTO.setValue(0);
+        countDTO.setName("0A00");
+        countDTO.setValue(0);
+        countDTO.setName("0C0C");
         final List<CountDTO> countDTOs = Arrays.asList(countDTO);
         final CountDTO countDTO1 = new CountDTO();
         countDTO1.setValue(0);
-        countDTO1.setName("name");
+        countDTO1.setName("0C13");
         final List<CountDTO> expectedResult = Arrays.asList(countDTO1);
 
         // Run the test
-        final List<CountDTO> result = dkmStatisticsServiceImplUnderTest.simpleLog2(countDTOs, "statusCode");
-
+        final List<CountDTO> result = dkmStatisticsServiceImplUnderTest.simpleLog2(countDTOs, "0C");
+        final List<CountDTO> result1 = dkmStatisticsServiceImplUnderTest.simpleLog2(expectedResult, "0C");
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
     }

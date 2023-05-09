@@ -3,17 +3,23 @@ package com.vecentek.back.service.impl;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
+import com.vecentek.back.config.ProConfig;
+import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmSystemConfigurationExpired;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmSystemConfigurationExpiredMapper;
+import com.vecentek.back.util.SpringContextUtil;
 import com.vecentek.common.response.PageResp;
 import org.apache.ibatis.builder.MapperBuilderAssistant;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -40,13 +46,27 @@ class DkmSystemConfigurationExpiredServiceImplTest {
 
     @InjectMocks
     private DkmSystemConfigurationExpiredServiceImpl dkmSystemConfigurationExpiredServiceImplUnderTest;
+    private MockedStatic springContextUtilMocked;
+    private ProConfig proConfig = new ProConfig();
     @BeforeEach
     void setup() {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKeyLog.class);
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmSystemConfigurationExpired.class);
+        TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKey.class);
+        MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
+        springContextUtilMocked = springContextUtilMockedStatic;
+
+        proConfig.setSysDate("2021-01-01");
+    }
+
+
+    @AfterEach
+    public void afterEach() {
+        springContextUtilMocked.close();
     }
     @Test
     void testSelectForExpiration() {
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         // Setup
         final PageResp expectedResult = PageResp.success("没有过期钥匙日志待处理");
 
@@ -151,6 +171,7 @@ class DkmSystemConfigurationExpiredServiceImplTest {
 
     @Test
     void testDeleteExpiredDkmKeyLogs() {
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         // Setup
         // Configure DkmSystemConfigurationExpiredMapper.selectOne(...).
         final DkmSystemConfigurationExpired dkmSystemConfigurationExpired = new DkmSystemConfigurationExpired(0,

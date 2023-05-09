@@ -11,10 +11,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.entity.DkmPhoneCalibrationData;
 import com.vecentek.back.entity.DkmVehicleCalibrationData;
 import com.vecentek.back.exception.VecentException;
-import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.mapper.DkmVehicleCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
 import com.vecentek.back.util.UploadUtil;
@@ -96,6 +94,7 @@ public class DkmVehicleCalibrationDataServiceImpl {
     }
 
 
+
     /**
      * 批量导入手机标定数据
      *
@@ -109,7 +108,10 @@ public class DkmVehicleCalibrationDataServiceImpl {
             if (pageResp != null) {
                 return pageResp;
             }
+
+            System.out.println(file);
             ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
+
             reader.addHeaderAlias("车型", "vehicleModel");
             reader.addHeaderAlias("蓝牙灵敏度等级", "level");
             reader.addHeaderAlias("标定数据", "vehicleAndCalibrationString");
