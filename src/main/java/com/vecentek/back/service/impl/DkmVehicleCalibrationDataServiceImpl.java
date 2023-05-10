@@ -12,7 +12,6 @@ import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmVehicleCalibrationData;
-import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.DkmVehicleCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
 import com.vecentek.back.util.UploadUtil;
@@ -109,7 +108,7 @@ public class DkmVehicleCalibrationDataServiceImpl {
                 return pageResp;
             }
 
-            System.out.println(file);
+
             ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
 
             reader.addHeaderAlias("车型", "vehicleModel");
@@ -160,11 +159,11 @@ public class DkmVehicleCalibrationDataServiceImpl {
                     dkmVehicleCalibrationDataMapper.delete(queryWrapper);
                 }
                 // 如果车型和蓝牙灵敏度等级为default则为默认标定数据，需要放redis，再放数据库
-                if (Objects.equals(CalibrationDataConstant.DEFAULT, calibrationData.getVehicleModel()) && Objects.equals(CalibrationDataConstant.DEFAULT, calibrationData.getLevel())) {
+                if (Objects.equals(CalibrationDataConstant.DEFAULT, calibrationData.getVehicleModel()) ) {
                     redisUtils.setCacheObject(CalibrationDataConstant.DEFAULT, calibrationData.getVehicleAndCalibrationString());
                     DkmVehicleCalibrationData dkmVehicleCalibrationData = dkmVehicleCalibrationDataMapper.selectOne(new QueryWrapper<DkmVehicleCalibrationData>().lambda()
                             .eq(DkmVehicleCalibrationData::getVehicleModel, CalibrationDataConstant.DEFAULT)
-                            .eq(DkmVehicleCalibrationData::getLevel, CalibrationDataConstant.DEFAULT));
+                            );
                     if (dkmVehicleCalibrationData == null) {
                         // 插入一行
                         DkmVehicleCalibrationData vehicleCalibrationData = new DkmVehicleCalibrationData();
@@ -189,30 +188,6 @@ public class DkmVehicleCalibrationDataServiceImpl {
         } catch (Exception e) {
             return PageResp.fail("导入失败，请检查excel文件！");
         }
-    }
-
-
-    /**
-     * 将标定字符串转换为十六进制字符串
-     *
-     * @param calibration 标定字符串
-     * @return 十六进制字符串
-     */
-    private String parseCalibrationToHexString(String calibration) throws VecentException {
-        String[] split = StrUtil.sub(calibration, 1, -1).split(",");
-        StringBuilder result = new StringBuilder();
-        for (String s : split) {
-            int number = Integer.parseInt(StrUtil.trim(s));
-            if (number > ExcelConstant.CALIBRATION_MAX || number < 0) {
-                throw new VecentException("标定数据不合法，请检查数据是否正确！");
-            }
-            String hexString = Integer.toHexString(number);
-            if (hexString.length() == 1) {
-                hexString = "0" + hexString;
-            }
-            result.append(hexString);
-        }
-        return result.toString();
     }
 
     public void downloadCalibrationExcel(String vehicleModel, Integer level, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {

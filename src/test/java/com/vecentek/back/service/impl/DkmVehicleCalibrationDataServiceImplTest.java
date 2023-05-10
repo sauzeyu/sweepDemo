@@ -2,6 +2,7 @@ package com.vecentek.back.service.impl;
 
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
@@ -34,7 +35,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -65,10 +65,7 @@ class DkmVehicleCalibrationDataServiceImplTest {
     private DkmVehicleCalibrationDataServiceImpl dkmVehicleCalibrationDataServiceImplUnderTestSPY;
     @Mock
     ExcelReader mockExcelReader = null;
-    @Mock
-    private Validator validator;
-    private static final int TEST_PAGE_SIZE = 10;
-    private static final String TEST_UPLOAD_FILE_NAME = "test-upload-file.xls";
+
 private MockedStatic excelUtilMocked;
     @InjectMocks
     private DkmVehicleCalibrationDataServiceImpl dkmVehicleCalibrationDataServiceImplUnderTest;
@@ -129,8 +126,38 @@ private MockedStatic excelUtilMocked;
         XSSFSheet sheet = wb.createSheet("Sheet1");
         XSSFRow row = sheet.createRow(0);
         XSSFCell cell = row.createCell(0);
-        cell.setCellValue("hello world");
-
+        cell.setCellValue("车辆型号");
+        XSSFCell cell1 = row.createCell(1);
+        cell1.setCellValue("手机品牌");
+        XSSFCell cell2 = row.createCell(2);
+        cell2.setCellValue("手机型号");
+        XSSFCell cell3 = row.createCell(3);
+        cell3.setCellValue("车辆品牌");
+        XSSFCell cell4 = row.createCell(4);
+        cell4.setCellValue("车型");
+        XSSFCell cell5 = row.createCell(5);
+        cell5.setCellValue("标定数据");
+        XSSFCell cell6 = row.createCell(6);
+        cell6.setCellValue("特征点数据");
+        XSSFCell cell7 = row.createCell(7);
+        cell7.setCellValue("蓝牙灵敏度等级");
+        XSSFRow row1 = sheet.createRow(1);
+        XSSFCell cell10 = row1.createCell(0);
+        cell10.setCellValue("zs123");
+        XSSFCell cell11 = row1.createCell(1);
+        cell11.setCellValue("iPhone");
+        XSSFCell cell12 = row1.createCell(2);
+        cell12.setCellValue("iPhone 12 Pro Max");
+        XSSFCell cell13 = row1.createCell(3);
+        cell13.setCellValue("福田");
+        XSSFCell cell14 = row1.createCell(4);
+        cell14.setCellValue("default");
+        XSSFCell cell15 = row1.createCell(5);
+        cell15.setCellValue("00006950686f6e65ffffffff6950686f6e6531332c34ffffffffffffffffffff");
+        XSSFCell cell16 = row1.createCell(6);
+        cell16.setCellValue("ffffffd4d3d20affffffffffffffffffffffffff7fba9f3bc89c6daa7d7eb85b4bc86dffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        XSSFCell cell17 = row1.createCell(7);
+        cell17.setCellValue(1);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         wb.write(outputStream);
         byte[] content = outputStream.toByteArray();
@@ -144,29 +171,46 @@ private MockedStatic excelUtilMocked;
         System.out.println(multipartFile);
         ExcelReader reader = new ExcelReader(multipartFile.getInputStream(), "Sheet1");
         mockExcelReader = reader;
+
         excelUtilMocked.when(() -> ExcelUtil.getReader((InputStream) any())).thenReturn(mockExcelReader);
 
 
         //doReturn(dkmPhoneCalibrationData).when(mockExcelReader).readAll(DkmPhoneCalibrationData.class);
+        //when(mockExcelReader.readAll(DkmPhoneCalibrationData.class)).thenReturn(dkmPhoneCalibrationData);
         //doReturn(dkmPhoneCalibrationData).when(mockExcelReader).readAll(DkmPhoneCalibrationData.class);
-        when(reader.readAll(DkmPhoneCalibrationData.class)).thenReturn(dkmPhoneCalibrationData);
 
         // Configure DkmVehicleCalibrationDataMapper.selectOne(...).
         final DkmVehicleCalibrationData dkmVehicleCalibrationData = new DkmVehicleCalibrationData(0L, "vehicleModel",
                 "level", "vehicleAndCalibrationString", "remarks", "deleteFlag");
-        when(mockDkmVehicleCalibrationDataMapper.selectOne(any(LambdaQueryWrapper.class)))
-                .thenReturn(dkmVehicleCalibrationData);
+        doReturn(dkmVehicleCalibrationData)
+                .when(mockDkmVehicleCalibrationDataMapper)
+                .selectOne(any(LambdaQueryWrapper.class));
 
-        when(mockDkmVehicleCalibrationDataMapper.delete(any(LambdaQueryWrapper.class))).thenReturn(0);
-        when(mockDkmVehicleCalibrationDataMapper.insert(
-                new DkmVehicleCalibrationData(0L, "vehicleModel", "level", "vehicleAndCalibrationString", "remarks",
-                        "deleteFlag"))).thenReturn(0);
-        when(mockDkmVehicleCalibrationDataMapper.updateById(
-                new DkmVehicleCalibrationData(0L, "vehicleModel", "level", "vehicleAndCalibrationString", "remarks",
-                        "deleteFlag"))).thenReturn(0);
-        when(mockDkmVehicleCalibrationDataMapper.insertPhoneCalibrationDataBatch(Arrays.asList(
-                new DkmVehicleCalibrationData(0L, "vehicleModel", "level", "vehicleAndCalibrationString", "remarks",
-                        "deleteFlag")))).thenReturn(0);
+        doReturn(0)
+                .when(mockDkmVehicleCalibrationDataMapper)
+                .delete(any(LambdaQueryWrapper.class));
+
+        doReturn(0)
+                .when(mockDkmVehicleCalibrationDataMapper)
+                .insert(
+                        new DkmVehicleCalibrationData(0L, "vehicleModel", "level", "vehicleAndCalibrationString", "remarks",
+                                "deleteFlag"));
+
+        doReturn(0)
+                .when(mockDkmVehicleCalibrationDataMapper)
+                .updateById(
+                        new DkmVehicleCalibrationData(0L, "vehicleModel", "level", "vehicleAndCalibrationString", "remarks",
+                                "deleteFlag"));
+
+        doReturn(0)
+                .when(mockDkmVehicleCalibrationDataMapper)
+                .insertPhoneCalibrationDataBatch(
+                        Arrays.asList(
+                                new DkmVehicleCalibrationData(0L, "vehicleModel", "level", "vehicleAndCalibrationString", "remarks",
+                                        "deleteFlag")
+                        )
+                );
+
 
         // Run the test
         final PageResp result = dkmVehicleCalibrationDataServiceImplUnderTest.importByExcel(multipartFile);
@@ -208,6 +252,10 @@ private MockedStatic excelUtilMocked;
 
     @Test
     void testDownloadCalibrationExcel() throws Exception {
+
+        ExcelWriter writer = new ExcelWriter();
+
+        excelUtilMocked.when(() -> ExcelUtil.getWriter(anyBoolean())).thenReturn(writer);
         // Setup
         final HttpServletResponse response = new MockHttpServletResponse();
 

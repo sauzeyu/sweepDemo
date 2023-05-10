@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
-import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
 import com.vecentek.back.util.UploadUtil;
@@ -116,6 +115,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
             if (pageResp != null) {
                 return pageResp;
             }
+
             ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
             reader.addHeaderAlias("车辆型号", "vehicleModel");
             reader.addHeaderAlias("手机品牌", "phoneBrand");
@@ -210,28 +210,7 @@ public class DkmPhoneCalibrationDataServiceImpl {
     }
 
 
-    /**
-     * 将标定字符串转换为十六进制字符串
-     *
-     * @param calibration 标定字符串
-     * @return 十六进制字符串
-     */
-    private String parseCalibrationToHexString(String calibration) throws VecentException {
-        String[] split = StrUtil.sub(calibration, 1, -1).split(",");
-        StringBuilder result = new StringBuilder();
-        for (String s : split) {
-            int number = Integer.parseInt(StrUtil.trim(s));
-            if (number > ExcelConstant.CALIBRATION_MAX || number < 0) {
-                throw new VecentException("标定数据不合法，请检查数据是否正确！");
-            }
-            String hexString = Integer.toHexString(number);
-            if (hexString.length() == 1) {
-                hexString = "0" + hexString;
-            }
-            result.append(hexString);
-        }
-        return result.toString();
-    }
+
 
     public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
 
