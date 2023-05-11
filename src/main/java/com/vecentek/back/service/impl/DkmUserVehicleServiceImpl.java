@@ -77,12 +77,11 @@ public class DkmUserVehicleServiceImpl {
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
             // TODO 增加枚举类进行翻译 增加可读性
-             DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+            throw DiagnosticLogsException.builder()
                     .businessId("0E")
                     .faultId("5071")
                     .code(2106)
                     .build();
-            throw diagnosticLogsException;
             //return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getId, userVehicle.getUserId());
@@ -101,13 +100,12 @@ public class DkmUserVehicleServiceImpl {
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(vehicleWrapper);
         if (dkmVehicle == null) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
-            DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+            throw DiagnosticLogsException.builder()
                     .businessId("0E")
                     .faultId("5004")
                     .code(2106)
                     .userId(userVehicle.getUserId())
                     .build();
-            throw diagnosticLogsException;
 
             //return PageResp.fail(2106, "系统不存在该车辆信息！");
         }
@@ -141,14 +139,14 @@ public class DkmUserVehicleServiceImpl {
         } else if (dkmUserVehicle.getBindStatus() == 1) {
             // 数据库中存在有绑定的车辆，要求先解绑再绑定
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-            DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+            throw DiagnosticLogsException.builder()
                     .businessId("0E")
                     .faultId("5045")
                     .code(200)
                     .vin(userVehicle.getVin())
                     .userId(userVehicle.getUserId())
                     .build();
-            throw diagnosticLogsException;
+
 
             //return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定");
         } else { // 绑定状态为解绑改为绑定，执行更新操作，可能是过户更换车主
@@ -199,12 +197,11 @@ public class DkmUserVehicleServiceImpl {
         }
         if (StrUtil.hasBlank(userId, vin)) {
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
-            DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+            throw DiagnosticLogsException.builder()
                     .businessId("0F")
                     .faultId("5071")
                     .code(1001)
                     .build();
-            throw diagnosticLogsException;
             //return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         // 根据userId和vin查询中间表
@@ -215,14 +212,13 @@ public class DkmUserVehicleServiceImpl {
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "用户与车辆信息不匹配!");
-            DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+            throw DiagnosticLogsException.builder()
                     .businessId("0F")
                     .faultId("5046")
                     .code(1001)
                     .vin(vin)
                     .userId(userId)
                     .build();
-            throw diagnosticLogsException;
             //return PageResp.fail(1001, "用户与车辆信息不匹配!");
         }
         // 根据vin查询车辆表
@@ -230,14 +226,13 @@ public class DkmUserVehicleServiceImpl {
         if (vehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "系统不存在该车辆信息!");
-            DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+            throw DiagnosticLogsException.builder()
                     .businessId("0F")
                     .faultId("5004")
                     .code(2106)
                     .vin(vin)
                     .userId(userId)
                     .build();
-            throw diagnosticLogsException;
             //return PageResp.fail(2106, "系统不存在该车辆信息!");
         }
         // 解绑 首先改变bind_status 的状态为2 然后吊销当前车辆的所有钥匙 返回钥匙用户id

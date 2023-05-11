@@ -91,12 +91,12 @@ public class DkmOfflineCheckServiceImpl {
         if (startSize > MAX_DATA_TOTAL) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据量超过最大值，请控制在 50 条以内！");
 
-            DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+            throw DiagnosticLogsException.builder()
                     .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getBusinessId())
                     .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getFaultId())
                     .code(2107)
                     .build();
-            throw diagnosticLogsException;
+
             //throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
         }
 
@@ -220,13 +220,12 @@ public class DkmOfflineCheckServiceImpl {
             List<DkmBluetooths> dkmBluetooths1 = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getSearchNumber, searchNumber));
             if (dkmBluetooths1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙检索号！");
-                DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+                throw DiagnosticLogsException.builder()
                         .businessId("0D")
                         .faultId("5045")
                         .code(1001)
                         .vin(vin)
                         .build();
-                throw diagnosticLogsException;
                 //throw new VecentException(1001, "存在重复的蓝牙检索号！");
             }
 
