@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -129,7 +128,8 @@ public class DkmOfflineCheckServiceImpl {
                 // 根据SearchNumberWrapper条件查找是否存在相同的搜索号
                 if (dkmBluetoothsMapper.selectCount(queryWrapper) > 0) {
                     log.info("response：/api/offlineCheck/insertOrUpdateVehicleBatch 蓝牙检索号不是唯一的！");
-                    throw new VecentException(1001, "蓝牙检索号不是唯一的！");
+                    //throw new VecentException(1001, "蓝牙检索号不是唯一的！");
+                    throw new DiagnosticLogsException("0D","5045",1001);
                 }
 
             }
@@ -179,18 +179,21 @@ public class DkmOfflineCheckServiceImpl {
                     .eq(ObjectUtil.isNotNull(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn));
             if (dkmVehicles1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的VIN号！");
-                throw new VecentException(1001, "存在重复成对的VIN号和蓝牙序列号，请勿重复插入！");
+                //throw new VecentException(1001, "存在重复成对的VIN号和蓝牙序列号，请勿重复插入！");
+                throw new DiagnosticLogsException("0D","5045",1001);
             }
             List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getHwDeviceSn, hwDeviceSn));
             if (dkmBluetooths.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙设备号！");
-                throw new VecentException(1001, "存在重复的蓝牙设备号！");
+                throw new DiagnosticLogsException("0D","5045",1001);
+                //throw new VecentException(1001, "存在重复的蓝牙设备号！");
             }
             String searchNumber = vehicle.getSearchNumber();
             List<DkmBluetooths> dkmBluetooths1 = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getSearchNumber, searchNumber));
             if (dkmBluetooths1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙检索号！");
-                throw new VecentException(1001, "存在重复的蓝牙检索号！");
+                throw new DiagnosticLogsException("0D","5045",1001);
+                //throw new VecentException(1001, "存在重复的蓝牙检索号！");
             }
 
         }
@@ -250,7 +253,6 @@ public class DkmOfflineCheckServiceImpl {
         }
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
 
-        AtomicBoolean throwFlag = new AtomicBoolean(false);
             if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
 
                 aftermarketReplacementVehicleBluetoothList.forEach(vehicleBluetooth -> {
@@ -331,14 +333,7 @@ public class DkmOfflineCheckServiceImpl {
                     dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
                             .eq(DkmBluetooths::getHwDeviceSn, oldBluetooth.getHwDeviceSn()));
 
-
-
-                    try {
                         dkmBluetoothsMapper.insert(newBluetooth);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throwFlag.set(Boolean.TRUE);
-                    }
 
                     dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
 
@@ -350,9 +345,6 @@ public class DkmOfflineCheckServiceImpl {
                     dkmAftermarketReplacementMapper.insert(dkmAftermarketReplacement);
                 });
             }
-        if (throwFlag.get()){
-            throw new DiagnosticLogsException("0D","5045");
-        }
 
 
         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传成功");
