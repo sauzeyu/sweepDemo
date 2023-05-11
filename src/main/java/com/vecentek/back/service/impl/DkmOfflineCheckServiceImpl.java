@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.UploadBluetoothsErrorDTO;
@@ -32,7 +33,6 @@ import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.mapper.DkmOfflineCheckMapper;
-import com.vecentek.back.mapper.DkmUserMapper;
 import com.vecentek.back.mapper.DkmVehicleMapper;
 import com.vecentek.back.vo.KeyLogDataResVO;
 import com.vecentek.back.vo.KeyLogDataVO;
@@ -79,8 +79,6 @@ public class DkmOfflineCheckServiceImpl {
     @Resource
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
     @Resource
-    private DkmUserMapper dkmUserMapper;
-    @Resource
     private DkmKeyLogMapper dkmKeyLogMapper;
 
     private void verifyVehicleBluetoothVO(List<VehicleBluetoothVO> dkmVehicles) throws VecentException, DiagnosticLogsException {
@@ -93,7 +91,12 @@ public class DkmOfflineCheckServiceImpl {
         if (startSize > MAX_DATA_TOTAL) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据量超过最大值，请控制在 50 条以内！");
 
-            throw new DiagnosticLogsException("0D", "5050",2107);
+            DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getFaultId())
+                    .code(2107)
+                    .build();
+            throw diagnosticLogsException;
             //throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
         }
 
@@ -102,7 +105,10 @@ public class DkmOfflineCheckServiceImpl {
         // 如果有重复参数,则抛出异常
         if (startSize != dkmVehicles.size()) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据包含重复参数，请检查后上传！");
-            throw new DiagnosticLogsException("0D", "5045");
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
+                    .build();
             //throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
         }
 
@@ -113,7 +119,12 @@ public class DkmOfflineCheckServiceImpl {
                     vehicle.getBleMacAddress(),
                     vehicle.getPubKey())) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
-                throw new DiagnosticLogsException("0D", "5071",1001);
+                throw DiagnosticLogsException.builder()
+                        .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENTTHE_PARAMETERS_NULL.getBusinessId())
+                        .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENTTHE_PARAMETERS_NULL.getFaultId())
+                        .code(1001)
+                        .vin(vehicle.getVin())
+                        .build();
                 //throw new VecentException(1001, "必填参数未传递！");
             }
             if (CharSequenceUtil.isNotBlank(vehicle.getSearchNumber())) {
@@ -127,9 +138,16 @@ public class DkmOfflineCheckServiceImpl {
 
                 // 根据SearchNumberWrapper条件查找是否存在相同的搜索号
                 if (dkmBluetoothsMapper.selectCount(queryWrapper) > 0) {
+
                     log.info("response：/api/offlineCheck/insertOrUpdateVehicleBatch 蓝牙检索号不是唯一的！");
                     //throw new VecentException(1001, "蓝牙检索号不是唯一的！");
-                    throw new DiagnosticLogsException("0D","5045",1001);
+
+                    throw DiagnosticLogsException.builder()
+                            .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
+                            .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
+                            .code(1001)
+                            .vin(vehicle.getVin())
+                            .build();
                 }
 
             }
@@ -180,19 +198,35 @@ public class DkmOfflineCheckServiceImpl {
             if (dkmVehicles1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的VIN号！");
                 //throw new VecentException(1001, "存在重复成对的VIN号和蓝牙序列号，请勿重复插入！");
-                throw new DiagnosticLogsException("0D","5045",1001);
+                throw DiagnosticLogsException.builder()
+                        .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getBusinessId())
+                        .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getFaultId())
+                        .code(1001)
+                        .vin(vin)
+                        .build();
             }
             List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getHwDeviceSn, hwDeviceSn));
             if (dkmBluetooths.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙设备号！");
-                throw new DiagnosticLogsException("0D","5045",1001);
+                throw DiagnosticLogsException.builder()
+                        .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
+                        .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
+                        .code(1001)
+                        .vin(vin)
+                        .build();
                 //throw new VecentException(1001, "存在重复的蓝牙设备号！");
             }
             String searchNumber = vehicle.getSearchNumber();
             List<DkmBluetooths> dkmBluetooths1 = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getSearchNumber, searchNumber));
             if (dkmBluetooths1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙检索号！");
-                throw new DiagnosticLogsException("0D","5045",1001);
+                DiagnosticLogsException diagnosticLogsException = DiagnosticLogsException.builder()
+                        .businessId("0D")
+                        .faultId("5045")
+                        .code(1001)
+                        .vin(vin)
+                        .build();
+                throw diagnosticLogsException;
                 //throw new VecentException(1001, "存在重复的蓝牙检索号！");
             }
 
@@ -366,20 +400,32 @@ public class DkmOfflineCheckServiceImpl {
         int startNum = dkmBluetooths.size();
         for (DkmBluetooths bluetooth : dkmBluetooths) {
             if (CharSequenceUtil.hasBlank(bluetooth.getHwDeviceSn(), bluetooth.getDkSdkVersion(), bluetooth.getBleMacAddress())) {
-                throw new DiagnosticLogsException("0D","5071",1001);
+                throw DiagnosticLogsException.builder()
+                        .businessId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_PARAMETERS_NULL.getBusinessId())
+                        .faultId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_PARAMETERS_NULL.getFaultId())
+                        .code(1001)
+                        .build();
                 //throw new ParameterValidationException();
             }
         }
         int initSize = dkmBluetooths.size();
         if (initSize > MAX_DATA_TOTAL) {
-            throw new DiagnosticLogsException("0D","5050",2107);
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getFaultId())
+                    .code(2107)
+                    .build();
             //throw new UploadOverMaximumException();
         }
         //对 dkmVehicles 去重,根据 hashCode 与 equals 去重
         dkmBluetooths = dkmBluetooths.stream().distinct().collect(Collectors.toList());
         // 如果有重复参数,则抛出异常
         if (initSize != dkmBluetooths.size()) {
-            throw new DiagnosticLogsException("0D","5045",1001);
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
+                    .code(1001)
+                    .build();
             //throw new ParameterValidationException();
         }
         dkmBluetooths.forEach(bluetooth -> insertDeviceSnList.add(bluetooth.getHwDeviceSn()));
