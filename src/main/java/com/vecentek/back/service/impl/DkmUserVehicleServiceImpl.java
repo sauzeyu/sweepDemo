@@ -78,8 +78,8 @@ public class DkmUserVehicleServiceImpl {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
             // TODO 增加枚举类进行翻译 增加可读性
             throw DiagnosticLogsException.builder()
-                    .businessId("0E")
-                    .faultId("5071")
+                    .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_PARAMETERS_NULL_OR_UNFORMAT.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_PARAMETERS_NULL_OR_UNFORMAT.getFaultId())
                     .code(2106)
                     .build();
             //return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
@@ -101,8 +101,8 @@ public class DkmUserVehicleServiceImpl {
         if (dkmVehicle == null) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
             throw DiagnosticLogsException.builder()
-                    .businessId("0E")
-                    .faultId("5004")
+                    .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_VEHICLE_NOT_EXIST.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_VEHICLE_NOT_EXIST.getFaultId())
                     .code(2106)
                     .userId(userVehicle.getUserId())
                     .build();
@@ -140,8 +140,8 @@ public class DkmUserVehicleServiceImpl {
             // 数据库中存在有绑定的车辆，要求先解绑再绑定
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
             throw DiagnosticLogsException.builder()
-                    .businessId("0E")
-                    .faultId("5045")
+                    .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_THE_VEHICLE_BOUND_OWNER.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_THE_VEHICLE_BOUND_OWNER.getFaultId())
                     .code(200)
                     .vin(userVehicle.getVin())
                     .userId(userVehicle.getUserId())
@@ -152,6 +152,7 @@ public class DkmUserVehicleServiceImpl {
         } else { // 绑定状态为解绑改为绑定，执行更新操作，可能是过户更换车主
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
             dkmUserVehicle.setUserId(dkmUser.getId());
+            dkmUserVehicle.setPhone(dkmUser.getId());
             if (userVehicle.getBindTime() != null) {
                 dkmUserVehicle.setBindTime(userVehicle.getBindTime());
             } else {
@@ -171,7 +172,6 @@ public class DkmUserVehicleServiceImpl {
         log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");
         return PageResp.fail("系统繁忙，请稍后再试！");
     }
-
     //public PageResp updateUserVehicle(UserChangeVO userChange) throws ParameterValidationException {
     //    log.info("request：" + "/api/userVehicle/updateUserVehicle " + userChange.toString());
     //    if (userChange == null || StringUtils.isBlank(userChange.getVin())) {
@@ -198,8 +198,8 @@ public class DkmUserVehicleServiceImpl {
         if (StrUtil.hasBlank(userId, vin)) {
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
             throw DiagnosticLogsException.builder()
-                    .businessId("0F")
-                    .faultId("5071")
+                    .businessId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_PARAMETERS_NULL.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_PARAMETERS_NULL.getFaultId())
                     .code(1001)
                     .build();
             //return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
@@ -207,14 +207,14 @@ public class DkmUserVehicleServiceImpl {
         // 根据userId和vin查询中间表
         DkmUserVehicle dkmUserVehicle = dkmUserVehicleMapper.selectOne(Wrappers.<DkmUserVehicle>lambdaQuery()
                 .eq(DkmUserVehicle::getVin, vin)
-                .eq(DkmUserVehicle::getPhone, userId)
+                .eq(DkmUserVehicle::getUserId, userId)
                 .eq(DkmUserVehicle::getBindStatus, 1));
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "用户与车辆信息不匹配!");
             throw DiagnosticLogsException.builder()
-                    .businessId("0F")
-                    .faultId("5046")
+                    .businessId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_USER_VEHICLE_NOT_MATCH.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_USER_VEHICLE_NOT_MATCH.getFaultId())
                     .code(1001)
                     .vin(vin)
                     .userId(userId)
@@ -227,8 +227,8 @@ public class DkmUserVehicleServiceImpl {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "系统不存在该车辆信息!");
             throw DiagnosticLogsException.builder()
-                    .businessId("0F")
-                    .faultId("5004")
+                    .businessId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_VEHICLE_INFORMATION_NOT_EXIST.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_VEHICLE_INFORMATION_NOT_EXIST.getFaultId())
                     .code(2106)
                     .vin(vin)
                     .userId(userId)
