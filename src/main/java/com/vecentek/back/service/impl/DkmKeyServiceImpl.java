@@ -10,6 +10,7 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.constant.KeyClassificationConstant;
 import com.vecentek.back.constant.KeyResourceConstant;
@@ -274,7 +275,10 @@ public class DkmKeyServiceImpl {
 
         );
         if (runDkmKeys.size() > 0) {
-            throw new DiagnosticLogsException("04","6010");
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.OPEN_KEY_THERE_FROZEN_KEY.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.OPEN_KEY_THERE_FROZEN_KEY.getFaultId())
+                    .build();
             //return PageResp.success("更新失败，当前用户车辆已存在钥匙正在使用，不可解冻选中钥匙");
         }
         // 解冻状态为"冻结"的钥匙
@@ -286,7 +290,10 @@ public class DkmKeyServiceImpl {
             key.setDkState(1);
             int count = dkmKeyMapper.updateById(key);
             if (count == 0) {
-                throw new DiagnosticLogsException("04","6011");
+                throw DiagnosticLogsException.builder()
+                        .businessId(DiagnosticLogsEnum.OPEN_KEY_PROVISIONING_FAILED.getBusinessId())
+                        .faultId(DiagnosticLogsEnum.OPEN_KEY_PROVISIONING_FAILED.getFaultId())
+                        .build();
                 //throw new RuntimeException("Failed to update key in database");
             }
             if (Objects.equals("0", key.getParentId())) {
@@ -306,13 +313,19 @@ public class DkmKeyServiceImpl {
     @Transactional(rollbackFor = Exception.class)
     public PageResp updateStateForRevokeById(String userId, String vin) throws DiagnosticLogsException {
         if (Objects.isNull(userId) || Objects.isNull(vin) ){
-            throw new DiagnosticLogsException("12","5071");
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_PARAMETERS_NULL.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_PARAMETERS_NULL.getFaultId())
+                    .build();
         }
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).eq(
                 DkmKey::getDkState,
                 KeyStatusEnum.ACTIVATED.getCode()).eq(DkmKey::getVin, vin));
         if (keys == null || keys.isEmpty()) {
-            throw new DiagnosticLogsException("12","5048");
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getFaultId())
+                    .build();
             //return PageResp.fail("没有可吊销的钥匙");
         }
         for (DkmKey dkmKey : keys) {

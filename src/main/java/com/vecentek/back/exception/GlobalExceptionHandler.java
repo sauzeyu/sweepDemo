@@ -148,8 +148,8 @@ public class GlobalExceptionHandler {
                 thisDkmFunctionalAbnormal.getFault(),
                 //TODO 按list存入
                 thisDkmFunctionalAbnormal.getSolution().get(0),
-                "",
-                ""
+                ObjectUtils.isEmpty(e.getVin())?"":e.getVin(),
+                ObjectUtils.isEmpty(e.getUserId())?"":e.getUserId()
                 //String.join(" ", thisDkmFunctionalAbnormal.getSolution()) // 使用 String.join() 方法将解决方案按空格分隔转换为字符串
         };
         String join = String.join(separator, values);
