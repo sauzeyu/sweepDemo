@@ -137,7 +137,15 @@ export default class RightContent extends React.Component {
   render() {
     let logDetail = this.props.Diagnosis.logDetail;
     let solutionList = logDetail?.functionalAbnormality?.solution;
-
+    let title = '';
+    let subTitle = '';
+    if (logDetail.vin) {
+      title = '车辆VIN：';
+      subTitle = logDetail.vin;
+    } else if (logDetail.userId) {
+      title = '用户ID：';
+      subTitle = logDetail.userId;
+    }
     return (
       <div style={styles.rightContent}>
         <div style={styles.topContainer}>
@@ -147,8 +155,12 @@ export default class RightContent extends React.Component {
                 <Typography
                   style={{ width: '100%', height: '100%', padding: 50 }}
                 >
-                  <Typography.Title style={{ color: 'rgba(102, 255, 255, 1)' }}>
-                    车辆VIN：{logDetail?.vin}
+                  <Typography.Title
+                    style={{ color: 'rgba(102, 255, 255, 1)' }}
+                    level={4}
+                  >
+                    <span>{title}</span>
+                    <span>{subTitle}</span>
                   </Typography.Title>
                   <Typography.Title
                     level={5}
