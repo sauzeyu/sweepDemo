@@ -78,8 +78,6 @@ public class DkmUserVehicleServiceImpl {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
             // TODO 增加枚举类进行翻译 增加可读性
             throw DiagnosticLogsException.builder()
-                    .businessId("0E")
-                    .faultId("5071")
                     .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_PARAMETERS_NULL_OR_UNFORMAT.getBusinessId())
                     .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_PARAMETERS_NULL_OR_UNFORMAT.getFaultId())
                     .code(2106)
