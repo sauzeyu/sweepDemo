@@ -18,9 +18,6 @@ class SearchForm extends Component {
     buttonHidden: true,
     flag: true,
   };
-  // componentDidMount() {
-  //   this.fetchRoles();
-  // }
 
   form = React.createRef();
   handleSubmit = (values) => {
@@ -40,10 +37,6 @@ class SearchForm extends Component {
         if (errors) return;
       });
   };
-  // componentDidMount() {
-  //   //
-  // }
-  // componentWillUnmount() {}
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.keyUseLogDataTable && this.state.flag) {
