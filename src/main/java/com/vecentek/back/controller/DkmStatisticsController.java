@@ -64,12 +64,13 @@ public class DkmStatisticsController {
      * @date 2023-03-29 17:05
      */
     @GetMapping("/selectForPage")
-    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String startTime, String endTime, String userId, String vin) {
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String startTime, String endTime, String userId, String vin,String businessId) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).queryParam("pageIndex", pageIndex).queryParam("pageSize", pageSize).path("/selectForPage");
         Optional.ofNullable(startTime).ifPresent(parameter -> builder.queryParam("startTime", parameter));
         Optional.ofNullable(endTime).ifPresent(parameter -> builder.queryParam("endTime", parameter));
         Optional.ofNullable(userId).ifPresent(parameter -> builder.queryParam("userId", parameter));
         Optional.ofNullable(vin).ifPresent(parameter -> builder.queryParam("vin", parameter));
+        Optional.ofNullable(businessId).ifPresent(parameter -> builder.queryParam("businessId", parameter));
         return restTemplate.getForObject(builder.build().toUriString(), PageResp.class);
     }
 
