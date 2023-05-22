@@ -127,10 +127,21 @@ class DkmKeyServiceImplTest {
                 .thenReturn(new Page<>(0L, 0L, 0L, false));
 
         // Run the test
-        final PageResp result = dkmKeyServiceImplUnderTest.selectForPage(0, 0, "userId", "vin", 0, 0, "periodUnit",
+        final PageResp result = dkmKeyServiceImplUnderTest.selectForPage(0, 0, "userId", "vin", 0, 0, "minute",
                 "applyStartTime", "applyEndTime", "valFromStartTime", "valFromEndTime", "valToStartTime",
-                "valToEndTime", 0, 0, new Integer[]{0}, new Integer[]{0});
-
+                "valToEndTime", null, 0, new Integer[]{0,1,2}, new Integer[]{0,1,2});
+        // Run the test
+        final PageResp result1 = dkmKeyServiceImplUnderTest.selectForPage(0, 0, "userId", "vin", 0, 0, "hour",
+                "applyStartTime", "applyEndTime", "valFromStartTime", "valFromEndTime", "valToStartTime",
+                "valToEndTime", null, 0, new Integer[]{0,1,2}, new Integer[]{0,1,2});
+        // Run the test
+        final PageResp result2 = dkmKeyServiceImplUnderTest.selectForPage(0, 0, "userId", "vin", 0, 0, "day",
+                "applyStartTime", "applyEndTime", "valFromStartTime", "valFromEndTime", "valToStartTime",
+                "valToEndTime", null, 0, new Integer[]{0,1,2}, new Integer[]{0,1,2});
+        // Run the test
+        final PageResp result3 = dkmKeyServiceImplUnderTest.selectForPage(0, 0, "userId", "vin", -2, 0, "day",
+                "applyStartTime", "applyEndTime", "valFromStartTime", "valFromEndTime", "valToStartTime",
+                "valToEndTime", null, 0, new Integer[]{0,1,2}, new Integer[]{0,1,2});
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
@@ -162,15 +173,16 @@ class DkmKeyServiceImplTest {
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
                         "keyFriendlyName"));
-        final List<DkmKey> dkmKeysParent = Arrays.asList(
-                new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
-                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
-                        0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "1", 0,
-                        "personalAndCalibration", 0L, 0, "keyResourceVO", 0, "keyClassificationVO", "keyType",
-                        "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
-                        "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
-                        "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+        DkmKey dkmKey = new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
+                0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "1", 0,
+                "personalAndCalibration", 0L, 0, "keyResourceVO", 0, "keyClassificationVO", "keyType",
+                "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
+                "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
+                "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
+                "keyFriendlyName");
+        final List<DkmKey> dkmKeysParent = Arrays.asList(dkmKey
+                );
         when(mockDkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
 
                 .eq(DkmKey::getUserId, "userId")
@@ -195,8 +207,11 @@ class DkmKeyServiceImplTest {
         // Run the test
         when( mockDkmKeyMapper.updateById(any())).thenReturn(1);
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateById("keyId", 3, "userId", "vin");
-
-
+        dkmKey.setParentId("0");
+        final List<DkmKey> dkmKeysParent1 = Arrays.asList(dkmKey
+        );
+        when(mockDkmKeyMapper.selectList(any())).thenReturn(dkmKeysParent);
+        final PageResp result3 = dkmKeyServiceImplUnderTest.updateStateById("keyId", 3, "userId", "vin");
     }
     @Test
     void testUpdateStateById_unFreezeKeys() {
@@ -230,14 +245,14 @@ class DkmKeyServiceImplTest {
                         .eq(DkmKey::getDkState, 0))
         )).thenReturn(null);
         when(mockDkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
-
+                .eq(DkmKey::getDkState, 3)
                 .eq(DkmKey::getUserId, "userId")
                 .eq(DkmKey::getVin, "vin")
-                .eq(DkmKey::getDkState, 3)
+
 
         )).thenReturn(dkmKeys);
         // Verify the results
-        when(mockDkmKeyMapper.selectList(any())).thenReturn(dkmKeys);
+        //when(mockDkmKeyMapper.selectList(any())).thenReturn(dkmKeys);
         when( mockDkmKeyMapper.updateById(any())).thenReturn(1);
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateById("keyId", 1, "userId", "vin");
 
@@ -388,15 +403,17 @@ class DkmKeyServiceImplTest {
         final PageResp expectedResult = PageResp.success("吊销成功");
 
         // Configure DkmKeyMapper.selectList(...).
+        DkmKey dkmKey = new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
+                0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "0", 0,
+                "personalAndCalibration", 0L, 0, "keyResourceVO", 0, "keyClassificationVO", "keyType",
+                "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
+                "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
+                "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
+                "keyFriendlyName");
         final List<DkmKey> dkmKeys = Arrays.asList(
-                new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
-                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
-                        0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "0", 0,
-                        "personalAndCalibration", 0L, 0, "keyResourceVO", 0, "keyClassificationVO", "keyType",
-                        "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
-                        "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
-                        "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                dkmKey
+                );
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.update(any(), any())).thenReturn(1);
@@ -413,7 +430,12 @@ class DkmKeyServiceImplTest {
 
         // Run the test
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateForRevokeById("userId", "vin");
-
+        dkmKey.setParentId("1");
+        final List<DkmKey> dkmKeys1 = Arrays.asList(
+                dkmKey
+        );
+        when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys1);
+        dkmKeyServiceImplUnderTest.updateStateForRevokeById("userId", "vin");
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
         //verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
@@ -496,27 +518,77 @@ class DkmKeyServiceImplTest {
     @Test
     void testDownloadKeyLogExcel() {
         // Setup
-        when(mockDkmKeyMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(0);
+        when(mockDkmKeyMapper.selectCount(any(LambdaQueryWrapper.class))).thenReturn(100001);
 
         // Configure DkmKeyMapper.selectList(...).
+        DkmKey dkmKey = new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
+                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
+                0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "parentId", 0,
+                "personalAndCalibration", 0L, 0, "keyResourceVO", 0, "keyClassificationVO", "keyType",
+                "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
+                "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
+                "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
+                "keyFriendlyName");
         final List<DkmKey> dkmKeys = Arrays.asList(
-                new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
-                        new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
-                        0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "parentId", 0,
-                        "personalAndCalibration", 0L, 0, "keyResourceVO", 0, "keyClassificationVO", "keyType",
-                        "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
-                        "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
-                        "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                dkmKey
+                );
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyLogHistoryExportMapper.update(any(DkmKeyLogHistoryExport.class), any(LambdaUpdateWrapper.class))).thenReturn(0);
 
         // Run the test
-        dkmKeyServiceImplUnderTest.downloadKeyLogExcel("vin", "userId", 0, "applyStartTime", "applyEndTime", 0, 0,
-                "periodUnit", "valFromStartTime", "valFromEndTime", "valToStartTime", "valToEndTime", new Integer[]{0},
-                0, "creator", "excelName", new Integer[]{0});
+        dkmKeyServiceImplUnderTest.downloadKeyLogExcel("vin", "userId", null, "applyStartTime", "applyEndTime", 0, 0,
+                "periodUnit", "valFromStartTime", "valFromEndTime", "valToStartTime", "valToEndTime", new Integer[]{0,1,2},
+                0, "creator", "excelName", new Integer[]{0,1,2});
+        dkmKey.setParentId("0");
+        final List<DkmKey> dkmKeys1 = Arrays.asList(
+                dkmKey
+        );
+        when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys1);
 
+        dkmKeyServiceImplUnderTest.downloadKeyLogExcel("vin", "userId", null, "applyStartTime", "applyEndTime", 0, 0,
+                "periodUnit", "valFromStartTime", "valFromEndTime", "valToStartTime", "valToEndTime", new Integer[]{0,1,2},
+                0, "creator", "excelName", new Integer[]{0,1,2});
+
+        dkmKey.setKeyResource(1);
+        final List<DkmKey> dkmKeys2 = Arrays.asList(
+                dkmKey
+        );
+        when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys2);
+
+        dkmKeyServiceImplUnderTest.downloadKeyLogExcel("vin", "userId", null, "applyStartTime", "applyEndTime", 0, 0,
+                "periodUnit", "valFromStartTime", "valFromEndTime", "valToStartTime", "valToEndTime", new Integer[]{0,1,2},
+                0, "creator", "excelName", new Integer[]{0,1,2});
+
+        dkmKey.setKeyResource(2);
+        final List<DkmKey> dkmKeys3 = Arrays.asList(
+                dkmKey
+        );
+        when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys3);
+
+        dkmKeyServiceImplUnderTest.downloadKeyLogExcel("vin", "userId", null, "applyStartTime", "applyEndTime", 0, 0,
+                "periodUnit", "valFromStartTime", "valFromEndTime", "valToStartTime", "valToEndTime", new Integer[]{0,1,2},
+                0, "creator", "excelName", new Integer[]{0,1,2});
+
+        dkmKey.setKeyClassification(1);
+        final List<DkmKey> dkmKeys4 = Arrays.asList(
+                dkmKey
+        );
+        when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys4);
+
+        dkmKeyServiceImplUnderTest.downloadKeyLogExcel("vin", "userId", null, "applyStartTime", "applyEndTime", 0, 0,
+                "periodUnit", "valFromStartTime", "valFromEndTime", "valToStartTime", "valToEndTime", new Integer[]{0,1,2},
+                0, "creator", "excelName", new Integer[]{0,1,2});
+
+        dkmKey.setKeyClassification(2);
+        final List<DkmKey> dkmKeys5 = Arrays.asList(
+                dkmKey
+        );
+        when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys5);
+
+        dkmKeyServiceImplUnderTest.downloadKeyLogExcel("vin", "userId", null, "applyStartTime", "applyEndTime", 0, 0,
+                "periodUnit", "valFromStartTime", "valFromEndTime", "valToStartTime", "valToEndTime", new Integer[]{0,1,2},
+                0, "creator", "excelName", new Integer[]{0,1,2});
         // Verify the results
         //verify(mockDkmKeyLogHistoryExportMapper).update(any(DkmKeyLogHistoryExport.class), any(LambdaUpdateWrapper.class));
     }

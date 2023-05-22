@@ -25,8 +25,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DkmKeyLogHistoryExportServiceImplTest {
@@ -52,11 +51,10 @@ class DkmKeyLogHistoryExportServiceImplTest {
     }
     @Test
     void testDownloadExcel_UnsupportedEncodingException() {
-        // Setup
-        final HttpServletResponse response = new MockHttpServletResponse();
-// Setup
-        doThrow(UnsupportedEncodingException.class).when(
-                response).setHeader(any(), any());
+        // 创建Mock对象
+        final HttpServletResponse response = mock(HttpServletResponse.class);
+// 在这里调用when()方法时使用Mock对象
+        doThrow(new UnsupportedEncodingException()).when(response).setHeader(any(), any());
 
         // Run the test
         dkmKeyLogHistoryExportServiceImplUnderTest.downloadExcel("fileName", response);

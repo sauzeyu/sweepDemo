@@ -66,8 +66,11 @@ class DkmRoleServiceImplTest {
     void testSelectForPage() {
         // Setup
         final PageResp expectedResult = PageResp.success("查询成功");
+        Page<DkmRole> dkmRolePage = new Page<>(0L, 0L, 0L, false);
+        DkmRole dkmRole = new DkmRole();
+        dkmRole.setId(1);
         when(mockDkmRoleMapper.selectPage(any(Page.class), any(LambdaQueryWrapper.class)))
-                .thenReturn(new Page<>(0L, 0L, 0L, false));
+                .thenReturn(dkmRolePage);
         when(mockDkmMenuMapper.selectMenuByRoleId(0)).thenReturn(Arrays.asList("value"));
 
         // Run the test

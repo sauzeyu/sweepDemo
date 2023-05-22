@@ -14,18 +14,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class DkmBluetoothsServiceImplTest {
 
     @Mock
@@ -34,6 +38,8 @@ class DkmBluetoothsServiceImplTest {
 private HttpServletResponse mockHttpServletResponse;
     @InjectMocks
     private DkmBluetoothsServiceImpl dkmBluetoothsServiceImplUnderTest;
+    @MockBean
+    private DkmBluetoothsServiceImpl mockdkmBluetoothsServiceImplUnderTest;
     @BeforeEach
     void setup() {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmBluetooths.class);
@@ -79,9 +85,31 @@ private HttpServletResponse mockHttpServletResponse;
 
         // Run the test
         dkmBluetoothsServiceImplUnderTest.downloadDkmBluetooths("hwDeviceSn", "searchNumber", 0, response);
+        final List<DkmBluetooths> dkmBluetooths1 = Arrays.asList(
+                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                        "bleMacAddress", "masterKey", "digKey", 1, 0, "pubKey"));
+        when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths1);
+        dkmBluetoothsServiceImplUnderTest.downloadDkmBluetooths("hwDeviceSn", "searchNumber", 0, response);
 
         // Verify the results
-    }
 
+
+    }
+    @Test
+    void testDownloadDkmBluetoothsThrowUnsupportedEncodingException() {
+        // Setup
+        final HttpServletResponse response = new MockHttpServletResponse();
+        // Configure DkmBluetoothsMapper.selectList(...).
+        final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
+                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                        "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
+        when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
+
+        doThrow(UnsupportedEncodingException.class).when(
+                response).setHeader(any(), any());
+        dkmBluetoothsServiceImplUnderTest.downloadDkmBluetooths("hwDeviceSn", "searchNumber", 0, response);
+
+
+    }
 
 }

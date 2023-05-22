@@ -99,7 +99,12 @@ class DkmPhoneCalibrationDataServiceImplTest {
         // Run the test
         final PageResp result = dkmPhoneCalibrationDataServiceImplUnderTest.updateDkmPhoneCalibrationDataById(
                 dkmPhoneCalibrationData);
-
+        dkmPhoneCalibrationData.setPersonalAndCalibrationString("123");
+        final PageResp result1 = dkmPhoneCalibrationDataServiceImplUnderTest.updateDkmPhoneCalibrationDataById(
+                dkmPhoneCalibrationData);
+        dkmPhoneCalibrationData.setPersonalAndCalibrationString("00006950686f6e65ffffffff6950686f6e6531332c34fffffffffffffffff00@");
+        final PageResp result2 = dkmPhoneCalibrationDataServiceImplUnderTest.updateDkmPhoneCalibrationDataById(
+                dkmPhoneCalibrationData);
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
         verify(mockDkmPhoneCalibrationDataMapper).updateById(
