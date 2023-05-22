@@ -296,6 +296,8 @@ public class DkmUserVehicleServiceImpl {
         ArrayList<String> list = new ArrayList<>();
         if (CollectionUtils.isEmpty(keys)) {
             throw DiagnosticLogsException.builder()
+                    .userId(userId)
+
                     .businessId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getBusinessId())
                     .faultId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getFaultId())
                     .code(1001)
