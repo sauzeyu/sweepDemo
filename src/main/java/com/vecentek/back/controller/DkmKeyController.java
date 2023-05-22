@@ -37,6 +37,27 @@ public class DkmKeyController {
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
+    /**
+     * 分页查询钥匙信息
+     * @param pageIndex
+     * @param pageSize
+     * @param userId
+     * @param vin
+     * @param periodMin
+     * @param periodMax
+     * @param periodUnit
+     * @param applyStartTime
+     * @param applyEndTime
+     * @param valFromStartTime
+     * @param valFromEndTime
+     * @param valToStartTime
+     * @param valToEndTime
+     * @param keyType
+     * @param keyResource
+     * @param dkState
+     * @param keyClassification
+     * @return
+     */
     @GetMapping(value = "/selectForPage")
     public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
                                   @RequestParam(name = "pageSize") int pageSize,
