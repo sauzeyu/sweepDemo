@@ -323,6 +323,8 @@ public class DkmKeyServiceImpl {
                 KeyStatusEnum.ACTIVATED.getCode()).eq(DkmKey::getVin, vin));
         if (keys == null || keys.isEmpty()) {
             throw DiagnosticLogsException.builder()
+                    .vin(vin)
+                    .userId(userId)
                     .businessId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getBusinessId())
                     .faultId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getFaultId())
                     .build();
