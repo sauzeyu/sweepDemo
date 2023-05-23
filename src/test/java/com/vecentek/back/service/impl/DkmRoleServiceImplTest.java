@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,6 +70,8 @@ class DkmRoleServiceImplTest {
         Page<DkmRole> dkmRolePage = new Page<>(0L, 0L, 0L, false);
         DkmRole dkmRole = new DkmRole();
         dkmRole.setId(1);
+        List<DkmRole> dkmRoles = Arrays.asList(dkmRole);
+        dkmRolePage.setRecords(dkmRoles);
         when(mockDkmRoleMapper.selectPage(any(Page.class), any(LambdaQueryWrapper.class)))
                 .thenReturn(dkmRolePage);
         when(mockDkmMenuMapper.selectMenuByRoleId(0)).thenReturn(Arrays.asList("value"));
@@ -136,7 +139,7 @@ class DkmRoleServiceImplTest {
         when(mockDkmAdminMapper.selectById(0)).thenReturn(dkmAdmin);
 
         when(mockRedisTemplate.hasKey(any())).thenReturn(false);
-        when(mockRedisTemplate.delete(any())).thenReturn(1L);
+        when(mockRedisTemplate.delete(any())).thenReturn(0L);
         when(mockDkmRoleMenuMapper.delete(any(LambdaQueryWrapper.class))).thenReturn(0);
         when(mockDkmAdminRoleMapper.deleteByRoleId(0)).thenReturn(0);
 
@@ -233,7 +236,15 @@ class DkmRoleServiceImplTest {
 
         // Run the test
         final PageResp result = dkmRoleServiceImplUnderTest.updateRoleById(role);
-
+        role.setMenuList(null);
+        dkmRoleServiceImplUnderTest.updateRoleById(role);
+        role.setMenuList((Arrays.asList("123")));
+        when(mockDkmRoleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(null);
+        dkmRoleServiceImplUnderTest.updateRoleById(role);
+        when(mockDkmRoleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmRole);
+        when(mockDkmAdminRoleMapper.selectList(any(LambdaQueryWrapper.class)))
+                .thenReturn(null);
+        dkmRoleServiceImplUnderTest.updateRoleById(role);
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
         //verify(mockDkmRoleMapper).update(eq(new DkmRole(0, 0, "code", "roleName", "intro")),
@@ -369,7 +380,11 @@ class DkmRoleServiceImplTest {
 
         // Run the test
         final PageResp result = dkmRoleServiceImplUnderTest.insert(roleVO);
-
+        roleVO.setMenuList(null);
+        dkmRoleServiceImplUnderTest.insert(roleVO);
+        roleVO.setRoleName(null);
+        roleVO.setMenuList(Arrays.asList("123"));
+        dkmRoleServiceImplUnderTest.insert(roleVO);
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
         //verify(mockDkmRoleMapper).insert(new DkmRole(0, 0, "code", "roleName", "intro"));

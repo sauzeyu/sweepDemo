@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -62,8 +63,11 @@ class DkmRouterServiceImplTest {
                 .thenReturn(Arrays.asList(new DkmRoleMenu(0, 0, 0)));
 
         // Configure DkmMenuMapper.selectList(...).
-        final List<DkmMenu> dkmMenus = Arrays.asList(
-                new DkmMenu(0, 0, "title", "icon", "href", "target", "isShow", 0, "dna"));
+         List<DkmMenu> dkmMenus = new ArrayList<>();
+        DkmMenu dkmMenu1 = new DkmMenu(0, 0, "title", "icon", "href", "target", "isShow", 0, "dna");
+        DkmMenu dkmMenu = new DkmMenu(0, null, "title", "icon", "href", "target", "isShow", 0, "dna");
+        dkmMenus.add(dkmMenu);
+        dkmMenus.add(dkmMenu1);
         when(mockDkmMenuMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmMenus);
 
         // Run the test

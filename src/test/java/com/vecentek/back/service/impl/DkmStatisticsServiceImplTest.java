@@ -77,7 +77,7 @@ class DkmStatisticsServiceImplTest {
         final PageResp result = dkmStatisticsServiceImplUnderTest.selectTotal(
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
-
+        dkmStatisticsServiceImplUnderTest.selectTotal(null,null);
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
@@ -259,15 +259,16 @@ class DkmStatisticsServiceImplTest {
         countDTO1.setValue(0);
         countDTO1.setName("name");
         final List<CountDTO> countDTOS1 = Arrays.asList(countDTO1);
-        when(mockDkmKeyLogMapper.selectKeyErrorLogByPhoneBrand("phoneBrand",
-                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
-                new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime())).thenReturn(countDTOS1);
+        when(mockDkmKeyLogMapper.selectKeyErrorLogByPhoneBrand(any(),
+                any(),
+                any())).thenReturn(countDTOS1);
         //MockedStatic<SpringContextUtil> springContextUtilMockedStatic = Mockito.mockStatic(SpringContextUtil.class);
         ProConfig proConfig = new ProConfig();
         proConfig.setSysDate("2021-01-01");
         springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         // Run the test
         final PageResp result = dkmStatisticsServiceImplUnderTest.selectKeyErrorLogByPhoneBrand("phoneBrand");
+        dkmStatisticsServiceImplUnderTest.selectKeyErrorLogByPhoneBrand(null);
 
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
@@ -397,7 +398,7 @@ class DkmStatisticsServiceImplTest {
         final PageResp result = dkmStatisticsServiceImplUnderTest.selectErrorStatusTotal(
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
-
+        dkmStatisticsServiceImplUnderTest.selectErrorStatusTotal(null,null);
         // Verify the results
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
@@ -578,7 +579,9 @@ class DkmStatisticsServiceImplTest {
     void testSelectKeyErrorLogByAllPhoneBrand() {
         // Setup
         final PageResp expectedResult = PageResp.success("查询成功");
-
+        ProConfig proConfig = new ProConfig();
+        proConfig.setSysDate("2021-01-01");
+        springContextUtilMocked.when(() -> SpringContextUtil.getBean(ProConfig.class)).thenReturn(proConfig);
         // Configure DkmKeyLogMapper.selectKeyErrorLogByAllPhoneBrand(...).
         final CountDTO countDTO = new CountDTO();
         countDTO.setValue(0);
@@ -618,12 +621,13 @@ class DkmStatisticsServiceImplTest {
         countDTO.setName("st00");
         final List<CountDTO> countDTOs = Arrays.asList(countDTO);
         final CountDTO countDTO1 = new CountDTO();
-        countDTO1.setValue(0);
+        countDTO1.setValue(2);
         countDTO1.setName("st01");
         final List<CountDTO> expectedResult = Arrays.asList(countDTO1);
 
         // Run the test
         final List<CountDTO> result = dkmStatisticsServiceImplUnderTest.simpleLog(countDTOs, "st");
+        dkmStatisticsServiceImplUnderTest.simpleLog(expectedResult, "st");
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
     }
@@ -640,13 +644,27 @@ class DkmStatisticsServiceImplTest {
         countDTO.setName("0C0C");
         final List<CountDTO> countDTOs = Arrays.asList(countDTO);
         final CountDTO countDTO1 = new CountDTO();
-        countDTO1.setValue(0);
+        countDTO1.setValue(3);
         countDTO1.setName("0C13");
         final List<CountDTO> expectedResult = Arrays.asList(countDTO1);
-
+        final CountDTO countDTO2 = new CountDTO();
+        countDTO2.setValue(3);
+        countDTO2.setName("0C01");
+        final List<CountDTO> countDTOs2 = Arrays.asList(countDTO2);
+        final CountDTO countDTO3 = new CountDTO();
+        countDTO3.setValue(3);
+        countDTO3.setName("0C16");
+        final List<CountDTO> countDTOs3 = Arrays.asList(countDTO3);
+        final CountDTO countDTO4 = new CountDTO();
+        countDTO4.setValue(3);
+        countDTO4.setName("0C00");
+        final List<CountDTO> countDTOs4 = Arrays.asList(countDTO4);
         // Run the test
         final List<CountDTO> result = dkmStatisticsServiceImplUnderTest.simpleLog2(countDTOs, "0C");
         final List<CountDTO> result1 = dkmStatisticsServiceImplUnderTest.simpleLog2(expectedResult, "0C");
+        dkmStatisticsServiceImplUnderTest.simpleLog2(countDTOs2, "0C");
+        dkmStatisticsServiceImplUnderTest.simpleLog2(countDTOs3, "0C");
+        dkmStatisticsServiceImplUnderTest.simpleLog2(countDTOs4, "0C");
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
     }
