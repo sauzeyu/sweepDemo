@@ -251,9 +251,10 @@ public class DkmOfflineCheckServiceImpl {
         dkmVehicles.stream().filter(vehicle -> CharSequenceUtil.isBlank(vehicle.getSearchNumber()))
                 .forEach(vehicle -> {
                     String hashSearchNumber = DigestUtils.sha256Hex(vehicle.getHwDeviceSn());
-                            String searchNumber = hashSearchNumber.substring(hashSearchNumber.length() - 19);
+                            String searchNumber = hashSearchNumber.substring(hashSearchNumber.length() - 38);
                             vehicle.setSearchNumber(searchNumber);
                         }
+
                 );
         //划分换件车辆和新增车辆
         List<String> alreadyExistsVehicleVinList = dkmOfflineCheckMapper.selectVehicleByVin(dkmVehicles);
