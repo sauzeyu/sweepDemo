@@ -41,6 +41,7 @@ import com.vecentek.back.vo.KeyLogDetailVO;
 import com.vecentek.back.vo.VehicleBluetoothVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +109,7 @@ public class DkmOfflineCheckServiceImpl {
             throw DiagnosticLogsException.builder()
                     .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
                     .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
+                    .code(1001)
                     .build();
             //throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
         }
@@ -157,11 +159,11 @@ public class DkmOfflineCheckServiceImpl {
                 throw new VecentException(1001, "VIN长度不正确！");
             }
 
-
             if (vehicle.getBleMacAddress().length() != 12) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址长度不正确！");
                 throw new VecentException(1001, "蓝牙Mac地址长度不正确！");
             }
+
             if (vehicle.getPubKey().length() != 130) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙公钥长度不正确！");
                 throw new VecentException(1001, "蓝牙公钥长度不正确！");
@@ -248,11 +250,11 @@ public class DkmOfflineCheckServiceImpl {
         verifyVehicleBluetoothVO(dkmVehicles);
         dkmVehicles.stream().filter(vehicle -> CharSequenceUtil.isBlank(vehicle.getSearchNumber()))
                 .forEach(vehicle -> {
-                            HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
-                            String hashSearchNumber = hMac.digestHex(vehicle.getHwDeviceSn());
-                            String searchNumber = hashSearchNumber.substring(hashSearchNumber.length() - 19);
+                    String hashSearchNumber = DigestUtils.sha256Hex(vehicle.getHwDeviceSn());
+                            String searchNumber = hashSearchNumber.substring(hashSearchNumber.length() - 38);
                             vehicle.setSearchNumber(searchNumber);
                         }
+
                 );
         //划分换件车辆和新增车辆
         List<String> alreadyExistsVehicleVinList = dkmOfflineCheckMapper.selectVehicleByVin(dkmVehicles);
