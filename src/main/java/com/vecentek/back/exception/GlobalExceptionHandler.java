@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -171,7 +173,11 @@ public class GlobalExceptionHandler {
         log.error("服务繁忙,请稍后...", e);
         return errorResult("服务繁忙,请稍后...", e);
     }
-
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public PageResp MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
+        ObjectError objectError = e.getBindingResult().getAllErrors().get(0);
+        return errorResult(objectError.getDefaultMessage(), 500, e);
+    }
     private PageResp errorResult(String msg, Throwable e) {
         return errorResult(msg, 500, e);
     }

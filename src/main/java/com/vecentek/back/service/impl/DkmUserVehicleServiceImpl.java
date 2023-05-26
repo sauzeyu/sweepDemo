@@ -76,13 +76,7 @@ public class DkmUserVehicleServiceImpl {
         log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
-            // TODO 增加枚举类进行翻译 增加可读性
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_PARAMETERS_NULL_OR_UNFORMAT.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_PARAMETERS_NULL_OR_UNFORMAT.getFaultId())
-                    .code(2106)
-                    .build();
-            //return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
+            return PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         }
         LambdaQueryWrapper<DkmUser> userWrapper = Wrappers.<DkmUser>lambdaQuery().eq(DkmUser::getId, userVehicle.getUserId());
         DkmUser dkmUser = dkmUserMapper.selectOne(userWrapper);
@@ -100,14 +94,8 @@ public class DkmUserVehicleServiceImpl {
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(vehicleWrapper);
         if (dkmVehicle == null) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_VEHICLE_NOT_EXIST.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_VEHICLE_NOT_EXIST.getFaultId())
-                    .code(2106)
-                    .userId(userVehicle.getUserId())
-                    .build();
 
-            //return PageResp.fail(2106, "系统不存在该车辆信息！");
+            return PageResp.fail(2106, "系统不存在该车辆信息！");
         }
         // 检查车辆vin唯一性
         LambdaQueryWrapper<DkmUserVehicle> dkmUserVehicleLambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -197,12 +185,7 @@ public class DkmUserVehicleServiceImpl {
         }
         if (StrUtil.hasBlank(userId, vin)) {
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "必填参数未传递!");
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_PARAMETERS_NULL.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_PARAMETERS_NULL.getFaultId())
-                    .code(1001)
-                    .build();
-            //return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         // 根据userId和vin查询中间表
         DkmUserVehicle dkmUserVehicle = dkmUserVehicleMapper.selectOne(Wrappers.<DkmUserVehicle>lambdaQuery()
@@ -212,28 +195,14 @@ public class DkmUserVehicleServiceImpl {
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "用户与车辆信息不匹配!");
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_USER_VEHICLE_NOT_MATCH.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_USER_VEHICLE_NOT_MATCH.getFaultId())
-                    .code(1001)
-                    .vin(vin)
-                    .userId(userId)
-                    .build();
-            //return PageResp.fail(1001, "用户与车辆信息不匹配!");
+            return PageResp.fail(1001, "用户与车辆信息不匹配!");
         }
         // 根据vin查询车辆表
         DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, vin));
         if (vehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "系统不存在该车辆信息!");
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_VEHICLE_INFORMATION_NOT_EXIST.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.OWNER_CANCELLATION_UNBINDING_VEHICLE_INFORMATION_NOT_EXIST.getFaultId())
-                    .code(2106)
-                    .vin(vin)
-                    .userId(userId)
-                    .build();
-            //return PageResp.fail(2106, "系统不存在该车辆信息!");
+            return PageResp.fail(2106, "系统不存在该车辆信息!");
         }
         // 解绑 首先改变bind_status 的状态为2 然后吊销当前车辆的所有钥匙 返回钥匙用户id
         dkmUserVehicle.setBindStatus(2);
@@ -282,12 +251,7 @@ public class DkmUserVehicleServiceImpl {
         log.info("request：" + "/api/userVehicle/revokeKey " + revokeKeyVO.toString());
         if (StrUtil.hasBlank(revokeKeyVO.getUserId())) {
             log.info("response：" + "/api/userVehicle/revokeKey " + "必填参数未传递!");
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_PARAMETERS_NULL.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_PARAMETERS_NULL.getFaultId())
-                    .code(1001)
-                    .build();
-            //return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         String userId = revokeKeyVO.getUserId();
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5的全部吊销
@@ -295,14 +259,7 @@ public class DkmUserVehicleServiceImpl {
         // 返回【用户id-vin号】的list
         ArrayList<String> list = new ArrayList<>();
         if (CollectionUtils.isEmpty(keys)) {
-            throw DiagnosticLogsException.builder()
-                    .userId(userId)
-
-                    .businessId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.REVOKE_KEYS_REPLACE_PHONE_KEY_NULL.getFaultId())
-                    .code(1001)
-                    .build();
-            //return PageResp.fail(1001, "吊销失败,该用户下没有启动状态的钥匙");
+            return PageResp.fail(1001, "吊销失败,该用户下没有启动状态的钥匙");
         }
         for (DkmKey key : keys) {
             // 吊销
@@ -384,53 +341,26 @@ public class DkmUserVehicleServiceImpl {
             valTo = DateUtil.parse(shareKeyVO.getValTo(), "yyyy-MM-dd HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
-
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_EFFECT_OR_TIME_UNFORMAT.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_EFFECT_OR_TIME_UNFORMAT.getFaultId())
-                    .build();
-            //return PageResp.fail("钥匙生效或失效时间格式解析失败!");
+            return PageResp.fail("钥匙生效或失效时间格式解析失败!");
         }
         // 检查是否自我分享
         if (Objects.equals(shareKeyVO.getUserId(),shareKeyVO.getShareUserId())){
-
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_SHARE_YOURSELF.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_SHARE_YOURSELF.getFaultId())
-                    .build();
-            //return PageResp.fail("禁止自己分享给自己!");
+            return PageResp.fail("禁止自己分享给自己!");
         }
         // 钥匙检查
         DkmKey dkmKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId, shareKeyVO.getKeyId()));
         if (Objects.isNull(dkmKey)){
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_NULL.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_NULL.getFaultId())
-                    .build();
-            //return PageResp.fail("钥匙信息为空!");
+            return PageResp.fail("钥匙信息为空!");
         }
         if (!Objects.equals(dkmKey.getParentId(),"0")){
-            // TODO 钥匙为分享钥匙不能进行分享 没有定义 业务ID 和 故障ID
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_ABNORMAL_AND_CANNOT_SHARED.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_ABNORMAL_AND_CANNOT_SHARED.getFaultId())
-                    .build();
-            //return PageResp.fail("钥匙为分享钥匙不能进行分享!");
+            return PageResp.fail("钥匙为分享钥匙不能进行分享!");
         }
         if (!Objects.equals(dkmKey.getDkState(),1)){
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_ABNORMAL_AND_CANNOT_SHARED.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_KEY_ABNORMAL_AND_CANNOT_SHARED.getFaultId())
-                    .build();
-            //return PageResp.fail("钥匙状态异常不能分享!");
+            return PageResp.fail("钥匙状态异常不能分享!");
         }
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, shareKeyVO.getVin()));
         if (Objects.isNull(dkmVehicle)){
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_VEHICLE_INFORMATION_IS_EMPTY.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_VEHICLE_INFORMATION_IS_EMPTY.getFaultId())
-                    .build();
-            //return PageResp.fail("车辆信息为空!");
+            return PageResp.fail("车辆信息为空!");
         }
         // 查询是否已存在分享钥匙，如果存在即更新，不存在即新建
         DkmKey shareKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>()
@@ -495,11 +425,7 @@ public class DkmUserVehicleServiceImpl {
             // 计算密钥K1
             String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
             if (StringUtils.isBlank(masterKey)) {
-                throw DiagnosticLogsException.builder()
-                        .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_BLUETOOTH__NOT_SECONDARY_KEY.getBusinessId())
-                        .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_BLUETOOTH__NOT_SECONDARY_KEY.getFaultId())
-                        .build();
-                //return PageResp.fail("蓝牙信息没有对应二级密钥!");
+                return PageResp.fail("蓝牙信息没有对应二级密钥!");
             }
             dkmKeyMapper.insert(newKey);
             // 新增钥匙生命周期表吊销记录
