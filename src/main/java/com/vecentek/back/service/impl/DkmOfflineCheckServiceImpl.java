@@ -43,6 +43,7 @@ import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,7 +82,8 @@ public class DkmOfflineCheckServiceImpl {
     private DkmKeyLifecycleMapper dkmKeyLifecycleMapper;
     @Resource
     private DkmKeyLogMapper dkmKeyLogMapper;
-
+    @Value(value = "${spring.profiles.active}")
+    private String currentBranch;
     private void verifyVehicleBluetoothVO(List<VehicleBluetoothVO> dkmVehicles) throws VecentException, DiagnosticLogsException {
         if (CollUtil.isEmpty(dkmVehicles)) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据不得为空！");
@@ -91,14 +93,7 @@ public class DkmOfflineCheckServiceImpl {
 
         if (startSize > MAX_DATA_TOTAL) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据量超过最大值，请控制在 50 条以内！");
-
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getFaultId())
-                    .code(2107)
-                    .build();
-
-            //throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
+            throw new VecentException(2107, "上传数据量超过最大值，请控制在 50 条以内！");
         }
 
         //对 dkmVehicles 去重,根据 hashCode 与 equals 去重
@@ -106,28 +101,25 @@ public class DkmOfflineCheckServiceImpl {
         // 如果有重复参数,则抛出异常
         if (startSize != dkmVehicles.size()) {
             log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传数据包含重复参数，请检查后上传！");
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
-                    .code(1001)
-                    .build();
-            //throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
+            throw new VecentException(1001, "上传数据包含重复参数，请检查后上传！");
         }
 
         for (VehicleBluetoothVO vehicle : dkmVehicles) {
+            boolean pubKeyValidFlag = true;
+            if (CharSequenceUtil.hasBlank(vehicle.getPubKey())){
+                if (!currentBranch.contains("jac")) {
+                    throw new VecentException(1001, "必填参数未传递！");
+                }
+                pubKeyValidFlag = false;
+            }
             if (CharSequenceUtil.hasBlank(vehicle.getVin(),
                     vehicle.getVehicleModel(),
                     vehicle.getHwDeviceSn(),
-                    vehicle.getBleMacAddress(),
-                    vehicle.getPubKey())) {
+                    vehicle.getBleMacAddress())
+
+                    ) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
-                throw DiagnosticLogsException.builder()
-                        .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENTTHE_PARAMETERS_NULL.getBusinessId())
-                        .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENTTHE_PARAMETERS_NULL.getFaultId())
-                        .code(1001)
-                        .vin(vehicle.getVin())
-                        .build();
-                //throw new VecentException(1001, "必填参数未传递！");
+                throw new VecentException(1001, "必填参数未传递！");
             }
             if (CharSequenceUtil.isNotBlank(vehicle.getSearchNumber())) {
                 if (vehicle.getSearchNumber().length() != 38) {
@@ -142,14 +134,7 @@ public class DkmOfflineCheckServiceImpl {
                 if (dkmBluetoothsMapper.selectCount(queryWrapper) > 0) {
 
                     log.info("response：/api/offlineCheck/insertOrUpdateVehicleBatch 蓝牙检索号不是唯一的！");
-                    //throw new VecentException(1001, "蓝牙检索号不是唯一的！");
-
-                    throw DiagnosticLogsException.builder()
-                            .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
-                            .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
-                            .code(1001)
-                            .vin(vehicle.getVin())
-                            .build();
+                    throw new VecentException(1001, "蓝牙检索号不是唯一的！");
                 }
 
             }
@@ -164,7 +149,7 @@ public class DkmOfflineCheckServiceImpl {
                 throw new VecentException(1001, "蓝牙Mac地址长度不正确！");
             }
 
-            if (vehicle.getPubKey().length() != 130) {
+            if (pubKeyValidFlag && vehicle.getPubKey().length() != 130) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙公钥长度不正确！");
                 throw new VecentException(1001, "蓝牙公钥长度不正确！");
             }
@@ -186,7 +171,7 @@ public class DkmOfflineCheckServiceImpl {
                 throw new VecentException(1001, "蓝牙Mac地址格式不正确！");
             }
 
-            if (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getPubKey()) || HexUtil.decodeHex(vehicle.getPubKey()) == null) {
+            if (pubKeyValidFlag && (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getPubKey()) || HexUtil.decodeHex(vehicle.getPubKey()) == null)) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙公钥格式不正确！");
                 throw new VecentException(1001, "蓝牙公钥格式不正确！");
             }
@@ -199,36 +184,18 @@ public class DkmOfflineCheckServiceImpl {
                     .eq(ObjectUtil.isNotNull(hwDeviceSn), DkmVehicle::getHwDeviceSn, hwDeviceSn));
             if (dkmVehicles1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的VIN号！");
-                //throw new VecentException(1001, "存在重复成对的VIN号和蓝牙序列号，请勿重复插入！");
-                throw DiagnosticLogsException.builder()
-                        .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getBusinessId())
-                        .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_MAXIMUM.getFaultId())
-                        .code(1001)
-                        .vin(vin)
-                        .build();
+                throw new VecentException(1001, "存在重复成对的VIN号和蓝牙序列号，请勿重复插入！");
             }
             List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getHwDeviceSn, hwDeviceSn));
             if (dkmBluetooths.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙设备号！");
-                throw DiagnosticLogsException.builder()
-                        .businessId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getBusinessId())
-                        .faultId(DiagnosticLogsEnum.ENTER_VEHICLE_REPLACEMENT_UPLOAD_REPEAT.getFaultId())
-                        .code(1001)
-                        .vin(vin)
-                        .build();
-                //throw new VecentException(1001, "存在重复的蓝牙设备号！");
+                throw new VecentException(1001, "存在重复的蓝牙设备号！");
             }
             String searchNumber = vehicle.getSearchNumber();
             List<DkmBluetooths> dkmBluetooths1 = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getSearchNumber, searchNumber));
             if (dkmBluetooths1.size() > 0) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙检索号！");
-                throw DiagnosticLogsException.builder()
-                        .businessId("0D")
-                        .faultId("5045")
-                        .code(1001)
-                        .vin(vin)
-                        .build();
-                //throw new VecentException(1001, "存在重复的蓝牙检索号！");
+                throw new VecentException(1001, "存在重复的蓝牙检索号！");
             }
 
         }
@@ -254,7 +221,7 @@ public class DkmOfflineCheckServiceImpl {
                             String searchNumber = hashSearchNumber.substring(hashSearchNumber.length() - 38);
                             vehicle.setSearchNumber(searchNumber);
                         }
-
+        
                 );
         //划分换件车辆和新增车辆
         List<String> alreadyExistsVehicleVinList = dkmOfflineCheckMapper.selectVehicleByVin(dkmVehicles);
