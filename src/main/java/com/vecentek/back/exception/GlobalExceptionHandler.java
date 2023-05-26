@@ -176,9 +176,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public PageResp MethodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
         ObjectError objectError = e.getBindingResult().getAllErrors().get(0);
-        //e.getBindingResult().getAllErrors().stream().filter(
-        //        error -> error.getDefaultMessage().contains("项目分支")
-        //).findFirst();
         return errorResult(objectError.getDefaultMessage(), 500, e);
     }
     private PageResp errorResult(String msg, Throwable e) {
