@@ -55,18 +55,18 @@ class DataTable extends Component {
         </Tooltip>
       ),
     },
-    {
-      title: '车型',
-      dataIndex: 'vehicleType',
-    },
+    // {
+    //   title: '车型',
+    //   dataIndex: 'vehicleType',
+    // },
     // {
     //   title: '车辆品牌',
     //   dataIndex: 'vehicleBrand',
     // },
-    // {
-    //   title: '车辆型号',
-    //   dataIndex: 'vehicleModel',
-    // },
+    {
+      title: '车辆型号',
+      dataIndex: 'vehicleModel',
+    },
     {
       title: '蓝牙设备序列号',
       dataIndex: 'hwDeviceSn',

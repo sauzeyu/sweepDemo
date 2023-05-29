@@ -194,18 +194,18 @@ class DataTable extends Component {
         </Tooltip>
       ),
     },
-    {
-      title: '车型',
-      dataIndex: 'vehicleType',
-    },
+    // {
+    //   title: '车型',
+    //   dataIndex: 'vehicleType',
+    // },
     // {
     //   title: '车辆品牌',
     //   dataIndex: 'vehicleBrand',
     // },
-    // {
-    //   title: '车辆型号',
-    //   dataIndex: 'vehicleModel',
-    // },
+    {
+      title: '车辆型号',
+      dataIndex: 'vehicleModel',
+    },
     {
       title: '故障类别',
       dataIndex: 'errorType',

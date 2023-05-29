@@ -57,18 +57,18 @@ class DataTable extends Component {
         return TableHeaderColumn(text, record, index, this.dataTable);
       },
     },
-    {
-      title: '车型',
-      dataIndex: 'vehicleType',
-    },
+    // {
+    //   title: '车型',
+    //   dataIndex: 'vehicleType',
+    // },
     // {
     //   title: '车辆品牌',
     //   dataIndex: 'vehicleBrand',
     // },
-    // {
-    //   title: '车辆型号',
-    //   dataIndex: 'vehicleModel',
-    // },
+    {
+      title: '车辆型号',
+      dataIndex: 'vehicleModel',
+    },
     {
       title: '手机品牌',
       dataIndex: 'phoneBrand',
