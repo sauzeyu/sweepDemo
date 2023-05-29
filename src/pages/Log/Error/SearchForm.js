@@ -16,6 +16,7 @@ class SearchForm extends Component {
     isExpand: true,
     buttonHidden: true,
     flag: true,
+    businessList: null,
   };
 
   form = React.createRef();
@@ -36,7 +37,24 @@ class SearchForm extends Component {
         if (errors) return;
       });
   };
+  selectBusiness = () => {
+    this.props
+      .dispatch({
+        type: 'Diagnosis/selectBusiness',
+        payload: {},
+      })
+      .then((res) => {
+        if (res && res.code === 200) {
+          this.setState({
+            businessList: res.data,
+          });
+        }
+      });
+  };
 
+  componentDidMount() {
+    this.selectBusiness();
+  }
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.keyErrorLogDataTable && this.state.flag) {
       this.handleSubmit();
@@ -52,6 +70,17 @@ class SearchForm extends Component {
   };
 
   render() {
+    const { businessList } = this.state;
+    let selectOptions = null;
+    if (businessList) {
+      selectOptions = businessList.map((business) => {
+        return (
+          <Select.Option key={business.businessId} value={business.businessId}>
+            {business.business}
+          </Select.Option>
+        );
+      });
+    }
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -139,16 +168,15 @@ class SearchForm extends Component {
         </Row>
         <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
           <Col {...colSpan}>
-            <Form.Item label="业务类型" name={'statusCode'}>
+            <Form.Item label="业务类型" name={'businessId'}>
               <Select
-                mode="multiple"
                 allowClear
                 style={{
                   width: '100%',
                 }}
                 placeholder="请输入操作类型"
               >
-                {keyStatusCode}
+                {selectOptions}
               </Select>
             </Form.Item>
           </Col>
