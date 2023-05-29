@@ -198,13 +198,27 @@ class DataTable extends Component {
       title: '车型',
       dataIndex: 'vehicleType',
     },
+    // {
+    //   title: '车辆品牌',
+    //   dataIndex: 'vehicleBrand',
+    // },
+    // {
+    //   title: '车辆型号',
+    //   dataIndex: 'vehicleModel',
+    // },
     {
-      title: '车辆品牌',
-      dataIndex: 'vehicleBrand',
-    },
-    {
-      title: '车辆型号',
-      dataIndex: 'vehicleModel',
+      title: '故障类别',
+      dataIndex: 'errorType',
+      render: (text) => {
+        if (text === '01') {
+          return <Tag color="blue">控车</Tag>;
+        } else if (text === '02') {
+          return <Tag color="green">蓝牙连接</Tag>;
+        } else if (text === '03') {
+          return <Tag color="yellow">钥匙管理</Tag>;
+        }
+        // return QuickFlag[text];
+      },
     },
     {
       title: '日志类型',
@@ -213,11 +227,12 @@ class DataTable extends Component {
         if (text === 1) {
           return <Tag color="green">普通</Tag>;
         } else {
-          return <Tag color="green">普通</Tag>;
+          return <Tag color="blue">快连</Tag>;
         }
         // return QuickFlag[text];
       },
     },
+
     {
       title: '操作时间',
       dataIndex: 'operateTime',
@@ -340,12 +355,12 @@ class DataTable extends Component {
           用户id:&nbsp;
           {userId}
           <br />
-          车辆品牌:&nbsp;
+          {/* 车辆品牌:&nbsp;
           {vehicleBrand}
           <br />
           车辆型号&nbsp;
           {vehicleModel}
-          <br />
+          <br /> */}
           车型&nbsp;
           {vehicleType}
           <br />

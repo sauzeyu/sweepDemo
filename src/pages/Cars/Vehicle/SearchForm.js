@@ -90,7 +90,7 @@ class SearchForm extends Component {
             </Button>
           </Col>
         </Row>
-        <Row type={'flex'} gutter={16}>
+        {/* <Row type={'flex'} gutter={16}>
           <Col {...colSpan}>
             <Form.Item label={'车辆品牌'} name="vehicleBrand">
               <RestrictiveInput trim placeholder={'请输入车辆品牌'} />
@@ -101,7 +101,7 @@ class SearchForm extends Component {
               <RestrictiveInput trim placeholder={'请输入车辆型号'} />
             </Form.Item>
           </Col>
-        </Row>
+        </Row> */}
       </Form>
     );
   }

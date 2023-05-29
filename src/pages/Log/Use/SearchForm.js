@@ -226,7 +226,7 @@ class SearchForm extends Component {
               <Input placeholder="请输入用户id" />
             </Form.Item>
           </Col>
-
+          {/* 
           <Col {...colSpan}>
             <Form.Item label={'车辆品牌'} name="vehicleBrand">
               <Input placeholder="请输入车辆品牌" />
@@ -237,16 +237,21 @@ class SearchForm extends Component {
             <Form.Item label={'车辆型号'} name="vehicleModel">
               <Input placeholder="请输入车辆型号" />
             </Form.Item>
-          </Col>
-        </Row>
-
-        <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
+          </Col> */}
           <Col {...colSpan}>
             <Form.Item label={'车型'} name="vehicleType">
               <Input placeholder="请输入车型" />
             </Form.Item>
           </Col>
         </Row>
+
+        {/* <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
+          <Col {...colSpan}>
+            <Form.Item label={'车型'} name="vehicleType">
+              <Input placeholder="请输入车型" />
+            </Form.Item>
+          </Col>
+        </Row> */}
       </Form>
     );
   }
