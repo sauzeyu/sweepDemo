@@ -341,26 +341,26 @@ public class DkmUserVehicleServiceImpl {
             valTo = DateUtil.parse(shareKeyVO.getValTo(), "yyyy-MM-dd HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
-            return PageResp.fail("钥匙生效或失效时间格式解析失败!");
+            return PageResp.fail(1001,"钥匙生效或失效时间格式解析失败!");
         }
         // 检查是否自我分享
         if (Objects.equals(shareKeyVO.getUserId(),shareKeyVO.getShareUserId())){
-            return PageResp.fail("禁止自己分享给自己!");
+            return PageResp.fail(1001,"禁止自己分享给自己!");
         }
         // 钥匙检查
         DkmKey dkmKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId, shareKeyVO.getKeyId()));
         if (Objects.isNull(dkmKey)){
-            return PageResp.fail("钥匙信息为空!");
+            return PageResp.fail(1001,"钥匙信息为空!");
         }
         if (!Objects.equals(dkmKey.getParentId(),"0")){
-            return PageResp.fail("钥匙为分享钥匙不能进行分享!");
+            return PageResp.fail(1001,"钥匙为分享钥匙不能进行分享!");
         }
         if (!Objects.equals(dkmKey.getDkState(),1)){
-            return PageResp.fail("钥匙状态异常不能分享!");
+            return PageResp.fail(1001,"钥匙状态异常不能分享!");
         }
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, shareKeyVO.getVin()));
         if (Objects.isNull(dkmVehicle)){
-            return PageResp.fail("车辆信息为空!");
+            return PageResp.fail(1001,"车辆信息为空!");
         }
         // 查询是否已存在分享钥匙，如果存在即更新，不存在即新建
         DkmKey shareKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>()
@@ -425,7 +425,7 @@ public class DkmUserVehicleServiceImpl {
             // 计算密钥K1
             String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
             if (StringUtils.isBlank(masterKey)) {
-                return PageResp.fail("蓝牙信息没有对应二级密钥!");
+                return PageResp.fail(1001,"蓝牙信息没有对应二级密钥!");
             }
             dkmKeyMapper.insert(newKey);
             // 新增钥匙生命周期表吊销记录
