@@ -371,6 +371,11 @@ public class DkmUserVehicleServiceImpl {
         //随机数
         int v = (int) (Math.random() * 100000000);
         String random = v + "";
+        // 计算分享钥匙周期  [20220725T111120Z]
+        long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE,false);
+        if (between < 0 ){
+            return PageResp.fail(1001,"非法钥匙生效和失效时间!");
+        }
         if (Objects.isNull(shareKey)){ // 新建
             DkmKey newKey = new DkmKey();
             newKey.setKeyResource(1);
@@ -384,8 +389,7 @@ public class DkmUserVehicleServiceImpl {
             newKey.setActivateTimes(5);//目前后台默认设置五次，后期可能会改
             newKey.setValFrom(valFrom);
             newKey.setValTo(valTo);
-            // 计算分享钥匙周期  [20220725T111120Z]
-            long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE);
+
             newKey.setPeriod(between);
             newKey.setPermissions(shareKeyVO.getKeyPermit());
             newKey.setApplyTime(new Date());
@@ -436,8 +440,6 @@ public class DkmUserVehicleServiceImpl {
             shareKey.setActivateTimes(5);//目前后台默认设置五次，后期可能会改
             shareKey.setValFrom(valFrom);
             shareKey.setValTo(valTo);
-            // 计算分享钥匙周期
-            long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE);
             shareKey.setPeriod(between);
             shareKey.setPermissions(shareKeyVO.getKeyPermit());
             shareKey.setApplyTime(new Date());
