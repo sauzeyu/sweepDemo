@@ -56,9 +56,7 @@ public class DkmKeyLogServiceImpl {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         if (
-                CharSequenceUtil.isBlank(startTime)
-                        && CharSequenceUtil.isBlank(endTime)
-
+                CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)
         ) {
 
             startTime = TimeUtil.getSysDate();
@@ -268,12 +266,11 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("userId", "用户id");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
         writer.addHeaderAlias("phoneModel", "手机型号");
-        writer.addHeaderAlias("vehicleType", "车型");
+        //writer.addHeaderAlias("vehicleType", "车型");
 
         //writer.addHeaderAlias("vehicleBrand", "车辆品牌");
-        //writer.addHeaderAlias("vehicleModel", "车辆型号");
+        writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("quickFlagVO", "日志类型");
-
         writer.addHeaderAlias("operateTime", "操作时间");
 
 

@@ -34,7 +34,7 @@ public class DkmPhoneCalibrationData extends BaseEntity {
      * 车型
      */
     @Size(min = 1, max = 16, message = "车型长度最长为16位")
-    //@NotBlank(message = "车辆型号不能为空")
+    @NotBlank(message = "车辆型号不能为空")
     private String vehicleModel;
 
     /**
