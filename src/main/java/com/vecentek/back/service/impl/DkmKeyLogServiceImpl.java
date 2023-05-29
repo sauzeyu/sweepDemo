@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyErrorTypeEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
@@ -254,9 +255,11 @@ public class DkmKeyLogServiceImpl {
         writer.setColumnWidth(2, 20);
         writer.setColumnWidth(3, 20);
         writer.setColumnWidth(4, 20);
+
         writer.setColumnWidth(5, 20);
         writer.setColumnWidth(6, 20);
         writer.setColumnWidth(7, 20);
+
         writer.setColumnWidth(8, 20);
         writer.setColumnWidth(9, 20);
         writer.setColumnWidth(10, 20);
@@ -267,8 +270,8 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("phoneModel", "手机型号");
         writer.addHeaderAlias("vehicleType", "车型");
 
-        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
-        writer.addHeaderAlias("vehicleModel", "车辆型号");
+        //writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        //writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("quickFlagVO", "日志类型");
 
         writer.addHeaderAlias("operateTime", "操作时间");
@@ -278,7 +281,7 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("operationType", "操作类型");
         writer.addHeaderAlias("flagVO", "操作结果");
         writer.addHeaderAlias("errorReason", "失败原因");
-
+        writer.addHeaderAlias("errorTypeVO", "故障类别");
     }
 
     /**
@@ -352,6 +355,10 @@ public class DkmKeyLogServiceImpl {
                 }
                 if (keyLog.getQuickFlag() == 2) {
                     keyLog.setFlagVO("快连");
+                }
+                if (StrUtil.isNotBlank(keyLog.getErrorType())) {
+                    String errorTypeVO = KeyErrorTypeEnum.matchName(keyLog.getErrorType());
+                    keyLog.setErrorTypeVO(errorTypeVO);
                 }
             });
 

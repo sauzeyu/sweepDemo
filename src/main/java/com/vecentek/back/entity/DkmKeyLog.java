@@ -99,4 +99,15 @@ public class DkmKeyLog implements Serializable {
      */
     @TableField(exist = false)
     private String operationType;
+
+    /**
+     * 01控车 02蓝牙连接 03钥匙管理
+     */
+    private String errorType;
+
+    /**
+     * 01控车 02蓝牙连接 03钥匙管理
+     */
+    @TableField(exist = false)
+    private String errorTypeVO;
 }

@@ -119,10 +119,10 @@ public class DkmPhoneCalibrationDataServiceImpl {
                 return pageResp;
             }
             ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
-            reader.addHeaderAlias("车辆型号", "vehicleModel");
+            //reader.addHeaderAlias("车辆型号", "vehicleModel");
             reader.addHeaderAlias("手机品牌", "phoneBrand");
             reader.addHeaderAlias("手机型号", "phoneModel");
-            reader.addHeaderAlias("车辆品牌", "vehicleBrand");
+            //reader.addHeaderAlias("车辆品牌", "vehicleBrand");
             reader.addHeaderAlias("车型", "vehicleType");
             reader.addHeaderAlias("标定数据", "personalAndCalibrationString");
             reader.addHeaderAlias("特征点数据", "featureData");
@@ -147,9 +147,12 @@ public class DkmPhoneCalibrationDataServiceImpl {
                     }
                 }
 
-                String afterID = calibration.getVehicleModel() + calibration.getPhoneModel();
-                if (!hashSet.add(afterID)) {
-                    return PageResp.fail("车辆型号【" + calibration.getVehicleModel() + "】与手机型号【" + calibration.getPhoneModel() + "】有重复数据");
+                //String afterID = calibration.getVehicleModel() + calibration.getPhoneModel();
+                //if (!hashSet.add(afterID)) {
+                //    return PageResp.fail("车辆型号【" + calibration.getVehicleModel() + "】与手机型号【" + calibration.getPhoneModel() + "】有重复数据");
+                //}
+                if (!hashSet.add( calibration.getPhoneModel())) {
+                    return PageResp.fail("手机型号【" + calibration.getPhoneModel() + "】有重复数据");
                 }
                 rowIndex++;
                 String personalAndCalibrationString = calibration.getPersonalAndCalibrationString().replace(" ", "");
@@ -277,18 +280,24 @@ public class DkmPhoneCalibrationDataServiceImpl {
         CellStyle cellStyle = writer.getCellStyle();
         cellStyle.setFont(cellFont);
 
+        //writer.setColumnWidth(0, 20);
+        //writer.setColumnWidth(1, 20);
+        //writer.setColumnWidth(2, 30);
+        //writer.setColumnWidth(3, 30);
+        //writer.setColumnWidth(4, 30);
+        //writer.setColumnWidth(5, 150);
+        //writer.setColumnWidth(6, 255);
+
         writer.setColumnWidth(0, 20);
         writer.setColumnWidth(1, 20);
         writer.setColumnWidth(2, 30);
-        writer.setColumnWidth(3, 30);
-        writer.setColumnWidth(4, 30);
-        writer.setColumnWidth(5, 150);
-        writer.setColumnWidth(6, 255);
+        writer.setColumnWidth(3, 150);
+        writer.setColumnWidth(4, 255);
 
-        writer.addHeaderAlias("vehicleModel", "车辆型号");
+        //writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
         writer.addHeaderAlias("phoneModel", "手机型号");
-        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        //writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleType", "车型");
         writer.addHeaderAlias("personalAndCalibrationString", "标定数据");
         writer.addHeaderAlias("featureData", "特征点数据");
