@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
-import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyErrorTypeEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
@@ -280,11 +279,12 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("operateTime", "操作时间");
 
 
-        writer.addHeaderAlias("statusCode", "操作码");
+        //writer.addHeaderAlias("statusCode", "操作码");
         writer.addHeaderAlias("operationType", "操作类型");
         writer.addHeaderAlias("flagVO", "操作结果");
-        writer.addHeaderAlias("errorReason", "失败原因");
         writer.addHeaderAlias("errorTypeVO", "故障类别");
+        writer.addHeaderAlias("errorReason", "失败原因");
+
     }
 
     /**
@@ -344,7 +344,6 @@ public class DkmKeyLogServiceImpl {
                     if (KeyStatusCodeEnum.SAFE_BLUETOOTH_DISCONNECT.getName().equals(keyLog.getStatusCode())) {
                         keyLog.setErrorReason(BluetoothErrorReasonEnum.matchReason(keyLog.getErrorReason()));
                     } else {
-//                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
                         keyLog.setErrorReason(KeyErrorReasonEnumJac.matchReason(keyLog.getErrorReason()));
                     }
                 }
