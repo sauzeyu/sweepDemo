@@ -109,7 +109,7 @@ public class DkmVehicleCalibrationDataServiceImpl {
                 return pageResp;
             }
             ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
-            reader.addHeaderAlias("车型", "vehicleModel");
+            reader.addHeaderAlias("车辆型号", "vehicleModel");
             reader.addHeaderAlias("蓝牙灵敏度等级", "level");
             reader.addHeaderAlias("标定数据", "vehicleAndCalibrationString");
             List<DkmVehicleCalibrationData> calibrationList = reader.readAll(DkmVehicleCalibrationData.class);
@@ -124,7 +124,7 @@ public class DkmVehicleCalibrationDataServiceImpl {
                 calibration.setVehicleAndCalibrationString(vehicleAndCalibrationString);
                 calibration.setCreateTime(new Date());
                 if (StringUtils.isBlank(calibration.getVehicleModel())) {
-                    return PageResp.fail("第 " + rowIndex + " 行导入的车型数据不能为空！");
+                    return PageResp.fail("第 " + rowIndex + " 行导入的车辆型号数据不能为空！");
                 }
                 if (calibration.getVehicleAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
                     return PageResp.fail("第 " + rowIndex + " 行导入的标定数据必须是32字节！");
@@ -256,7 +256,7 @@ public class DkmVehicleCalibrationDataServiceImpl {
         writer.setColumnWidth(1, 20);
         writer.setColumnWidth(5, 150);
 
-        writer.addHeaderAlias("vehicleModel", "车型");
+        writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("level", "蓝牙灵敏度等级");
         writer.addHeaderAlias("vehicleAndCalibrationString", "标定数据");
 
