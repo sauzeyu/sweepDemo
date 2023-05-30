@@ -357,12 +357,12 @@ class DataTable extends Component {
           <br />
           {/* 车辆品牌:&nbsp;
           {vehicleBrand}
-          <br />
-          车辆型号&nbsp;
-          {vehicleModel}
           <br /> */}
-          车型&nbsp;
-          {vehicleType}
+          车辆型号:&nbsp;
+          {vehicleModel}
+          <br />
+          {/* 车型&nbsp;
+          {vehicleType} */}
           <br />
         </>
       ),
