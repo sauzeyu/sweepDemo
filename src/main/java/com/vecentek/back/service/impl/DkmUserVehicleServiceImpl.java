@@ -207,7 +207,7 @@ public class DkmUserVehicleServiceImpl {
             key.setDkState(5);
             //key.setUpdateTime(new Date());
             dkmKeyMapper.updateById(key);
-            // 钥匙生命周期
+            // 钥匙生命周期1
             // 封装生命周期对象
             if (Objects.equals("0", key.getParentId())) {
                 keyLifecycleUtil.insert(key, 1, 3, 5);
