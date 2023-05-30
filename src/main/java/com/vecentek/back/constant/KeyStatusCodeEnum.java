@@ -169,7 +169,10 @@ public enum KeyStatusCodeEnum {
     SAFE_SEAT_VENTILATION_HEATING_PASSENGER_HEAT_MIDDLE_30M("0C22", "座椅通风加热—启动副驾座椅—加热-中(30分钟)"),
     SAFE_SEAT_VENTILATION_HEATING_PASSENGER_HEAT_LOW_10M("0C23", "座椅通风加热—启动副驾座椅—加热-低(10分钟)"),
     SAFE_SEAT_VENTILATION_HEATING_PASSENGER_HEAT_LOW_20M("0C24", "座椅通风加热—启动副驾座椅—加热-低(20分钟)"),
-    SAFE_SEAT_VENTILATION_HEATING_PASSENGER_HEAT_LOW_30M("0C25", "座椅通风加热—启动副驾座椅—加热-低(30分钟)");
+    SAFE_SEAT_VENTILATION_HEATING_PASSENGER_HEAT_LOW_30M("0C25", "座椅通风加热—启动副驾座椅—加热-低(30分钟)"),
+
+    SAFE_TRUNK_UNLOCK("0D00", "后备箱解锁"),
+    SAFE_TRUNK_LOCK("0D01", "后备箱闭锁");
 
     /**
      * CMD 操作码

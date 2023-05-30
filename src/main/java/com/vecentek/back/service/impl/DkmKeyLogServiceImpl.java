@@ -16,6 +16,7 @@ import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
 
 import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
@@ -98,7 +99,8 @@ public class DkmKeyLogServiceImpl {
                     if (KeyStatusCodeEnum.SAFE_BLUETOOTH_DISCONNECT.getName().equals(keyLog.getStatusCode())) {
                         keyLog.setErrorReason(BluetoothErrorReasonEnum.matchReason(keyLog.getErrorReason()));
                     } else {
-                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+//                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+                        keyLog.setErrorReason(KeyErrorReasonEnumJac.matchReason(keyLog.getErrorReason()));
                     }
                 }
             });
@@ -353,7 +355,8 @@ public class DkmKeyLogServiceImpl {
                     if (KeyStatusCodeEnum.SAFE_BLUETOOTH_DISCONNECT.getName().equals(keyLog.getStatusCode())) {
                         keyLog.setErrorReason(BluetoothErrorReasonEnum.matchReason(keyLog.getErrorReason()));
                     } else {
-                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+//                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+                        keyLog.setErrorReason(KeyErrorReasonEnumJac.matchReason(keyLog.getErrorReason()));
                     }
                 }
                 if (keyLog.getFlag() == 0) {
