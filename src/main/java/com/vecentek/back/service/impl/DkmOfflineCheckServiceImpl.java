@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.UploadBluetoothsErrorDTO;
 import com.vecentek.back.dto.UploadDTO;
@@ -466,7 +467,8 @@ public class DkmOfflineCheckServiceImpl {
             BeanUtils.copyProperties(dkmKeyLog, keyLogDetailResVO);
             // 根据枚举对应
             keyLogDetailResVO.setStatusName(KeyStatusCodeEnum.matchName(dkmKeyLog.getStatusCode()));
-            keyLogDetailResVO.setErrorReasonName(KeyErrorReasonEnum.matchReason(dkmKeyLog.getErrorReason()));
+//            keyLogDetailResVO.setErrorReasonName(KeyErrorReasonEnum.matchReason(dkmKeyLog.getErrorReason()));
+            keyLogDetailResVO.setErrorReasonName(KeyErrorReasonEnumJac.matchReason(dkmKeyLog.getErrorReason()));
             res.add(keyLogDetailResVO);
         }
         log.info("response：" + "/api/offlineCheck/getKeyLogDetail " + "查询成功" + res);

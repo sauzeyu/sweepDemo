@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyErrorTypeEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
@@ -64,7 +65,9 @@ public class DkmKeyLogServiceImpl {
 
         }
 
+
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
+                //.like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .like(CharSequenceUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
                 .like(CharSequenceUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
@@ -86,11 +89,13 @@ public class DkmKeyLogServiceImpl {
                     if (KeyStatusCodeEnum.SAFE_BLUETOOTH_DISCONNECT.getName().equals(keyLog.getStatusCode())) {
                         keyLog.setErrorReason(BluetoothErrorReasonEnum.matchReason(keyLog.getErrorReason()));
                     } else {
-                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+//                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+                        keyLog.setErrorReason(KeyErrorReasonEnumJac.matchReason(keyLog.getErrorReason()));
                     }
                 }
             });
         }
+
         return PageResp.success("查询成功", page.getTotal(), page.getRecords());
     }
 
@@ -144,6 +149,7 @@ public class DkmKeyLogServiceImpl {
             }
 
 
+            //ExcelWriter writer = ExcelUtil.getWriter(filePath);
             BigExcelWriter writer = ExcelUtil.getBigWriter(filePath);
             //按数据量大小拆分成不同的sheet页，每页数据量的大小设置小于rowAccessWindowSize
             //BigExcelWriter excelWriter = (BigExcelWriter) ExcelUtil.getBigWriter(200);
@@ -338,7 +344,8 @@ public class DkmKeyLogServiceImpl {
                     if (KeyStatusCodeEnum.SAFE_BLUETOOTH_DISCONNECT.getName().equals(keyLog.getStatusCode())) {
                         keyLog.setErrorReason(BluetoothErrorReasonEnum.matchReason(keyLog.getErrorReason()));
                     } else {
-                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+//                        keyLog.setErrorReason(KeyErrorReasonEnum.matchReason(keyLog.getErrorReason()));
+                        keyLog.setErrorReason(KeyErrorReasonEnumJac.matchReason(keyLog.getErrorReason()));
                     }
                 }
                 if (keyLog.getFlag() == 0) {

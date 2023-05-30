@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.vecentek.back.config.ProConfig;
 import com.vecentek.back.constant.KeyErrorReasonEnum;
+import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.dto.CountDTO;
@@ -206,7 +207,8 @@ public class DkmStatisticsServiceImpl {
         }
         for (CountDTO countDTO : list) {
             String name = countDTO.getName();
-            String reason = KeyErrorReasonEnum.matchReason(name);
+//            String reason = KeyErrorReasonEnum.matchReason(name);
+            String reason = KeyErrorReasonEnumJac.matchReason(name);
             countDTO.setName(reason);
         }
         return PageResp.success("查询成功", list);
