@@ -206,20 +206,7 @@ class DataTable extends Component {
       title: '车辆型号',
       dataIndex: 'vehicleModel',
     },
-    {
-      title: '故障类别',
-      dataIndex: 'errorType',
-      render: (text) => {
-        if (text === '01') {
-          return <Tag color="blue">控车</Tag>;
-        } else if (text === '02') {
-          return <Tag color="green">蓝牙连接</Tag>;
-        } else if (text === '03') {
-          return <Tag color="yellow">钥匙管理</Tag>;
-        }
-        // return QuickFlag[text];
-      },
-    },
+
     {
       title: '日志类型',
       dataIndex: 'quickFlag',
@@ -245,18 +232,18 @@ class DataTable extends Component {
         </Tooltip>
       ),
     },
-    {
-      title: '操作码',
-      dataIndex: 'statusCode',
-      ellipsis: {
-        showTitle: false,
-      },
-      render: (text) => (
-        <Tooltip placement="topLeft" title={text}>
-          {text}
-        </Tooltip>
-      ),
-    },
+    // {
+    //   title: '操作码',
+    //   dataIndex: 'statusCode',
+    //   ellipsis: {
+    //     showTitle: false,
+    //   },
+    //   render: (text) => (
+    //     <Tooltip placement="topLeft" title={text}>
+    //       {text}
+    //     </Tooltip>
+    //   ),
+    // },
     {
       title: '操作类型',
       dataIndex: 'operationType',
@@ -266,6 +253,20 @@ class DataTable extends Component {
       dataIndex: 'flag',
       render: (text) => {
         return keyLogFlagBadge[text];
+      },
+    },
+    {
+      title: '故障类别',
+      dataIndex: 'errorType',
+      render: (text) => {
+        if (text === '01') {
+          return <Tag color="blue">控车</Tag>;
+        } else if (text === '02') {
+          return <Tag color="green">蓝牙连接</Tag>;
+        } else if (text === '03') {
+          return <Tag color="yellow">钥匙管理</Tag>;
+        }
+        // return QuickFlag[text];
       },
     },
     {

@@ -58,7 +58,7 @@ class SearchForm extends Component {
       >
         <Row type={'flex'} gutter={16}>
           <Col {...colSpan1}>
-            <Form.Item label={'车型'} name="vehicleModel">
+            <Form.Item label={'车辆型号'} name="vehicleModel">
               <Input placeholder={'请输入车辆型号'} />
             </Form.Item>
           </Col>

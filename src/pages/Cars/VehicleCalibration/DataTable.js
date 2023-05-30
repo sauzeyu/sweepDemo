@@ -71,7 +71,7 @@ class DataTable extends Component {
       },
     },
     {
-      title: '车型',
+      title: '车辆型号',
       dataIndex: 'vehicleModel',
     },
     {
@@ -113,7 +113,7 @@ class DataTable extends Component {
 
       content: (
         <>
-          车型:&nbsp;
+          车辆型号:&nbsp;
           {vehicleModel}
           <br />
           蓝牙灵敏度:&nbsp;
