@@ -209,13 +209,13 @@ public class DkmUserVehicleServiceImpl {
         dkmUserVehicle.setUnbindTime(logoutTime);
         dkmUserVehicleMapper.updateById(dkmUserVehicle);
         // 根据vin吊销车辆所有钥匙
-        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getVin, vin).ne(DkmKey::getDkState, 5));
+        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getVin, vin).ne(DkmKey::getDkState, 5).or().ne(DkmKey::getDkState, 4));
         ArrayList<String> userList = new ArrayList<>();
         for (DkmKey key : keys) {
             key.setDkState(5);
             //key.setUpdateTime(new Date());
             dkmKeyMapper.updateById(key);
-            // 钥匙生命周期
+            // 钥匙生命周期1
             // 封装生命周期对象
             if (Objects.equals("0", key.getParentId())) {
                 keyLifecycleUtil.insert(key, 1, 3, 5);
@@ -255,7 +255,7 @@ public class DkmUserVehicleServiceImpl {
         }
         String userId = revokeKeyVO.getUserId();
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5的全部吊销
-        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).ne(DkmKey::getDkState, "5"));
+        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId).ne(DkmKey::getDkState, 5).or().ne(DkmKey::getDkState, 4));
         // 返回【用户id-vin号】的list
         ArrayList<String> list = new ArrayList<>();
         if (CollectionUtils.isEmpty(keys)) {
@@ -381,7 +381,11 @@ public class DkmUserVehicleServiceImpl {
             newKey.setKeyResource(1);
             newKey.setId(DkDateUtils.getUnionId());
             newKey.setUserId(shareKeyVO.getShareUserId());
-            newKey.setPhoneFingerprint(shareKeyVO.getPhoneFingerprint());
+            if(Objects.equals(shareKeyVO.getPhoneFingerprint(),"1")){ // 传1说明是小程序手机指纹
+                newKey.setPhoneFingerprint("1111111111111111"); // 小程序指纹默认16个1
+            }else {
+                newKey.setPhoneFingerprint(shareKeyVO.getPhoneFingerprint());
+            }
             newKey.setVehicleId(dkmVehicle.getId());
             newKey.setVin(shareKeyVO.getVin());
             newKey.setDkState(1);
