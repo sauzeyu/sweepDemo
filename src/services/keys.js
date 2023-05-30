@@ -37,7 +37,6 @@ export async function getKeyLogList(params) {
       // let newParams = params.filter(
       //   (item) => !['', null, undefined, NaN, false, true].includes(item)
       // )
-      // console.log('newParams',newParams);
       const keys = Object.keys(params);
 
       const arr = [];

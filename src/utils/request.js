@@ -56,7 +56,6 @@ function createDefaultRequest() {
           });
         }
         if (typeof response.data === 'object') {
-          console.log("response.data === 'object'");
           resultError = {
             response,
             code: response.data.errorCode,

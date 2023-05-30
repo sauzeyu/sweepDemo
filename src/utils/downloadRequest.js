@@ -53,8 +53,6 @@ function createDefaultRequest() {
             },
           });
         }
-        console.log(response);
-        console.log('response.data ', response.data);
         if (response.data instanceof Blob) {
           if (response.status === 401) {
             console.log('------after-----');

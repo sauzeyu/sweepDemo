@@ -57,7 +57,7 @@ class SearchForm extends Component {
         }}
       >
         <Row type={'flex'} gutter={20}>
-          <Col {...colSpan}>
+          {/* <Col {...colSpan}>
             <Form.Item label={'车型'} name="vehicleType">
               <Input placeholder={'请输入车辆型号'} />
             </Form.Item>
@@ -66,7 +66,7 @@ class SearchForm extends Component {
             <Form.Item label={'车辆品牌'} name="vehicleBrand">
               <Input placeholder={'请输入车辆品牌'} />
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col {...colSpan}>
             <Form.Item label={'车辆型号'} name="vehicleModel">
               <Input placeholder={'请输入车辆型号'} />

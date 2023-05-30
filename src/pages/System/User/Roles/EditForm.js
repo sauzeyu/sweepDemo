@@ -70,8 +70,22 @@ export default class EditForm extends Component {
   fetchMenus() {
     selectMenuTree()
       .then((res) => {
+        const menuList = res.data;
+
+        const updatedMenuList = menuList.map((item) => {
+          if (Array.isArray(item.children)) {
+            // 判断是否存在子数组
+            const updatedChildren = item.children.filter(
+              (child) => child.title !== '菜单管理',
+            );
+            return { ...item, children: updatedChildren };
+          } else {
+            return item;
+          }
+        });
+
         this.setState({
-          menus: res.data,
+          menus: updatedMenuList,
         });
         // this.form.current.setFieldsValue({menuList:res.data})
       })

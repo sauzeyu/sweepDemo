@@ -153,7 +153,6 @@ const SubTable2 = () => {
 };
 
 const SubTable = (props) => {
-  // console.log('that  ', props.that);
   const columns = [
     {
       title: '操作时间',
@@ -444,7 +443,6 @@ class DataTable extends Component {
       title: txt + '钥匙',
       content: `确定${txt}钥匙？`,
       onOk: () => {
-        console.log('this.props', this.props);
         return this.props
           .dispatch({
             type: 'keysManage/enableKey',
@@ -508,7 +506,6 @@ class DataTable extends Component {
     });
   };
   confirmExportExcel = () => {
-    console.log('this.props.searchFormValues;', this.props.searchFormValues);
     const {
       applyTime,
       dkState,
@@ -573,7 +570,6 @@ class DataTable extends Component {
     }
 
     if (keyType != null) {
-      console.log('keyType', keyType);
       if (keyType instanceof Array) {
         for (let i = 0; i < keyType.length; i++) {
           keyTypeEnum.push(SimpleKeyType[keyType[i]]);
@@ -627,8 +623,6 @@ class DataTable extends Component {
 
   exportExcel = () => {
     let creator = getDvaApp()._store.getState().user.currentUser.username;
-
-    // console.log('this.props.searchFormValues;', this.props.searchFormValues);
     const {
       applyTime,
       dkState,

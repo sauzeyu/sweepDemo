@@ -45,7 +45,6 @@ function decorateUserInfo(res) {
   const menus = PermissionsUtil.structureByDNA(res.menus);
   _initMenus(menus);
   userInfo.menus = menus;
-  console.log('userInfo.menus ', userInfo.menus);
 
   return userInfo;
 }

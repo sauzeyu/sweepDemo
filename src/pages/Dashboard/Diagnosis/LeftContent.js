@@ -53,7 +53,6 @@ export default class LeftContent extends Component {
             type: 'Diagnosis/changeLogDetail',
             payload: res?.data[0],
           });
-          console.log('logs', logs);
         }
       });
   };

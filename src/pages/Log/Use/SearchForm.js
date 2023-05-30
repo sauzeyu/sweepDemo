@@ -220,11 +220,11 @@ class SearchForm extends Component {
             </Form.Item>
           </Col>
 
-          <Col {...colSpan}>
+          {/* <Col {...colSpan}>
             <Form.Item label={'车辆品牌'} name="vehicleBrand">
               <Input placeholder="请输入车辆品牌" />
             </Form.Item>
-          </Col>
+          </Col> */}
 
           <Col {...colSpan}>
             <Form.Item label={'车辆型号'} name="vehicleModel">
@@ -233,13 +233,13 @@ class SearchForm extends Component {
           </Col>
         </Row>
 
-        <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
+        {/* <Row type={'flex'} gutter={16} hidden={buttonHidden} wrap={true}>
           <Col {...colSpan}>
             <Form.Item label={'车型'} name="vehicleType">
               <Input placeholder="请输入车型" />
             </Form.Item>
           </Col>
-        </Row>
+        </Row> */}
       </Form>
     );
   }
