@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/dkmBluetooths")
-public class DkmBluetoothsController {
+public class DkmBluetoothController {
     /**
      * 服务对象
      */

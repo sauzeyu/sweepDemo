@@ -24,6 +24,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +46,7 @@ public class JmeterTest {
     private DkmVehicleMapper dkmVehicleMapper;
 
     public static void main(String[] args) {
+
         BerTlvBuilder tlv = new BerTlvBuilder();
 
 
@@ -88,7 +91,7 @@ public class JmeterTest {
         System.out.println(dkmUsers);
         for (DkmUser dkmUser : dkmUsers) {
 
-            OutputStream os = new FileOutputStream(new File("G:\\JmeterTest3\\data\\login\\login" + dkmUser.getId()));
+            OutputStream os = Files.newOutputStream(Paths.get("G:\\JmeterTest3\\data\\login\\login" + dkmUser.getId()));
 
             BerTlvBuilder tlv = new BerTlvBuilder();
 
@@ -138,9 +141,9 @@ public class JmeterTest {
         for (DkmUser dkmUser : dkmUsers) {
             OutputStream os = new FileOutputStream(new File("G:\\JmeterTest3\\data\\openKey\\openKey" + dkmUser.getId()));
             BerTlvBuilder tlv = new BerTlvBuilder();
-            tlv.addBytes(new BerTag(0X1B), dkmUser.getId().toString().getBytes(StandardCharsets.UTF_8));
+            tlv.addBytes(new BerTag(0X1B), dkmUser.getId().getBytes(StandardCharsets.UTF_8));
             // tlv.addBytes(new BerTag(0X1D), dkmUser.getPhoneFingerprint().getBytes(StandardCharsets.UTF_8));
-            tlv.addBytes(new BerTag(0X9F, 0X62), dkmUser.getId().toString().getBytes(StandardCharsets.UTF_8));
+            tlv.addBytes(new BerTag(0X9F, 0X62), dkmUser.getId().getBytes(StandardCharsets.UTF_8));
             byte[] bytes = tlv.buildArray();
             os.write(bytes);
             os.flush();
@@ -221,7 +224,9 @@ public class JmeterTest {
             OutputStream os = new FileOutputStream(new File("G:\\JmeterTest3\\data\\refreshKey\\refreshKey" + i));
             BerTlvBuilder tlv = new BerTlvBuilder();
             tlv.addBytes(new BerTag(0x1b), (i + "").getBytes(StandardCharsets.UTF_8));
-            tlv.addBytes(new BerTag(0x09), "044DE55BA73D0B5BEF447AD516F142554ED07ADFE87736321A6C355AC4A3BF8B0A326BDA3BB7CCB374ADAC5CAF8459176ECF060968A6E1C8291D380880C9D0BEA8".getBytes(StandardCharsets.UTF_8));
+            tlv.addBytes(new BerTag(0x09),
+                    "044DE55BA73D0B5BEF447AD516F142554ED07ADFE87736321A6C355AC4A3BF8B0A326BDA3BB7CCB374ADAC5CAF8459176ECF060968A6E1C8291D380880C9D0BEA8".getBytes(
+                            StandardCharsets.UTF_8));
             byte[] bytes = tlv.buildArray();
 
             os.write(bytes);
@@ -235,7 +240,8 @@ public class JmeterTest {
         OutputStream os = new FileOutputStream(new File("G:\\JmeterTest\\openKey\\openKey"));
 
 
-        os.write(toBytes("1101141B01391D10333735653966376400000000000000009F62114B5042425854424A39445331344D5552579F6081C865794A68624763694F694A49557A49314E694973496E523563434936496B705856434A392E65794A7759584E7A643239795A434936496A49315A445531595751794F444E68595451774D47466D4E445930597A63325A4463784D324D774E32466B496977695A586877496A6F784E6A51344E7A55324D6A63304C434A3163325679626D46745A534936496A45314E7A41774D6A49314D7A6B78496E302E6432497639504455423153783246695941384137305A31415656334E324459687441556467535365466267"));
+        os.write(toBytes(
+                "1101141B01391D10333735653966376400000000000000009F62114B5042425854424A39445331344D5552579F6081C865794A68624763694F694A49557A49314E694973496E523563434936496B705856434A392E65794A7759584E7A643239795A434936496A49315A445531595751794F444E68595451774D47466D4E445930597A63325A4463784D324D774E32466B496977695A586877496A6F784E6A51344E7A55324D6A63304C434A3163325679626D46745A534936496A45314E7A41774D6A49314D7A6B78496E302E6432497639504455423153783246695941384137305A31415656334E324459687441556467535365466267"));
         os.flush();
         os.close();
     }
@@ -243,9 +249,11 @@ public class JmeterTest {
     @Test
     public void hmac() {
         byte[] k1 = "32323232323232323232323232323232".getBytes(StandardCharsets.UTF_8);
-        byte[] bytes = toBytes("00000000001F000000000000000000363339313331373230323230333331543130353032345A3230333230333331543130353032345A4B5042425854424A39445331344D555257333735653966376400000000000000000000000000000000000000000039010000000000000000000000000000000001000530333331313035303234303731363332");
+        byte[] bytes = toBytes(
+                "00000000001F000000000000000000363339313331373230323230333331543130353032345A3230333230333331543130353032345A4B5042425854424A39445331344D555257333735653966376400000000000000000000000000000000000000000039010000000000000000000000000000000001000530333331313035303234303731363332");
         HMac hMac = new HMac(HmacAlgorithm.HmacSHA256, HexUtil.parseHex("32323232323232323232323232323232"));
-        String s = hMac.digestHex(HexUtil.parseHex("00000000001F000000000000000000363339313331373230323230333331543130353032345A3230333230333331543130353032345A4B5042425854424A39445331344D555257333735653966376400000000000000000000000000000000000000000039010000000000000000000000000000000001000530333331313035303234303731363332"));
+        String s = hMac.digestHex(HexUtil.parseHex(
+                "00000000001F000000000000000000363339313331373230323230333331543130353032345A3230333230333331543130353032345A4B5042425854424A39445331344D555257333735653966376400000000000000000000000000000000000000000039010000000000000000000000000000000001000530333331313035303234303731363332"));
         System.out.println(s);
 
     }
@@ -254,7 +262,7 @@ public class JmeterTest {
      * 制造上传钥匙使用日志测试数据
      */
     @Test
-    public void uploadKeyLog() throws IOException{
+    public void uploadKeyLog() throws IOException {
         for (int i = 0; i <= 250; i++) {
             // 使用日志 statusCode 1 byte
             // 使用日志 statusCode 2 byte
@@ -263,43 +271,22 @@ public class JmeterTest {
             OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_1byte" + i));
             BerTlvBuilder tlv = new BerTlvBuilder();
             // VIN
-            tlv.addBytes(new BerTag(0X9F, 0X62), RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
+            tlv.addBytes(new BerTag(0X9F, 0X62),
+                    RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
             // keyId
             tlv.addBytes(new BerTag(0X07), (i + "").getBytes(StandardCharsets.UTF_8));
             // statusCode 1个byte
-            ArrayList<String> list = CollUtil.newArrayList("08", "0A", "0B", "0C", "0D", "03", "04", "05", "06", "09", "0E");
-            tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
-            // operateTime
-            tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406T163929Z".getBytes(StandardCharsets.UTF_8));
-            // userId
-            tlv.addBytes(new BerTag(0X1b), (i + "").getBytes(StandardCharsets.UTF_8));
-            // phoneBrand
-            tlv.addBytes(new BerTag(0X9F, 0X16), ("压测手机").getBytes(StandardCharsets.UTF_8));
-            // phoneModel
-            tlv.addBytes(new BerTag(0X9F, 0X17), ("压测手机").getBytes(StandardCharsets.UTF_8));
-            // errorReason 为空 为使用日志
-//            tlv.addBytes(new BerTag(0X9F, 0X3C), ("压测手机").getBytes(StandardCharsets.UTF_8));
-            byte[] bytes = tlv.buildArray();
-            os.write(bytes);
-            os.flush();
-            os.close();
-        }
-    }
-    @Test
-    public void uploadKeyLog2() throws IOException{
-        for (int i = 0; i <= 250; i++) {
-            // 使用日志 statusCode 1 byte
-            // 使用日志 statusCode 2 byte
-            // 错误日志 statusCode 1 byte
-            // 错误日志 statusCode 2 byte
-            OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_2byte" + i));
-            BerTlvBuilder tlv = new BerTlvBuilder();
-            // VIN
-            tlv.addBytes(new BerTag(0X9F, 0X62), RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
-            // keyId
-            tlv.addBytes(new BerTag(0X07), (i + "").getBytes(StandardCharsets.UTF_8));
-            // statusCode 1个byte
-            ArrayList<String> list = CollUtil.newArrayList("0400", "0401", "0500", "0501", "0600", "0601", "0700", "0701", "0800", "0801");
+            ArrayList<String> list = CollUtil.newArrayList("08",
+                    "0A",
+                    "0B",
+                    "0C",
+                    "0D",
+                    "03",
+                    "04",
+                    "05",
+                    "06",
+                    "09",
+                    "0E");
             tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
             // operateTime
             tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406T163929Z".getBytes(StandardCharsets.UTF_8));
@@ -319,8 +306,61 @@ public class JmeterTest {
     }
 
     @Test
-    public void rand(){
-        ArrayList<String> list = CollUtil.newArrayList("08", "0A", "0B", "0C", "0D", "03", "04", "05", "06", "09", "0E");
+    public void uploadKeyLog2() throws IOException {
+        for (int i = 0; i <= 250; i++) {
+            // 使用日志 statusCode 1 byte
+            // 使用日志 statusCode 2 byte
+            // 错误日志 statusCode 1 byte
+            // 错误日志 statusCode 2 byte
+            OutputStream os = new FileOutputStream(new File("E:\\uploadKeyLog\\uploadKeyLog_useLog_2byte" + i));
+            BerTlvBuilder tlv = new BerTlvBuilder();
+            // VIN
+            tlv.addBytes(new BerTag(0X9F, 0X62),
+                    RandomUtil.randomString(17).toUpperCase().getBytes(StandardCharsets.UTF_8));
+            // keyId
+            tlv.addBytes(new BerTag(0X07), (i + "").getBytes(StandardCharsets.UTF_8));
+            // statusCode 1个byte
+            ArrayList<String> list = CollUtil.newArrayList("0400",
+                    "0401",
+                    "0500",
+                    "0501",
+                    "0600",
+                    "0601",
+                    "0700",
+                    "0701",
+                    "0800",
+                    "0801");
+            tlv.addBytes(new BerTag(0X9F, 0X3B), RandomUtil.randomEle(list).getBytes(StandardCharsets.UTF_8));
+            // operateTime
+            tlv.addBytes(new BerTag(0X9F, 0X3D), "20220406T163929Z".getBytes(StandardCharsets.UTF_8));
+            // userId
+            tlv.addBytes(new BerTag(0X1b), (i + "").getBytes(StandardCharsets.UTF_8));
+            // phoneBrand
+            tlv.addBytes(new BerTag(0X9F, 0X16), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // phoneModel
+            tlv.addBytes(new BerTag(0X9F, 0X17), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            // errorReason 为空 为使用日志
+//            tlv.addBytes(new BerTag(0X9F, 0X3C), ("压测手机").getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = tlv.buildArray();
+            os.write(bytes);
+            os.flush();
+            os.close();
+        }
+    }
+
+    @Test
+    public void rand() {
+        ArrayList<String> list = CollUtil.newArrayList("08",
+                "0A",
+                "0B",
+                "0C",
+                "0D",
+                "03",
+                "04",
+                "05",
+                "06",
+                "09",
+                "0E");
         String s = RandomUtil.randomEle(list);
         System.out.println(s);
     }

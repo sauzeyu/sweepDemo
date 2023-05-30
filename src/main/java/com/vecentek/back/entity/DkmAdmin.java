@@ -20,9 +20,25 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class DkmAdmin extends BaseEntity implements Serializable {
+
+    /**
+     * 用户ID
+     */
     @TableId(type = IdType.AUTO)
     private Integer id;
+
+    /**
+     * 用户名称
+     */
     private String username;
+
+    /**
+     * 用户密码
+     */
     private String password;
+
+    /**
+     * 用户描述信息
+     */
     private String extraInfo;
 }

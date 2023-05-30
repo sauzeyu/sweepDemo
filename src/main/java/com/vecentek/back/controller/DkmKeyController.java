@@ -1,8 +1,8 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
-import com.vecentek.back.mapper.DkmKeyMapper;
 import com.vecentek.back.service.impl.DkmKeyServiceImpl;
 import com.vecentek.common.response.PageResp;
 import org.springframework.scheduling.annotation.Async;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -35,12 +34,30 @@ public class DkmKeyController {
     private DkmKeyServiceImpl dkmKeyServiceImpl;
 
     @Resource
-    private DkmKeyMapper dkmKeyMapper;
-
-    @Resource
     private DkmKeyLogHistoryExportMapper dkmKeyLogHistoryExportMapper;
 
 
+    /**
+     * 分页查询钥匙信息
+     * @param pageIndex
+     * @param pageSize
+     * @param userId
+     * @param vin
+     * @param periodMin
+     * @param periodMax
+     * @param periodUnit
+     * @param applyStartTime
+     * @param applyEndTime
+     * @param valFromStartTime
+     * @param valFromEndTime
+     * @param valToStartTime
+     * @param valToEndTime
+     * @param keyType
+     * @param keyResource
+     * @param dkState
+     * @param keyClassification
+     * @return
+     */
     @GetMapping(value = "/selectForPage")
     public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
                                   @RequestParam(name = "pageSize") int pageSize,
@@ -58,8 +75,7 @@ public class DkmKeyController {
                                   Integer keyType,
                                   Integer keyResource,
                                   Integer[] dkState,
-                                  Integer[] keyClassification
-    ) {
+                                  Integer[] keyClassification) {
         return this.dkmKeyServiceImpl.selectForPage(pageIndex,
                 pageSize,
                 userId,
@@ -76,8 +92,7 @@ public class DkmKeyController {
                 keyType,
                 keyResource,
                 dkState,
-                keyClassification
-                );
+                keyClassification);
     }
 
 
@@ -90,7 +105,9 @@ public class DkmKeyController {
      * @return 钥匙信息列表
      */
     @GetMapping(value = "/selectForPageByUserId")
-    public PageResp selectForPageByUserId(@RequestParam(name = "pageIndex") int index, @RequestParam(name = "pageSize") int limit, @RequestParam Integer id) {
+    public PageResp selectForPageByUserId(@RequestParam(name = "pageIndex") int index,
+                                          @RequestParam(name = "pageSize") int limit,
+                                          @RequestParam Integer id) {
         return this.dkmKeyServiceImpl.selectForPageByUserId(index, limit, id);
     }
 
@@ -102,7 +119,9 @@ public class DkmKeyController {
      * @return 钥匙列表
      */
     @GetMapping(value = "/selectForPageByVehicleId")
-    public PageResp selectForPageByVehicleId(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, @RequestParam Integer vehicleId) {
+    public PageResp selectForPageByVehicleId(@RequestParam(name = "pageIndex") int pageIndex,
+                                             @RequestParam(name = "pageSize") int pageSize,
+                                             @RequestParam Integer vehicleId) {
         return this.dkmKeyServiceImpl.selectForPageByVehicleId(pageIndex, pageSize, vehicleId);
     }
 
@@ -116,8 +135,11 @@ public class DkmKeyController {
      * @return
      */
     @PostMapping(value = "/updateStateById")
-    public PageResp updateStateById(@RequestParam String keyId, @RequestParam Integer dkState, @RequestParam String userId,@RequestParam String vin) {
-        return this.dkmKeyServiceImpl.updateStateById(keyId, dkState, userId,vin);
+    public PageResp updateStateById(@RequestParam String keyId,
+                                    @RequestParam Integer dkState,
+                                    @RequestParam String userId,
+                                    @RequestParam String vin) throws DiagnosticLogsException {
+        return this.dkmKeyServiceImpl.updateStateById(keyId, dkState, userId, vin);
     }
 
 
@@ -133,8 +155,8 @@ public class DkmKeyController {
      */
 
     @PostMapping(value = "/updateStateForRevokeById")
-    public PageResp updateStateForRevokeById(@RequestParam String userId,@RequestParam String vin) {
-        return this.dkmKeyServiceImpl.updateStateForRevokeById(userId,vin);
+    public PageResp updateStateForRevokeById(@RequestParam String userId, @RequestParam String vin) throws DiagnosticLogsException {
+        return this.dkmKeyServiceImpl.updateStateForRevokeById(userId, vin);
     }
 
     /**
@@ -149,9 +171,12 @@ public class DkmKeyController {
      * @return
      */
     @GetMapping(value = "/selectForPageByVal")
-    //TODO 查看前端是否使用
-    public PageResp selectForPageByVal(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize,
-                                       @RequestParam String valFrom, @RequestParam String valTo, @RequestParam Long period, @RequestParam Long dkState) {
+    public PageResp selectForPageByVal(@RequestParam(name = "pageIndex") int pageIndex,
+                                       @RequestParam(name = "pageSize") int pageSize,
+                                       @RequestParam String valFrom,
+                                       @RequestParam String valTo,
+                                       @RequestParam Long period,
+                                       @RequestParam Long dkState) {
         return this.dkmKeyServiceImpl.selectForPageByVal(pageIndex, pageSize, valFrom, valTo, period, dkState);
     }
 
@@ -190,19 +215,13 @@ public class DkmKeyController {
                                          Integer[] dkState,
                                          Integer keyResource,
                                          String creator,
-                                         Integer[] keyClassification
-                                         ) {
+                                         Integer[] keyClassification) {
         // 1.3形成文件名
         String excelName = "钥匙信息记录-" + System.currentTimeMillis();
 
         // 2向历史导出记录新增一条状态为导出中的数据
-        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder()
-                .exportStatus(0)
-                .missionName(excelName)
-                .creator(creator)
-                .createTime(new Date())
-                .type(1)
-                .build();
+        DkmKeyLogHistoryExport build = DkmKeyLogHistoryExport.builder().exportStatus(0).missionName(excelName).creator(
+                creator).createTime(new Date()).type(1).build();
         dkmKeyLogHistoryExportMapper.insert(build);
 
         downloadKeyExcel(vin,
@@ -221,8 +240,7 @@ public class DkmKeyController {
                 keyResource,
                 creator,
                 excelName,
-                keyClassification
-                );
+                keyClassification);
         return PageResp.success("正在导出");
 
     }
@@ -230,20 +248,20 @@ public class DkmKeyController {
     /**
      * 开启其他线程异步导出钥匙信息excel
      *
-     * @param vin
-     * @param userId
-     * @param keyType
-     * @param applyStartTime
-     * @param applyEndTime
-     * @param periodMax
-     * @param periodMin
-     * @param periodUnit
-     * @param valFromStartTime
-     * @param valFromEndTime
-     * @param valToStartTime
-     * @param valToEndTime
-     * @param dkStates
-     * @param creator
+     * @param vin              vin号
+     * @param userId           用户id
+     * @param keyType          钥匙类型
+     * @param applyStartTime   申请开始时间
+     * @param applyEndTime     申请结束时间
+     * @param periodMax        周期最大值
+     * @param periodMin        周期最小值
+     * @param periodUnit       周期单位
+     * @param valFromStartTime 生效开始时间
+     * @param valFromEndTime   生效结束时间
+     * @param valToStartTime   失效开始时间
+     * @param valToEndTime     失效结束时间
+     * @param dkStates         钥匙状态
+     * @param creator          创建人
      */
     @Async
     public void downloadKeyExcel(String vin,
@@ -262,10 +280,8 @@ public class DkmKeyController {
                                  Integer keyResource,
                                  String creator,
                                  String excelName,
-                                 Integer[] keyClassification
-                                 ) {
-        this.dkmKeyServiceImpl.downloadKeyLogExcel(
-                vin,
+                                 Integer[] keyClassification) {
+        this.dkmKeyServiceImpl.downloadKeyLogExcel(vin,
                 userId,
                 keyType,
                 applyStartTime,
@@ -281,8 +297,7 @@ public class DkmKeyController {
                 keyResource,
                 creator,
                 excelName,
-                keyClassification
-                );
+                keyClassification);
 
 
     }

@@ -85,8 +85,8 @@ public interface DkmKeyLogMapper extends BaseMapper<DkmKeyLog> {
             "and flag = 1")
     int countUseToday(String now, String lastDay);
 
-    @Select("select count(1) as count from dkm_key_log where  operate_time >= #{lastDay} and operate_time <= #{now} and flag = 0")
-    int countErrorToday(String now, String lastDay);
+    @Select("select count(1) as count from dkm_key_log where  operate_time >= #{now} and operate_time <= #{nextDay} and flag = 0")
+    int countErrorToday(String now, String nextDay);
 
     @Select("select count(1) as value , phone_brand as name \n" +
             "from dkm_key_log\n" +

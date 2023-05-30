@@ -186,19 +186,27 @@ public class DkmVehicleServiceImpl {
         CellStyle cellStyle = writer.getCellStyle();
         cellStyle.setFont(cellFont);
 
+        //writer.setColumnWidth(0, 20);
+        //writer.setColumnWidth(1, 20);
+        //writer.setColumnWidth(2, 20);
+        //writer.setColumnWidth(3, 20);
+        //writer.setColumnWidth(4, 70);
+        //writer.setColumnWidth(5, 50);
+        //writer.setColumnWidth(6, 20);
+        //writer.setColumnWidth(7, 40);
+
+
         writer.setColumnWidth(0, 20);
         writer.setColumnWidth(1, 20);
-        writer.setColumnWidth(2, 20);
-        writer.setColumnWidth(3, 20);
-        writer.setColumnWidth(4, 70);
-        writer.setColumnWidth(5, 50);
-        writer.setColumnWidth(6, 20);
-        writer.setColumnWidth(7, 40);
+        writer.setColumnWidth(2, 70);
+        writer.setColumnWidth(3, 50);
+        writer.setColumnWidth(4, 20);
+        writer.setColumnWidth(5, 40);
 
         writer.addHeaderAlias("vin", "车辆vin号");
-        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        //writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleModel", "车辆型号");
-        writer.addHeaderAlias("vehicleType", "车型");
+        //writer.addHeaderAlias("vehicleType", "车型");
         writer.addHeaderAlias("hwDeviceSn", "蓝牙设备序列号");
         writer.addHeaderAlias("searchNumber", "蓝牙检索号");
         writer.addHeaderAlias("hwDeviceProviderNo", "蓝牙供应商编号");

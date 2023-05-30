@@ -1,14 +1,9 @@
 package com.vecentek.back.controller;
 
-import cn.hutool.core.util.IdUtil;
-import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
-import com.vecentek.back.mapper.DkmKeyLogMapper;
 import com.vecentek.back.service.impl.DkmKeyLogServiceImpl;
 import com.vecentek.common.response.PageResp;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -77,22 +67,19 @@ public class DkmKeyLogController {
     /**
      * 开始导出钥匙记录excel
      *
-     * @param vin
-     * @param userId
-     * @param startTime
-     * @param endTime
-     * @param phoneBrand
-     * @param phoneModel
-     * @param statusCode
-     * @param vehicleBrand
-     * @param vehicleModel
-     * @param vehicleType
-     * @param flag
-     * @param creator
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws IOException
-     * @throws InvalidKeySpecException
+     * @param vin 车架号
+     * @param userId 用户Id
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param phoneBrand 手机品牌
+     * @param phoneModel 手机型号
+     * @param statusCode 状态码
+     * @param vehicleBrand 车辆品牌
+     * @param vehicleModel 车辆型号
+     * @param vehicleType 车辆类型
+     * @param flag 信号量
+     * @param creator 创建者
+     * @return PageResp
      */
     @PostMapping(value = "/downloadKeyLogExcel")
     public PageResp startLoadKeyLogExcel(String vin,
@@ -121,7 +108,7 @@ public class DkmKeyLogController {
                 .build();
 
         dkmKeyLogHistoryExportMapper.insert(build);
-        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, creator, excelName);
+        downloadKeyLogExcel(vin, userId, startTime, endTime, phoneBrand, phoneModel, statusCode, flag, vehicleBrand, vehicleModel, vehicleType, excelName);
         return PageResp.success("正在导出");
 
     }
@@ -129,18 +116,17 @@ public class DkmKeyLogController {
     /**
      * 开启其他线程异步导出钥匙记录excel
      *
-     * @param vin
-     * @param userId
-     * @param startTime
-     * @param endTime
-     * @param phoneBrand
-     * @param phoneModel
-     * @param statusCode
-     * @param flag
-     * @param vehicleBrand
-     * @param vehicleModel
-     * @param vehicleType
-     * @param creator
+     * @param vin 车架号
+     * @param userId 用户Id
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param phoneBrand 手机品牌
+     * @param phoneModel 手机型号
+     * @param statusCode 状态码
+     * @param vehicleBrand 车辆品牌
+     * @param vehicleModel 车辆型号
+     * @param vehicleType 车辆类型
+     * @param flag 信号量
      */
     @Async
     public void downloadKeyLogExcel(String vin,
@@ -154,7 +140,6 @@ public class DkmKeyLogController {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator,
                                     String excelName
     ) {
 
@@ -171,7 +156,6 @@ public class DkmKeyLogController {
                         vehicleBrand,
                         vehicleModel,
                         vehicleType,
-                        creator,
                         excelName
                 );
 

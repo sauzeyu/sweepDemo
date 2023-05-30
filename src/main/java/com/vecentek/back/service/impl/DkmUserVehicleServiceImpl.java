@@ -8,11 +8,13 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.payneteasy.tlv.HexUtil;
+import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.entity.DkmUserVehicle;
 import com.vecentek.back.entity.DkmVehicle;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
@@ -25,22 +27,18 @@ import com.vecentek.back.util.KeyLifecycleUtil;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
-import com.vecentek.back.vo.SchemeVO;
 import com.vecentek.back.vo.ShareKeyVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.vecentek.back.util.ToolUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -74,7 +72,7 @@ public class DkmUserVehicleServiceImpl {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public PageResp insertUserVehicle(UserVehicleVO userVehicle) {
+    public PageResp insertUserVehicle(UserVehicleVO userVehicle) throws DiagnosticLogsException {
         log.info("request：" + "/api/userVehicle/insertUserVehicle " + userVehicle.toString());
         if (StrUtil.hasBlank(userVehicle.getUserId(), userVehicle.getVin())) {
             log.error("response：" + "/api/userVehicle/insertUserVehicle " + "上传失败，用户ID，VIN等必要参数未传递！");
@@ -96,6 +94,7 @@ public class DkmUserVehicleServiceImpl {
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(vehicleWrapper);
         if (dkmVehicle == null) {
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统不存在该车辆信息！");
+
             return PageResp.fail(2106, "系统不存在该车辆信息！");
         }
         // 检查车辆vin唯一性
@@ -128,10 +127,20 @@ public class DkmUserVehicleServiceImpl {
         } else if (dkmUserVehicle.getBindStatus() == 1) {
             // 数据库中存在有绑定的车辆，要求先解绑再绑定
             log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-            return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定");
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_THE_VEHICLE_BOUND_OWNER.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_THE_VEHICLE_BOUND_OWNER.getFaultId())
+                    .code(200)
+                    .vin(userVehicle.getVin())
+                    .userId(userVehicle.getUserId())
+                    .build();
+
+
+            //return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定");
         } else { // 绑定状态为解绑改为绑定，执行更新操作，可能是过户更换车主
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
             dkmUserVehicle.setUserId(dkmUser.getId());
+            dkmUserVehicle.setPhone(dkmUser.getId());
             if (userVehicle.getBindTime() != null) {
                 dkmUserVehicle.setBindTime(userVehicle.getBindTime());
             } else {
@@ -151,7 +160,6 @@ public class DkmUserVehicleServiceImpl {
         log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");
         return PageResp.fail("系统繁忙，请稍后再试！");
     }
-
     //public PageResp updateUserVehicle(UserChangeVO userChange) throws ParameterValidationException {
     //    log.info("request：" + "/api/userVehicle/updateUserVehicle " + userChange.toString());
     //    if (userChange == null || StringUtils.isBlank(userChange.getVin())) {
@@ -165,7 +173,7 @@ public class DkmUserVehicleServiceImpl {
     //}
 
     @Transactional(rollbackFor = Exception.class)
-    public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) {
+    public PageResp logoutUserVehicle(LogoutUserVehicleVO logoutUserVehicle) throws DiagnosticLogsException {
         log.info("request：" + "/api/userVehicle/logoutUserVehicle " + logoutUserVehicle.toString());
         String userId = logoutUserVehicle.getUserId();
         String vin = logoutUserVehicle.getVin();
@@ -182,7 +190,7 @@ public class DkmUserVehicleServiceImpl {
         // 根据userId和vin查询中间表
         DkmUserVehicle dkmUserVehicle = dkmUserVehicleMapper.selectOne(Wrappers.<DkmUserVehicle>lambdaQuery()
                 .eq(DkmUserVehicle::getVin, vin)
-                .eq(DkmUserVehicle::getPhone, userId)
+                .eq(DkmUserVehicle::getUserId, userId)
                 .eq(DkmUserVehicle::getBindStatus, 1));
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
@@ -239,7 +247,7 @@ public class DkmUserVehicleServiceImpl {
     }
 
 
-    public PageResp revokeKey(RevokeKeyVO revokeKeyVO) {
+    public PageResp revokeKey(RevokeKeyVO revokeKeyVO) throws DiagnosticLogsException {
         log.info("request：" + "/api/userVehicle/revokeKey " + revokeKeyVO.toString());
         if (StrUtil.hasBlank(revokeKeyVO.getUserId())) {
             log.info("response：" + "/api/userVehicle/revokeKey " + "必填参数未传递!");
@@ -309,7 +317,7 @@ public class DkmUserVehicleServiceImpl {
      * @param shareKeyVO
      * @return
      */
-    public PageResp shareKey(ShareKeyVO shareKeyVO) {
+    public PageResp shareKey(ShareKeyVO shareKeyVO) throws DiagnosticLogsException {
         // 非空检验
         if (StringUtils.isEmpty(shareKeyVO.getUserId()) ||
                 StringUtils.isEmpty(shareKeyVO.getVin()) ||
@@ -319,7 +327,11 @@ public class DkmUserVehicleServiceImpl {
                 StringUtils.isEmpty(shareKeyVO.getValFrom()) ||
                 StringUtils.isEmpty(shareKeyVO.getValTo()) ||
                 Objects.isNull(shareKeyVO.getKeyPermit())){
-            return PageResp.fail("传参中存在空值!");
+            throw DiagnosticLogsException.builder()
+                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_PARAMETERS_NULL.getBusinessId())
+                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_PARAMETERS_NULL.getFaultId())
+                    .build();
+            //return PageResp.fail("传参中存在空值!");
         }
         // 时间格式校验
         DateTime valFrom;
@@ -329,26 +341,26 @@ public class DkmUserVehicleServiceImpl {
             valTo = DateUtil.parse(shareKeyVO.getValTo(), "yyyy-MM-dd HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
-            return PageResp.fail("钥匙生效或失效时间格式解析失败!");
+            return PageResp.fail(1001,"钥匙生效或失效时间格式解析失败!");
         }
         // 检查是否自我分享
         if (Objects.equals(shareKeyVO.getUserId(),shareKeyVO.getShareUserId())){
-            return PageResp.fail("禁止自己分享给自己!");
+            return PageResp.fail(1001,"禁止自己分享给自己!");
         }
         // 钥匙检查
         DkmKey dkmKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId, shareKeyVO.getKeyId()));
         if (Objects.isNull(dkmKey)){
-            return PageResp.fail("钥匙信息为空!");
+            return PageResp.fail(1001,"钥匙信息为空!");
         }
         if (!Objects.equals(dkmKey.getParentId(),"0")){
-            return PageResp.fail("钥匙为分享钥匙不能进行分享!");
+            return PageResp.fail(1001,"钥匙为分享钥匙不能进行分享!");
         }
         if (!Objects.equals(dkmKey.getDkState(),1)){
-            return PageResp.fail("钥匙状态异常不能分享!");
+            return PageResp.fail(1001,"钥匙状态异常不能分享!");
         }
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, shareKeyVO.getVin()));
         if (Objects.isNull(dkmVehicle)){
-            return PageResp.fail("车辆信息为空!");
+            return PageResp.fail(1001,"车辆信息为空!");
         }
         // 查询是否已存在分享钥匙，如果存在即更新，不存在即新建
         DkmKey shareKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>()
@@ -359,6 +371,11 @@ public class DkmUserVehicleServiceImpl {
         //随机数
         int v = (int) (Math.random() * 100000000);
         String random = v + "";
+        // 计算分享钥匙周期  [20220725T111120Z]
+        long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE,false);
+        if (between < 0 ){
+            return PageResp.fail(1001,"非法钥匙生效和失效时间!");
+        }
         if (Objects.isNull(shareKey)){ // 新建
             DkmKey newKey = new DkmKey();
             newKey.setKeyResource(1);
@@ -376,8 +393,7 @@ public class DkmUserVehicleServiceImpl {
             newKey.setActivateTimes(5);//目前后台默认设置五次，后期可能会改
             newKey.setValFrom(valFrom);
             newKey.setValTo(valTo);
-            // 计算分享钥匙周期  [20220725T111120Z]
-            long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE);
+
             newKey.setPeriod(between);
             newKey.setPermissions(shareKeyVO.getKeyPermit());
             newKey.setApplyTime(new Date());
@@ -417,7 +433,7 @@ public class DkmUserVehicleServiceImpl {
             // 计算密钥K1
             String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
             if (StringUtils.isBlank(masterKey)) {
-                return PageResp.fail("蓝牙信息没有对应二级密钥!");
+                return PageResp.fail(1001,"蓝牙信息没有对应二级密钥!");
             }
             dkmKeyMapper.insert(newKey);
             // 新增钥匙生命周期表吊销记录
@@ -428,8 +444,6 @@ public class DkmUserVehicleServiceImpl {
             shareKey.setActivateTimes(5);//目前后台默认设置五次，后期可能会改
             shareKey.setValFrom(valFrom);
             shareKey.setValTo(valTo);
-            // 计算分享钥匙周期
-            long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE);
             shareKey.setPeriod(between);
             shareKey.setPermissions(shareKeyVO.getKeyPermit());
             shareKey.setApplyTime(new Date());

@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+
 /**
+ * 钥匙生命周期信息(dkmKeyLifecycle)表控制层
  * @author ：EdgeYu
  * @version ：1.0
  * @since 2022-05-19 14:30
@@ -22,6 +24,14 @@ public class DkmKeyLifecycleController {
     @Resource
     private DkmDkmKeyLifecycleServiceImpl dkmKeyLifecycleService;
 
+
+    /**
+     * 根据钥匙id分页查询钥匙生命周期
+     * @param pageIndex
+     * @param pageSize
+     * @param keyId
+     * @return
+     */
     @GetMapping("/selectForPageByKeyId")
     public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex,
                                   @RequestParam(name = "pageSize") int pageSize,

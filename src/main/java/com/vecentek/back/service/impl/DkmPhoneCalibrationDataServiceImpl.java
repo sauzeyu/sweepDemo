@@ -8,16 +8,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.CalibrationDataConstant;
 import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
 import com.vecentek.back.util.UploadUtil;
 import com.vecentek.common.response.PageResp;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -85,10 +84,11 @@ public class DkmPhoneCalibrationDataServiceImpl {
      * @return 是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp updateDkmPhoneCalibrationDataById(DkmPhoneCalibrationData dkmPhoneCalibrationData) {
+    public PageResp updateDkmPhoneCalibrationDataById(DkmPhoneCalibrationData dkmPhoneCalibrationData) throws DiagnosticLogsException {
 
         dkmPhoneCalibrationData.setUpdateTime(new Date());
         if (dkmPhoneCalibrationData.getPersonalAndCalibrationString().length() != ExcelConstant.CALIBRATION_LENGTH) {
+
             return PageResp.fail("标定数据必须是32字节");
         }
         if (!com.vecentek.back.util.HexUtil.isAsciiHexString(dkmPhoneCalibrationData.getPersonalAndCalibrationString())) {
@@ -122,9 +122,10 @@ public class DkmPhoneCalibrationDataServiceImpl {
             reader.addHeaderAlias("车辆型号", "vehicleModel");
             reader.addHeaderAlias("手机品牌", "phoneBrand");
             reader.addHeaderAlias("手机型号", "phoneModel");
-            reader.addHeaderAlias("车辆品牌", "vehicleBrand");
-            reader.addHeaderAlias("车型", "vehicleType");
+            //reader.addHeaderAlias("车辆品牌", "vehicleBrand");
+            //reader.addHeaderAlias("车型", "vehicleType");
             reader.addHeaderAlias("标定数据", "personalAndCalibrationString");
+            reader.addHeaderAlias("特征点数据", "featureData");
             List<DkmPhoneCalibrationData> calibrationList = reader.readAll(DkmPhoneCalibrationData.class);
             reader.close();
             if (calibrationList.size() == 0) {
@@ -276,20 +277,27 @@ public class DkmPhoneCalibrationDataServiceImpl {
         CellStyle cellStyle = writer.getCellStyle();
         cellStyle.setFont(cellFont);
 
+        //writer.setColumnWidth(0, 20);
+        //writer.setColumnWidth(1, 20);
+        //writer.setColumnWidth(2, 30);
+        //writer.setColumnWidth(3, 30);
+        //writer.setColumnWidth(4, 30);
+        //writer.setColumnWidth(5, 150);
+        //writer.setColumnWidth(6, 255);
+
         writer.setColumnWidth(0, 20);
         writer.setColumnWidth(1, 20);
         writer.setColumnWidth(2, 30);
-        writer.setColumnWidth(3, 30);
-        writer.setColumnWidth(4, 30);
-        writer.setColumnWidth(5, 150);
+        writer.setColumnWidth(3, 150);
+        writer.setColumnWidth(4, 255);
 
         writer.addHeaderAlias("vehicleModel", "车辆型号");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
         writer.addHeaderAlias("phoneModel", "手机型号");
-        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
-        writer.addHeaderAlias("vehicleType", "车型");
+        //writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        //writer.addHeaderAlias("vehicleType", "车型");
         writer.addHeaderAlias("personalAndCalibrationString", "标定数据");
-
+        writer.addHeaderAlias("featureData", "特征点数据");
         writer.write(calibrationDataList, true);
 
         try {

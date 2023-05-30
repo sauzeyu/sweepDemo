@@ -25,6 +25,7 @@ public class DkmOfflineCheckDTO extends BaseEntity {
      * 车架号
      */
     private String vin;
+
     /**
      * 车辆颜色
      */

@@ -33,21 +33,21 @@ public class DkmPhoneCalibrationData extends BaseEntity {
     /**
      * 车型
      */
-    @Size(min = 1, max = 16, message = "车型长度最长为8位")
+    @Size(min = 1, max = 16, message = "车型长度最长为16位")
     @NotBlank(message = "车辆型号不能为空")
     private String vehicleModel;
 
     /**
      * 手机品牌
      */
-    @Size(min = 1, max = 16, message = "手机品牌长度最长为8位")
+    @Size(min = 1, max = 16, message = "手机品牌长度最长为16位")
     @NotBlank(message = "手机品牌不能为空")
     private String phoneBrand;
 
     /**
      * 手机型号
      */
-    @Size(min = 1, max = 16, message = "手机型号长度最长为8位")
+    @Size(min = 1, max = 16, message = "手机型号长度最长为16位")
     @NotBlank(message = "手机型号不能为空")
     private String phoneModel;
 
@@ -65,12 +65,17 @@ public class DkmPhoneCalibrationData extends BaseEntity {
     /**
      * 车型
      */
-    @Size(min = 1, max = 16, message = "车型长度最长为8位")
+    @Size(min = 1, max = 16, message = "车型长度最长为16位")
     private String vehicleType;
     /**
      * 车辆品牌
      */
-    @Size(min = 1, max = 16, message = "车辆品牌长度最长为8位")
+    @Size(min = 1, max = 16, message = "车辆品牌长度最长为16位")
     private String vehicleBrand;
+  
+    /**
+     * 特征点数据
+     */
+    private String featureData;
 
 }

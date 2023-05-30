@@ -11,24 +11,19 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import com.vecentek.back.constant.BluetoothErrorReasonEnum;
 import com.vecentek.back.constant.ExcelConstant;
-
 import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyErrorReasonEnumJac;
+import com.vecentek.back.constant.KeyErrorTypeEnum;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.entity.DkmKeyLog;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
-
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyLogMapper;
-import com.vecentek.back.mapper.DkmSystemConfigurationExpiredMapper;
-import com.vecentek.back.util.DownLoadUtil;
-
+import com.vecentek.back.util.TimeUtil;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -38,11 +33,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import javax.annotation.Resource;
-
 import java.io.File;
-
 import java.util.List;
 
 /**
@@ -65,13 +57,11 @@ public class DkmKeyLogServiceImpl {
         Page<DkmKeyLog> page = new Page<>(pageIndex, pageSize);
         //1Excel 文件名 文件格式 文件路径的提前处理 例如2022-6-1~2022-7-1钥匙使用记录
         if (
-                CharSequenceUtil.isBlank(startTime)
-                        && CharSequenceUtil.isBlank(endTime)
-
+                CharSequenceUtil.isBlank(startTime) && CharSequenceUtil.isBlank(endTime)
         ) {
 
-            startTime = DownLoadUtil.getSysDate();
-            endTime = DownLoadUtil.getNextDay();
+            startTime = TimeUtil.getSysDate();
+            endTime = TimeUtil.getNextDay();
 
         }
 
@@ -79,16 +69,16 @@ public class DkmKeyLogServiceImpl {
         LambdaQueryWrapper<DkmKeyLog> wrapper = Wrappers.<DkmKeyLog>lambdaQuery()
                 //.like(StrUtil.isNotBlank(statusCode), DkmKeyLog::getStatusCode, statusCode)
                 .in(ObjectUtil.isNotNull(statusCode), DkmKeyLog::getStatusCode, statusCode)
-                .like(StrUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
-                .like(StrUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
-                .like(StrUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
-                .like(StrUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
-                .like(StrUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
-                .like(StrUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
-                .like(StrUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
+                .like(CharSequenceUtil.isNotBlank(vehicleBrand), DkmKeyLog::getVehicleBrand, vehicleBrand)
+                .like(CharSequenceUtil.isNotBlank(vehicleModel), DkmKeyLog::getVehicleModel, vehicleModel)
+                .like(CharSequenceUtil.isNotBlank(vehicleType), DkmKeyLog::getVehicleType, vehicleType)
+                .like(CharSequenceUtil.isNotBlank(phoneModel), DkmKeyLog::getPhoneModel, phoneModel)
+                .like(CharSequenceUtil.isNotBlank(phoneBrand), DkmKeyLog::getPhoneBrand, phoneBrand)
+                .like(CharSequenceUtil.isNotBlank(userId), DkmKeyLog::getUserId, userId)
+                .like(CharSequenceUtil.isNotBlank(vin), DkmKeyLog::getVin, vin)
                 .eq(ObjectUtil.isNotNull(flag), DkmKeyLog::getFlag, flag)
-                .ge(StrUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
-                .le(StrUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
+                .ge(CharSequenceUtil.isNotBlank(startTime), DkmKeyLog::getOperateTime, startTime)
+                .le(CharSequenceUtil.isNotBlank(endTime), DkmKeyLog::getOperateTime, endTime)
                 .orderByDesc(DkmKeyLog::getOperateTime);
         page = dkmKeyLogMapper.selectPage(page, wrapper);
 
@@ -112,18 +102,17 @@ public class DkmKeyLogServiceImpl {
     /**
      * 异步下载单表分页钥匙记录信息
      *
-     * @param vin
-     * @param userId
-     * @param startTime
-     * @param endTime
-     * @param phoneBrand
-     * @param phoneModel
-     * @param statusCode
-     * @param flag
-     * @param vehicleBrand
-     * @param vehicleModel
-     * @param vehicleType
-     * @param creator
+     * @param vin 车架号
+     * @param userId 用户Id
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param phoneBrand 手机品牌
+     * @param phoneModel 手机型号
+     * @param statusCode 状态码
+     * @param vehicleBrand 车辆品牌
+     * @param vehicleModel 车辆型号
+     * @param vehicleType 车辆类型
+     * @param flag 信号量
      */
     @Async
     @Transactional(rollbackFor = Exception.class)
@@ -138,17 +127,16 @@ public class DkmKeyLogServiceImpl {
                                     String vehicleBrand,
                                     String vehicleModel,
                                     String vehicleType,
-                                    String creator,
                                     String excelName
     ) {
         try {
 
 
             if (CharSequenceUtil.isBlank(startTime)) {
-                startTime = DownLoadUtil.getSysDate();
+                startTime = TimeUtil.getSysDate();
             }
             if (CharSequenceUtil.isBlank(endTime)) {
-                endTime = DownLoadUtil.getNextDay();
+                endTime = TimeUtil.getNextDay();
             }
 
 
@@ -271,23 +259,24 @@ public class DkmKeyLogServiceImpl {
         writer.setColumnWidth(2, 20);
         writer.setColumnWidth(3, 20);
         writer.setColumnWidth(4, 20);
+
         writer.setColumnWidth(5, 20);
         writer.setColumnWidth(6, 20);
         writer.setColumnWidth(7, 20);
+
         writer.setColumnWidth(8, 20);
         writer.setColumnWidth(9, 20);
-
+        writer.setColumnWidth(10, 20);
 
         writer.addHeaderAlias("vin", "车辆vin号");
         writer.addHeaderAlias("userId", "用户id");
         writer.addHeaderAlias("phoneBrand", "手机品牌");
         writer.addHeaderAlias("phoneModel", "手机型号");
-        writer.addHeaderAlias("vehicleType", "车型");
+        //writer.addHeaderAlias("vehicleType", "车型");
 
-        writer.addHeaderAlias("vehicleBrand", "车辆品牌");
+        //writer.addHeaderAlias("vehicleBrand", "车辆品牌");
         writer.addHeaderAlias("vehicleModel", "车辆型号");
-
-
+        writer.addHeaderAlias("quickFlagVO", "日志类型");
         writer.addHeaderAlias("operateTime", "操作时间");
 
 
@@ -295,26 +284,26 @@ public class DkmKeyLogServiceImpl {
         writer.addHeaderAlias("operationType", "操作类型");
         writer.addHeaderAlias("flagVO", "操作结果");
         writer.addHeaderAlias("errorReason", "失败原因");
-
+        writer.addHeaderAlias("errorTypeVO", "故障类别");
     }
 
     /**
      * 根据分页条件去查询钥匙记录
      *
-     * @param vin
-     * @param userId
-     * @param startTime
-     * @param endTime
-     * @param phoneBrand
-     * @param phoneModel
-     * @param statusCode
-     * @param flag
-     * @param vehicleBrand
-     * @param vehicleModel
-     * @param vehicleType
-     * @param start
-     * @param end
-     * @return
+     * @param vin 车架号
+     * @param userId 用户Id
+     * @param startTime 开始时间
+     * @param endTime 结束时间
+     * @param phoneBrand 手机品牌
+     * @param phoneModel 手机型号
+     * @param statusCode 状态码
+     * @param vehicleBrand 车辆品牌
+     * @param vehicleModel 车辆型号
+     * @param vehicleType 车辆类型
+     * @param flag 信号量
+     * @param start 分页开始
+     * @param end 分页结束
+     * @return List<DkmKeyLog>
      */
     private List<DkmKeyLog> getDkmKeyLogs(String vin,
                                           String userId,
@@ -364,6 +353,16 @@ public class DkmKeyLogServiceImpl {
                 }
                 if (keyLog.getFlag() == 1) {
                     keyLog.setFlagVO("成功");
+                }
+                if (keyLog.getQuickFlag() == 1) {
+                    keyLog.setFlagVO("普通");
+                }
+                if (keyLog.getQuickFlag() == 2) {
+                    keyLog.setFlagVO("快连");
+                }
+                if (StrUtil.isNotBlank(keyLog.getErrorType())) {
+                    String errorTypeVO = KeyErrorTypeEnum.matchName(keyLog.getErrorType());
+                    keyLog.setErrorTypeVO(errorTypeVO);
                 }
             });
 

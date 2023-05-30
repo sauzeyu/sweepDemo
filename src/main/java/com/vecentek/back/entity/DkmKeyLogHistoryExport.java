@@ -1,7 +1,6 @@
 package com.vecentek.back.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,7 +23,6 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ApiModel(value = "dkm_key_log_history_export", description = "钥匙操作日志导出记录")
 public class DkmKeyLogHistoryExport extends BaseEntity implements Serializable {
 
     /**

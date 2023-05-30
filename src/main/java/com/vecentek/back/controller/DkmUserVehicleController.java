@@ -1,23 +1,20 @@
 package com.vecentek.back.controller;
 
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.service.impl.DkmUserVehicleServiceImpl;
 import com.vecentek.back.vo.GetBluetoothVinVO;
 import com.vecentek.back.vo.LogoutUserVehicleVO;
 import com.vecentek.back.vo.RevokeKeyVO;
-
-import com.vecentek.back.vo.SchemeVO;
 import com.vecentek.back.vo.ShareKeyVO;
 import com.vecentek.back.vo.UserVehicleVO;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.websocket.server.PathParam;
 
 /**
  * @author ：EdgeYu
@@ -32,7 +29,7 @@ public class DkmUserVehicleController {
     private DkmUserVehicleServiceImpl dkmUserVehicleService;
 
     @RequestMapping(value = "/insertUserVehicle", method = RequestMethod.POST)
-    public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle) {
+    public PageResp insertUserVehicle(@RequestBody UserVehicleVO userVehicle) throws DiagnosticLogsException {
         return dkmUserVehicleService.insertUserVehicle(userVehicle);
     }
 
@@ -49,7 +46,7 @@ public class DkmUserVehicleController {
      * @return
      */
     @RequestMapping(value = "/logoutUserVehicle", method = RequestMethod.POST)
-    public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle) {
+    public PageResp logoutUserVehicle(@RequestBody LogoutUserVehicleVO logoutUserVehicle) throws DiagnosticLogsException {
         return dkmUserVehicleService.logoutUserVehicle(logoutUserVehicle);
     }
 
@@ -73,7 +70,7 @@ public class DkmUserVehicleController {
      * @return
      */
     @RequestMapping(value = "/revokeKey", method = RequestMethod.POST)
-    public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) {
+    public PageResp revokeKey(@RequestBody RevokeKeyVO revokeKeyVO) throws DiagnosticLogsException {
         return dkmUserVehicleService.revokeKey(revokeKeyVO);
     }
 
@@ -85,7 +82,7 @@ public class DkmUserVehicleController {
      * @return
      */
     @RequestMapping(value = "/shareKey", method = RequestMethod.POST)
-    public PageResp shareKey(@RequestBody ShareKeyVO shareKeyVO) {
+    public PageResp shareKey(@RequestBody ShareKeyVO shareKeyVO) throws DiagnosticLogsException {
         return dkmUserVehicleService.shareKey(shareKeyVO);
     }
 

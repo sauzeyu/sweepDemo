@@ -1,10 +1,9 @@
 package com.vecentek.back.config;
 
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import com.google.common.collect.Range;
 import com.vecentek.back.util.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -15,31 +14,53 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * 根据年月分表规则
+ *
+ * @author ：liubo
+ * @version ：1.0
+ * @since 2022-02-10 14:59
  */
 @Component
 @Slf4j
 public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
 
-    //获取系统初始时间，确定安时间分表后的最小表名
-    public Date getSysDate() {
+
+    public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    private static final Map<Class<?>, Function<Object, String>> FORMATTER_MAP = new HashMap<>();
+
+    static {
+        FORMATTER_MAP.put(String.class, Object::toString);
+        FORMATTER_MAP.put(Timestamp.class, date -> new SimpleDateFormat(DATE_FORMAT).format((Timestamp) date));
+        FORMATTER_MAP.put(LocalDate.class, date -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+            LocalDateTime localDateTime = LocalDateTime.of((LocalDate) date, LocalTime.MIN);
+            return formatter.format(localDateTime);
+        });
+    }
+
+
+    public Date getConfigDate() {
         ProConfig proConfig = SpringContextUtil.getBean(ProConfig.class);
-        if (StrUtil.isEmpty(proConfig.getSysDate())) {
-            throw new RuntimeException("未设置系统初始时间");
+        if (CharSequenceUtil.isEmpty(proConfig.getSysDate())) {
+            throw new IllegalArgumentException("未设置系统初始时间");
         }
         return DateUtil.parse(proConfig.getSysDate(), "yyyy-MM-dd");
     }
 
-    //获取分表时间集
+    /**
+     * 获取分表时间集
+     *
+     * @return Integer
+     */
     public Integer getSubTable() {
         TestProperties bean = SpringContextUtil.getBean(TestProperties.class);
         return bean.getFlag();
@@ -47,7 +68,7 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
 
     @Override
     public void init() {
-
+        // 在这里进行分片算法的初始化操作，例如读取配置文件、创建数据结构等
     }
 
     @Override
@@ -55,11 +76,13 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
         return null;
     }
 
-    //插入策略
+    /**
+     * 插入策略
+     */
     @Override
     public String doSharding(Collection collection, PreciseShardingValue preciseShardingValue) {
         //获取字段值
-        Date time = null;
+        Date time;
         if (preciseShardingValue.getValue() instanceof String) {
             time = DateUtil.parse(preciseShardingValue.getValue().toString());
         } else {
@@ -67,7 +90,7 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
         }
         String year = DateUtil.date(time).toString("yyyyMM");
 
-        Integer table = Integer.parseInt(year.substring(year.length() - 2));
+        int table = Integer.parseInt(year.substring(year.length() - 2));
 
         Integer subTable = getSubTable();
         String logicTableName = preciseShardingValue.getLogicTableName();
@@ -83,56 +106,45 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
     }
 
 
-    //处理范围查询
     @Override
-    public Collection<String> doSharding(Collection collection, RangeShardingValue rangeShardingValue) {
-        //返回数据库节点名称list
-        Collection<String> collect = new ArrayList<>();
-        Range valueRange = rangeShardingValue.getValueRange();
-        //获取查询条件中范围值
-        //Range<String> valueRange = rangeShardingValue.getValueRange();
+    public Collection<String> doSharding(Collection availableTargetNames, RangeShardingValue rangeShardingValue) {
+        // 方法实现没法指定泛型
+        Range<?> valueRange = rangeShardingValue.getValueRange();
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if (valueRange.lowerEndpoint() instanceof String) {
+        String lowerDate;
+        String upperDate;
+        if (!FORMATTER_MAP.containsKey(valueRange.lowerEndpoint().getClass())) {
+            throw new IllegalArgumentException("不支持的时间类型");
+        }
+        lowerDate = FORMATTER_MAP.get(valueRange.lowerEndpoint().getClass()).apply(valueRange.lowerEndpoint());
+        upperDate = FORMATTER_MAP.get(valueRange.upperEndpoint().getClass()).apply(valueRange.upperEndpoint());
 
-            String lowerDate = (String) valueRange.lowerEndpoint();
-            //系统时间
-            Date sysStartTime = getSysDate();
-            DateTime sst = DateUtil.parseDateTime(lowerDate);
-            if (sysStartTime.compareTo(sst) > 0) {
-                lowerDate = DateUtil.format(sysStartTime, "yyyy-MM-dd 00:00:00");
-            }
-            String upperDate = (String) valueRange.upperEndpoint();
-            //获取时间段内的所有年月，不会超过当前时间
-            List<String> suffixList = getSuffixListForRangeByMonth(lowerDate, upperDate);
-            suffixList.forEach(yyyyMM -> {
-                collect.add(rangeShardingValue.getLogicTableName() + "_" + yyyyMM);
-            });
-            if (collect.size() == 0) {
-                throw new RuntimeException("没有对应的数据表");
-            }
+        // 获取数据库节点名称
+        List<String> tableNames = getTableNames(lowerDate, upperDate, rangeShardingValue.getLogicTableName());
+        if (tableNames.isEmpty()) {
+            throw new IllegalArgumentException("没有对应的数据表");
         }
-        if (valueRange.lowerEndpoint() instanceof Timestamp) {
-            Timestamp lowerTime = (Timestamp) valueRange.lowerEndpoint();
-            String lowerDate = df.format(lowerTime);
-            //系统时间
-            Date sysStartTime = getSysDate();
-            DateTime sst = DateUtil.parseDateTime(lowerDate);
-            if (sysStartTime.compareTo(sst) > 0) {
-                lowerDate = DateUtil.format(sysStartTime, "yyyy-MM-dd 00:00:00");
-            }
-            Timestamp upperTime = (Timestamp) valueRange.upperEndpoint();
-            String upperDate = df.format(upperTime);
-            //获取时间段内的所有年月，不会超过当前时间
-            List<String> suffixList = getSuffixListForRangeByMonth(lowerDate, upperDate);
-            suffixList.forEach(yyyyMM -> {
-                collect.add(rangeShardingValue.getLogicTableName() + "_" + yyyyMM);
-            });
-            if (collect.size() == 0) {
-                throw new RuntimeException("没有对应的数据表");
-            }
+
+
+        return new ArrayList<>(tableNames);
+    }
+
+
+    /**
+     * 获取符合时间段的数据库节点名称列表
+     */
+    private List<String> getTableNames(String lowerDate, String upperDate, String logicTableName) {
+        List<String> tableNames = new ArrayList<>();
+        //系统时间
+        Date sysStartTime = getConfigDate();
+        DateTime sst = DateUtil.parseDateTime(lowerDate);
+        if (sysStartTime.compareTo(sst) > 0) {
+            lowerDate = DateUtil.format(sysStartTime, "yyyy-MM-dd 00:00:00");
         }
-        return collect;
+        //获取时间段内的所有年月，不会超过当前时间
+        List<String> suffixList = getSuffixListForRangeByMonth(lowerDate, upperDate);
+        suffixList.forEach(prefix -> tableNames.add(logicTableName + "_" + prefix));
+        return tableNames;
     }
 
     /**
@@ -148,8 +160,7 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
         }
         List<DateTime> dateTimes = DateUtil.rangeToList(st, et, DateField.DAY_OF_MONTH);
         List<String> collect = dateTimes.stream().map(x -> x.toString("yyyyMM")).collect(Collectors.toList());
-        HashSet h = new HashSet(collect);
-        List<String> suffixList = ListUtil.toList(h);
+        List<String> suffixList = collect.stream().distinct().collect(Collectors.toList());
 
         List<String> list = suffixList.stream().sorted(Comparator.comparing(Integer::parseInt)).collect(Collectors.toList());
         Integer subTable = getSubTable();
@@ -161,9 +172,8 @@ public class YearMonthShardingAlgorithm implements StandardShardingAlgorithm {
             list.set(list.size() - 1, lastStr.substring(0, 4) + newLastNum);
         }
 
-        List<String> subTableList = list.stream()
-                .filter(time -> Integer.parseInt(time.substring(time.length() - 2)) % subTable == 0).collect(Collectors.toList());
-        return subTableList;
+
+        return list.stream().filter(time -> Integer.parseInt(time.substring(time.length() - 2)) % subTable == 0).collect(Collectors.toList());
     }
 
 }

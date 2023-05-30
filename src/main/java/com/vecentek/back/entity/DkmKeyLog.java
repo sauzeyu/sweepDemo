@@ -2,8 +2,6 @@ package com.vecentek.back.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -18,7 +16,6 @@ import java.util.Date;
  */
 
 @Data
-@ApiModel(value = "dkm_key_log", description = "钥匙操作日志")
 public class DkmKeyLog implements Serializable {
     private static final long serialVersionUID = 485887257926622961L;
     /**
@@ -75,22 +72,42 @@ public class DkmKeyLog implements Serializable {
     /**
      * 车辆品牌
      */
-    @ApiModelProperty(name = "vehicle_brand", notes = "车辆品牌", dataType = "String", required = true)
+
     private String vehicleBrand;
     /**
      * 车辆型号
      */
-    @ApiModelProperty(name = "vehicle_model", notes = "车辆型号", dataType = "String", required = true)
+
     private String vehicleModel;
     /**
      * 车型
      */
     private String vehicleType;
+    /**
+     * 是否为快连日志，1为普通，2为快连
+     */
+    private int quickFlag;
 
+    /**
+     * 是否为快连日志，1为普通，2为快连
+     */
+    @TableField(exist = false)
+    private String quickFlagVO;
 
     /**
      * 操作类型
      */
     @TableField(exist = false)
     private String operationType;
+
+    /**
+     * 01控车 02蓝牙连接 03钥匙管理
+     */
+    private String errorType;
+
+    /**
+     * 01控车 02蓝牙连接 03钥匙管理
+     */
+    @TableField(exist = false)
+    private String errorTypeVO;
 }

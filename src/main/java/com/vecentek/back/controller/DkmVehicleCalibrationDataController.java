@@ -4,8 +4,8 @@ package com.vecentek.back.controller;/**
  * @apiNote
  */
 
-import com.vecentek.back.entity.DkmPhoneCalibrationData;
 import com.vecentek.back.entity.DkmVehicleCalibrationData;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.service.impl.DkmPhoneCalibrationDataServiceImpl;
 import com.vecentek.back.service.impl.DkmVehicleCalibrationDataServiceImpl;
@@ -44,7 +44,7 @@ public class DkmVehicleCalibrationDataController {
      * @version 1.0
      */
     @GetMapping(value = "/selectForPage")
-    public PageResp selectForPage(@RequestParam(name = "pageIndex") int index, @RequestParam(name = "pageSize") int limit, String vehicleModel,Integer level) {
+    public PageResp selectForPage(@RequestParam(name = "pageIndex") int index, @RequestParam(name = "pageSize") int limit, String vehicleModel,Integer level) throws DiagnosticLogsException {
         return this.dkmVehicleCalibrationDataServiceImpl.selectForPage(index, limit, vehicleModel,level);
     }
 
@@ -55,7 +55,7 @@ public class DkmVehicleCalibrationDataController {
      * @version 1.0
      */
     @PostMapping(value = "/updateById")
-    public PageResp updateById(@RequestBody DkmVehicleCalibrationData dkmVehicleCalibrationData) throws VecentException {
+    public PageResp updateById(@RequestBody DkmVehicleCalibrationData dkmVehicleCalibrationData) throws VecentException, DiagnosticLogsException {
         return this.dkmVehicleCalibrationDataServiceImpl.updateDkmVehicleCalibrationDataById(dkmVehicleCalibrationData);
     }
 

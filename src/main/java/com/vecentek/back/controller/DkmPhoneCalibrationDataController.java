@@ -1,9 +1,11 @@
 package com.vecentek.back.controller;
 
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.service.impl.DkmPhoneCalibrationDataServiceImpl;
 import com.vecentek.common.response.PageResp;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,7 +51,8 @@ public class DkmPhoneCalibrationDataController {
      * @return 单条数据
      */
     @PostMapping(value = "/updateById")
-    public PageResp updateById(@RequestBody DkmPhoneCalibrationData dkmPhoneCalibrationData) throws VecentException {
+    public PageResp updateById(@RequestBody DkmPhoneCalibrationData dkmPhoneCalibrationData,BindingResult result) throws VecentException, DiagnosticLogsException {
+        boolean b = result.hasErrors();
         return this.dkmPhoneCalibrationDataServiceImpl.updateDkmPhoneCalibrationDataById(dkmPhoneCalibrationData);
     }
 
@@ -61,7 +64,9 @@ public class DkmPhoneCalibrationDataController {
 
     @PostMapping(value = "/downloadCalibrationExcel")
     public void downloadCalibrationExcel(String phoneBrand, String vehicleModel, String vehicleType, String vehicleBrand, Boolean isXlsx, HttpServletResponse response) throws UnsupportedEncodingException {
+
         this.dkmPhoneCalibrationDataServiceImpl.downloadCalibrationExcel(phoneBrand, vehicleModel, vehicleType, vehicleBrand, isXlsx, response);
+
     }
 
 
