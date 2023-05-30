@@ -12,7 +12,7 @@ export default defineConfig({
   proxy: {
     '/dkserver-back': {
       // target: 'http://172.16.70.50:8000/vecentek/',
-      target: 'http://172.16.70.5:9001/vecentek/',
+      target: 'http://172.16.70.50:8000/vecentek/',
       changeOrigin: true,
       // pathRewrite: { '^/api': '' },
       logLevel: 'debug',
