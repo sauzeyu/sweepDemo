@@ -8,7 +8,6 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.payneteasy.tlv.HexUtil;
-import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
@@ -121,22 +120,13 @@ public class DkmUserVehicleServiceImpl {
             dkmUserVehicle1.setCreateTime(new Date());
             int insert = dkmUserVehicleMapper.insert(dkmUserVehicle1);
             if (insert == 1) {
-                log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-                return PageResp.success("上传成功");
+                log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功！");
+                return PageResp.success("上传成功！");
             }
         } else if (dkmUserVehicle.getBindStatus() == 1) {
             // 数据库中存在有绑定的车辆，要求先解绑再绑定
-            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_THE_VEHICLE_BOUND_OWNER.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.USER_VEHICLE_BINDING_THE_VEHICLE_BOUND_OWNER.getFaultId())
-                    .code(200)
-                    .vin(userVehicle.getVin())
-                    .userId(userVehicle.getUserId())
-                    .build();
-
-
-            //return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定");
+            log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功！");
+            return PageResp.fail("当前车辆已存在车主，请先解绑后再绑定！");
         } else { // 绑定状态为解绑改为绑定，执行更新操作，可能是过户更换车主
             dkmUserVehicle.setVehicleId(dkmVehicle.getId());
             dkmUserVehicle.setUserId(dkmUser.getId());
@@ -153,8 +143,8 @@ public class DkmUserVehicleServiceImpl {
             dkmUserVehicle.setUpdateTime(new Date());
             int i = dkmUserVehicleMapper.updateById(dkmUserVehicle);
             if (i == 1) {
-                log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功");
-                return PageResp.success("上传成功");
+                log.info("response：" + "/api/userVehicle/insertUserVehicle " + "上传成功！");
+                return PageResp.success("上传成功！");
             }
         }
         log.info("response：" + "/api/userVehicle/insertUserVehicle " + "系统繁忙，请稍后再试！");
@@ -195,7 +185,7 @@ public class DkmUserVehicleServiceImpl {
         if (dkmUserVehicle == null) {
             // 用户与车辆信息不匹配
             log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "用户与车辆信息不匹配!");
-            return PageResp.fail(1001, "用户与车辆信息不匹配!");
+            return PageResp.fail(1001, "用户与车辆信息不匹配！");
         }
         // 根据vin查询车辆表
         DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, vin));
@@ -225,25 +215,25 @@ public class DkmUserVehicleServiceImpl {
             // 返回钥匙用户id
             userList.add(key.getUserId());
         }
-        log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "注销成功" + userList);
-        return PageResp.success("注销成功", userList);
+        log.info("response：" + "/api/userVehicle/logoutUserVehicle " + "注销成功！" + userList);
+        return PageResp.success("注销成功！", userList);
     }
 
     public PageResp getBluetoothVin(GetBluetoothVinVO getBluetoothVinVO) {
         log.info("request：" + "/api/userVehicle/getBluetoothVin " + getBluetoothVinVO.toString());
         String vin = getBluetoothVinVO.getVin();
         if (StrUtil.hasBlank(vin)) {
-            log.info("response：" + "/api/userVehicle/getBluetoothVin " + "必填参数未传递!");
+            log.info("response：" + "/api/userVehicle/getBluetoothVin " + "必填参数未传递！");
             return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
         }
         // 根据vin查询车辆表 表查得到就是有蓝牙 查不到说明没有蓝牙
         DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery().eq(DkmVehicle::getVin, vin));
         if (vehicle == null) {
-            log.info("response：" + "/api/userVehicle/getBluetoothVin " + "不具有蓝牙钥匙功能!");
-            return PageResp.success("不具有蓝牙钥匙功能!", false);
+            log.info("response：" + "/api/userVehicle/getBluetoothVin " + "不具有蓝牙钥匙功能！");
+            return PageResp.success("不具有蓝牙钥匙功能！", false);
         }
         log.info("response：" + "/api/userVehicle/getBluetoothVin " + "具有蓝牙钥匙功能!");
-        return PageResp.success("具有蓝牙钥匙功能!", true);
+        return PageResp.success("具有蓝牙钥匙功能！", true);
     }
 
 
@@ -259,7 +249,7 @@ public class DkmUserVehicleServiceImpl {
         // 返回【用户id-vin号】的list
         ArrayList<String> list = new ArrayList<>();
         if (CollectionUtils.isEmpty(keys)) {
-            return PageResp.fail(1001, "吊销失败,该用户下没有启动状态的钥匙");
+            return PageResp.fail(1001, "吊销失败，该用户下没有启动状态的钥匙！");
         }
         for (DkmKey key : keys) {
             // 吊销
@@ -308,8 +298,8 @@ public class DkmUserVehicleServiceImpl {
             // 加入list
             list.add(key.getUserId() + "-" + key.getVin());
         }
-        log.info("response：" + "/api/userVehicle/revokeKey " + "吊销钥匙成功!" + list);
-        return PageResp.success("吊销钥匙成功!", list);
+        log.info("response：" + "/api/userVehicle/revokeKey " + "吊销钥匙成功！" + list);
+        return PageResp.success("吊销钥匙成功！", list);
     }
 
     /**
@@ -327,11 +317,7 @@ public class DkmUserVehicleServiceImpl {
                 StringUtils.isEmpty(shareKeyVO.getValFrom()) ||
                 StringUtils.isEmpty(shareKeyVO.getValTo()) ||
                 Objects.isNull(shareKeyVO.getKeyPermit())){
-            throw DiagnosticLogsException.builder()
-                    .businessId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_PARAMETERS_NULL.getBusinessId())
-                    .faultId(DiagnosticLogsEnum.SHARE_KEYS_USER_CENTER_KEY_PLATFORM_PARAMETERS_NULL.getFaultId())
-                    .build();
-            //return PageResp.fail("传参中存在空值!");
+            return PageResp.fail("传参中存在空值！");
         }
         // 时间格式校验
         DateTime valFrom;
@@ -341,26 +327,26 @@ public class DkmUserVehicleServiceImpl {
             valTo = DateUtil.parse(shareKeyVO.getValTo(), "yyyy-MM-dd HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
-            return PageResp.fail(1001,"钥匙生效或失效时间格式解析失败!");
+            return PageResp.fail(1001,"钥匙生效或失效时间格式解析失败！");
         }
         // 检查是否自我分享
         if (Objects.equals(shareKeyVO.getUserId(),shareKeyVO.getShareUserId())){
-            return PageResp.fail(1001,"禁止自己分享给自己!");
+            return PageResp.fail(1001,"禁止自己分享给自己！");
         }
         // 钥匙检查
         DkmKey dkmKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId, shareKeyVO.getKeyId()));
         if (Objects.isNull(dkmKey)){
-            return PageResp.fail(1001,"钥匙信息为空!");
+            return PageResp.fail(1001,"钥匙信息为空！");
         }
         if (!Objects.equals(dkmKey.getParentId(),"0")){
-            return PageResp.fail(1001,"钥匙为分享钥匙不能进行分享!");
+            return PageResp.fail(1001,"钥匙为分享钥匙不能进行分享！");
         }
         if (!Objects.equals(dkmKey.getDkState(),1)){
-            return PageResp.fail(1001,"钥匙状态异常不能分享!");
+            return PageResp.fail(1001,"钥匙状态异常不能分享！");
         }
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, shareKeyVO.getVin()));
         if (Objects.isNull(dkmVehicle)){
-            return PageResp.fail(1001,"车辆信息为空!");
+            return PageResp.fail(1001,"车辆信息为空！");
         }
         // 查询是否已存在分享钥匙，如果存在即更新，不存在即新建
         DkmKey shareKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>()
@@ -374,7 +360,7 @@ public class DkmUserVehicleServiceImpl {
         // 计算分享钥匙周期  [20220725T111120Z]
         long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE,false);
         if (between < 0 ){
-            return PageResp.fail(1001,"非法钥匙生效和失效时间!");
+            return PageResp.fail(1001,"非法钥匙生效和失效时间！");
         }
         if (Objects.isNull(shareKey)){ // 新建
             DkmKey newKey = new DkmKey();
@@ -433,7 +419,7 @@ public class DkmUserVehicleServiceImpl {
             // 计算密钥K1
             String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
             if (StringUtils.isBlank(masterKey)) {
-                return PageResp.fail(1001,"蓝牙信息没有对应二级密钥!");
+                return PageResp.fail(1001,"蓝牙信息没有对应二级密钥！");
             }
             dkmKeyMapper.insert(newKey);
             // 新增钥匙生命周期表吊销记录
@@ -482,7 +468,7 @@ public class DkmUserVehicleServiceImpl {
             shareKey.setBleMacAddress(blMacAddress);
             dkmKeyMapper.updateById(shareKey);
         }
-        return PageResp.success("分享成功!");
+        return PageResp.success("分享成功！");
     }
 
 
