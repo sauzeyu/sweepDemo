@@ -19,6 +19,7 @@ public enum KeyErrorReasonEnumJac {
     ERROR_REASON_0107("0107", "读取鉴权参数错误"),
     ERROR_REASON_0108("0108", "TBOX判定与BCM认证失败"),
     ERROR_REASON_0109("0109", "控制鉴权失败次数超过2"),
+    ERROR_REASON_0155("0155", "操作超时"),
 
     /**
      * IOS特有 蓝牙连接 02 开头
@@ -124,6 +125,7 @@ public enum KeyErrorReasonEnumJac {
     ERROR_REASON_0307("0307", "RTC掉电同步失败,请到有网环境进行同步"),
     ERROR_REASON_0308("0308", "认证超时"),
     ERROR_REASON_0309("0309", "白名单认证失败,请到有网环境进行同步"),
+    ERROR_REASON_0310("0310", "心跳超时"),
     ERROR_REASON_030A("030A", "新的车主接入"),
     ERROR_REASON_030B("030B", "用户连接数已满,非车主钥匙无法进行连接"),
     ERROR_REASON_030C("030C", "白名单冻结,请到有网环境进行同步"),
