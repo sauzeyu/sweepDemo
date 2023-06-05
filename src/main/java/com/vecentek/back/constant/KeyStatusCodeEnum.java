@@ -11,42 +11,42 @@ public enum KeyStatusCodeEnum {
     /**
      * CMD 指令
      */
-    SAFE_BLUETOOTH_DISCONNECT("08", "蓝牙断开"),
+    SAFE_BLUETOOTH_DISCONNECT("0008", "蓝牙断开"),
 
-    SAFE_AUTOMATIC_WELCOME("0A", "自动迎宾"),
+    SAFE_AUTOMATIC_WELCOME("000A", "自动迎宾"),
 
-    SAFE_AUTOMATIC_LOCK_LEAVE("0B", "离车自动上锁"),
+    SAFE_AUTOMATIC_LOCK_LEAVE("000B", "离车自动上锁"),
 
-    SAFE_AUTOMATIC_UNLOCK_NEARBY("0C", "近车自动解锁"),
+    SAFE_AUTOMATIC_UNLOCK_NEARBY("000C", "近车自动解锁"),
 
-    SAFE_START_WITH_BLUETOOTH_KEY("0D", "通过蓝牙数字钥匙一键启动"),
+    SAFE_START_WITH_BLUETOOTH_KEY("000D", "通过蓝牙数字钥匙一键启动"),
 
-    SAFE_LOCK_BY_HANDLE_BUTTON("03", "把手按钮上锁"),
+    SAFE_LOCK_BY_HANDLE_BUTTON("0003", "把手按钮上锁"),
 
-    SAFE_UNLOCK_BY_HANDLE_BUTTON("04", "把手按钮解锁"),
+    SAFE_UNLOCK_BY_HANDLE_BUTTON("0004", "把手按钮解锁"),
 
-    SAFE_ENGINE_START("05", "引擎停止"),
+    SAFE_ENGINE_START("0005", "引擎停止"),
 
-    SAFE_ENGINE_STOP("06", "引擎启动"),
+    SAFE_ENGINE_STOP("0006", "引擎启动"),
 
-    SAFE_BUTTON_TRIGGERS_TRUNK_OPENING("09", "按钮触发开启后备箱"),
+    SAFE_BUTTON_TRIGGERS_TRUNK_OPENING("0009", "按钮触发开启后备箱"),
 
-    SAFE_PHONE_AUTOMATICALLY_POPS("0E", "手机在车内车辆上锁手动关闭后备箱后自动弹开"),
+    SAFE_PHONE_AUTOMATICALLY_POPS("000E", "手机在车内车辆上锁手动关闭后备箱后自动弹开"),
 
-    SAFE_KICK_OPEN_TAIL_DOOR("0F", "脚踢开启尾门"),
+    SAFE_KICK_OPEN_TAIL_DOOR("000F", "脚踢开启尾门"),
 
-    SAFE_PHONE_IN_CAR_LAST_DOOR_REMIND("10", "手机在车内关闭最后一扇门提醒 "),
+    SAFE_PHONE_IN_CAR_LAST_DOOR_REMIND("0010", "手机在车内关闭最后一扇门提醒 "),
 
-    SAFE_PHONE_IN_CAR_DOOR_CLOSED_VEHICLE_AUTOMATICALLY_UNLOCK("11", "手机在车内上锁后关闭车门车辆自动解锁"),
+    SAFE_PHONE_IN_CAR_DOOR_CLOSED_VEHICLE_AUTOMATICALLY_UNLOCK("0011", "手机在车内上锁后关闭车门车辆自动解锁"),
 
-    SAFE_MULTIPLE_BLUETOOTH_WAKEUP_TIMES("12", "多蓝牙唤醒次数超限"),
+    SAFE_MULTIPLE_BLUETOOTH_WAKEUP_TIMES("0012", "多蓝牙唤醒次数超限"),
 
     // 14-16 原因填充0x00
-    SAFE_VEHICLE_STILL_RUNNING("14", "车辆未熄火"),
+    SAFE_VEHICLE_STILL_RUNNING("0014", "车辆未熄火"),
 
-    SAFE_VEHICLE_NOT_LOCKED("15", "车辆未闭锁"),
+    SAFE_VEHICLE_NOT_LOCKED("0015", "车辆未闭锁"),
 
-    SAFE_VEHICLE_NOT_POWERED_OFF("16", "车辆未下电"),
+    SAFE_VEHICLE_NOT_POWERED_OFF("0016", "车辆未下电"),
 
     //  日志调试
     COMMAND_EXECUTED_SUCCESSFULLY("0x00", "指令执行成功"),
