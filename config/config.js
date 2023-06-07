@@ -11,8 +11,8 @@ export default defineConfig({
   // 代理请求
   proxy: {
     '/dkserver-back': {
-      // target: 'http://172.16.70.50:8000/vecentek/',
-      target: 'http://172.16.70.5:9001/vecentek/',
+      target: 'http://172.16.70.50:8000/vecentek/',
+      // target: 'http://172.16.70.5:9001/vecentek/',
       changeOrigin: true,
       // pathRewrite: { '^/api': '' },
       logLevel: 'debug',

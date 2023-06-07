@@ -177,6 +177,9 @@ class DataTable extends Component {
     {
       title: '用户id',
       dataIndex: 'userId',
+      ellipsis: {
+        showTitle: false,
+      },
     },
     {
       title: '手机品牌',
