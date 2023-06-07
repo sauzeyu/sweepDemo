@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.DiagnosticLogsEnum;
-import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.UploadBluetoothsErrorDTO;
@@ -108,9 +107,11 @@ public class DkmOfflineCheckServiceImpl {
         for (VehicleBluetoothVO vehicle : dkmVehicles) {
             boolean pubKeyValidFlag = true;
             if (CharSequenceUtil.hasBlank(vehicle.getPubKey())){
-                if (!currentBranch.contains("jac")) {
-                    throw new VecentException(1001, "必填参数未传递！");
-                }
+                // TODO 江淮项目开发需要关注此注释
+                //if (!currentBranch.contains("jac")) {
+                //    throw new VecentException(1001, "必填参数未传递！");
+                //}
+
                 pubKeyValidFlag = false;
             }
             if (CharSequenceUtil.hasBlank(vehicle.getVin(),
@@ -133,7 +134,6 @@ public class DkmOfflineCheckServiceImpl {
 
                 // 根据SearchNumberWrapper条件查找是否存在相同的搜索号
                 if (dkmBluetoothsMapper.selectCount(queryWrapper) > 0) {
-
                     log.info("response：/api/offlineCheck/insertOrUpdateVehicleBatch 蓝牙检索号不是唯一的！");
                     throw new VecentException(1001, "蓝牙检索号不是唯一的！");
                 }
