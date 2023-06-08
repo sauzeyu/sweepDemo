@@ -47,7 +47,7 @@ public class DkmPhoneCalibrationData extends BaseEntity {
     /**
      * 手机型号
      */
-    @Size(min = 1, max = 16, message = "手机型号长度最长为16位")
+    @Size(min = 1, max = 24, message = "手机型号长度最长为24位")
     @NotBlank(message = "手机型号不能为空")
     private String phoneModel;
 
@@ -77,5 +77,11 @@ public class DkmPhoneCalibrationData extends BaseEntity {
      * 特征点数据
      */
     private String featureData;
+
+    /**
+     * 特征点数据
+     */
+    private String featureData;
+
 
 }
