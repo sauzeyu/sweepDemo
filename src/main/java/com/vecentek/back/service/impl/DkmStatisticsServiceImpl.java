@@ -8,7 +8,6 @@ import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.vecentek.back.config.ProConfig;
-import com.vecentek.back.constant.KeyErrorReasonEnum;
 import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.constant.KeyStatusEnum;
@@ -25,7 +24,6 @@ import com.vecentek.back.util.SpringContextUtil;
 import com.vecentek.back.util.TimeUtil;
 import com.vecentek.common.response.PageResp;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -53,8 +51,13 @@ public class DkmStatisticsServiceImpl {
     private DkmKeyLogMapper dkmKeyLogMapper;
 
     public PageResp selectTotal(Date startTime, Date endTime) {
-        if (ObjectUtil.isNull(startTime) || ObjectUtil.isNull(endTime)) {
-            return PageResp.fail(1001, "必填参数未传递或传入的参数格式不正确！");
+        String sysDate = null;
+        String tommorw = null;
+        if (ObjectUtil.isNull(startTime)) {
+            sysDate = TimeUtil.getSysDate();
+        }
+        if (ObjectUtil.isNull(endTime)) {
+            tommorw = TimeUtil.getNextDay();
         }
         int totalVehicles = dkmVehicleMapper.selectCount(Wrappers.<DkmVehicle>lambdaQuery().ge(ObjectUtil.isNotNull(
                 startTime), DkmVehicle::getCreateTime, startTime).le(ObjectUtil.isNotNull(endTime),
@@ -64,13 +67,13 @@ public class DkmStatisticsServiceImpl {
                 DkmKey::getApplyTime,
                 startTime).le(ObjectUtil.isNotNull(endTime), DkmKey::getApplyTime, endTime));
         int totalKeyError = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery().ge(ObjectUtil.isNotNull(
-                startTime), DkmKeyLog::getOperateTime, startTime).le(ObjectUtil.isNotNull(endTime),
+                sysDate), DkmKeyLog::getOperateTime, sysDate).le(ObjectUtil.isNotNull(tommorw),
                 DkmKeyLog::getOperateTime,
-                endTime).eq(DkmKeyLog::getFlag, 0));
+                tommorw).eq(DkmKeyLog::getFlag, 0));
         int totalKeyUse = dkmKeyLogMapper.selectCount(Wrappers.<DkmKeyLog>lambdaQuery().ge(ObjectUtil.isNotNull(
-                startTime), DkmKeyLog::getOperateTime, startTime).le(ObjectUtil.isNotNull(endTime),
+                sysDate), DkmKeyLog::getOperateTime, sysDate).le(ObjectUtil.isNotNull(tommorw),
                 DkmKeyLog::getOperateTime,
-                endTime).eq(DkmKeyLog::getFlag, 1));
+                tommorw).eq(DkmKeyLog::getFlag, 1));
         StatisticsDTO statisticsDTO = new StatisticsDTO();
         statisticsDTO.setKeyErrorCount(totalKeyError);
         statisticsDTO.setVehicleCount(totalVehicles);
@@ -319,8 +322,6 @@ public class DkmStatisticsServiceImpl {
     }
 
     public PageResp keyUseTimeStatistics() {
-
-
         String now = TimeUtil.getNow();
         String lastDay = TimeUtil.getLastDay();
         String yearFirstDay = TimeUtil.getCurrYearFirst();
@@ -341,7 +342,6 @@ public class DkmStatisticsServiceImpl {
         String yearFirstDay = TimeUtil.getCurrYearFirst();
         String yearLastDay = TimeUtil.getCurrYearLast();
         // 今日故障次数
-
         int countErrorToday = dkmKeyLogMapper.countErrorToday(now, nextDay);
         // 每个月的使用数
         List<MonthCountDTO> errorMonthList = MonthCountDTO.checkMonthCount(dkmVehicleMapper.countErrorByMonth(
