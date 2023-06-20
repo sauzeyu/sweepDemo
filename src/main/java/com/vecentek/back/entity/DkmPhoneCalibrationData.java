@@ -78,10 +78,6 @@ public class DkmPhoneCalibrationData extends BaseEntity {
      */
     private String featureData;
 
-    /**
-     * 特征点数据
-     */
-    private String featureData;
 
 
 }
