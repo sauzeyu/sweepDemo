@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
 import com.vecentek.common.response.PageResp;
@@ -87,7 +88,7 @@ class DkmPhoneCalibrationDataServiceImplTest {
     }
 
     @Test
-    void testUpdateDkmPhoneCalibrationDataById() {
+    void testUpdateDkmPhoneCalibrationDataById() throws DiagnosticLogsException {
         // Setup
         final DkmPhoneCalibrationData dkmPhoneCalibrationData = new DkmPhoneCalibrationData(0L, "vehicleModel",
                 "phoneBrand", "phoneModel", "00006950686f6e65ffffffff6950686f6e6531332c34fffffffffffffffff003", "remarks", "vehicleType", "vehicleBrand","featureData");

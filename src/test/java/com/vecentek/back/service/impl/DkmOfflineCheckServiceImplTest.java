@@ -350,7 +350,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -361,7 +361,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -465,7 +465,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -476,7 +476,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -509,7 +509,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -572,7 +572,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -583,7 +583,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -616,7 +616,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -684,7 +684,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -695,7 +695,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -728,7 +728,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -796,7 +796,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -829,7 +829,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
                 eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
@@ -1057,7 +1057,7 @@ class DkmOfflineCheckServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         objectPage.setRecords(dkmKeys);
         when(mockDkmKeyMapper.selectPage(any(Page.class), any(LambdaQueryWrapper.class)))
                 .thenReturn(objectPage);

@@ -7,6 +7,7 @@ import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmUser;
 import com.vecentek.back.entity.DkmUserVehicle;
 import com.vecentek.back.entity.DkmVehicle;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
@@ -68,7 +69,7 @@ class DkmUserVehicleServiceImplTest {
         TableInfoHelper.initTableInfo(new MapperBuilderAssistant(new MybatisConfiguration(), ""), DkmKey.class);
     }
     @Test
-    void testInsertUserVehicle_fail() {
+    void testInsertUserVehicle_fail() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.fail(2106, "上传失败，用户ID，VIN等必要参数未传递！");
         final UserVehicleVO userVehicle = new UserVehicleVO("username", null, "license", "vehicleType", null,
@@ -78,7 +79,7 @@ class DkmUserVehicleServiceImplTest {
         assertThat(result).isEqualTo(expectedResult);
     }
     @Test
-    void testInsertUserVehicle() {
+    void testInsertUserVehicle() throws DiagnosticLogsException {
         // Setup
         final UserVehicleVO userVehicle = new UserVehicleVO("username", "id", "license", "vehicleType", "vin",
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
@@ -121,7 +122,7 @@ class DkmUserVehicleServiceImplTest {
     }
 
     @Test
-    void testInsertUserVehicle_DkmUserMapperSelectOneReturnsNull() {
+    void testInsertUserVehicle_DkmUserMapperSelectOneReturnsNull() throws DiagnosticLogsException {
         // Setup
         final UserVehicleVO userVehicle = new UserVehicleVO("username", "id", "license", "vehicleType", "vin",
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
@@ -160,7 +161,7 @@ class DkmUserVehicleServiceImplTest {
     }
 
     @Test
-    void testInsertUserVehicle_DkmVehicleMapperReturnsNull() {
+    void testInsertUserVehicle_DkmVehicleMapperReturnsNull() throws DiagnosticLogsException {
         // Setup
         final UserVehicleVO userVehicle = new UserVehicleVO("username", "id", "license", "vehicleType", "vin",
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime());
@@ -177,7 +178,7 @@ class DkmUserVehicleServiceImplTest {
     }
 
     @Test
-    void testLogoutUserVehicle() {
+    void testLogoutUserVehicle() throws DiagnosticLogsException {
         // Setup
         final LogoutUserVehicleVO logoutUserVehicle = new LogoutUserVehicleVO();
         logoutUserVehicle.setUserId("userId");
@@ -213,7 +214,7 @@ class DkmUserVehicleServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -224,7 +225,7 @@ class DkmUserVehicleServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockKeyLifecycleUtil.insert(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
@@ -233,7 +234,7 @@ class DkmUserVehicleServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"), 1, 3, 5)).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"), 1, 3, 5)).thenReturn(0);
 
         // Run the test
         final PageResp result = dkmUserVehicleServiceImplUnderTest.logoutUserVehicle(logoutUserVehicle);
@@ -265,7 +266,7 @@ class DkmUserVehicleServiceImplTest {
     }
 
     @Test
-    void testLogoutUserVehicle_DkmUserVehicleMapperSelectOneReturnsNull() {
+    void testLogoutUserVehicle_DkmUserVehicleMapperSelectOneReturnsNull() throws DiagnosticLogsException {
         // Setup
         final LogoutUserVehicleVO logoutUserVehicle = new LogoutUserVehicleVO();
         logoutUserVehicle.setUserId("userId");
@@ -283,7 +284,7 @@ class DkmUserVehicleServiceImplTest {
     }
 
     @Test
-    void testLogoutUserVehicle_DkmVehicleMapperReturnsNull() {
+    void testLogoutUserVehicle_DkmVehicleMapperReturnsNull() throws DiagnosticLogsException {
         // Setup
         final LogoutUserVehicleVO logoutUserVehicle = new LogoutUserVehicleVO();
         logoutUserVehicle.setUserId("userId");
@@ -309,7 +310,7 @@ class DkmUserVehicleServiceImplTest {
     }
 
     @Test
-    void testLogoutUserVehicle_DkmKeyMapperSelectListReturnsNoItems() {
+    void testLogoutUserVehicle_DkmKeyMapperSelectListReturnsNoItems() throws DiagnosticLogsException {
         // Setup
         final LogoutUserVehicleVO logoutUserVehicle = new LogoutUserVehicleVO();
         logoutUserVehicle.setUserId("userId");
@@ -385,7 +386,7 @@ class DkmUserVehicleServiceImplTest {
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
     @Test
-    void testRevokeKey_fail() {
+    void testRevokeKey_fail() throws DiagnosticLogsException {
         // Setup
         final RevokeKeyVO revokeKeyVO = new RevokeKeyVO();
 
@@ -397,7 +398,7 @@ class DkmUserVehicleServiceImplTest {
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
     @Test
-    void testRevokeKey() {
+    void testRevokeKey() throws DiagnosticLogsException {
         // Setup
         final RevokeKeyVO revokeKeyVO = new RevokeKeyVO();
         revokeKeyVO.setUserId("userId");
@@ -413,7 +414,7 @@ class DkmUserVehicleServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -424,7 +425,7 @@ class DkmUserVehicleServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockKeyLifecycleUtil.insert(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
@@ -433,7 +434,7 @@ class DkmUserVehicleServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"), 0, 3, 5)).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"), 0, 3, 5)).thenReturn(0);
 
         // Run the test
         final PageResp result = dkmUserVehicleServiceImplUnderTest.revokeKey(revokeKeyVO);
@@ -461,7 +462,7 @@ class DkmUserVehicleServiceImplTest {
     }
 
     @Test
-    void testRevokeKey_DkmKeyMapperSelectListReturnsNoItems() {
+    void testRevokeKey_DkmKeyMapperSelectListReturnsNoItems() throws DiagnosticLogsException {
         // Setup
         final RevokeKeyVO revokeKeyVO = new RevokeKeyVO();
         revokeKeyVO.setUserId("userId");

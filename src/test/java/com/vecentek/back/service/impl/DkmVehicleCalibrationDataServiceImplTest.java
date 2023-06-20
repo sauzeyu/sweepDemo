@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.entity.DkmPhoneCalibrationData;
 import com.vecentek.back.entity.DkmVehicleCalibrationData;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper;
 import com.vecentek.back.mapper.DkmVehicleCalibrationDataMapper;
 import com.vecentek.back.util.RedisUtils;
@@ -94,7 +95,7 @@ private MockedStatic excelUtilMocked;
     }
 
     @Test
-    void testUpdateDkmVehicleCalibrationDataById() {
+    void testUpdateDkmVehicleCalibrationDataById() throws DiagnosticLogsException {
         // Setup
         final DkmVehicleCalibrationData dkmVehicleCalibrationData = new DkmVehicleCalibrationData(0L, "vehicleModel",
                 "1", "00006950686f6e65ffffffff6950686f6e6531332c34fffffffffffffff10001", "remarks", "1");

@@ -10,6 +10,7 @@ import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmKeyLogHistoryExport;
 import com.vecentek.back.entity.DkmUser;
+import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
 import com.vecentek.back.mapper.DkmKeyLogHistoryExportMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
@@ -75,7 +76,7 @@ class DkmKeyServiceImplTest {
                 0, "keyResourceVO", 0, "keyClassificationVO", "keyType", "deviceType", "accountIdHash", "endpointId",
                 "slotId", "keyOptions", "devicePublicKey", "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox",
                 "confidentialMailbox", "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                "keyFriendlyName");
+                "keyFriendlyName","bleMacAddress");
         when(mockDkmKeyMapper.selectById("id")).thenReturn(dkmKey);
 
         // Run the test
@@ -160,7 +161,7 @@ class DkmKeyServiceImplTest {
         assertThat(result.getMsg()).isEqualTo(expectedResult.getMsg());
     }
     @Test
-    void testUpdateStateById_freezeKeys() {
+    void testUpdateStateById_freezeKeys() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.success("更新成功");
         // Configure DkmKeyMapper.selectList(...).
@@ -172,7 +173,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         DkmKey dkmKey = new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                 new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
                 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), "1", 0,
@@ -180,7 +181,7 @@ class DkmKeyServiceImplTest {
                 "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                 "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                 "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                "keyFriendlyName");
+                "keyFriendlyName","bleMacAddress");
         final List<DkmKey> dkmKeysParent = Arrays.asList(dkmKey
                 );
         when(mockDkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
@@ -214,7 +215,7 @@ class DkmKeyServiceImplTest {
         final PageResp result3 = dkmKeyServiceImplUnderTest.updateStateById("keyId", 3, "userId", "vin");
     }
     @Test
-    void testUpdateStateById_unFreezeKeys() {
+    void testUpdateStateById_unFreezeKeys() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.success("更新成功");
         // Configure DkmKeyMapper.selectList(...).
@@ -226,7 +227,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         final List<DkmKey> dkmKeysParents = Arrays.asList(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
@@ -235,7 +236,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
 
                 .eq(DkmKey::getUserId, "userId")
@@ -262,7 +263,7 @@ class DkmKeyServiceImplTest {
         assertThat(result).isEqualTo(expectedResult);
     }
     @Test
-    void testUpdateStateById() {
+    void testUpdateStateById() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.success("查询成功");
 
@@ -275,7 +276,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any())).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -286,7 +287,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockKeyLifecycleUtil.insert(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
@@ -295,7 +296,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"), 1, 0, 2)).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"), 1, 0, 2)).thenReturn(0);
 
         // Run the test
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateById("keyId", 1, "userId", "vin");
@@ -314,24 +315,24 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"), 1, 0, 2);
+                        "keyFriendlyName","bleMacAddress"), 1, 0, 2);
     }
     @Test
-    void testUpdateStateById_keyStatusIsNotDelivered() {
+    void testUpdateStateById_keyStatusIsNotDelivered() throws DiagnosticLogsException {
         final PageResp expectedResult = PageResp.fail(500, "钥匙状态未传递");
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateById("keyId", null, "userId", "vin");
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
     }
     @Test
-    void testUpdateStateById_keyStatusIsIncorrect() {
+    void testUpdateStateById_keyStatusIsIncorrect() throws DiagnosticLogsException {
         final PageResp expectedResult = PageResp.fail(500, "钥匙状态未传递");
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateById("keyId", 4, "userId", "vin");
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
     }
     @Test
-    void testUpdateStateById_fail() {
+    void testUpdateStateById_fail() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.success("查询成功");
 
@@ -344,7 +345,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"));
+                        "keyFriendlyName","bleMacAddress"));
         when(mockDkmKeyMapper.selectList(any())).thenReturn(dkmKeys);
 
         when(mockDkmKeyMapper.updateById(
@@ -355,7 +356,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockKeyLifecycleUtil.insert(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(), 0, "kr", "ks", "phoneFingerprint",
@@ -364,7 +365,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"), 1, 0, 2)).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"), 1, 0, 2)).thenReturn(0);
 
         // Run the test
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateById("keyId", 1, "userId", "vin");
@@ -380,11 +381,11 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"), 1, 0, 2);
+                        "keyFriendlyName","bleMacAddress"), 1, 0, 2);
     }
 
     @Test
-    void testUpdateStateById_DkmKeyMapperSelectListReturnsNoItems() {
+    void testUpdateStateById_DkmKeyMapperSelectListReturnsNoItems() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.success("更新成功");
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
@@ -398,7 +399,7 @@ class DkmKeyServiceImplTest {
     }
 
     @Test
-    void testUpdateStateForRevokeById() {
+    void testUpdateStateForRevokeById() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.success("吊销成功");
 
@@ -410,7 +411,7 @@ class DkmKeyServiceImplTest {
                 "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                 "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                 "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                "keyFriendlyName");
+                "keyFriendlyName","bleMacAddress");
         final List<DkmKey> dkmKeys = Arrays.asList(
                 dkmKey
                 );
@@ -426,7 +427,7 @@ class DkmKeyServiceImplTest {
                         "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                         "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                         "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                        "keyFriendlyName"))).thenReturn(0);
+                        "keyFriendlyName","bleMacAddress"))).thenReturn(0);
 
         // Run the test
         final PageResp result = dkmKeyServiceImplUnderTest.updateStateForRevokeById("userId", "vin");
@@ -451,7 +452,7 @@ class DkmKeyServiceImplTest {
     }
 
     @Test
-    void testUpdateStateForRevokeById_DkmKeyMapperSelectListReturnsNoItems() {
+    void testUpdateStateForRevokeById_DkmKeyMapperSelectListReturnsNoItems() throws DiagnosticLogsException {
         // Setup
         final PageResp expectedResult = PageResp.success("吊销成功");
         when(mockDkmKeyMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(Collections.emptyList());
@@ -476,7 +477,7 @@ class DkmKeyServiceImplTest {
                 0, "keyResourceVO", 0, "keyClassificationVO", "keyType", "deviceType", "accountIdHash", "endpointId",
                 "slotId", "keyOptions", "devicePublicKey", "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox",
                 "confidentialMailbox", "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                "keyFriendlyName");
+                "keyFriendlyName","bleMacAddress");
         when(mockDkmKeyMapper.selectById("keyId")).thenReturn(dkmKey);
 
         when(mockDkmUserMapper.selectById("userId")).thenReturn(new DkmUser("id", "phone", "username"));
@@ -528,7 +529,7 @@ class DkmKeyServiceImplTest {
                 "deviceType", "accountIdHash", "endpointId", "slotId", "keyOptions", "devicePublicKey",
                 "vehiclePublicKey", "authorizedPublicKeys", "privateMailbox", "confidentialMailbox",
                 "friendDeviceHandle", "friendPublicKey", "sharingPasswordInformation", "profile",
-                "keyFriendlyName");
+                "keyFriendlyName","bleMacAddress");
         final List<DkmKey> dkmKeys = Arrays.asList(
                 dkmKey
                 );
