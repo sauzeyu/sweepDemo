@@ -107,10 +107,10 @@ public class DkmOfflineCheckServiceImpl {
         for (VehicleBluetoothVO vehicle : dkmVehicles) {
             boolean pubKeyValidFlag = true;
             if (CharSequenceUtil.hasBlank(vehicle.getPubKey())){
-                // TODO 江淮项目开发需要关注此注释
-                //if (!currentBranch.contains("jac")) {
-                //    throw new VecentException(1001, "必填参数未传递！");
-                //}
+
+                if (!currentBranch.contains("jac")) {
+                    throw new VecentException(1001, "必填参数未传递！");
+                }
 
                 pubKeyValidFlag = false;
             }

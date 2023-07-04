@@ -6,10 +6,8 @@ import com.vecentek.back.vo.TimeQuantumVO;
 import com.vecentek.common.response.PageResp;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
-import java.util.Optional;
 
 /**
  * @author ：EdgeYu
@@ -44,17 +42,17 @@ public class DkmStatisticsController {
      * @author liujz
      * @date 2023/4/10 15:03
      */
-    @GetMapping("/selectBusiness")
-    public PageResp selectBusiness() {
+//    @GetMapping("/selectBusiness")
+//    public PageResp selectBusiness() {
+//
+//        return dkmFunctionalAbnormalServiceImpl.selectBusiness();
+//
+//    }
 
-        return dkmFunctionalAbnormalServiceImpl.selectBusiness();
-
-    }
-
-    @GetMapping("/selectRecentLogs")
-    public PageResp selectRecentLogs() {
-        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectRecentLogs").build().toUriString(), PageResp.class);
-    }
+//    @GetMapping("/selectRecentLogs")
+//    public PageResp selectRecentLogs() {
+//        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectRecentLogs").build().toUriString(), PageResp.class);
+//    }
 
     /**
      * 通过时间，userId，vin 分页查询日志
@@ -63,21 +61,21 @@ public class DkmStatisticsController {
      * @author EdgeYu
      * @date 2023-03-29 17:05
      */
-    @GetMapping("/selectForPage")
-    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String startTime, String endTime, String userId, String vin,String businessId) {
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).queryParam("pageIndex", pageIndex).queryParam("pageSize", pageSize).path("/selectForPage");
-        Optional.ofNullable(startTime).ifPresent(parameter -> builder.queryParam("startTime", parameter));
-        Optional.ofNullable(endTime).ifPresent(parameter -> builder.queryParam("endTime", parameter));
-        Optional.ofNullable(userId).ifPresent(parameter -> builder.queryParam("userId", parameter));
-        Optional.ofNullable(vin).ifPresent(parameter -> builder.queryParam("vin", parameter));
-        Optional.ofNullable(businessId).ifPresent(parameter -> builder.queryParam("businessId", parameter));
-        return restTemplate.getForObject(builder.build().toUriString(), PageResp.class);
-    }
+//    @GetMapping("/selectForPage")
+//    public PageResp selectForPage(@RequestParam(name = "pageIndex") int pageIndex, @RequestParam(name = "pageSize") int pageSize, String startTime, String endTime, String userId, String vin,String businessId) {
+//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).queryParam("pageIndex", pageIndex).queryParam("pageSize", pageSize).path("/selectForPage");
+//        Optional.ofNullable(startTime).ifPresent(parameter -> builder.queryParam("startTime", parameter));
+//        Optional.ofNullable(endTime).ifPresent(parameter -> builder.queryParam("endTime", parameter));
+//        Optional.ofNullable(userId).ifPresent(parameter -> builder.queryParam("userId", parameter));
+//        Optional.ofNullable(vin).ifPresent(parameter -> builder.queryParam("vin", parameter));
+//        Optional.ofNullable(businessId).ifPresent(parameter -> builder.queryParam("businessId", parameter));
+//        return restTemplate.getForObject(builder.build().toUriString(), PageResp.class);
+//    }
 
-    @GetMapping("/selectFaultLogs")
-    public PageResp selectFaultLogs() {
-        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectFaultLogs").build().toUriString(), PageResp.class);
-    }
+//    @GetMapping("/selectFaultLogs")
+//    public PageResp selectFaultLogs() {
+//        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectFaultLogs").build().toUriString(), PageResp.class);
+//    }
 
 
     /**
@@ -87,16 +85,16 @@ public class DkmStatisticsController {
      * @author EdgeYu
      * @date 2023-03-29 17:13
      */
-    @GetMapping("/selectTodayLogsCount")
-    public PageResp selectTodayLogsCount() {
+//    @GetMapping("/selectTodayLogsCount")
+//    public PageResp selectTodayLogsCount() {
+//
+//        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectTodayLogsCount").build().toUriString(), PageResp.class);
+//    }
 
-        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectTodayLogsCount").build().toUriString(), PageResp.class);
-    }
-
-    @GetMapping("/selectPhoneBrandLogs")
-    public PageResp selectPhoneBrandLogs() {
-        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectPhoneBrandLogs").build().toUriString(), PageResp.class);
-    }
+//    @GetMapping("/selectPhoneBrandLogs")
+//    public PageResp selectPhoneBrandLogs() {
+//        return restTemplate.getForObject(UriComponentsBuilder.fromHttpUrl(LOG_SERVICE).path("/selectPhoneBrandLogs").build().toUriString(), PageResp.class);
+//    }
 
 
     /**
