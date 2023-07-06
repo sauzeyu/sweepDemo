@@ -92,7 +92,7 @@ class DkmAftermarketReplacementServiceImplTest {
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -110,7 +110,7 @@ class DkmAftermarketReplacementServiceImplTest {
 
         // Configure DkmAftermarketReplacementMapper.selectList(...).
         final List<DkmAftermarketReplacement> dkmAftermarketReplacements = Arrays.asList(
-                new DkmAftermarketReplacement(0L, "vin", "oldBluetoothSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "oldBluetoothSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()));
         doReturn(dkmAftermarketReplacements).when(mockDkmAftermarketReplacementMapper).selectList(any());
 

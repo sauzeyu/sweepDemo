@@ -89,7 +89,7 @@ class DkmUserVehicleServiceImplTest {
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -132,7 +132,7 @@ class DkmUserVehicleServiceImplTest {
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -196,7 +196,7 @@ class DkmUserVehicleServiceImplTest {
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -328,7 +328,7 @@ class DkmUserVehicleServiceImplTest {
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn", "hwDeviceSn","searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -359,7 +359,7 @@ class DkmUserVehicleServiceImplTest {
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn", "hwDeviceSn","searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 

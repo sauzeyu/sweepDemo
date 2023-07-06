@@ -80,13 +80,13 @@ private HttpServletResponse mockHttpServletResponse;
         // Configure DkmBluetoothsMapper.selectList(...).
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
                 new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
-                        "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
+                        "bleMacAddress", "masterKey", "digKey", "0", 0, 1,""));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
         // Run the test
         dkmBluetoothsServiceImplUnderTest.downloadDkmBluetooths("hwDeviceSn", "searchNumber", 0, response);
         final List<DkmBluetooths> dkmBluetooths1 = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSnHEX","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 1, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths1);
         dkmBluetoothsServiceImplUnderTest.downloadDkmBluetooths("hwDeviceSn", "searchNumber", 0, response);
@@ -101,7 +101,7 @@ private HttpServletResponse mockHttpServletResponse;
         final HttpServletResponse response = new MockHttpServletResponse();
         // Configure DkmBluetoothsMapper.selectList(...).
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 

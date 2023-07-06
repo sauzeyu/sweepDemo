@@ -260,7 +260,7 @@ class DkmOfflineCheckServiceImplTest {
 
         repeatInPairsDkmVehicles.add(vehicleBluetoothVO);
         final List<DkmVehicle> dkmVehicles1 = Arrays.asList(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         when(mockDkmVehicleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicles1);
 
@@ -275,7 +275,7 @@ class DkmOfflineCheckServiceImplTest {
 
         repeatHwDeviceSnDkmVehicles.add(vehicleBluetoothVO);
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
@@ -290,7 +290,7 @@ class DkmOfflineCheckServiceImplTest {
 
         repeatSearchNumberDkmVehicles.add(vehicleBluetoothVO);
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
@@ -316,28 +316,28 @@ class DkmOfflineCheckServiceImplTest {
 
         // Configure DkmVehicleMapper.selectList(...).
         final List<DkmVehicle> dkmVehicles1 = Arrays.asList(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         when(mockDkmVehicleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicles1);
 
         // Configure DkmBluetoothsMapper.selectList(...).
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
         when(mockDkmOfflineCheckMapper.selectVehicleByVin(Arrays.asList(new VehicleBluetoothVO())))
                 .thenReturn(Arrays.asList("value"));
         when(mockDkmVehicleMapper.insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"))).thenReturn(0);
         when(mockDkmBluetoothsMapper.insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"))).thenReturn(0);
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -364,15 +364,15 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmVehicleMapper.update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmAftermarketReplacementMapper.insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()))).thenReturn(0);
 
         when(mockDkmVehicleMapper.selectList(any())).thenReturn(new ArrayList<>());
@@ -437,22 +437,22 @@ class DkmOfflineCheckServiceImplTest {
 
         // Configure DkmBluetoothsMapper.selectList(...).
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
         when(mockDkmOfflineCheckMapper.selectVehicleByVin(Arrays.asList(new VehicleBluetoothVO())))
                 .thenReturn(Arrays.asList("value"));
         when(mockDkmVehicleMapper.insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"))).thenReturn(0);
         when(mockDkmBluetoothsMapper.insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"))).thenReturn(0);
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -479,15 +479,15 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmVehicleMapper.update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmAftermarketReplacementMapper.insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()))).thenReturn(0);
 
         // Run the test
@@ -496,10 +496,10 @@ class DkmOfflineCheckServiceImplTest {
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
         verify(mockDkmVehicleMapper).insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         verify(mockDkmBluetoothsMapper).insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         verify(mockDkmKeyMapper).updateById(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
@@ -512,14 +512,14 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")), any(LambdaUpdateWrapper.class));
         verify(mockDkmVehicleMapper).update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class));
         verify(mockDkmAftermarketReplacementMapper).insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()));
     }
 
@@ -543,7 +543,7 @@ class DkmOfflineCheckServiceImplTest {
 
         // Configure DkmVehicleMapper.selectList(...).
         final List<DkmVehicle> dkmVehicles1 = Arrays.asList(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         when(mockDkmVehicleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicles1);
 
@@ -551,15 +551,15 @@ class DkmOfflineCheckServiceImplTest {
         when(mockDkmOfflineCheckMapper.selectVehicleByVin(Arrays.asList(new VehicleBluetoothVO())))
                 .thenReturn(Arrays.asList("value"));
         when(mockDkmVehicleMapper.insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"))).thenReturn(0);
         when(mockDkmBluetoothsMapper.insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"))).thenReturn(0);
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -586,15 +586,15 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmVehicleMapper.update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmAftermarketReplacementMapper.insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()))).thenReturn(0);
 
         // Run the test
@@ -603,10 +603,10 @@ class DkmOfflineCheckServiceImplTest {
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
         verify(mockDkmVehicleMapper).insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         verify(mockDkmBluetoothsMapper).insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         verify(mockDkmKeyMapper).updateById(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
@@ -619,14 +619,14 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")), any(LambdaUpdateWrapper.class));
         verify(mockDkmVehicleMapper).update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class));
         verify(mockDkmAftermarketReplacementMapper).insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()));
     }
 
@@ -650,28 +650,28 @@ class DkmOfflineCheckServiceImplTest {
 
         // Configure DkmVehicleMapper.selectList(...).
         final List<DkmVehicle> dkmVehicles1 = Arrays.asList(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         when(mockDkmVehicleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicles1);
 
         // Configure DkmBluetoothsMapper.selectList(...).
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
         when(mockDkmOfflineCheckMapper.selectVehicleByVin(Arrays.asList(new VehicleBluetoothVO())))
                 .thenReturn(Collections.emptyList());
         when(mockDkmVehicleMapper.insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"))).thenReturn(0);
         when(mockDkmBluetoothsMapper.insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"))).thenReturn(0);
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -698,15 +698,15 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmVehicleMapper.update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmAftermarketReplacementMapper.insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()))).thenReturn(0);
 
         // Run the test
@@ -715,10 +715,10 @@ class DkmOfflineCheckServiceImplTest {
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
         verify(mockDkmVehicleMapper).insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         verify(mockDkmBluetoothsMapper).insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         verify(mockDkmKeyMapper).updateById(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
@@ -731,14 +731,14 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")), any(LambdaUpdateWrapper.class));
         verify(mockDkmVehicleMapper).update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class));
         verify(mockDkmAftermarketReplacementMapper).insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()));
     }
 
@@ -762,28 +762,28 @@ class DkmOfflineCheckServiceImplTest {
 
         // Configure DkmVehicleMapper.selectList(...).
         final List<DkmVehicle> dkmVehicles1 = Arrays.asList(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         when(mockDkmVehicleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicles1);
 
         // Configure DkmBluetoothsMapper.selectList(...).
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         when(mockDkmBluetoothsMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmBluetooths);
 
         when(mockDkmOfflineCheckMapper.selectVehicleByVin(Arrays.asList(new VehicleBluetoothVO())))
                 .thenReturn(Arrays.asList("value"));
         when(mockDkmVehicleMapper.insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"))).thenReturn(0);
         when(mockDkmBluetoothsMapper.insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"))).thenReturn(0);
 
         // Configure DkmVehicleMapper.selectOne(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectOne(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicle);
 
@@ -799,15 +799,15 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"))).thenReturn(0);
         when(mockDkmKeyLifecycleMapper.insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0))).thenReturn(0);
         when(mockDkmBluetoothsMapper.update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmVehicleMapper.update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class))).thenReturn(0);
         when(mockDkmAftermarketReplacementMapper.insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()))).thenReturn(0);
 
         // Run the test
@@ -816,10 +816,10 @@ class DkmOfflineCheckServiceImplTest {
         // Verify the results
         assertThat(result).isEqualTo(expectedResult);
         verify(mockDkmVehicleMapper).insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         verify(mockDkmBluetoothsMapper).insert(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         verify(mockDkmKeyMapper).updateById(
                 new DkmKey("id", 0, "userId", "vin", 0, new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime(),
@@ -832,14 +832,14 @@ class DkmOfflineCheckServiceImplTest {
                         "keyFriendlyName","bleMacAddress"));
         verify(mockDkmKeyLifecycleMapper).insert(new DkmKeyLifecycle(0L, "id", "vin", "userId", 0, 0, 0));
         verify(mockDkmBluetoothsMapper).update(
-                eq(new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                eq(new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")), any(LambdaUpdateWrapper.class));
         verify(mockDkmVehicleMapper).update(
-                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                eq(new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId")),
                 any(LambdaUpdateWrapper.class));
         verify(mockDkmAftermarketReplacementMapper).insert(
-                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn",
+                new DkmAftermarketReplacement(0L, "vin", "hwDeviceSn", "newBluetoothSn","newBluetoothSn","newBluetoothSn",
                         new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime()));
     }
 
@@ -847,7 +847,7 @@ class DkmOfflineCheckServiceImplTest {
     void testInsertBluetoothBatch() throws Exception {
         // Setup
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         final PageResp expectedResult = PageResp.success("msg");
         when(mockDkmOfflineCheckMapper.selectBluetoothBatchByHwDeviceSn(any()))
@@ -855,7 +855,7 @@ class DkmOfflineCheckServiceImplTest {
         when(mockDkmOfflineCheckMapper.selectBluetoothBatchByBleMacAddress(any()))
                 .thenReturn(Arrays.asList("value"));
         when(mockDkmOfflineCheckMapper.insertBluetoothBatch(Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")))).thenReturn(0);
 
         // Run the test
@@ -869,7 +869,7 @@ class DkmOfflineCheckServiceImplTest {
     void testInsertBluetoothBatch_DkmOfflineCheckMapperSelectBluetoothBatchByHwDeviceSnReturnsNoItems() throws Exception {
         // Setup
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey"));
         final PageResp expectedResult = PageResp.success("msg");
         when(mockDkmOfflineCheckMapper.selectBluetoothBatchByHwDeviceSn(Arrays.asList("value")))
@@ -877,7 +877,7 @@ class DkmOfflineCheckServiceImplTest {
         when(mockDkmOfflineCheckMapper.selectBluetoothBatchByBleMacAddress(Arrays.asList("value")))
                 .thenReturn(Arrays.asList("value"));
         when(mockDkmOfflineCheckMapper.insertBluetoothBatch(Arrays.asList(
-                new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+                new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                         "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey")))).thenReturn(0);
 
         // Run the test
@@ -890,7 +890,7 @@ class DkmOfflineCheckServiceImplTest {
     @Test
     void testInsertBluetoothBatch_DkmOfflineCheckMapperSelectBluetoothBatchByBleMacAddressReturnsNoItems() throws Exception {
         // Setup
-        DkmBluetooths dkmBluetooths1 = new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+        DkmBluetooths dkmBluetooths1 = new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                 "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey");
         final List<DkmBluetooths> dkmBluetooths = Arrays.asList(dkmBluetooths1
                );
@@ -919,7 +919,7 @@ class DkmOfflineCheckServiceImplTest {
     @Test
     void testInsertBluetoothBatch_UploadOverMaximumException() throws Exception {
         // Setup
-        DkmBluetooths dkmBluetooths1 = new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+        DkmBluetooths dkmBluetooths1 = new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                 "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey");
          List<DkmBluetooths> dkmBluetooths = new ArrayList<>();
         final PageResp expectedResult = PageResp.success("msg");
@@ -943,7 +943,7 @@ class DkmOfflineCheckServiceImplTest {
     @Test
     void testInsertBluetoothBatch_ParameterValidationException() throws Exception {
         // Setup
-        DkmBluetooths dkmBluetooths1 = new DkmBluetooths("hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
+        DkmBluetooths dkmBluetooths1 = new DkmBluetooths("hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "dkSdkVersion", "dkSecUnitId",
                 "bleMacAddress", "masterKey", "digKey", 0, 0, "pubKey");
         List<DkmBluetooths> dkmBluetooths = new ArrayList<>();
         final PageResp expectedResult = PageResp.success("msg");

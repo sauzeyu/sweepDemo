@@ -58,7 +58,7 @@ class DkmVehicleServiceImplTest {
 
         // Configure DkmVehicleMapper.selectById(...).
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         when(mockDkmVehicleMapper.selectById(0)).thenReturn(dkmVehicle);
 
@@ -119,11 +119,11 @@ class DkmVehicleServiceImplTest {
     void testInsert() {
         // Setup
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn","hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         final PageResp expectedResult = PageResp.success("新增失败");
         when(mockDkmVehicleMapper.insert(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"))).thenReturn(0);
 
         // Run the test
@@ -137,11 +137,11 @@ class DkmVehicleServiceImplTest {
     void testUpdateById() {
         // Setup
         final DkmVehicle dkmVehicle = new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand",
-                "vehicleType", "hwDeviceSn", "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
+                "vehicleType", "hwDeviceSn", "hwDeviceSn","searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey",
                 "dkSecUnitId");
         final PageResp expectedResult = PageResp.success("更新失败");
         when(mockDkmVehicleMapper.updateById(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"))).thenReturn(0);
 
         // Run the test
@@ -192,7 +192,7 @@ class DkmVehicleServiceImplTest {
 
         // Configure DkmVehicleMapper.selectList(...).
         final List<DkmVehicle> dkmVehicles = Arrays.asList(
-                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn",
+                new DkmVehicle(0, "factoryNo", "vin", "vehicleModel", "vehicleBrand", "vehicleType", "hwDeviceSn","hwDeviceSn",
                         "searchNumber", "hwDeviceProviderNo", "bleMacAddress", "pubKey", "dkSecUnitId"));
         when(mockDkmVehicleMapper.selectList(any(LambdaQueryWrapper.class))).thenReturn(dkmVehicles);
 
