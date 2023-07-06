@@ -130,16 +130,15 @@ public class DkmBluetoothsServiceImpl {
         CellStyle cellStyle = writer.getCellStyle();
         cellStyle.setFont(cellFont);
 
-        writer.setColumnWidth(0, 40);
-        writer.setColumnWidth(1, 40);
+        writer.setColumnWidth(0, 43);
+//        writer.setColumnWidth(1, 40);
+        writer.setColumnWidth(1, 20);
         writer.setColumnWidth(2, 20);
-        writer.setColumnWidth(3, 20);
-        writer.setColumnWidth(4, 40);
-        writer.setColumnWidth(5, 20);
+        writer.setColumnWidth(3, 40);
+        writer.setColumnWidth(4, 20);
 
-
-        writer.addHeaderAlias("hwDeviceSn", "设备序列号");
-        writer.addHeaderAlias("searchNumber", "设备检索号");
+        writer.addHeaderAlias("hwDeviceSnHEX", "TBOX sn号");
+//        writer.addHeaderAlias("searchNumber", "设备检索号");
         writer.addHeaderAlias("hwDeviceProviderNo", "设备供应商编号");
         writer.addHeaderAlias("bleMacAddress", "蓝牙MAC地址");
         writer.addHeaderAlias("dkSecUnitId", "安全芯片SEID");

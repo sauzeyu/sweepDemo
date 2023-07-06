@@ -146,8 +146,8 @@ public class DkmAftermarketReplacementServiceImpl {
         writer.setColumnWidth(3, 30);
 
         writer.addHeaderAlias("vin", "车辆vin号");
-        writer.addHeaderAlias("oldBluetoothSn", "旧蓝牙设备序列号");
-        writer.addHeaderAlias("newBluetoothSn", "新蓝牙设备序列号");
+        writer.addHeaderAlias("oldBluetoothSnHEX", "旧TBOX sn号");
+        writer.addHeaderAlias("newBluetoothSnHEX", "新TBOX sn号");
         writer.addHeaderAlias("replacementTime", "换件时间");
 
         writer.write(replacementDataList, true);

@@ -1,13 +1,17 @@
 package com.vecentek.back.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
 /**
  * 车辆(DkmVehicle)实体类
@@ -54,6 +58,11 @@ public class DkmVehicle extends BaseEntity implements Serializable {
      */
     private String hwDeviceSn;
     /**
+     * 设备序列号前端显示值(16进制ASCII 转 utf8字符串)
+     */
+    @TableField(exist = false)
+    private String hwDeviceSnHEX;
+    /**
      * 蓝牙模块检索号
      */
     private String searchNumber;
@@ -73,5 +82,21 @@ public class DkmVehicle extends BaseEntity implements Serializable {
      * 数字钥匙安全单元ID(如有安全芯片此处指安全芯片SEID)
      */
     private String dkSecUnitId;
+
+    /**
+     * 设置设备序列号，并转换为UTF-8字符串存入hwDeviceSnHEX字段
+     */
+    public void setHwDeviceSn(String hwDeviceSn) {
+        this.hwDeviceSn = hwDeviceSn;
+        String asciiString = null;
+        try {
+            byte[] bytes = Hex.decodeHex(hwDeviceSn);
+            asciiString = new String(bytes, StandardCharsets.US_ASCII);
+
+        } catch (DecoderException e) {
+            System.out.println("Invalid hex string");
+        }
+        this.hwDeviceSnHEX = asciiString;
+    }
 
 }
