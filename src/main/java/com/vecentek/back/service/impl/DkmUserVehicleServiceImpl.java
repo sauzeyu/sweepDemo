@@ -198,8 +198,9 @@ public class DkmUserVehicleServiceImpl {
         dkmUserVehicle.setBindStatus(2);
         dkmUserVehicle.setUnbindTime(logoutTime);
         dkmUserVehicleMapper.updateById(dkmUserVehicle);
-        // 根据vin吊销车辆所有钥匙
-        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getVin, vin).ne(DkmKey::getDkState, 5).or().ne(DkmKey::getDkState, 4));
+        // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5或者4的全部吊销
+        List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId)
+                .and(key -> key.ne(DkmKey::getDkState, 5).or().ne(DkmKey::getDkState, 4)));
         ArrayList<String> userList = new ArrayList<>();
         for (DkmKey key : keys) {
             key.setDkState(5);
