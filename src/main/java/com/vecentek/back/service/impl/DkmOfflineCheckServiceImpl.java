@@ -189,8 +189,8 @@ public class DkmOfflineCheckServiceImpl {
             }
             List<DkmBluetooths> dkmBluetooths = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getHwDeviceSn, hwDeviceSn));
             if (dkmBluetooths.size() > 0) {
-                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的蓝牙设备号！");
-                throw new VecentException(1001, "存在重复的蓝牙设备号！");
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "存在重复的TOBX SN号！");
+                throw new VecentException(1001, "存在重复的TOBX SN号！");
             }
             String searchNumber = vehicle.getSearchNumber();
             List<DkmBluetooths> dkmBluetooths1 = dkmBluetoothsMapper.selectList(new QueryWrapper<DkmBluetooths>().lambda().eq(DkmBluetooths::getSearchNumber, searchNumber));
