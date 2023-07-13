@@ -205,7 +205,7 @@ public class DkmOfflineCheckServiceImpl {
      * @return 是否成功
      */
     @Transactional(rollbackFor = Exception.class)
-    public PageResp insertOrUpdateVehicleBatch(List<VehicleBluetoothVO> dkmVehicles) throws DiagnosticLogsException ,VecentException {
+    public PageResp insertOrUpdateVehicleBatch(List<VehicleBluetoothVO> dkmVehicles) throws Exception {
         log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());
         //校验车辆蓝牙信息
         verifyVehicleBluetoothVO(dkmVehicles);
@@ -316,7 +316,11 @@ public class DkmOfflineCheckServiceImpl {
                     dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
                     DkmBluetooths newBluetooth = new DkmBluetooths();
                     DkmBluetooths oldBluetooth = new DkmBluetooths();
-                    oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
+                    try {
+                        oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
+                    } catch (VecentException e) {
+                        e.printStackTrace();
+                    }
                     BeanUtil.copyProperties(vehicleBluetooth, vehicle);
                     BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
 
