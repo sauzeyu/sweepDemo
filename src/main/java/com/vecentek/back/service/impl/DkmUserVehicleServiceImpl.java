@@ -202,7 +202,7 @@ public class DkmUserVehicleServiceImpl {
 
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5或者4的全部吊销
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId)
-         .notIn(DkmKey::getDkState, KeyStatusEnum.EXPIRED.getCode(),KeyStatusEnum.REVOKE.getCode()));
+                .notIn(DkmKey::getDkState, KeyStatusEnum.EXPIRED.getCode(), KeyStatusEnum.REVOKE.getCode()));
 
         ArrayList<String> userList = new ArrayList<>();
         for (DkmKey key : keys) {
@@ -250,7 +250,7 @@ public class DkmUserVehicleServiceImpl {
         String userId = revokeKeyVO.getUserId();
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5或者4的全部吊销
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId)
-                .notIn(DkmKey::getDkState, KeyStatusEnum.EXPIRED.getCode(),KeyStatusEnum.REVOKE.getCode()));
+                .notIn(DkmKey::getDkState, KeyStatusEnum.EXPIRED.getCode(), KeyStatusEnum.REVOKE.getCode()));
         // 返回【用户id-vin号】的list
         ArrayList<String> list = new ArrayList<>();
         if (CollectionUtils.isEmpty(keys)) {
@@ -309,6 +309,7 @@ public class DkmUserVehicleServiceImpl {
 
     /**
      * 分享钥匙
+     *
      * @param shareKeyVO
      * @return
      */
@@ -321,7 +322,7 @@ public class DkmUserVehicleServiceImpl {
                 StringUtils.isEmpty(shareKeyVO.getPhoneFingerprint()) ||
                 StringUtils.isEmpty(shareKeyVO.getValFrom()) ||
                 StringUtils.isEmpty(shareKeyVO.getValTo()) ||
-                Objects.isNull(shareKeyVO.getKeyPermit())){
+                Objects.isNull(shareKeyVO.getKeyPermit())) {
             return PageResp.fail("传参中存在空值！");
         }
         // 时间格式校验
@@ -332,26 +333,33 @@ public class DkmUserVehicleServiceImpl {
             valTo = DateUtil.parse(shareKeyVO.getValTo(), "yyyy-MM-dd HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
-            return PageResp.fail(1001,"钥匙生效或失效时间格式解析失败！");
+            return PageResp.fail(1001, "钥匙生效或失效时间格式解析失败！");
         }
         // 检查是否自我分享
-        if (Objects.equals(shareKeyVO.getUserId(),shareKeyVO.getShareUserId())){
-            return PageResp.fail(1001,"禁止自己分享给自己！");
+        if (Objects.equals(shareKeyVO.getUserId(), shareKeyVO.getShareUserId())) {
+            return PageResp.fail(1001, "禁止自己分享给自己！");
         }
         // 钥匙检查
         DkmKey dkmKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>().eq(DkmKey::getId, shareKeyVO.getKeyId()));
-        if (Objects.isNull(dkmKey)){
-            return PageResp.fail(1001,"钥匙信息为空！");
+        if (Objects.isNull(dkmKey)) {
+            return PageResp.fail(1001, "钥匙信息为空！");
         }
-        if (!Objects.equals(dkmKey.getParentId(),"0")){
-            return PageResp.fail(1001,"钥匙为分享钥匙不能进行分享！");
+        if (!Objects.equals(dkmKey.getParentId(), "0")) {
+            return PageResp.fail(1001, "钥匙为分享钥匙不能进行分享！");
         }
-        if (!Objects.equals(dkmKey.getDkState(),1)){
-            return PageResp.fail(1001,"钥匙状态异常不能分享！");
+        // 查询 人车关系 是否对应
+        Integer userVehicleCount = dkmUserVehicleMapper.selectCount(new LambdaQueryWrapper<DkmUserVehicle>()
+                .eq(DkmUserVehicle::getUserId, shareKeyVO.getUserId())
+                .eq(DkmUserVehicle::getVin, shareKeyVO.getVin()));
+        if (userVehicleCount < 1) {
+            return PageResp.fail(1001, "非法人车关系！");
+        }
+        if (!Objects.equals(dkmKey.getDkState(), 1)) {
+            return PageResp.fail(1001, "钥匙状态异常不能分享！");
         }
         DkmVehicle dkmVehicle = dkmVehicleMapper.selectOne(new LambdaQueryWrapper<DkmVehicle>().eq(DkmVehicle::getVin, shareKeyVO.getVin()));
-        if (Objects.isNull(dkmVehicle)){
-            return PageResp.fail(1001,"车辆信息为空！");
+        if (Objects.isNull(dkmVehicle)) {
+            return PageResp.fail(1001, "车辆信息为空！");
         }
         // 查询是否已存在分享钥匙，如果存在即更新，不存在即新建
         DkmKey shareKey = dkmKeyMapper.selectOne(new LambdaQueryWrapper<DkmKey>()
@@ -363,18 +371,19 @@ public class DkmUserVehicleServiceImpl {
         int v = (int) (Math.random() * 100000000);
         String random = v + "";
         // 计算分享钥匙周期  [20220725T111120Z]
-        long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE,false);
-        if (between < 0 ){
-            return PageResp.fail(1001,"非法钥匙生效和失效时间！");
+        long between = DateUtil.between(valFrom, valTo, DateUnit.MINUTE, false);
+        if (between < 0) {
+            return PageResp.fail(1001, "非法钥匙生效和失效时间！");
         }
-        if (Objects.isNull(shareKey)){ // 新建
+
+        if (Objects.isNull(shareKey)) { // 新建
             DkmKey newKey = new DkmKey();
             newKey.setKeyResource(1);
             newKey.setId(DkDateUtils.getUnionId());
             newKey.setUserId(shareKeyVO.getShareUserId());
-            if(Objects.equals(shareKeyVO.getPhoneFingerprint(),"1")){ // 传1说明是小程序手机指纹
+            if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
                 newKey.setPhoneFingerprint("1111111111111111"); // 小程序指纹默认16个1
-            }else {
+            } else {
                 newKey.setPhoneFingerprint(shareKeyVO.getPhoneFingerprint());
             }
             newKey.setVehicleId(dkmVehicle.getId());
@@ -424,14 +433,14 @@ public class DkmUserVehicleServiceImpl {
             // 计算密钥K1
             String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
             if (StringUtils.isBlank(masterKey)) {
-                return PageResp.fail(1001,"蓝牙信息没有对应二级密钥！");
+                return PageResp.fail(1001, "蓝牙信息没有对应二级密钥！");
             }
             dkmKeyMapper.insert(newKey);
             // 新增钥匙生命周期表吊销记录
             // 根据用户id找到手机号
             // 封装生命周期对象
-            keyLifecycleUtil.insert(newKey,2,2,1);
-        }else { // 存在App分享钥匙即更新
+            keyLifecycleUtil.insert(newKey, 2, 2, 1);
+        } else { // 存在App分享钥匙即更新
             shareKey.setActivateTimes(5);//目前后台默认设置五次，后期可能会改
             shareKey.setValFrom(valFrom);
             shareKey.setValTo(valTo);
