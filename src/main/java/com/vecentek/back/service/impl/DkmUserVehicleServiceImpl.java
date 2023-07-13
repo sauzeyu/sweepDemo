@@ -8,6 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.payneteasy.tlv.HexUtil;
+import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
 import com.vecentek.back.entity.DkmUser;
@@ -198,9 +199,11 @@ public class DkmUserVehicleServiceImpl {
         dkmUserVehicle.setBindStatus(2);
         dkmUserVehicle.setUnbindTime(logoutTime);
         dkmUserVehicleMapper.updateById(dkmUserVehicle);
+
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5或者4的全部吊销
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId)
-                .and(key -> key.ne(DkmKey::getDkState, 5).or().ne(DkmKey::getDkState, 4)));
+         .notIn(DkmKey::getDkState, KeyStatusEnum.EXPIRED.getCode(),KeyStatusEnum.REVOKE.getCode()));
+
         ArrayList<String> userList = new ArrayList<>();
         for (DkmKey key : keys) {
             key.setDkState(5);
@@ -247,7 +250,7 @@ public class DkmUserVehicleServiceImpl {
         String userId = revokeKeyVO.getUserId();
         // 根据userId查询钥匙表 吊销相关正在使用的钥匙 不为5或者4的全部吊销
         List<DkmKey> keys = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getUserId, userId)
-                .and(key -> key.ne(DkmKey::getDkState, 5).or().ne(DkmKey::getDkState, 4)));
+                .notIn(DkmKey::getDkState, KeyStatusEnum.EXPIRED.getCode(),KeyStatusEnum.REVOKE.getCode()));
         // 返回【用户id-vin号】的list
         ArrayList<String> list = new ArrayList<>();
         if (CollectionUtils.isEmpty(keys)) {
