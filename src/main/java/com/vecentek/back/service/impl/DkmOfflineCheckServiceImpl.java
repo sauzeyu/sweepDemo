@@ -17,41 +17,29 @@ import com.vecentek.back.constant.KeyErrorReasonEnumJac;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.UploadBluetoothsErrorDTO;
 import com.vecentek.back.dto.UploadDTO;
-import com.vecentek.back.entity.DkmAftermarketReplacement;
-import com.vecentek.back.entity.DkmBluetooths;
-import com.vecentek.back.entity.DkmKey;
-import com.vecentek.back.entity.DkmKeyLifecycle;
-import com.vecentek.back.entity.DkmKeyLog;
-import com.vecentek.back.entity.DkmVehicle;
+import com.vecentek.back.entity.*;
 import com.vecentek.back.exception.DiagnosticLogsException;
 import com.vecentek.back.exception.ParameterValidationException;
 import com.vecentek.back.exception.UploadOverMaximumException;
 import com.vecentek.back.exception.VecentException;
-import com.vecentek.back.mapper.DkmAftermarketReplacementMapper;
-import com.vecentek.back.mapper.DkmBluetoothsMapper;
-import com.vecentek.back.mapper.DkmKeyLifecycleMapper;
-import com.vecentek.back.mapper.DkmKeyLogMapper;
-import com.vecentek.back.mapper.DkmKeyMapper;
-import com.vecentek.back.mapper.DkmOfflineCheckMapper;
-import com.vecentek.back.mapper.DkmVehicleMapper;
-import com.vecentek.back.vo.KeyLogDataResVO;
-import com.vecentek.back.vo.KeyLogDataVO;
-import com.vecentek.back.vo.KeyLogDetailResVO;
-import com.vecentek.back.vo.KeyLogDetailVO;
-import com.vecentek.back.vo.VehicleBluetoothVO;
+import com.vecentek.back.mapper.*;
+import com.vecentek.back.vo.*;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -144,6 +132,12 @@ public class DkmOfflineCheckServiceImpl {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "VIN长度不正确！");
                 throw new VecentException(1001, "VIN长度不正确！");
             }
+            // 使用正则表达式 [a-zA-Z0-9]+ 来匹配只包含数字和字母的字符串
+            String pattern = "^[a-zA-Z0-9]+$";
+            if (!Pattern.matches(pattern,vehicle.getVin())) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递或传入的参数格式不正确！");
+                throw new VecentException(1001, "必填参数未传递或传入的参数格式不正确！");
+            }
 
             if (vehicle.getBleMacAddress().length() != 12) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址长度不正确！");
@@ -214,15 +208,20 @@ public class DkmOfflineCheckServiceImpl {
     public PageResp insertOrUpdateVehicleBatch(List<VehicleBluetoothVO> dkmVehicles) throws DiagnosticLogsException ,VecentException {
         log.info("request：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + dkmVehicles.toString());
         //校验车辆蓝牙信息
-
         verifyVehicleBluetoothVO(dkmVehicles);
         dkmVehicles.stream().filter(vehicle -> CharSequenceUtil.isBlank(vehicle.getSearchNumber()))
                 .forEach(vehicle -> {
-                    String hashSearchNumber = DigestUtils.sha256Hex(vehicle.getHwDeviceSn());
-                            String searchNumber = hashSearchNumber.substring(hashSearchNumber.length() - 38);
-                            vehicle.setSearchNumber(searchNumber);
+                    MessageDigest messageDigest = null;
+                    try {
+                        messageDigest = MessageDigest.getInstance("SHA-256");
+                    } catch (NoSuchAlgorithmException e) {
+                        e.printStackTrace();
+                    }
+                    byte[] hash = messageDigest.digest(com.payneteasy.tlv.HexUtil.parseHex(vehicle.getHwDeviceSn()));
+                    String encdeStr = Hex.encodeHexString(hash);
+                    String searchNumber = encdeStr.substring(encdeStr.length() - 38);
+                        vehicle.setSearchNumber(searchNumber);
                         }
-        
                 );
         //划分换件车辆和新增车辆
         List<String> alreadyExistsVehicleVinList = dkmOfflineCheckMapper.selectVehicleByVin(dkmVehicles);
