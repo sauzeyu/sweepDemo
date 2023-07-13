@@ -5,6 +5,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.vecentek.back.entity.DkmBluetooths;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmVehicle;
+import com.vecentek.back.exception.VecentException;
 import com.vecentek.back.mapper.DkmAdminMapper;
 import com.vecentek.back.mapper.DkmBluetoothsMapper;
 import com.vecentek.back.mapper.DkmKeyMapper;
@@ -63,7 +64,7 @@ public class FakeDataTest {
      * 同时制造蓝牙表和车辆表测试数据
      */
     @Test
-    public void idTest() {
+    public void idTest() throws VecentException {
         int num = 0;
         for (int i = 0; i < 990; i++) {
             String s = IdUtil.simpleUUID();

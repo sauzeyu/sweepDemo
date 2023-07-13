@@ -10,7 +10,9 @@ public enum KeyStatusEnum {
     /**
      * 数字钥匙的具体状态(1 已启用，3 冻结 ，4 过期， 5 吊销)
      */
-    ACTIVATED(1, "已启用"),
+    NOT_ACTIVATED(0, "未激活"),
+
+    ACTIVATED(1, "已激活"),
 
     FREEZE(3, "冻结"),
 

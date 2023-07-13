@@ -2,6 +2,7 @@ package com.vecentek.back.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.vecentek.back.exception.VecentException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -74,8 +75,9 @@ public class DkmBluetooths extends BaseEntity {
 
     /**
      * 设置设备序列号，并转换为UTF-8字符串存入hwDeviceSnHEX字段
+     * @return
      */
-    public void setHwDeviceSn(String hwDeviceSn) {
+    public void setHwDeviceSn(String hwDeviceSn) throws VecentException {
         this.hwDeviceSn = hwDeviceSn;
         String asciiString = null;
         try {
@@ -83,9 +85,11 @@ public class DkmBluetooths extends BaseEntity {
              asciiString = new String(bytes, StandardCharsets.US_ASCII);
 
         } catch (DecoderException e) {
-            System.out.println("Invalid hex string");
+            throw  new VecentException("错误格式的TBOX号");
+//            return PageResp.fail("错误格式的TBOX号");
         }
         this.hwDeviceSnHEX = asciiString;
+
     }
 
 }
