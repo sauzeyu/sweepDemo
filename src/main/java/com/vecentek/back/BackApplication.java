@@ -19,5 +19,6 @@ public class BackApplication {
     public static void main(String[] args) {
         ManagementFactory.getClassLoadingMXBean();
         SpringApplication.run(BackApplication.class, args);
+        System.out.println();
     }
 }
