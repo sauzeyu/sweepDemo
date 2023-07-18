@@ -36,7 +36,7 @@ pipeline {
         stage('Build') {
             steps {
                 // 使用Maven构建Java项目，并生成JAR包
-                sh 'clean package -Dmaven.test.skip=true'
+                sh 'mvn clean package -Dmaven.test.skip=true'
             }
         }
 
