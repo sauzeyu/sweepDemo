@@ -47,9 +47,9 @@ pipeline {
     //声明在jenkins任何节点都可用
     agent any
     environment {
-        env.PROJECT_NAME = "jac"
-        env.SERVICE_NAME = "back"
-        env.BRANCH_NAME = "test"
+        PROJECT_NAME = "jac"
+        SERVICE_NAME = "back"
+        BRANCH_NAME = "test"
     }
 
 
