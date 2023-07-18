@@ -67,10 +67,10 @@ pipeline {
             steps {
                 // 使用 echo 函数打印输出
                 echo 'Build'
-                echo '/home/project/$ProjectName/$ServiceName'
-                echo 'sh run.sh -n $ServiceName-dev  -t $ProjectName'
-                echo '/docker/$ServiceName-$ProjectName-test'
-                sshPublisher(publishers: [sshPublisherDesc(configName: '172.16.70.111', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'cd /home/project/$ProjectName/$ServiceName', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/$ProjectName/$ServiceName', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'Dockerfile'), sshTransfer(cleanRemote: false, excludes: '', execCommand: 'sh run.sh -n $ServiceName-dev  -t $ProjectName', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/docker/$ServiceName-$ProjectName-test', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+                echo '/home/project/${ProjectName}/${ServiceName}'
+                echo 'sh run.sh -n ${ServiceName}-dev  -t ${ProjectName}'
+                echo '/docker/${ServiceName}-${ProjectName}-test'
+                sshPublisher(publishers: [sshPublisherDesc(configName: '172.16.70.111', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'cd /home/project/$ProjectName/$ServiceName', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/$ProjectName/$ServiceName', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'Dockerfile'), sshTransfer(cleanRemote: false, excludes: '', execCommand: 'sh run.sh -n $ServiceName-dev  -t $ProjectName', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/${ProjectName}/${ServiceName}', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
             }
         }
 
