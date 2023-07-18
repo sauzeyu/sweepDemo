@@ -66,8 +66,8 @@ pipeline {
                 }
                 // 使用 echo 函数打印输出
                 echo 'Build'
-                echo ${env.PROJECT_NAME}
-                echo '/home/project/'${env.PROJECT_NAME}'/${env.SERVICE_NAME}'
+                echo "${env.PROJECT_NAME}"
+                echo "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}"
                 echo 'sh run.sh -n ${env.SERVICE_NAME}-dev  -t ${env.PROJECT_NAME}'
                 echo '/docker/${env.SERVICE_NAME}-${env.PROJECT_NAME}-test'
                 sshPublisher(publishers: [sshPublisherDesc(configName: '172.16.70.111', sshLabel: [label: 'origin/master'], transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'Dockerfile'), sshTransfer(cleanRemote: false, excludes: '', execCommand: '''source /etc/profile
