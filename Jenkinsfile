@@ -2,6 +2,11 @@
 pipeline {
     //声明在jenkins任何节点都可用
     agent any
+
+    tools {
+        maven 'maven3.6.1'
+    }
+
     environment {
         PROJECT_NAME = "jac"
         SERVICE_NAME = "back"
@@ -35,6 +40,7 @@ pipeline {
         }
         stage('Build') {
             steps {
+                sh "mvn -v"
                 // 使用Maven构建Java项目，并生成JAR包
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
