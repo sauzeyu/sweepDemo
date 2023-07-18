@@ -49,9 +49,13 @@ pipeline {
     //声明一些环境变量
     environment {
         //获取环境变量，拿到项目名称和分支名称
-        def projectName = "jac"
-        def ServiceName = "back"
-        def BranchName = "test"
+        def PROJECT_NAME = "jac"
+        def SERVICE_NAME = "back"
+        def BRANCH_NAME = "test"
+        // 将定义的变量保存到env中，使其可以在stages中使用
+        env.projectName = PROJECT_NAME
+        env.serviceName = SERVICE_NAME
+        env.branchName = BRANCH_NAME
     }
 
     stages {
