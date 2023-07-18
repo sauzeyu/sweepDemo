@@ -46,14 +46,7 @@ properties([
 pipeline {
     //声明在jenkins任何节点都可用
     agent any
-    //声明一些环境变量
-    environment {
-        //获取环境变量，拿到项目名称和分支名称
-        PROJECT_NAME = "jac"
-        SERVICE_NAME = "back"
-        BRANCH_NAME = "test"
 
-    }
 
     stages {
         stage('Checkout') {
@@ -65,6 +58,13 @@ pipeline {
         }
 
         stage('Build') {
+            environment {
+                //获取环境变量，拿到项目名称和分支名称
+                PROJECT_NAME = "jac"
+                SERVICE_NAME = "back"
+                BRANCH_NAME = "test"
+
+            }
             steps {
                 // 使用 echo 函数打印输出
                 echo 'Build'
