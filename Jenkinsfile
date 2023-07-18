@@ -12,8 +12,8 @@ pipeline {
         SERVICE_NAME = "back"
         BRANCH_NAME = "test"
         // 定义远程服务器的SSH配置名称
-        remoteServer = 'your-ssh-server' // 替换为SSH配置名称
-        remoteDirectory = '/path/to/remote/directory' // 替换为目标服务器上的目录路径
+        remoteServer = '172.16.70.112' // 替换为SSH配置名称
+        remoteDirectory = '/home/project/jac/back/' // 替换为目标服务器上的目录路径
     }
 
     triggers {
