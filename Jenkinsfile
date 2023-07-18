@@ -1,47 +1,3 @@
-properties([
-        pipelineTriggers([
-                [
-                        $class  : 'BitBucketPPRTrigger',
-                        triggers: [
-                                [
-                                        $class      : 'BitBucketPPRPullRequestTriggerFilter',
-                                        actionFilter: [
-                                                $class: 'BitBucketPPRPullRequestCreatedActionFilter',
-                                        ]
-                                ],
-                                [
-                                        $class      : 'BitBucketPPRPullRequestTriggerFilter',
-                                        actionFilter: [
-                                                $class: 'BitBucketPPRPullRequestApprovedActionFilter',
-                                        ]
-                                ],
-                                [
-                                        $class      : 'BitBucketPPRPullRequestTriggerFilter',
-                                        actionFilter: [
-                                                $class: 'BitBucketPPRPullRequestUpdatedActionFilter',
-                                        ]
-                                ],
-                                [
-                                        $class      : 'BitBucketPPRPullRequestTriggerFilter',
-                                        actionFilter: [
-                                                $class: 'BitBucketPPRPullRequestMergedActionFilter',
-                                        ]
-                                ],
-                                [
-                                        $class      : 'BitBucketPPRRepositoryTriggerFilter',
-                                        actionFilter: [
-                                                $class                     : 'BitBucketPPRRepositoryPushActionFilter',
-                                                triggerAlsoIfNothingChanged: true,
-                                                triggerAlsoIfTagPush       : false,
-                                                allowedBranches            : "",
-                                                isToApprove                : true
-                                        ]
-                                ]
-                        ]
-                ]
-        ])
-])
-
 
 pipeline {
     //声明在jenkins任何节点都可用
@@ -52,12 +8,28 @@ pipeline {
         BRANCH_NAME = "test"
     }
 
+    triggers {
+        GenericTrigger(
+                genericVariables: [
+                        [key: 'ref', value: '$.ref']
+                ],
+
+                causeString: 'Triggered on $ref',
+
+                token: 'abc123',
+                tokenCredentialId: '',
+                printContributedVariables: true,
+                printPostContent: true
+        )
+    }
 
     stages {
         stage('Checkout') {
             steps {
                 // 使用 echo 函数打印输出
                 echo 'Checkout'
+                sh "echo $ref"
+                sh "printenv"
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '217dfbc7-70b9-485b-8cfc-515b9ad785cc', url: 'http://172.16.70.112:7990/scm/back/dkserver-back-jac.git']]])
             }
         }
