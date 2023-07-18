@@ -59,9 +59,11 @@ pipeline {
 
         stage('Build') {
             steps {
-                env.PROJECT_NAME = "jac"
-                env.SERVICE_NAME = "back"
-                env.BRANCH_NAME = "test"
+                script {
+                    env.PROJECT_NAME = "jac"
+                    env.SERVICE_NAME = "back"
+                    env.BRANCH_NAME = "test"
+                }
                 // 使用 echo 函数打印输出
                 echo 'Build'
                 echo '/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}'
