@@ -11,13 +11,10 @@ pipeline {
     triggers {
         GenericTrigger(
                 genericVariables: [
-                        [key: 'ref', value: '$.ref']
+                        [key: 'allData', value: '$']
                 ],
-
                 causeString: 'Triggered on $ref',
-
-                token: 'abc123',
-                tokenCredentialId: '',
+                token: 'web-dkserver',
                 printContributedVariables: true,
                 printPostContent: true
         )
