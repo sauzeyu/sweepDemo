@@ -58,14 +58,10 @@ pipeline {
         }
 
         stage('Build') {
-            environment {
-                //获取环境变量，拿到项目名称和分支名称
-                PROJECT_NAME = "jac"
-                SERVICE_NAME = "back"
-                BRANCH_NAME = "test"
-
-            }
             steps {
+                env.PROJECT_NAME = "jac"
+                env.SERVICE_NAME = "back"
+                env.BRANCH_NAME = "test"
                 // 使用 echo 函数打印输出
                 echo 'Build'
                 echo '/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}'
