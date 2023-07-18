@@ -47,6 +47,11 @@ pipeline {
     //声明在jenkins任何节点都可用
     agent any
     //声明一些环境变量
+    environment {
+        //获取环境变量，拿到项目名称和分支名称
+        def projectName = "jac"
+        def ServiceName = "back"
+    }
 
     stages {
         stage('Checkout') {
