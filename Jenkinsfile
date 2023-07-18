@@ -49,13 +49,13 @@ pipeline {
     //声明一些环境变量
     environment {
         //获取环境变量，拿到项目名称和分支名称
-        def PROJECT_NAME = "jac"
-        def SERVICE_NAME = "back"
-        def BRANCH_NAME = "test"
+        def projectName = "jac"
+        def servicename = "back"
+        def branchName = "test"
         // 将定义的变量保存到env中，使其可以在stages中使用
-        env.projectName = PROJECT_NAME
-        env.serviceName = SERVICE_NAME
-        env.branchName = BRANCH_NAME
+        env.PROJECT_NAME = projectName
+        env.SERVICE_NAME = servicename
+        env.BRANCH_NAME = branchName
     }
 
     stages {
@@ -71,12 +71,12 @@ pipeline {
             steps {
                 // 使用 echo 函数打印输出
                 echo 'Build'
-                echo '/home/project/${ProjectName}/${ServiceName}'
-                echo 'sh run.sh -n ${ServiceName}-dev  -t ${ProjectName}'
-                echo '/docker/${ServiceName}-${ProjectName}-test'
-                sshPublisher(publishers: [sshPublisherDesc(configName: '172.16.70.111', sshLabel: [label: 'origin/master'], transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'cd /home/project/${ProjectName}/${ServiceName}', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/${ProjectName}/${ServiceName}', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'Dockerfile'), sshTransfer(cleanRemote: false, excludes: '', execCommand: '''source /etc/profile
-cd /home/project/${ProjectName}/${ServiceName}
-sh run.sh -n ${ServiceName}${BranchName} -t ${projectName}''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/${ProjectName}/${ServiceName}', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
+                echo '/home/project/${PROJECT_NAME}/${SERVICE_NAME}'
+                echo 'sh run.sh -n ${SERVICE_NAME}-dev  -t ${PROJECT_NAME}'
+                echo '/docker/${SERVICE_NAME}-${PROJECT_NAME}-test'
+                sshPublisher(publishers: [sshPublisherDesc(configName: '172.16.70.111', sshLabel: [label: 'origin/master'], transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'cd /home/project/${PROJECT_NAME}/${SERVICE_NAME}', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/${PROJECT_NAME}/${SERVICE_NAME}', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'Dockerfile'), sshTransfer(cleanRemote: false, excludes: '', execCommand: '''source /etc/profile
+cd /home/project/${PROJECT_NAME}/${SERVICE_NAME}
+sh run.sh -n ${SERVICE_NAME}${BRANCH_NAME} -t ${PROJECT_NAME}''', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/home/project/${PROJECT_NAME}/${SERVICE_NAME}', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/*.jar')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: true)])
 
             }
         }
