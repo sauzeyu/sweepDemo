@@ -40,7 +40,7 @@ pipeline {
             }
             steps {
                 sh "$JAVA8 -version"
-              sh "${JAVA82} -verison"
+              sh "${JAVA82} -version"
             }
         }
         
