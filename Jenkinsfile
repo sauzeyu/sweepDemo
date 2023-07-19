@@ -38,7 +38,7 @@ pipeline {
         jdk 'jdk8u201'
     }
             steps {
-              sh "java -verison"
+              sh "java -version"
                 // 使用 echo 函数打印输出
                 echo 'Checkout'
                 sh "echo $ref"
@@ -48,7 +48,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-              sh "java -vresion"
+              sh "java -version"
                 sh "mvn -v"
                 echo 'Checkout'
                 // 使用Maven构建Java项目，并生成JAR包
