@@ -6,7 +6,6 @@ pipeline {
     tools {
         maven 'maven3.6.1'
         // 指定JDK版本
-        jdk 'jdk8u181'
     }
 
     environment {
@@ -32,13 +31,28 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-              tools {
-        // 指定JDK版本
-        jdk 'jdk8u201'
-    }
+
+        stage('Build with JDK 8') {
+            tools {
+                jdk 'jdk8u201'
+            }
             steps {
-              sh "java -version"
+                sh "java -version"
+            }
+        }
+        
+        stage('Build with JDK 8') {
+            tools {
+                jdk 'jdk8u181'
+            }
+            steps {
+                sh "java -version"
+            }
+        }
+
+
+        stage('Checkout') {
+            steps {
                 // 使用 echo 函数打印输出
                 echo 'Checkout'
                 sh "echo $ref"
@@ -48,7 +62,6 @@ pipeline {
         }
         stage('Build') {
             steps {
-              sh "java -version"
                 sh "mvn -v"
                 echo 'Checkout'
                 // 使用Maven构建Java项目，并生成JAR包
