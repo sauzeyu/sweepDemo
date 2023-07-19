@@ -13,6 +13,7 @@ pipeline {
         PROJECT_NAME = "jac"
         SERVICE_NAME = "back"
         BRANCH_NAME = "test"
+        JAVA_HOME = "/var/jenkins_home/tools/hudson.model.JDK/jdk1.8"
         // 定义远程服务器的SSH配置名称
         remoteServer = '172.16.70.112' // 替换为SSH配置名称
         remoteDirectory = '/home/project/jac/back/' // 替换为目标服务器上的目录路径
