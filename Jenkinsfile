@@ -9,6 +9,8 @@ pipeline {
     }
 
     environment {
+      JAVA8="/var/jenkins_home/tools/hudson.model.JDK/jdk8u181/jdk1.8.0_181/bin/java"
+      JAVA82="/var/jenkins_home/tools/hudson.model.JDK/jdk8u201/jdk1.8.0_201/bin/java"
         PROJECT_NAME = "jac"
         SERVICE_NAME = "back"
         BRANCH_NAME = "test"
@@ -37,18 +39,12 @@ pipeline {
                 jdk 'jdk8u201'
             }
             steps {
-                sh "java -version"
+                sh "$JAVA8 -version"
+              sh "${JAVA82} -verison"
             }
         }
         
-        stage('Build  JDK 8') {
-            tools {
-                jdk 'jdk8u181'
-            }
-            steps {
-                sh "java -version"
-            }
-        }
+
 
 
         stage('Checkout') {
