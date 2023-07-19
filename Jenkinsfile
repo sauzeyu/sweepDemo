@@ -5,6 +5,8 @@ pipeline {
 
     tools {
         maven 'maven3.6.1'
+        // 指定JDK版本
+        jdk 'jdk1.8'
     }
 
     environment {
@@ -14,6 +16,8 @@ pipeline {
         // 定义远程服务器的SSH配置名称
         remoteServer = '172.16.70.112' // 替换为SSH配置名称
         remoteDirectory = '/home/project/jac/back/' // 替换为目标服务器上的目录路径
+//        def jdk18 = tool 'jdk1.8'
+//        env.PATH = "${jdk18}/bin:${mvnHome}/bin:${env.PATH}"
     }
 
     triggers {
@@ -41,6 +45,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh "mvn -v"
+                echo 'Checkout'
                 // 使用Maven构建Java项目，并生成JAR包
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
