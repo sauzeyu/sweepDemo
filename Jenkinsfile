@@ -41,7 +41,7 @@ pipeline {
             }
         }
         
-        stage('Build with JDK 8') {
+        stage('Build  JDK 8') {
             tools {
                 jdk 'jdk8u181'
             }
