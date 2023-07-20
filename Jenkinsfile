@@ -62,33 +62,33 @@ pipeline {
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
         }
-        stage('jar') {
-            steps {
-                // 将生成的JAR包上传到远程服务器
-                sshPublisher(
-                        publishers: [sshPublisherDesc(
-                                configName: "${remoteServer}", // 使用定义的SSH配置名称
-                                transfers: [sshTransfer(
-                                        cleanRemote: false,
-                                        excludes: '',
-                                        execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-                                        execTimeout: 120000,
-                                        flatten: false,
-                                        makeEmptyDirs: false,
-                                        noDefaultExcludes: false,
-                                        patternSeparator: '[, ]+',
-                                        remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-                                        remoteDirectorySDF: false,
-                                        removePrefix: 'target/',
-                                        sourceFiles: 'target/*.jar', // 上传的JAR包路径
-                                )],
-                                usePromotionTimestamp: false,
-                                useWorkspaceInPromotion: false,
-                                verbose: true
-                        )]
-                )
-            }
-        }
+//        stage('jar') {
+//            steps {
+//                // 将生成的JAR包上传到远程服务器
+//                sshPublisher(
+//                        publishers: [sshPublisherDesc(
+//                                configName: "${remoteServer}", // 使用定义的SSH配置名称
+//                                transfers: [sshTransfer(
+//                                        cleanRemote: false,
+//                                        excludes: '',
+//                                        execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+//                                        execTimeout: 120000,
+//                                        flatten: false,
+//                                        makeEmptyDirs: false,
+//                                        noDefaultExcludes: false,
+//                                        patternSeparator: '[, ]+',
+//                                        remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+//                                        remoteDirectorySDF: false,
+//                                        removePrefix: 'target/',
+//                                        sourceFiles: 'target/*.jar', // 上传的JAR包路径
+//                                )],
+//                                usePromotionTimestamp: false,
+//                                useWorkspaceInPromotion: false,
+//                                verbose: true
+//                        )]
+//                )
+//            }
+//        }
         stage('Run') {
 
 
@@ -109,10 +109,10 @@ pipeline {
                                 patternSeparator: '[, ]+',
                                 remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
                                 remoteDirectorySDF: false,
-                                removePrefix: '',
-                                sourceFiles: 'Dockerfile',
-//                                removePrefix: 'target/',
-//                                sourceFiles: 'target/*.jar'
+//                                removePrefix: '',
+//                                sourceFiles: 'Dockerfile',
+                                removePrefix: 'target/',
+                                sourceFiles: 'target/*.jar'
                         )],
                         usePromotionTimestamp: false,
                         useWorkspaceInPromotion: false,
