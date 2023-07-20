@@ -5,7 +5,6 @@ pipeline {
 
     tools {
         maven 'maven3.6.1'
-        // 指定JDK版本
     }
 
     environment {
@@ -36,12 +35,9 @@ pipeline {
             }
             steps {
                 sh "$JAVA8 -version"
-              sh "${JAVA82} -version"
             }
         }
         
-
-
 
         stage('Checkout') {
             steps {
@@ -58,51 +54,53 @@ pipeline {
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
         }
-        stage('jar') {
+        stage('run') {
             steps {
                 // 将生成的JAR包上传到远程服务器
                 sshPublisher(
                         publishers: [sshPublisherDesc(
                                 configName: "172.16.70.111", // 使用定义的SSH配置名称
                                 transfers: [sshTransfer(
+                                        // 是否删除目标服务器上已存在的文件，默认为false
                                         cleanRemote: false,
+                                        // 排除不需要上传的文件，使用Ant样式的通配符，可选
                                         excludes: '',
+                                        // 在远程服务器上执行的命令，例如：进入目录、停止服务等
                                         execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        // 执行命令的超时时间，单位为毫秒，默认为 120000 (2分钟)
                                         execTimeout: 120000,
+                                        // 是否将源文件路径扁平化，默认为false
                                         flatten: false,
+                                        // 是否在传输时创建空的目录，默认为false
                                         makeEmptyDirs: false,
+                                        // 是否使用默认的排除规则，默认为false
                                         noDefaultExcludes: false,
+                                        // 用于分隔文件路径的模式，默认为'[, ]+'
                                         patternSeparator: '[, ]+',
+                                        // 目标服务器上的目录路径，上传的JAR包将放在此路径下
                                         remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        // 是否使用SimpleDateFormat格式化目标路径，默认为false
                                         remoteDirectorySDF: false,
+                                        // 上传文件时去掉的前缀，默认为空
                                         removePrefix: 'target/',
+                                        // 需要上传的文件路径，使用Ant样式的通配符，例如：'target/*.jar'
                                         sourceFiles: 'target/*.jar', // 上传的JAR包路径
                                 )],
+                                // 是否使用构建的时间戳作为远程路径，默认为false
                                 usePromotionTimestamp: false,
+                                // 是否在传输期间使用工作区路径，默认为false
                                 useWorkspaceInPromotion: false,
+                                // 是否在控制台输出详细信息，默认为false
                                 verbose: true
                         ),
                                      sshPublisherDesc(
                                              configName: '172.16.70.111', // 使用定义的SSH配置名称
                                              sshLabel: [label: 'origin/master'],
                                              transfers: [sshTransfer(
-                                                     cleanRemote: false,
-                                                     excludes: '',
                                                      execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME} && sh run.sh -n ${env.SERVICE_NAME}-${env.BRANCH_NAME} -t ${env.PROJECT_NAME}",
-                                                     execTimeout: 120000,
-                                                     flatten: false,
-                                                     makeEmptyDirs: false,
-                                                     noDefaultExcludes: false,
-                                                     patternSeparator: '[, ]+',
-                                                     remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-                                                     remoteDirectorySDF: false,
-//                                removePrefix: '',
-//                                sourceFiles: 'Dockerfile',
-                                                     removePrefix: 'target/',
-                                                     sourceFiles: 'target/*.jar'
+                                                     removePrefix: '',
+                                                     sourceFiles: 'Dockerfile',
                                              )],
-                                             usePromotionTimestamp: false,
-                                             useWorkspaceInPromotion: false,
                                              verbose: true
                                      )
 
@@ -110,39 +108,7 @@ pipeline {
                 )
             }
         }
-//        stage('Run') {
-//
-//
-//            steps {
-//
-//                // 运行远程命令
-//                sshPublisher(publishers: [sshPublisherDesc(
-//                        configName: '172.16.70.111', // 使用定义的SSH配置名称
-//                        sshLabel: [label: 'origin/master'],
-//                        transfers: [sshTransfer(
-//                                cleanRemote: false,
-//                                excludes: '',
-//                                execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME} && sh run.sh -n ${env.SERVICE_NAME}-${env.BRANCH_NAME} -t ${env.PROJECT_NAME}",
-//                                execTimeout: 120000,
-//                                flatten: false,
-//                                makeEmptyDirs: false,
-//                                noDefaultExcludes: false,
-//                                patternSeparator: '[, ]+',
-//                                remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-//                                remoteDirectorySDF: false,
-////                                removePrefix: '',
-////                                sourceFiles: 'Dockerfile',
-//                                removePrefix: 'target/',
-//                                sourceFiles: 'target/*.jar'
-//                        )],
-//                        usePromotionTimestamp: false,
-//                        useWorkspaceInPromotion: false,
-//                        verbose: true
-//                )])
-//
-//            }
-//
-//        }
+
 
 
     }
