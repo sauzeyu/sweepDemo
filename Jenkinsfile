@@ -73,7 +73,9 @@ pipeline {
                                 configName: "${remoteServer}", // 使用定义的SSH配置名称
                                 transfers: [sshTransfer(
                                         sourceFiles: 'target/*.jar', // 上传的JAR包路径
-                                        remoteDirectory: "${remoteDirectory}" // 目标服务器上的目录路径
+                                        remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        removePrefix: 'target/',
+
                                 )]
                         )]
                 )
