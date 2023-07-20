@@ -72,9 +72,11 @@ pipeline {
                         publishers: [sshPublisherDesc(
                                 configName: "${remoteServer}", // 使用定义的SSH配置名称
                                 transfers: [sshTransfer(
+                                        execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        removePrefix: 'target/',
                                         sourceFiles: 'target/*.jar', // 上传的JAR包路径
                                         remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-                                        removePrefix: 'target/',
+
 
                                 )]
                         )]
