@@ -50,7 +50,6 @@ pipeline {
         stage('Checkout') {
             steps {
                 // 使用 echo 函数打印输出
-                echo 'Checkout'
                 sh "echo $ref"
                 sh "printenv"
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '217dfbc7-70b9-485b-8cfc-515b9ad785cc', url: 'http://172.16.70.112:7990/scm/back/dkserver-back-jac.git']]])
@@ -59,7 +58,6 @@ pipeline {
         stage('Build') {
             steps {
                 sh "mvn -v"
-                echo 'Checkout'
                 // 使用Maven构建Java项目，并生成JAR包
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
@@ -69,7 +67,6 @@ pipeline {
 
 
             steps {
-
                 // 将生成的JAR包上传到远程服务器
                 sshPublisher(
                         publishers: [sshPublisherDesc(
@@ -80,12 +77,6 @@ pipeline {
                                 )]
                         )]
                 )
-                // 使用 echo 函数打印输出
-                echo 'Build'
-                echo "location = /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}"
-                echo "shell =  sh run.sh -n ${env.SERVICE_NAME}${env.BRANCH_NAME} -t ${env.PROJECT_NAME}"
-
-
                 // 运行远程命令
                 sshPublisher(publishers: [sshPublisherDesc(
                         configName: '172.16.70.111', // 使用定义的SSH配置名称
