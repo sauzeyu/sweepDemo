@@ -92,8 +92,10 @@ pipeline {
                                 patternSeparator: '[, ]+',
                                 remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
                                 remoteDirectorySDF: false,
-                                removePrefix: 'target/',
-                                sourceFiles: 'target/*.jar'
+                                removePrefix: '',
+                                sourceFiles: 'Dockerfile',
+//                                removePrefix: 'target/',
+//                                sourceFiles: 'target/*.jar'
                         )],
                         usePromotionTimestamp: false,
                         useWorkspaceInPromotion: false,
