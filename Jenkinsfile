@@ -26,7 +26,7 @@ pipeline {
                 ],
                 causeString: 'Triggered on $ref',
                 token: 'web-dkserver',
-                printContributedVariables: true,
+//                printContributedVariables: true,
                 printPostContent: true
         )
     }
