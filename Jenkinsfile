@@ -72,13 +72,22 @@ pipeline {
                         publishers: [sshPublisherDesc(
                                 configName: "${remoteServer}", // 使用定义的SSH配置名称
                                 transfers: [sshTransfer(
+                                        cleanRemote: false,
+                                        excludes: '',
                                         execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        execTimeout: 120000,
+                                        flatten: false,
+                                        makeEmptyDirs: false,
+                                        noDefaultExcludes: false,
+                                        patternSeparator: '[, ]+',
+                                        remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        remoteDirectorySDF: false,
                                         removePrefix: 'target/',
                                         sourceFiles: 'target/*.jar', // 上传的JAR包路径
-                                        remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-
-
-                                )]
+                                )],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: true
                         )]
                 )
                 // 运行远程命令
