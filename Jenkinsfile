@@ -62,7 +62,7 @@ pipeline {
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
         }
-        stage('Run') {
+        stage('jar') {
             // 将生成的JAR包上传到远程服务器
             sshPublisher(
                     publishers: [sshPublisherDesc(
