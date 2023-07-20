@@ -14,10 +14,6 @@ pipeline {
         PROJECT_NAME = "jac"
         SERVICE_NAME = "back"
         BRANCH_NAME = "test"
-//        JAVA_HOME = "/var/jenkins_home/tools/hudson.model.JDK/jdk1.8"
-        // 定义远程服务器的SSH配置名称
-        remoteServer = '172.16.70.112' // 替换为SSH配置名称
-        remoteDirectory = '/home/project/jac/back/' // 替换为目标服务器上的目录路径
     }
 
     triggers {
@@ -62,33 +58,33 @@ pipeline {
                 sh 'mvn clean package -Dmaven.test.skip=true'
             }
         }
-//        stage('jar') {
-//            steps {
-//                // 将生成的JAR包上传到远程服务器
-//                sshPublisher(
-//                        publishers: [sshPublisherDesc(
-//                                configName: "${remoteServer}", // 使用定义的SSH配置名称
-//                                transfers: [sshTransfer(
-//                                        cleanRemote: false,
-//                                        excludes: '',
-//                                        execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-//                                        execTimeout: 120000,
-//                                        flatten: false,
-//                                        makeEmptyDirs: false,
-//                                        noDefaultExcludes: false,
-//                                        patternSeparator: '[, ]+',
-//                                        remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-//                                        remoteDirectorySDF: false,
-//                                        removePrefix: 'target/',
-//                                        sourceFiles: 'target/*.jar', // 上传的JAR包路径
-//                                )],
-//                                usePromotionTimestamp: false,
-//                                useWorkspaceInPromotion: false,
-//                                verbose: true
-//                        )]
-//                )
-//            }
-//        }
+        stage('jar') {
+            steps {
+                // 将生成的JAR包上传到远程服务器
+                sshPublisher(
+                        publishers: [sshPublisherDesc(
+                                configName: "172.16.70.111", // 使用定义的SSH配置名称
+                                transfers: [sshTransfer(
+                                        cleanRemote: false,
+                                        excludes: '',
+                                        execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        execTimeout: 120000,
+                                        flatten: false,
+                                        makeEmptyDirs: false,
+                                        noDefaultExcludes: false,
+                                        patternSeparator: '[, ]+',
+                                        remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                        remoteDirectorySDF: false,
+                                        removePrefix: 'target/',
+                                        sourceFiles: 'target/*.jar', // 上传的JAR包路径
+                                )],
+                                usePromotionTimestamp: false,
+                                useWorkspaceInPromotion: false,
+                                verbose: true
+                        )]
+                )
+            }
+        }
         stage('Run') {
 
 
