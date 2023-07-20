@@ -98,6 +98,7 @@ pipeline {
                                              sshLabel: [label: 'origin/master'],
                                              transfers: [sshTransfer(
                                                      execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME} && sh run.sh -n ${env.SERVICE_NAME}-${env.BRANCH_NAME} -t ${env.PROJECT_NAME}",
+                                                     remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
                                                      removePrefix: '',
                                                      sourceFiles: 'Dockerfile',
                                              )],
