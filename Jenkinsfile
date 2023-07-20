@@ -81,43 +81,68 @@ pipeline {
                                 usePromotionTimestamp: false,
                                 useWorkspaceInPromotion: false,
                                 verbose: true
-                        )]
+                        ),
+                                     sshPublisherDesc(
+                                             configName: '172.16.70.111', // 使用定义的SSH配置名称
+                                             sshLabel: [label: 'origin/master'],
+                                             transfers: [sshTransfer(
+                                                     cleanRemote: false,
+                                                     excludes: '',
+                                                     execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME} && sh run.sh -n ${env.SERVICE_NAME}-${env.BRANCH_NAME} -t ${env.PROJECT_NAME}",
+                                                     execTimeout: 120000,
+                                                     flatten: false,
+                                                     makeEmptyDirs: false,
+                                                     noDefaultExcludes: false,
+                                                     patternSeparator: '[, ]+',
+                                                     remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+                                                     remoteDirectorySDF: false,
+//                                removePrefix: '',
+//                                sourceFiles: 'Dockerfile',
+                                                     removePrefix: 'target/',
+                                                     sourceFiles: 'target/*.jar'
+                                             )],
+                                             usePromotionTimestamp: false,
+                                             useWorkspaceInPromotion: false,
+                                             verbose: true
+                                     )
+
+                        ]
                 )
             }
         }
-        stage('Run') {
-
-
-            steps {
-
-                // 运行远程命令
-                sshPublisher(publishers: [sshPublisherDesc(
-                        configName: '172.16.70.111', // 使用定义的SSH配置名称
-                        sshLabel: [label: 'origin/master'],
-                        transfers: [sshTransfer(
-                                cleanRemote: false,
-                                excludes: '',
-                                execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME} && sh run.sh -n ${env.SERVICE_NAME}-${env.BRANCH_NAME} -t ${env.PROJECT_NAME}",
-                                execTimeout: 120000,
-                                flatten: false,
-                                makeEmptyDirs: false,
-                                noDefaultExcludes: false,
-                                patternSeparator: '[, ]+',
-                                remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
-                                remoteDirectorySDF: false,
-//                                removePrefix: '',
-//                                sourceFiles: 'Dockerfile',
-                                removePrefix: 'target/',
-                                sourceFiles: 'target/*.jar'
-                        )],
-                        usePromotionTimestamp: false,
-                        useWorkspaceInPromotion: false,
-                        verbose: true
-                )])
-
-            }
-
-        }
+//        stage('Run') {
+//
+//
+//            steps {
+//
+//                // 运行远程命令
+//                sshPublisher(publishers: [sshPublisherDesc(
+//                        configName: '172.16.70.111', // 使用定义的SSH配置名称
+//                        sshLabel: [label: 'origin/master'],
+//                        transfers: [sshTransfer(
+//                                cleanRemote: false,
+//                                excludes: '',
+//                                execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME} && sh run.sh -n ${env.SERVICE_NAME}-${env.BRANCH_NAME} -t ${env.PROJECT_NAME}",
+//                                execTimeout: 120000,
+//                                flatten: false,
+//                                makeEmptyDirs: false,
+//                                noDefaultExcludes: false,
+//                                patternSeparator: '[, ]+',
+//                                remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
+//                                remoteDirectorySDF: false,
+////                                removePrefix: '',
+////                                sourceFiles: 'Dockerfile',
+//                                removePrefix: 'target/',
+//                                sourceFiles: 'target/*.jar'
+//                        )],
+//                        usePromotionTimestamp: false,
+//                        useWorkspaceInPromotion: false,
+//                        verbose: true
+//                )])
+//
+//            }
+//
+//        }
 
 
     }
