@@ -6,10 +6,11 @@ pipeline {
     tools {
         maven 'maven3.6.1'
         // 指定JDK版本
-//        jdk 'jdk1.8'
     }
 
     environment {
+      JAVA8="/var/jenkins_home/tools/hudson.model.JDK/jdk8u181/jdk1.8.0_181/bin/java"
+      JAVA82="/var/jenkins_home/tools/hudson.model.JDK/jdk8u201/jdk1.8.0_201/bin/java"
         PROJECT_NAME = "jac"
         SERVICE_NAME = "back"
         BRANCH_NAME = "test"
@@ -32,6 +33,20 @@ pipeline {
     }
 
     stages {
+
+        stage('Build with JDK 8') {
+            tools {
+                jdk 'jdk8u201'
+            }
+            steps {
+                sh "$JAVA8 -version"
+              sh "${JAVA82} -version"
+            }
+        }
+        
+
+
+
         stage('Checkout') {
             steps {
                 // 使用 echo 函数打印输出
