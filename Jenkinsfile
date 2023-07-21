@@ -29,24 +29,24 @@ pipeline {
 
     stages {
 
-        stage('Build with JDK 8') {
-            tools {
-                jdk 'jdk8u201'
-            }
-            steps {
-                sh "$JAVA8 -version"
-            }
-        }
-        
-
-        stage('Checkout') {
-            steps {
-                // 使用 echo 函数打印输出
-                sh "echo $ref"
-                sh "printenv"
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '217dfbc7-70b9-485b-8cfc-515b9ad785cc', url: 'http://172.16.70.112:7990/scm/back/dkserver-back-jac.git']]])
-            }
-        }
+//        stage('Build with JDK 8') {
+//            tools {
+//                jdk 'jdk8u201'
+//            }
+//            steps {
+//                sh "$JAVA8 -version"
+//            }
+//        }
+//
+//
+//        stage('Checkout') {
+//            steps {
+//                // 使用 echo 函数打印输出
+//                sh "echo $ref"
+//                sh "printenv"
+//                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '217dfbc7-70b9-485b-8cfc-515b9ad785cc', url: 'http://172.16.70.112:7990/scm/back/dkserver-back-jac.git']]])
+//            }
+//        }
         stage('Build') {
             steps {
                 sh "mvn -v"
