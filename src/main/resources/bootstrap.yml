@@ -2,14 +2,14 @@ spring:
   application:
     name: dkserver-back
   profiles:
-    active: jac
+    active: jac-test
   cloud:
     nacos:
       config:
-        password: nacos
         username: nacos
-        server-addr: 192.168.210.27:8848  #  配置中心地址
-        file-extension: yaml # 指定配置文件类型
+        password: vecent123!@#
+        server-addr: 172.16.70.111:8548
+        file-extension: yaml
         namespace: ${spring.profiles.active}
         shared-configs:
           - data-id: common.yaml
@@ -21,3 +21,5 @@ spring:
           - data-id: sharding-jdbc.yaml
             refresh: true
             group: common
+      discovery:
+        ip: 172.16.41.110
