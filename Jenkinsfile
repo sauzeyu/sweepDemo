@@ -95,7 +95,7 @@ pipeline {
                         ),
                                      sshPublisherDesc(
                                              configName: '172.16.70.111', // 使用定义的SSH配置名称
-                                             sshLabel: [label: 'origin/master'],
+                                             sshLabel: [label: 'origin/liu'],
                                              transfers: [sshTransfer(
                                                      execCommand: "cd /home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME} && sh run.sh -n ${env.SERVICE_NAME}-${env.BRANCH_NAME} -t ${env.PROJECT_NAME}",
                                                      remoteDirectory: "/home/project/${env.PROJECT_NAME}/${env.SERVICE_NAME}",
