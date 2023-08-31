@@ -399,9 +399,7 @@ public class DkmUserVehicleServiceImpl {
             newKey.setApplyTime(new Date());
             newKey.setParentId(shareKeyVO.getKeyId());
             byte[] buffer = new byte[0];
-            byte[] permission = new byte[6];
-            permission[0] = 0X49;
-            permission[4] = 0X3B;
+            byte[] permission = intToByteArray6(shareKeyVO.getKeyPermit());
             buffer = byteMerger(buffer, byteMergerFull0(permission, 6));
             buffer = byteMerger(buffer, byteMergerFull0(random.getBytes(), 16));
             String startTime = getISO8601Timestamp(newKey.getValFrom());
@@ -448,9 +446,7 @@ public class DkmUserVehicleServiceImpl {
             shareKey.setPermissions(shareKeyVO.getKeyPermit());
             shareKey.setApplyTime(new Date());
             byte[] buffer = new byte[0];
-            byte[] permission = new byte[6];
-            permission[0] = 0X49;
-            permission[4] = 0X3B;
+            byte[] permission = intToByteArray6(shareKeyVO.getKeyPermit());
             buffer = byteMerger(buffer, byteMergerFull0(permission, 6));
             buffer = byteMerger(buffer, byteMergerFull0(random.getBytes(), 16));
             String startTime = getISO8601Timestamp(shareKey.getValFrom());
