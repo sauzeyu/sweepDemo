@@ -15,6 +15,8 @@ import com.vecentek.back.constant.ExcelConstant;
 import com.vecentek.back.constant.KeyClassificationConstant;
 import com.vecentek.back.constant.KeyResourceConstant;
 import com.vecentek.back.constant.KeyStatusEnum;
+import com.vecentek.back.constant.*;
+import com.vecentek.back.constant.*;
 import com.vecentek.back.dto.DkmKeyDTO;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
@@ -342,7 +344,7 @@ public class DkmKeyServiceImpl {
                     DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
                     dkmKeyLifecycle.setKeyId(id);
                     dkmKeyLifecycle.setCreateTime(new Date());
-                    dkmKeyLifecycle.setKeySource(1); // WEB页面
+                    dkmKeyLifecycle.setKeySource(KeyLifecycleResourceConstant.WEB); // WEB页面
                     if (Objects.equals(dkmKey.getParentId(), "0")) {
                         dkmKeyLifecycle.setKeyType(1);
                     } else {

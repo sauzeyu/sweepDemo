@@ -94,7 +94,7 @@ public class DkmUserVehicleController {
      */
 //    @RequestMapping(value = "/getAppScheme", method = RequestMethod.POST)
 //    public String getAppScheme(@RequestBody SchemeVO schemeVO) {
-//        return dkmUserVehicleService.getAppScheme(schemeVO);
+// /       return dkmUserVehicleService.getAppScheme(schemeVO);
 //    }
 
 //    @RequestMapping(value = "/getAppScheme", method = RequestMethod.POST)

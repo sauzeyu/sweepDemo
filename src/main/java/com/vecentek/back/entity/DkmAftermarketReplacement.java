@@ -56,6 +56,10 @@ public class DkmAftermarketReplacement extends BaseEntity {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date replacementTime;
 
+
+
+
+
     /**
      * 设置设备序列号，并转换为UTF-8字符串存入hwDeviceSnHEX字段
      */
@@ -65,15 +69,7 @@ public class DkmAftermarketReplacement extends BaseEntity {
         asciiString = getString(oldBluetoothSn, asciiString);
         this.oldBluetoothSnHEX = asciiString;
     }
-    /**
-     * 设置设备序列号，并转换为UTF-8字符串存入hwDeviceSnHEX字段
-     */
-    public void setNewBluetoothSn(String newBluetoothSn) {
-        this.newBluetoothSn = newBluetoothSn;
-        String asciiString = null;
-        asciiString = getString(newBluetoothSn, asciiString);
-        this.newBluetoothSnHEX = asciiString;
-    }
+
 
     private String getString(String bluetoothSn, String asciiString) {
         try {

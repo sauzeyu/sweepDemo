@@ -82,10 +82,10 @@ public class DkmBluetooths extends BaseEntity {
         String asciiString = null;
         try {
             byte[] bytes = Hex.decodeHex(hwDeviceSn);
-             asciiString = new String(bytes, StandardCharsets.US_ASCII);
+            asciiString = new String(bytes, StandardCharsets.US_ASCII);
 
         } catch (DecoderException e) {
-            throw  new VecentException("错误格式的TBOX号");
+//            throw  new VecentException("错误格式的TBOX号");
 //            return PageResp.fail("错误格式的TBOX号");
         }
         this.hwDeviceSnHEX = asciiString;

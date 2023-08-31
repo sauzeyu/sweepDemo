@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 数据统计
@@ -144,58 +145,30 @@ public class DkmStatisticsServiceImpl {
     // TODO List重复代码抽取常量
     public PageResp selectKeyUseLogByTime(String startTime, String endTime) {
         List<CountDTO> keyLogCount = dkmKeyLogMapper.selectUseCountByTime(startTime, endTime);
-        // 数据简化处理 四位状态码的日志只返回开启和关闭两大类 不显示具体开启情况
-        List<CountDTO> list1 = simpleLog(keyLogCount, "01");
-        List<CountDTO> list2 = simpleLog(keyLogCount, "03");
-        List<CountDTO> list3 = simpleLog(keyLogCount, "04");
-        List<CountDTO> list4 = simpleLog(keyLogCount, "05");
-        List<CountDTO> list5 = simpleLog(keyLogCount, "06");
-        List<CountDTO> list6 = simpleLog(keyLogCount, "07");
-        List<CountDTO> list7 = simpleLog(keyLogCount, "08");
-        List<CountDTO> list8 = simpleLog(keyLogCount, "09");
-        List<CountDTO> list9 = simpleLog(keyLogCount, "0A");
-        List<CountDTO> list10 = simpleLog2(keyLogCount, "0C");
-        // 两位状态码的日志 不做简化处理
-        List<CountDTO> list11 = twoBytesLog(keyLogCount);
-        list1.addAll(list2);
-        list1.addAll(list3);
-        list1.addAll(list4);
-        list1.addAll(list5);
-        list1.addAll(list6);
-        list1.addAll(list7);
-        list1.addAll(list8);
-        list1.addAll(list9);
-        list1.addAll(list10);
-        list1.addAll(list11);
-        return PageResp.success("查询成功", list1);
+        List<CountDTO> filteredList = keyLogCount.stream()
+                .map(dto -> {
+                    String name = KeyStatusCodeEnum.matchName(dto.getName());
+                    dto.setName(name);
+                    return dto;
+                })
+                .filter(dto -> !"未知操作".equals(dto.getName()))
+                .collect(Collectors.toList());
+
+        return PageResp.success("查询成功", filteredList);
     }
 
     public PageResp selectKeyErrorLogByTime(String startTime, String endTime) {
         List<CountDTO> keyLogCount = dkmKeyLogMapper.selectErrorCountByTime(startTime, endTime);
-        // 数据简化处理 四位状态码的日志只返回开启和关闭两大类 不显示具体开启情况
-        List<CountDTO> list1 = simpleLog(keyLogCount, "01");
-        List<CountDTO> list2 = simpleLog(keyLogCount, "03");
-        List<CountDTO> list3 = simpleLog(keyLogCount, "04");
-        List<CountDTO> list4 = simpleLog(keyLogCount, "05");
-        List<CountDTO> list5 = simpleLog(keyLogCount, "06");
-        List<CountDTO> list6 = simpleLog(keyLogCount, "07");
-        List<CountDTO> list7 = simpleLog(keyLogCount, "08");
-        List<CountDTO> list8 = simpleLog(keyLogCount, "09");
-        List<CountDTO> list9 = simpleLog(keyLogCount, "0A");
-        List<CountDTO> list10 = simpleLog2(keyLogCount, "0C");
-        // 两位状态码的日志 不做简化处理
-        List<CountDTO> list11 = twoBytesLog(keyLogCount);
-        list1.addAll(list2);
-        list1.addAll(list3);
-        list1.addAll(list4);
-        list1.addAll(list5);
-        list1.addAll(list6);
-        list1.addAll(list7);
-        list1.addAll(list8);
-        list1.addAll(list9);
-        list1.addAll(list10);
-        list1.addAll(list11);
-        return PageResp.success("查询成功", list1);
+        List<CountDTO> filteredList = keyLogCount.stream()
+                .map(dto -> {
+                    String name = KeyStatusCodeEnum.matchName(dto.getName());
+                    dto.setName(name);
+                    return dto;
+                })
+                .filter(dto -> !"未知操作".equals(dto.getName()))
+                .collect(Collectors.toList());
+
+        return PageResp.success("查询成功", filteredList);
     }
 
     public PageResp selectKeyErrorLogByPhoneBrand(String phoneBrand) {
@@ -360,62 +333,7 @@ public class DkmStatisticsServiceImpl {
         return PageResp.success("查询成功", list);
     }
 
-    /**
-     * 简化数据
-     *
-     * @param countDTOs
-     * @param statusCode
-     * @return
-     */
-    List<CountDTO> simpleLog(List<CountDTO> countDTOs, String statusCode) {
-        String type = "";
-        List<CountDTO> data = new ArrayList<>();
-        int OpenInt = 0; // 开启总条数
 
-        for (CountDTO countDTO : countDTOs) {
-            if (countDTO.getName().length() == 4) {
-                if (ObjectUtil.equals(statusCode, "01")) {
-                    type = "解闭锁";
-                } else if (ObjectUtil.equals(statusCode, "03")) {
-                    type = "寻车";
-                } else if (ObjectUtil.equals(statusCode, "04")) {
-                    type = "发动机";
-                } else if (ObjectUtil.equals(statusCode, "05")) {
-                    type = "空调";
-                } else if (ObjectUtil.equals(statusCode, "06")) {
-                    type = "司机车窗";
-                } else if (ObjectUtil.equals(statusCode, "07")) {
-                    type = "副驾车窗";
-                } else if (ObjectUtil.equals(statusCode, "08")) {
-                    type = "左后车窗";
-                } else if (ObjectUtil.equals(statusCode, "09")) {
-                    type = "右后车窗";
-                } else if (ObjectUtil.equals(statusCode, "0A")) {
-                    type = "遮阳罩";
-                }
-
-                if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2),
-                        statusCode) && ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 2, 4), "00")) { // 关闭
-                    countDTO.setName(type + "关闭");
-                    countDTO.setValue(countDTO.getValue());
-                    data.add(countDTO);
-                } else if (ObjectUtil.equals(StrUtil.sub(countDTO.getName(), 0, 2), statusCode) && ObjectUtil.notEqual(
-                        StrUtil.sub(countDTO.getName(), 2, 4),
-                        "00")) { // 开启
-                    int intValue = countDTO.getValue();
-                    OpenInt += intValue;
-                }
-            }
-        }
-
-        if (OpenInt != 0) {
-            CountDTO countDTO = new CountDTO();
-            countDTO.setName(type + "开启");
-            countDTO.setValue(OpenInt);
-            data.add(countDTO);
-        }
-        return data;
-    }
 
     /**
      * 主驾副驾通风加热

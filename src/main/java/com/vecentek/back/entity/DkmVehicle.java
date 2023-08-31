@@ -96,7 +96,7 @@ public class DkmVehicle extends BaseEntity implements Serializable {
             asciiString = new String(bytes, StandardCharsets.US_ASCII);
 
         } catch (DecoderException e) {
-            throw  new VecentException("错误格式的TBOX号");
+//            throw  new VecentException("错误格式的TBOX号");
 //            return PageResp.fail("错误格式的TBOX号");
 
         }
