@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: dkserver-back
+  profiles:
+    active: jac-test
+  cloud:
+    nacos:
+      config:
+        username: nacos
+        password: vecent123!@#
+        server-addr: 172.16.70.111:8548
+        file-extension: yaml
+        namespace: ${spring.profiles.active}
+        shared-configs:
+          - data-id: common.yaml
+            refresh: true
+            group: common
+          - data-id: redis.yaml
+            refresh: true
+            group: common
+          - data-id: sharding-jdbc.yaml
+            refresh: true
+            group: common
+      discovery:
+        ip: 172.16.41.110

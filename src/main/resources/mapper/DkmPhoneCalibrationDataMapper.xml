@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vecentek.back.mapper.DkmPhoneCalibrationDataMapper">
+
+
+    <insert id="insertPhoneCalibrationDataBatch">
+        insert dkm_phone_calibration_data (vehicle_model, phone_brand, phone_model,
+        personal_and_calibration_string, create_time,vehicle_type,vehicle_brand)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.vehicleModel},#{item.phoneBrand},#{item.phoneModel},#{item.personalAndCalibrationString},#{item.createTime},#{item.vehicleType},#{item.vehicleBrand})
+        </foreach>
+    </insert>
+
+</mapper>

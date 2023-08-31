@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vecentek.back.mapper.DkmUserVehicleMapper">
+
+
+    <insert id="insertUserVehicleBatch">
+        insert dkm_user_vehicle (bind_time, phone, vin, create_time)
+        values
+        <foreach collection="userVehicles" item="userVehicle" separator=",">
+            (#{userVehicle.buyVehicleTime},#{userVehicle.phone},#{userVehicle.vin},now())
+        </foreach>
+    </insert>
+
+<!--    <update id="updateUserVehicle">-->
+<!--        update dkm_user_vehicle-->
+<!--        <set>-->
+<!--            <if test="userChange.newUserId != null and userChange.newUserId != '' ">-->
+<!--                user_id = #{userChange.newUserId},-->
+<!--            </if>-->
+<!--            <if test="userChange.buyVehicleTime != null and userChange.buyVehicleTime != '' ">-->
+<!--                bind_time = #{userChange.buyVehicleTime},-->
+<!--            </if>-->
+<!--        </set>-->
+<!--        where vin =#{userChange.vin}-->
+<!--    </update>-->
+
+
+    <select id="selectVehicleByVin" resultType="java.lang.String">
+        select vin
+        from dkm_vehicle
+        where vin in
+        <foreach collection="userVehicles" item="userVehicle" index="index" open="(" separator="," close=")">
+            #{userVehicle.vin}
+        </foreach>
+    </select>
+
+    <select id="selectUserVehicleByVin" resultType="java.lang.String">
+        select vin
+        from dkm_user_vehicle
+        where vin in
+        <foreach collection="userVehicles" item="userVehicle" index="index" open="(" separator="," close=")">
+            #{userVehicle.vin}
+        </foreach>
+    </select>
+</mapper>

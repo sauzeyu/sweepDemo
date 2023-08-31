@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vecentek.back.mapper.DkmOfflineCheckMapper">
+
+    <insert id="insertVehicleBatch">
+        insert dkm_vehicle (factory_no, vin, ven, color, sunroof_type, trunk_type, window_type,RPA_type,
+        check_result,hw_device_sn, create_time)
+        values
+        <foreach collection="dkmVehicles" item="vehicle" separator=",">
+            (#{vehicle.factoryNo},#{vehicle.vin},#{vehicle.ven},#{vehicle.color},#{vehicle.sunroofType},#{vehicle.trunkType},
+            #{vehicle.windowType},#{vehicle.RPAType},#{vehicle.checkResult},#{vehicle.hwDeviceSn},now())
+        </foreach>
+    </insert>
+
+
+    <insert id="insertBluetoothBatch">
+        insert dkm_bluetooths (hw_device_sn, hw_device_id, hw_device_provider_no, dk_sdk_version, dk_sec_unit_id,
+        ble_name, ble_mac_address, ble_protocol_version, ble_hardware_version, ble_software_version, master_key,dig_key,
+        flag,create_time,device_status)
+        values
+        <foreach collection="dkmBluetooths" item="bluetooth" separator=",">
+            (#{bluetooth.hwDeviceSn},#{bluetooth.hwDeviceId},#{bluetooth.hwDeviceProviderNo},#{bluetooth.dkSdkVersion},
+            #{bluetooth.dkSecUnitId},#{bluetooth.bleName},#{bluetooth.bleMacAddress},#{bluetooth.bleProtocolVersion},
+            #{bluetooth.bleHardwareVersion},#{bluetooth.bleSoftwareVersion},#{bluetooth.masterKey},#{bluetooth.digKey},1,now(),0)
+        </foreach>
+    </insert>
+
+
+    <select id="selectVehicleByVin" resultType="java.lang.String">
+        select vin
+        from dkm_vehicle
+        where vin in
+        <foreach collection="vinList" item="vehicle" index="index" open="(" separator="," close=")">
+            #{vehicle.vin}
+        </foreach>
+    </select>
+
+    <select id="selectBluetoothBatchByHwDeviceSn" resultType="java.lang.String">
+        select hw_device_sn from dkm_bluetooths db where db.hw_device_sn in
+        <foreach collection="deviceSnList" item="deviceSn" index="index" open="(" close=")" separator=",">
+            #{deviceSn}
+        </foreach>
+    </select>
+
+    <select id="selectBluetoothBatchByBleMacAddress" resultType="java.lang.String">
+        select ble_mac_address from dkm_bluetooths db where db.ble_mac_address in
+        <foreach collection="macList" item="mac" index="index" open="(" close=")" separator=",">
+            #{mac}
+        </foreach>
+    </select>
+
+</mapper>
