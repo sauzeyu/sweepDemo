@@ -14,6 +14,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.vecentek.back.constant.DiagnosticLogsEnum;
 import com.vecentek.back.constant.KeyErrorReasonEnumJac;
+import com.vecentek.back.constant.KeyLifecycleResourceConstant;
+import com.vecentek.back.constant.DiagnosticLogsEnum;
+import com.vecentek.back.constant.KeyErrorReasonEnumJac;
+import com.vecentek.back.constant.KeyLifecycleResourceConstant;
 import com.vecentek.back.constant.KeyStatusCodeEnum;
 import com.vecentek.back.dto.UploadBluetoothsErrorDTO;
 import com.vecentek.back.dto.UploadDTO;
@@ -27,12 +31,17 @@ import com.vecentek.back.vo.*;
 import com.vecentek.common.response.PageResp;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -93,6 +102,14 @@ public class DkmOfflineCheckServiceImpl {
         }
 
         for (VehicleBluetoothVO vehicle : dkmVehicles) {
+            try {
+                byte[] bytes = Hex.decodeHex(vehicle.getHwDeviceSn());
+                new String(bytes, StandardCharsets.US_ASCII);
+            } catch (DecoderException e) {
+                log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙设备序列号格式不正确！");
+                throw new VecentException(1001, "蓝牙设备序列号格式不正确！");
+            }
+
             boolean pubKeyValidFlag = true;
             if (CharSequenceUtil.hasBlank(vehicle.getPubKey())){
 
@@ -102,12 +119,13 @@ public class DkmOfflineCheckServiceImpl {
 
                 pubKeyValidFlag = false;
             }
+
             if (CharSequenceUtil.hasBlank(vehicle.getVin(),
                     vehicle.getVehicleModel(),
                     vehicle.getHwDeviceSn(),
                     vehicle.getBleMacAddress())
 
-                    ) {
+            ) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "必填参数未传递！");
                 throw new VecentException(1001, "必填参数未传递！");
             }
@@ -118,7 +136,7 @@ public class DkmOfflineCheckServiceImpl {
                 }
 
                 LambdaQueryWrapper<DkmBluetooths> queryWrapper = Wrappers.lambdaQuery(DkmBluetooths.class)
-                 .eq(DkmBluetooths::getSearchNumber, vehicle.getSearchNumber());
+                        .eq(DkmBluetooths::getSearchNumber, vehicle.getSearchNumber());
 
                 // 根据SearchNumberWrapper条件查找是否存在相同的搜索号
                 if (dkmBluetoothsMapper.selectCount(queryWrapper) > 0) {
@@ -160,6 +178,9 @@ public class DkmOfflineCheckServiceImpl {
                     log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙检索号格式不正确！");
                     throw new VecentException(1001, "蓝牙检索号格式不正确！");
                 }
+
+            }
+            if (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getBleMacAddress()) || HexUtil.decodeHex(vehicle.getBleMacAddress()) == null) {
             }
             if (!com.vecentek.back.util.HexUtil.isAsciiHexString(vehicle.getBleMacAddress()) || HexUtil.decodeHex(vehicle.getBleMacAddress()) == null) {
                 log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "蓝牙Mac地址格式不正确！");
@@ -211,16 +232,16 @@ public class DkmOfflineCheckServiceImpl {
         verifyVehicleBluetoothVO(dkmVehicles);
         dkmVehicles.stream().filter(vehicle -> CharSequenceUtil.isBlank(vehicle.getSearchNumber()))
                 .forEach(vehicle -> {
-                    MessageDigest messageDigest = null;
-                    try {
-                        messageDigest = MessageDigest.getInstance("SHA-256");
-                    } catch (NoSuchAlgorithmException e) {
-                        e.printStackTrace();
-                    }
-                    byte[] hash = messageDigest.digest(com.payneteasy.tlv.HexUtil.parseHex(vehicle.getHwDeviceSn()));
-                    String encdeStr = Hex.encodeHexString(hash);
-                    String searchNumber = encdeStr.substring(encdeStr.length() - 38);
-                        vehicle.setSearchNumber(searchNumber);
+                            MessageDigest messageDigest = null;
+                            try {
+                                messageDigest = MessageDigest.getInstance("SHA-256");
+                            } catch (NoSuchAlgorithmException e) {
+                                e.printStackTrace();
+                            }
+                            byte[] hash = messageDigest.digest(com.payneteasy.tlv.HexUtil.parseHex(vehicle.getHwDeviceSn()));
+                            String encdeStr = Hex.encodeHexString(hash);
+                            String searchNumber = encdeStr.substring(encdeStr.length() - 38);
+                            vehicle.setSearchNumber(searchNumber);
                         }
                 );
         //划分换件车辆和新增车辆
@@ -255,102 +276,102 @@ public class DkmOfflineCheckServiceImpl {
         }
         // 当换件车辆存在时，更新换件车辆并插入蓝牙信息
 
-            if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
+        if (aftermarketReplacementVehicleBluetoothList.size() > 0) {
 
-                aftermarketReplacementVehicleBluetoothList.forEach(vehicleBluetooth -> {
-                    DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery()
-                            .eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
+            aftermarketReplacementVehicleBluetoothList.forEach(vehicleBluetooth -> {
+                DkmVehicle vehicle = dkmVehicleMapper.selectOne(Wrappers.<DkmVehicle>lambdaQuery()
+                        .eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
 
-                    List<DkmKey> keyList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
-                            .eq(DkmKey::getVin, vehicle.getVin()).eq(DkmKey::getDkState, "1"));
-                    //若换件车辆存在钥匙，则吊销钥匙，并记录钥匙生命周期
-                    if (keyList.size() > 0) {
-                        keyList.forEach(dkmKey -> {
-                            dkmKey.setDkState(5);
-                            //dkmKey.setUpdateTime(new Date());
-                            dkmKeyMapper.updateById(dkmKey);
-                            DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
-                            dkmKeyLifecycle.setKeyId(dkmKey.getId());
-                            dkmKeyLifecycle.setCreateTime(new Date());
-                            dkmKeyLifecycle.setVin(dkmKey.getVin());
-                            int keyType = 2;
-                            ArrayList<String> userList = new ArrayList<>();
-                            // 车主钥匙
-                            if (Objects.equals("0", dkmKey.getParentId())) {
-                                keyType = 1;
-                                // 查询子钥匙吊销
-                                List<DkmKey> childList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getParentId, dkmKey.getId()).eq(DkmKey::getDkState, "1"));
-                                for (DkmKey child : childList) {
-                                    // 吊销子钥匙
-                                    child.setDkState(5);
-                                    //child.setUpdateTime(new Date());
-                                    dkmKeyMapper.updateById(child);
-                                    // 钥匙生命周期
-                                    // 封装生命周期对象
-                                    DkmKeyLifecycle childLifecycle = new DkmKeyLifecycle();
-                                    childLifecycle.setUserId(child.getUserId());
-                                    childLifecycle.setKeyId(child.getId());
-                                    childLifecycle.setVin(child.getVin());
-                                    // 操作来源
-                                    childLifecycle.setKeySource(3);
-                                    dkmKeyLifecycle.setKeyType(2);
-                                    dkmKeyLifecycle.setKeyStatus(5);
-                                    dkmKeyLifecycle.setCreateTime(new Date());
-                                    dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
-                                    // 加入list
-                                    userList.add(child.getUserId());
-                                }
+                List<DkmKey> keyList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery()
+                        .eq(DkmKey::getVin, vehicle.getVin()).eq(DkmKey::getDkState, "1"));
+                //若换件车辆存在钥匙，则吊销钥匙，并记录钥匙生命周期
+                if (keyList.size() > 0) {
+                    keyList.forEach(dkmKey -> {
+                        dkmKey.setDkState(5);
+                        //dkmKey.setUpdateTime(new Date());
+                        dkmKeyMapper.updateById(dkmKey);
+                        DkmKeyLifecycle dkmKeyLifecycle = new DkmKeyLifecycle();
+                        dkmKeyLifecycle.setKeyId(dkmKey.getId());
+                        dkmKeyLifecycle.setCreateTime(new Date());
+                        dkmKeyLifecycle.setVin(dkmKey.getVin());
+                        int keyType = 2;
+                        ArrayList<String> userList = new ArrayList<>();
+                        // 车主钥匙
+                        if (Objects.equals("0", dkmKey.getParentId())) {
+                            keyType = 1;
+                            // 查询子钥匙吊销
+                            List<DkmKey> childList = dkmKeyMapper.selectList(Wrappers.<DkmKey>lambdaQuery().eq(DkmKey::getParentId, dkmKey.getId()).eq(DkmKey::getDkState, "1"));
+                            for (DkmKey child : childList) {
+                                // 吊销子钥匙
+                                child.setDkState(5);
+                                //child.setUpdateTime(new Date());
+                                dkmKeyMapper.updateById(child);
+                                // 钥匙生命周期
+                                // 封装生命周期对象
+                                DkmKeyLifecycle childLifecycle = new DkmKeyLifecycle();
+                                childLifecycle.setUserId(child.getUserId());
+                                childLifecycle.setKeyId(child.getId());
+                                childLifecycle.setVin(child.getVin());
+                                // 操作来源
+                                childLifecycle.setKeySource(3);
+                                dkmKeyLifecycle.setKeyType(2);
+                                dkmKeyLifecycle.setKeyStatus(5);
+                                dkmKeyLifecycle.setCreateTime(new Date());
+                                dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
+                                // 加入list
+                                userList.add(child.getUserId());
                             }
-                            // 加入list
-                            userList.add(dkmKey.getUserId());
-                            dkmKeyLifecycle.setKeyType(keyType);
-                            dkmKeyLifecycle.setKeyStatus(5);
-                            dkmKeyLifecycle.setKeySource(3);
-                            dkmKeyLifecycle.setUserId(dkmKey.getUserId());
-                            dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
-                            log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台");
-                        });
-                    }
-                    //更新旧蓝牙设备，插入新蓝牙设备，插入售后换件表
-                    DkmAftermarketReplacement dkmAftermarketReplacement = new DkmAftermarketReplacement();
-                    dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
-                    DkmBluetooths newBluetooth = new DkmBluetooths();
-                    DkmBluetooths oldBluetooth = new DkmBluetooths();
-                    try {
-                        oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
-                    } catch (VecentException e) {
-                        e.printStackTrace();
-                    }
-                    BeanUtil.copyProperties(vehicleBluetooth, vehicle);
-                    BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
+                        }
+                        // 加入list
+                        userList.add(dkmKey.getUserId());
+                        dkmKeyLifecycle.setKeyType(keyType);
+                        dkmKeyLifecycle.setKeyStatus(5);
+                        dkmKeyLifecycle.setKeySource(KeyLifecycleResourceConstant.AFTERMARKET_WREPLACEMENT);
+                        dkmKeyLifecycle.setUserId(dkmKey.getUserId());
+                        dkmKeyLifecycleMapper.insert(dkmKeyLifecycle);
+                        log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "钥匙平台识别到蓝牙BOX换件之后，吊销当前车辆的所有钥匙，并发送用户信息给APP后台");
+                    });
+                }
+                //更新旧蓝牙设备，插入新蓝牙设备，插入售后换件表
+                DkmAftermarketReplacement dkmAftermarketReplacement = new DkmAftermarketReplacement();
+                dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
+                DkmBluetooths newBluetooth = new DkmBluetooths();
+                DkmBluetooths oldBluetooth = new DkmBluetooths();
+                try {
+                    oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
+                } catch (VecentException e) {
+                    e.printStackTrace();
+                }
+                BeanUtil.copyProperties(vehicleBluetooth, vehicle);
+                BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
 
-                    vehicle.setUpdateTime(new Date());
-                    newBluetooth.setCreateTime(new Date());
-                    newBluetooth.setFlag(1); // 启用
-                    oldBluetooth.setFlag(0); // 报废
-                    oldBluetooth.setUpdateTime(new Date());
+                vehicle.setUpdateTime(new Date());
+                newBluetooth.setCreateTime(new Date());
+                newBluetooth.setFlag(1); // 启用
+                oldBluetooth.setFlag(0); // 报废
+                oldBluetooth.setUpdateTime(new Date());
 
-                    // TODO: 从密码机中获取密钥并放置到Hmac算法中
-                    newBluetooth.setDeviceStatus(0);
-                    HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
-                    String digKey = hMac.digestHex(newBluetooth.getHwDeviceSn());
-                    newBluetooth.setDigKey(digKey);
-                    newBluetooth.setMasterKey(digKey.substring(32));
-                    dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
-                            .eq(DkmBluetooths::getHwDeviceSn, oldBluetooth.getHwDeviceSn()));
+                // TODO: 从密码机中获取密钥并放置到Hmac算法中
+                newBluetooth.setDeviceStatus(0);
+                HMac hMac = new HMac(HmacAlgorithm.HmacSHA256);
+                String digKey = hMac.digestHex(newBluetooth.getHwDeviceSn());
+                newBluetooth.setDigKey(digKey);
+                newBluetooth.setMasterKey(digKey.substring(32));
+                dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
+                        .eq(DkmBluetooths::getHwDeviceSn, oldBluetooth.getHwDeviceSn()));
 
-                        dkmBluetoothsMapper.insert(newBluetooth);
+                dkmBluetoothsMapper.insert(newBluetooth);
 
-                    dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
+                dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
 
-                    dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
+                dkmVehicleMapper.update(vehicle, Wrappers.<DkmVehicle>lambdaUpdate().eq(DkmVehicle::getVin, vehicleBluetooth.getVin()));
 
-                    dkmAftermarketReplacement.setNewBluetoothSn(vehicleBluetooth.getHwDeviceSn());
-                    dkmAftermarketReplacement.setReplacementTime(new Date());
-                    dkmAftermarketReplacement.setCreateTime(new Date());
-                    dkmAftermarketReplacementMapper.insert(dkmAftermarketReplacement);
-                });
-            }
+                dkmAftermarketReplacement.setNewBluetoothSn(vehicleBluetooth.getHwDeviceSn());
+                dkmAftermarketReplacement.setReplacementTime(new Date());
+                dkmAftermarketReplacement.setCreateTime(new Date());
+                dkmAftermarketReplacementMapper.insert(dkmAftermarketReplacement);
+            });
+        }
 
 
         log.info("response：" + "/api/offlineCheck/insertOrUpdateVehicleBatch " + "上传成功");

@@ -59,6 +59,32 @@ public enum KeyStatusCodeEnum {
 
     BLUETOOTH_DISCONNECTED("0x08", "蓝牙断开"),
 
+
+    LEFT_FRONT_DOOR_HANDLE_BUTTON_UNLOCK("0061", "左前门把手按钮开锁"),
+
+    LEFT_FRONT_DOOR_HANDLE_BUTTON_LOCK("0062", "左前门把手按钮闭锁"),
+
+    RIGHT_FRONT_DOOR_HANDLE_BUTTON_UNLOCK("0063", "左前门把手按钮开锁"),
+
+    RIGHT_FRONT_DOOR_HANDLE_BUTTON_LOCK("0064", "左前门把手按钮闭锁"),
+
+    LEFT_BACK_DOOR_HANDLE_BUTTON_UNLOCK("0065", "左后门把手按钮开锁"),
+
+    LEFT_BACK_DOOR_HANDLE_BUTTON_LOCK("0066", "左后门把手按钮闭锁"),
+
+    RIGHT_BACK_DOOR_HANDLE_BUTTON_UNLOCK("0067", "左后门把手按钮开锁"),
+
+    RIGHT_BACK_DOOR_HANDLE_BUTTON_LOCK("0068", "左后门把手按钮闭锁"),
+
+
+    PE_OPERATION_OF_THE_LEFT_FRONT_DOOR("0051", "左前门pe操作"),
+
+    PE_OPERATION_OF_THE_RIGHT_FRONT_DOOR("0052", "右前门PE操作"),
+
+    TRUNK_PE_OPERATION("0053", "后备箱PE操作"),
+
+    IN_VEHICLE_ENGINE_OPERATION("0054", "车内引擎操作"),
+
     /**
      * 4.14 遥控指令 REMOTE
      */
@@ -183,6 +209,7 @@ public enum KeyStatusCodeEnum {
     SAFE_SEAT_VENTILATION_HEATING_PASSENGER_HEAT_LOW_30M("0C25", "座椅通风加热—启动副驾座椅—加热-低(30分钟)"),
     FOUR_DOOR_WINDOWS_UNLOCKED("1000", "四门车窗解锁"),
     FOUR_DOOR_WINDOWS_LOCK("1001", "四门车窗闭锁"),
+
     SAFE_TRUNK_UNLOCK("0200", "后备箱解锁"),
     SAFE_TRUNK_LOCK("0201", "后备箱闭锁");
 

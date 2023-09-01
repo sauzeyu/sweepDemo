@@ -8,6 +8,10 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.payneteasy.tlv.HexUtil;
+import com.vecentek.back.constant.KeyLifecycleResourceConstant;
+import com.vecentek.back.constant.KeyLifecycleResourceConstant;
+import com.vecentek.back.constant.KeyStatusEnum;
+import com.payneteasy.tlv.HexUtil;
 import com.vecentek.back.constant.KeyStatusEnum;
 import com.vecentek.back.entity.DkmKey;
 import com.vecentek.back.entity.DkmKeyLifecycle;
@@ -212,9 +216,9 @@ public class DkmUserVehicleServiceImpl {
             // 钥匙生命周期1
             // 封装生命周期对象
             if (Objects.equals("0", key.getParentId())) {
-                keyLifecycleUtil.insert(key, 1, 3, 5);
+                keyLifecycleUtil.insert(key, 1, KeyLifecycleResourceConstant.CHANGE_OWNER, 5);
             } else {
-                keyLifecycleUtil.insert(key, 2, 3, 5);
+                keyLifecycleUtil.insert(key, 2, KeyLifecycleResourceConstant.CHANGE_OWNER, 5);
             }
             // 返回钥匙用户id
             userList.add(key.getUserId());
@@ -287,11 +291,12 @@ public class DkmUserVehicleServiceImpl {
                     // 钥匙生命周期
                     // 封装生命周期对象
                     DkmKeyLifecycle childLifecycle = new DkmKeyLifecycle();
+                    childLifecycle.setKeySource(KeyLifecycleResourceConstant.REPLACE_PHONE);
                     childLifecycle.setUserId(child.getUserId());
                     childLifecycle.setKeyId(child.getId());
                     childLifecycle.setVin(child.getVin());
                     // 操作来源
-                    childLifecycle.setKeySource(3);
+                    childLifecycle.setKeySource(KeyLifecycleResourceConstant.REPLACE_PHONE);
                     keyLifecycleUtil.insert(key, keyType, 3, 5);
                     // 加入list
                     list.add(child.getUserId() + "-" + child.getVin());

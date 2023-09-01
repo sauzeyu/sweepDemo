@@ -10,16 +10,21 @@ public enum KeyErrorReasonEnumJac {
     /**
      * 车控故障 （OEM定义） 01 开头
      */
-    ERROR_REASON_0101("0101", "主驾驶车门未关"),
-    ERROR_REASON_0102("0102", "未进入安全模式"),
-    ERROR_REASON_0103("0103", "点火钥匙错误"),
-    ERROR_REASON_0104("0104", "车速不等于0，且大于4km/h"),
-    ERROR_REASON_0105("0105", "安全认证请求超时"),
-    ERROR_REASON_0106("0106", "发送KEY码后，等待认证结果超时"),
-    ERROR_REASON_0107("0107", "读取鉴权参数错误"),
-    ERROR_REASON_0108("0108", "TBOX判定与BCM认证失败"),
-    ERROR_REASON_0109("0109", "控制鉴权失败次数超过2"),
-    ERROR_REASON_0155("0155", "操作超时"),
+
+    ERROR_REASON_0117("0117", "认证成功位置不准确"),
+    ERROR_REASON_0118("0118", "TBOX未收到蓝牙位置请求"),
+    ERROR_REASON_0119("0119", "BCM超时未鉴权"),
+    ERROR_REASON_0121("0121", "主驾驶车门未关"),
+    ERROR_REASON_0122("0122", "未进入安全模式"),
+    ERROR_REASON_0123("0123", "点火钥匙错误"),
+    ERROR_REASON_0124("0124", "车速不等于0，且大于4km/h"),
+    ERROR_REASON_0125("0125", "安全认证请求超时"),
+    ERROR_REASON_0126("0126", "发送KEY码后，等待认证结果超时"),
+    ERROR_REASON_0127("0127", "读取鉴权参数错误"),
+    ERROR_REASON_0128("0128", "TBOX判定与BCM认证失败"),
+    ERROR_REASON_0129("0129", "控制鉴权失败次数超过2"),
+    ERROR_REASON_0130("0130", "后置判断条件不满足"),
+
 
     /**
      * IOS特有 蓝牙连接 02 开头
