@@ -333,12 +333,26 @@ public class DkmUserVehicleServiceImpl {
         // 时间格式校验
         DateTime valFrom;
         DateTime valTo;
+        System.out.println("shareKey 入参 "+ shareKeyVO.toString());
+        log.info("shareKey 入参 ",shareKeyVO.toString());
         try {
             valFrom = DateUtil.parse(shareKeyVO.getValFrom(), "yyyy-MM-dd HH:mm:ss");
             valTo = DateUtil.parse(shareKeyVO.getValTo(), "yyyy-MM-dd HH:mm:ss");
         } catch (Exception e) {
             e.printStackTrace();
             return PageResp.fail(1001, "钥匙生效或失效时间格式解析失败！");
+        }
+        // 检查是否设备指纹超过16位
+        if (shareKeyVO.getPhoneFingerprint().length() > 16) {
+            return PageResp.fail(1001, "设备指纹超过16位！");
+        }
+        // 检查是否VIN号超过17位
+        if (shareKeyVO.getVin().length() > 17) {
+            return PageResp.fail(1001, "VIN号超过17位！");
+        }
+        // 检查用户ID超过14位
+        if (shareKeyVO.getShareUserId().length() > 14) {
+            return PageResp.fail(1001, "用户ID超过14位！");
         }
         // 检查是否自我分享
         if (Objects.equals(shareKeyVO.getUserId(), shareKeyVO.getShareUserId())) {
@@ -383,14 +397,12 @@ public class DkmUserVehicleServiceImpl {
 
         if (Objects.isNull(shareKey)) { // 新建
             DkmKey newKey = new DkmKey();
-
+            newKey.setKeyResource(1);
             newKey.setId(DkDateUtils.getUnionId());
             newKey.setUserId(shareKeyVO.getShareUserId());
             if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
                 newKey.setPhoneFingerprint("1111111111111111"); // 小程序指纹默认16个1
-                newKey.setKeyResource(2);
             } else {
-                newKey.setKeyResource(1);
                 newKey.setPhoneFingerprint(shareKeyVO.getPhoneFingerprint());
             }
             newKey.setVehicleId(dkmVehicle.getId());
@@ -417,11 +429,7 @@ public class DkmUserVehicleServiceImpl {
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getPhoneFingerprint().getBytes(), 16));
             buffer = byteMerger(buffer, byteMergerFull0((shareKeyVO.getShareUserId() + "").getBytes(), 14));
             byte[] style = new byte[1];
-            if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
-                style[0] = 5;
-            } else {
-                style[0] = 2;
-            }
+            style[0] = 2;
             buffer = byteMerger(buffer, style);
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getKeyId().getBytes(), 16));
             byte[] keySlot = new byte[1];
@@ -468,11 +476,7 @@ public class DkmUserVehicleServiceImpl {
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getPhoneFingerprint().getBytes(), 16));
             buffer = byteMerger(buffer, byteMergerFull0((shareKeyVO.getShareUserId() + "").getBytes(), 14));
             byte[] style = new byte[1];
-            if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
-                style[0] = 5;
-            } else {
-                style[0] = 2;
-            }
+            style[0] = 2;
             buffer = byteMerger(buffer, style);
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getKeyId().getBytes(), 16));
             byte[] keySlot = new byte[1];
