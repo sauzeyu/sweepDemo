@@ -401,7 +401,7 @@ public class DkmUserVehicleServiceImpl {
 
         if (Objects.isNull(shareKey)) { // 新建
             DkmKey newKey = new DkmKey();
-            newKey.setKeyResource(1);
+
             newKey.setId(DkDateUtils.getUnionId());
             newKey.setUserId(shareKeyVO.getShareUserId());
             if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
