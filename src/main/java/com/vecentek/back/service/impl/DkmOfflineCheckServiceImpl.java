@@ -336,20 +336,20 @@ public class DkmOfflineCheckServiceImpl {
                 DkmAftermarketReplacement dkmAftermarketReplacement = new DkmAftermarketReplacement();
                 dkmAftermarketReplacement.setOldBluetoothSn(vehicle.getHwDeviceSn());
                 DkmBluetooths newBluetooth = new DkmBluetooths();
-                DkmBluetooths oldBluetooth = new DkmBluetooths();
-                try {
-                    oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
-                } catch (VecentException e) {
-                    e.printStackTrace();
-                }
+//                DkmBluetooths oldBluetooth = new DkmBluetooths();
+//                try {
+//                    oldBluetooth.setHwDeviceSn(vehicle.getHwDeviceSn());
+//                } catch (VecentException e) {
+//                    e.printStackTrace();
+//                }
                 BeanUtil.copyProperties(vehicleBluetooth, vehicle);
                 BeanUtil.copyProperties(vehicleBluetooth, newBluetooth);
 
                 vehicle.setUpdateTime(new Date());
                 newBluetooth.setCreateTime(new Date());
                 newBluetooth.setFlag(1); // 启用
-                oldBluetooth.setFlag(0); // 报废
-                oldBluetooth.setUpdateTime(new Date());
+//                oldBluetooth.setFlag(0); // 报废
+//                oldBluetooth.setUpdateTime(new Date());
 
                 // TODO: 从密码机中获取密钥并放置到Hmac算法中
                 newBluetooth.setDeviceStatus(0);
@@ -357,9 +357,11 @@ public class DkmOfflineCheckServiceImpl {
                 String digKey = hMac.digestHex(newBluetooth.getHwDeviceSn());
                 newBluetooth.setDigKey(digKey);
                 newBluetooth.setMasterKey(digKey.substring(32));
-                dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
-                        .eq(DkmBluetooths::getHwDeviceSn, oldBluetooth.getHwDeviceSn()));
-
+                // 更新状态改为报废
+//                dkmBluetoothsMapper.update(oldBluetooth, Wrappers.<DkmBluetooths>lambdaUpdate()
+//                        .eq(DkmBluetooths::getHwDeviceSn, oldBluetooth.getHwDeviceSn()));
+                dkmBluetoothsMapper.delete(Wrappers.<DkmBluetooths>lambdaUpdate()
+                        .eq(DkmBluetooths::getHwDeviceSn, vehicle.getHwDeviceSn()));
                 dkmBluetoothsMapper.insert(newBluetooth);
 
                 dkmAftermarketReplacement.setVin(vehicleBluetooth.getVin());
