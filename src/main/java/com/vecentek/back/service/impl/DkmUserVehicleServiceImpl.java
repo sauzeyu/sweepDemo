@@ -383,12 +383,14 @@ public class DkmUserVehicleServiceImpl {
 
         if (Objects.isNull(shareKey)) { // 新建
             DkmKey newKey = new DkmKey();
-            newKey.setKeyResource(1);
+
             newKey.setId(DkDateUtils.getUnionId());
             newKey.setUserId(shareKeyVO.getShareUserId());
             if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
                 newKey.setPhoneFingerprint("1111111111111111"); // 小程序指纹默认16个1
+                newKey.setKeyResource(2);
             } else {
+                newKey.setKeyResource(1);
                 newKey.setPhoneFingerprint(shareKeyVO.getPhoneFingerprint());
             }
             newKey.setVehicleId(dkmVehicle.getId());
@@ -415,7 +417,11 @@ public class DkmUserVehicleServiceImpl {
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getPhoneFingerprint().getBytes(), 16));
             buffer = byteMerger(buffer, byteMergerFull0((shareKeyVO.getShareUserId() + "").getBytes(), 14));
             byte[] style = new byte[1];
-            style[0] = 2;
+            if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
+                style[0] = 5;
+            } else {
+                style[0] = 2;
+            }
             buffer = byteMerger(buffer, style);
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getKeyId().getBytes(), 16));
             byte[] keySlot = new byte[1];
@@ -462,7 +468,11 @@ public class DkmUserVehicleServiceImpl {
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getPhoneFingerprint().getBytes(), 16));
             buffer = byteMerger(buffer, byteMergerFull0((shareKeyVO.getShareUserId() + "").getBytes(), 14));
             byte[] style = new byte[1];
-            style[0] = 2;
+            if (Objects.equals(shareKeyVO.getPhoneFingerprint(), "1")) { // 传1说明是小程序手机指纹
+                style[0] = 5;
+            } else {
+                style[0] = 2;
+            }
             buffer = byteMerger(buffer, style);
             buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getKeyId().getBytes(), 16));
             byte[] keySlot = new byte[1];
