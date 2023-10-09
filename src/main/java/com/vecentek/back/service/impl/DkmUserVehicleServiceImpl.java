@@ -380,6 +380,9 @@ public class DkmUserVehicleServiceImpl {
         if (Objects.isNull(dkmVehicle)) {
             return PageResp.fail(1001, "车辆信息为空！");
         }
+        if (shareKeyVO.getKeyPermit().length != 6){
+            return PageResp.fail(1001, "钥匙权限长度不为6！");
+        }
         // 查询是否已存在分享钥匙，如果存在即更新，不存在即新建
         LambdaQueryWrapper<DkmKey> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(DkmKey::getParentId, shareKeyVO.getKeyId()).eq(DkmKey::getUserId, shareKeyVO.getShareUserId()).eq(DkmKey::getDkState, 1);
@@ -420,12 +423,11 @@ public class DkmUserVehicleServiceImpl {
             newKey.setValTo(valTo);
 
             newKey.setPeriod(between);
-            newKey.setPermissions(shareKeyVO.getKeyPermit());
+            newKey.setPermissions(byteArray6ToInt(shareKeyVO.getKeyPermit()));
             newKey.setApplyTime(new Date());
             newKey.setParentId(shareKeyVO.getKeyId());
             byte[] buffer = new byte[0];
-            byte[] permission = intToByteArray6(shareKeyVO.getKeyPermit());
-            buffer = byteMerger(buffer, byteMergerFull0(permission, 6));
+            buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getKeyPermit(), 6));
             buffer = byteMerger(buffer, byteMergerFull0(random.getBytes(), 16));
             String startTime = getISO8601Timestamp(newKey.getValFrom());
             String endTime = getISO8601Timestamp(newKey.getValTo());
@@ -448,6 +450,11 @@ public class DkmUserVehicleServiceImpl {
             buffer = byteMerger(buffer, intToByteTwoByteArray(newKey.getActivateTimes()));
             buffer = byteMerger(buffer, byteMergerFull0(newKey.getId().getBytes(), 16));
             newKey.setKr(HexUtil.toHexString(buffer));
+            // 计算密钥K1
+            String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
+            if (StringUtils.isBlank(masterKey)) {
+                return PageResp.fail(1001, "蓝牙信息没有对应二级密钥！");
+            }
             //用K1生成ks
             Map map = dkmVehicleMapper.selectMasterKeyAndBleAddressByVin(shareKeyVO.getVin());
             String key1 = (String) map.get("master_key");
@@ -457,11 +464,6 @@ public class DkmUserVehicleServiceImpl {
             String ks = ksdata.substring(ksdata.length() - 32, ksdata.length());
             newKey.setKs(ks);
             newKey.setBleMacAddress(blMacAddress);
-            // 计算密钥K1
-            String masterKey = dkmVehicleMapper.selectMasterKeyByVin(shareKeyVO.getVin());
-            if (StringUtils.isBlank(masterKey)) {
-                return PageResp.fail(1001, "蓝牙信息没有对应二级密钥！");
-            }
             dkmKeyMapper.insert(newKey);
             // 新增钥匙生命周期表吊销记录
             // 根据用户id找到手机号
@@ -472,11 +474,10 @@ public class DkmUserVehicleServiceImpl {
             shareKey.setValFrom(valFrom);
             shareKey.setValTo(valTo);
             shareKey.setPeriod(between);
-            shareKey.setPermissions(shareKeyVO.getKeyPermit());
+            shareKey.setPermissions(byteArray6ToInt(shareKeyVO.getKeyPermit()));
             shareKey.setApplyTime(new Date());
             byte[] buffer = new byte[0];
-            byte[] permission = intToByteArray6(shareKeyVO.getKeyPermit());
-            buffer = byteMerger(buffer, byteMergerFull0(permission, 6));
+            buffer = byteMerger(buffer, byteMergerFull0(shareKeyVO.getKeyPermit(), 6));
             buffer = byteMerger(buffer, byteMergerFull0(random.getBytes(), 16));
             String startTime = getISO8601Timestamp(shareKey.getValFrom());
             String endTime = getISO8601Timestamp(shareKey.getValTo());
@@ -581,5 +582,20 @@ public class DkmUserVehicleServiceImpl {
         return "<html><head><title>My Scheme Page</title></head><body>" +
                 "<a href=\"" + baseUrl + "\">打开应用</a>" +
                 "</body></html>";
+    }
+
+    public static int byteArray6ToInt(byte[] bytes) {
+        if (bytes.length != 6) {
+            throw new IllegalArgumentException("Input byte array must be of length 6");
+        }
+
+        int result = 0;
+        result |= (bytes[5] & 0xFF) << 40;
+        result |= (bytes[4] & 0xFF) << 32;
+        result |= (bytes[3] & 0xFF) << 24;
+        result |= (bytes[2] & 0xFF) << 16;
+        result |= (bytes[1] & 0xFF) << 8;
+        result |= bytes[0] & 0xFF;
+        return result;
     }
 }
