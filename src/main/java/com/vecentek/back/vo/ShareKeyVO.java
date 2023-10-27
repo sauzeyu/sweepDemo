@@ -22,6 +22,6 @@ public class ShareKeyVO {
     //  车主钥匙ID（来源于车主钥匙信息）
     private String keyId;
     //  钥匙权限
-    private Integer keyPermit;
+    private byte[] keyPermit;
 
 }
